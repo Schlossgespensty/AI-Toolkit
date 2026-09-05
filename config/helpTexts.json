@@ -1,0 +1,798 @@
+{
+"StrengthMultiplier":
+"Multiplies the HP of the lord.<br>Rat = 0.5<br>Standard = 1<br>Wolf = 1.5",
+
+
+"DotColour":
+"The color of the dots indicating the lords strength.<br>Vanilla uses yellow for weak AIs and blue for strong ones.",
+
+
+"DotCount":
+"The amount of dots indicating the lords strength.<br>Vanilla uses one dot per 0.1 of multiplier.",
+
+
+"Type":
+"The type of lord that spawns on the keep.",
+
+
+"ArabArcher":
+"Amount of ArabArchers that spawn by the keep at game start.",
+
+
+"Slave":
+"Amount of Slaves that spawn by the keep at game start.",
+
+
+"Slinger":
+"Amount of Slingers that spawn by the keep at game start.",
+
+
+"Assassin":
+"Amount of Assassins that spawn by the keep at game start.",
+
+
+"HorseArcher":
+"Amount of HorseArchers that spawn by the keep at game start.",
+
+
+"ArabSwordsman":
+"Amount of ArabSwordsmans that spawn by the keep at game start.",
+
+
+"FireThrower":
+"Amount of FireThrowers that spawn by the keep at game start.",
+
+
+"EuropArcher":
+"Amount of EuropArchers that spawn by the keep at game start.",
+
+
+"Spearman":
+"Amount of Spearmans that spawn by the keep at game start.",
+
+
+"Maceman":
+"Amount of Macemans that spawn by the keep at game start.",
+
+
+"Crossbowman":
+"Amount of Crossbowmans that spawn by the keep at game start.",
+
+
+"Pikeman":
+"Amount of Pikemans that spawn by the keep at game start.",
+
+
+"Swordsman":
+"Amount of Swordsmans that spawn by the keep at game start.",
+
+
+"Knight":
+"Amount of Knights that spawn by the keep at game start.",
+
+
+"Monk":
+"Amount of Monks that spawn by the keep at game start.",
+
+
+"WallDecoration":
+"The type of decoration the lord uses when placing flg in the aiv-editor.<br><br>8 = oil pouring out with fire<br>9 = burning flames<br>10 = small flag<br>11 = big flag<br>12 = medium flag<br>13 = crusader flag<br>14 = braziers<br>15 = decorative skulls<br>21 = steam clouds<br>22 = disease clouds<br>26 = fire explosions<br>28 = ravens flying down<br>29 = medium rocks landing in water<br>30 = small rocks hitting structures<br>31 = small rocks landing in water<br>40 = zero gold rising note<br>41 = zero popularity rising note<br>42 = blank rising note<br>43 = blank rising note",
+
+
+"Unknown001":
+"unused value",
+
+
+"Unknown002":
+"unused value",
+
+
+"Unknown003":
+"unused value",
+
+
+"Unknown004":
+"unused value",
+
+
+"Unknown005":
+"unused value",
+
+
+"CriticalPopularity":
+"Below this popularity, the AI sells goods aggressively to raise gold.<br><br>10000 = 100 popularity.<br>5000 = 50 popularity.",
+
+
+"LowestPopularity":
+"Below this popularity, AI sets taxes towards TaxesMin and gives extra rations until HighestPopularity is reached.<br><br>10000 = 100 popularity.<br>5000 = 50 popularity.",
+
+
+"HighestPopularity":
+"Above this popularity, AI increases taxes until a stable popularity modifier of up to -3 is achieved.<br><br>10000 = 100 popularity.<br>5000 = 50 popularity.",
+
+
+"TaxesMin":
+"Minimum tax level allowed.<br>0 = highest bribes<br>11 = highest taxes",
+
+
+"TaxesMax":
+"Maximum tax level allowed.<br>0 = highest bribes<br>11 = highest taxes",
+
+
+"Unknown011":
+"unused value",
+
+
+"Farm1":
+"1st farm that the AI builds.<br><br>Destroyed farms will not be replaced by the same type of farm, but with the next in the queue.",
+
+
+"Farm2":
+"2nd farm that the AI builds.<br><br>Destroyed farms will not be replaced by the same type of farm, but with the next in the queue.",
+
+
+"Farm3":
+"3rd farm that the AI builds.<br><br>Destroyed farms will not be replaced by the same type of farm, but with the next in the queue.",
+
+
+"Farm4":
+"4th farm that the AI builds.<br><br>Destroyed farms will not be replaced by the same type of farm, but with the next in the queue.",
+
+
+"Farm5":
+"5th of the 5. farm that the AI builds.<br><br>Destroyed farms will not be replaced by the same type of farm, but with the next in the queue.",
+
+
+"Farm6":
+"6th farm that the AI builds.<br><br>Destroyed farms will not be replaced by the same type of farm, but with the next in the queue.",
+
+
+"Farm7":
+"7th farm that the AI builds.<br><br>Destroyed farms will not be replaced by the same type of farm, but with the next in the queue.",
+
+
+"Farm8":
+"8th farm that the AI builds.<br>After ‘Farm8’ the AI will start over from the top.<br><br>Destroyed farms will not be replaced by the same type of farm, but with the next in the queue.",
+
+
+"PopulationPerFarm":
+"For every this amount of people the AI can house it will build one farm.<br>The first farm is always built at 0 population.<br><br>Hop farms don't count towards this value and are built whenever next in queue",
+
+
+"PopulationPerWoodcutter":
+"For every this amount of people the AI can house it will build one woodcutter.<br>When the AI reaches this amount for the first time two are built instead.",
+
+
+"PopulationPerQuarry":
+"For every this amount of people the AI can house it will build one Quarry.<br>When the AI reaches this amount for the first time two are built instead.",
+
+
+"PopulationPerIronmine":
+"For every this amount of people the AI can house it will build one Ironmine.<br>When the AI reaches this amount for the first time two are built instead.",
+
+
+"PopulationPerPitchrig":
+"For every this amount of people the AI can house it will build one Pitchrig.",
+
+
+"MaxQuarries":
+"Maximum amount of quarries the AI will build",
+
+
+"MaxIronmines":
+"Maximum amount of ironmines the AI will build",
+
+
+"MaxWoodcutters":
+"Maximum amount of woodcutters the AI will build",
+
+
+"MaxPitchrigs":
+"Maximum amount of pitchrigs the AI will build",
+
+
+"MaxFarms":
+"Maximum amount of Farms the AI will build.<br><br>Hop Farms don't count towards this value.",
+
+
+"BuildInterval":
+"The speed at which the AI builds.<br>Counts for everything, AIV buildings, non-AIV buildings and all kinds of repairs.<br><br>1 is the fastest.",
+
+
+"ResourceRebuildDelay":
+"The time the AI waits before trying to rebuild a non-AIV resource building.",
+
+
+"MaxFood":
+"The maximum amount stored of apples, cheese, meat, bread and wheat (+ResourceVariance on top).<br><br>Amount chosen is per type, NOT combined.",
+
+
+"MinimumApples":
+"If the amount of apples stored falls below this value, the AI will buy [TradeAmountFood] apples, until reaching this value again.<br><br>If = 0, the AI will never buy apples.",
+
+
+"MinimumCheese":
+"If the amount of cheese stored falls below this value, the AI will buy [TradeAmountFood] cheese, until reaching this value again.<br><br>If = 0, the AI will never buy cheese.",
+
+
+"MinimumBread":
+"If the amount of bread stored falls below this value, the AI will buy [TradeAmountFood] bread, until reaching this value again.<br><br>If = 0, the AI will never buy bread.<br><br>Can be better to leave at 0 and buy wheat instead with bread-eco.",
+
+
+"MinimumWheat":
+"If the amount of wheat stored falls below this value, the AI will buy [TradeAmountFood] wheat, until reaching this value again.<br><br>If = 0, the AI will never buy wheat.",
+
+
+"MinimumHop":
+"If the amount of hop stored falls below this value, the AI will buy [TradeAmountFood] hop, until reaching this value again.<br>If = 0, the AI will never buy hop.",
+
+
+"TradeAmountFood":
+"The amount of food the AI buys at a time.<br>The AI only buys 1 type of food at a time.<br><br>At a low value each purchase is cheaper (more reliable to happen) but may increase the amount of purchases needed (slower restocking of goods, may cause short shortages).",
+
+
+"TradeAmountEquipment":
+"The amount of Weapons the AI buys at a time.<br>The AI only buys 1 type of Equipment at a Time.<br><br>At a low value each purchase is cheaper (more reliable to happen) but may increase the amount of purchases needed (slower restocking of weapons, may cause short shortages).",
+
+
+"AIRequestDelay":
+"The frequency with which the AI asks the player for resources.<br>Lower value -> more frequent.",
+
+
+"MinimumGoodsRequiredAfterTrade":
+"The amount of a resource that the AI needs to have left over after a trade with the player, to agree to it.<br>Otherwise the AI will decline the trade.",
+
+
+"DoubleRationsFoodThreshold":
+"If the combined amount of apples, cheese, meat and bread is bigger than this value, the AI will give double rations.",
+
+
+"MaxWood":
+"The maximum amount stored of wood (+ResourceVariance on top).",
+
+
+"MaxStone":
+"The maximum amount stored of stone (+ResourceVariance on top).",
+
+
+"MaxResourceOther":
+"The maximum amount stored of iron, pitch, hop and flour (+ResourceVariance on top).<br><br>Amount chosen is per type, not combined.",
+
+
+"MaxEquipment":
+"The maximum amount stored of weapons and armors (+ResourceVariance on top).<br>Amount chosen is per type, not combined.",
+
+
+"MaxBeer":
+"The maximum amount stored of Beer (+ResourceVariance on top).",
+
+
+"MaxResourceVariance":
+"The deviation allowed from any 'Max[Recource]' Value.",
+
+
+"RecruitGoldThreshold":
+"The minimum amount of gold the AI needs to have, before it starts recruiting units.",
+
+
+"BlacksmithSetting":
+"Decides what the AIs blacksmith settings are set to.<br>If 'Both' is chosen, the first will be set to Swords, the second to Maces, the third to Swords, etc.",
+
+
+"FletcherSetting":
+"Decides what the AIs fletcher settings are set to.<br>If 'Both' is chosen, the first will be set to Bows, the second to Crossbows, the third to Bows, etc.",
+
+
+"PoleturnerSetting":
+"Decides what the AIs poleturner settings are set to.<br>If 'Both' is chosen, the first will be set to Spears, the second to Pikes, the third to Spears, etc.",
+
+
+"SellResource01":
+"Recource that, if obtained, is always instantly sold by the AI.",
+
+
+"SellResource02":
+"Recource that, if obtained, is always instantly sold by the AI.",
+
+
+"SellResource03":
+"Recource that, if obtained, is always instantly sold by the AI.",
+
+
+"SellResource04":
+"Recource that, if obtained, is always instantly sold by the AI.",
+
+
+"SellResource05":
+"Recource that, if obtained, is always instantly sold by the AI.",
+
+
+"SellResource06":
+"Recource that, if obtained, is always instantly sold by the AI.",
+
+
+"SellResource07":
+"Recource that, if obtained, is always instantly sold by the AI.",
+
+
+"SellResource08":
+"Recource that, if obtained, is always instantly sold by the AI.",
+
+
+"SellResource09":
+"Recource that, if obtained, is always instantly sold by the AI.",
+
+
+"SellResource10":
+"Recource that, if obtained, is always instantly sold by the AI.",
+
+
+"SellResource11":
+"Recource that, if obtained, is always instantly sold by the AI.",
+
+
+"SellResource12":
+"Recource that, if obtained, is always instantly sold by the AI.",
+
+
+"SellResource13":
+"Recource that, if obtained, is always instantly sold by the AI.",
+
+
+"SellResource14":
+"Recource that, if obtained, is always instantly sold by the AI.",
+
+
+"SellResource15":
+"Recource that, if obtained, is always instantly sold by the AI.",
+
+
+"DefWallPatrolRallyTime":
+"The time that wall defense units wait until walking to their next unit spot in the AIV.<br>Not all wall defense units units can patrol.",
+
+
+"DefWallPatrolGroups":
+"How many groups of wall defense units patrol through their AIV spots.",
+
+
+"DefSiegeEngineGoldThreshold":
+"Amount of gold the AI needs to have before it builds AIV siege engines",
+
+
+"DefSiegeEngineBuildDelay":
+"The amount of time the AI waits before rebuilding destroyed AIV siege engines.<br>Low value -> less time.",
+
+
+"Unknown072":
+"unused value",
+
+
+"Unknown073":
+"unused value",
+
+
+"RecruitProbDefDefault":
+"The probability that the AI recruits defensive units in the default state.<br><br><br><br>Weak: almost never active, mostly when close to death.<br><br>Default: mostly the first few years of a game.<br><br>Strong: active the most.<br>This state is often already reached if population and unit count >40.",
+
+
+"RecruitProbDefWeak":
+"The probability that the AI recruits defensive units in the weak state.<br><br><br><br>Weak: almost never active, mostly when close to death.<br><br>Default: mostly the first few years of a game.<br><br>Strong: active the most.<br>This state is often already reached if population and unit count >40.",
+
+
+"RecruitProbDefStrong":
+"The probability that the AI recruits defensive units in the strong state.<br><br><br><br>Weak: almost never active, mostly when close to death.<br><br>Default: mostly the first few years of a game.<br><br>Strong: active the most.<br>This state is often already reached if population and unit count >40.",
+
+
+"RecruitProbRaidDefault":
+"The probability that the AI recruits raid units in the default state.<br><br><br><br>Weak: almost never active, mostly when close to death.<br><br>Default: mostly the first few years of a game.<br><br>Strong: active the most.<br>This state is often already reached if population and unit count >40.",
+
+
+"RecruitProbRaidWeak":
+"The probability that the AI recruits raid units in the weak state.<br><br><br><br>Weak: almost never active, mostly when close to death.<br><br>Default: mostly the first few years of a game.<br><br>Strong: active the most.<br>This state is often already reached if population and unit count >40.",
+
+
+"RecruitProbRaidStrong":
+"The probability that the AI recruits raid units in the strong state.<br><br><br><br>Weak: almost never active, mostly when close to death.<br><br>Default: mostly the first few years of a game.<br><br>Strong: active the most.<br>This state is often already reached if population and unit count >40.",
+
+
+"RecruitProbAttackDefault":
+"The probability that the AI recruits attack units in the default state.<br><br><br><br>Weak: almost never active, mostly when close to death.<br><br>Default: mostly the first few years of a game.<br><br>Strong: active the most.<br>This state is often already reached if population and unit count >40.",
+
+
+"RecruitProbAttackWeak":
+"The probability that the AI recruits attack units in the weak state.<br><br><br><br>Weak: almost never active, mostly when close to death.<br><br>Default: mostly the first few years of a game.<br><br>Strong: active the most.<br>This state is often already reached if population and unit count >40.",
+
+
+"RecruitProbAttackStrong":
+"The probability that the AI recruits attack units in the strong state.<br><br><br><br>Weak: almost never active, mostly when close to death.<br><br>Default: mostly the first few years of a game.<br><br>Strong: active the most.<br>This state is often already reached if population and unit count >40.",
+
+
+"SortieUnitRangedMin":
+"The minimum number of ranged sortie units the AI send.<br><br><br><br>Weak: almost never active, mostly when close to death<br><br>Default: mostly the first few years of a game<br><br>Strong: active the most.<br>This state is often already reached if population and unit count >40",
+
+
+"SortieUnitRanged":
+"Type of ranged sortie units the AI uses.<br>They position themself outside the castle at points where workers died.<br>Ranged Sorties scale up the more often they are killed. Usually around 25 units more than the given value are recruited later during the game.<br><br>Even recruited if at 0, to disable, choose an unrecruitable unit.<br><br>Sortie units always have priority to be recruited before anything else.",
+
+
+"SortieUnitMeleeMin":
+"The exact amount of melee sortie units the AI sends.",
+
+
+"SortieUnitMelee":
+"The type of sortie units the AI sends, to intercept troops that destroy buildings.<br>They will return to the top of the keep when their target died<br><br>Sortie units always have priority to be recruited before anything else.",
+
+
+"DefDiggingUnitMax":
+"Maximum amount of digging units the AI recruits.<br>Digging units have priority to be recruited before def, raid and attack units as long as the AI or an ally has moat planned.",
+
+
+"DefDiggingUnit":
+"Type of unit the AI uses to dig its defensive moat or the moat of an ally.",
+
+
+"RecruitInterval":
+"The amount of time the AI waits before recruiting the next unit while in the default state.<br>1 is the fastest.<br><br><br><br>Weak: almost never active, mostly when close to death.<br><br>Default: mostly the first few years of a game.<br><br>Strong: active the most.<br>This state is often already reached if population and unit count >40.",
+
+
+"RecruitIntervalWeak":
+"The amount of time the AI waits before recruiting the next unit while in the weak state.<br>1 is the fastest.<br><br><br><br>Weak: almost never active, mostly when close to death.<br><br>Default: mostly the first few years of a game.<br><br>Strong: active the most.<br>This state is often already reached if population and unit count >40.",
+
+
+"RecruitIntervalStrong":
+"The amount of time the AI waits before recruiting the next unit while in the strong state.<br>1 is the fastest.<br><br><br><br>Weak: almost never active, mostly when close to death.<br><br>Default: mostly the first few years of a game.<br><br>Strong: active the most.<br>This state is often already reached if population and unit count >40.",
+
+
+"DefTotal":
+"The total amount of defensive units the AI recruits.",
+
+
+"OuterPatrolGroupsCount":
+"The amount of groups of defense units that patrol around the economy.",
+
+
+"OuterPatrolGroupsMove":
+"Whether the defensive units other than wall defenders should patrol around the economy or stand still (often by the Quarries).",
+
+
+"OuterPatrolRallyDelay":
+"The time that defense units other than wall defenders wait until walking to the next location.",
+
+
+"DefWalls":
+"How many units of the defense unit total will be wall defenders.<br>They go to their AIV spots in the castle. The rest will patrol the economy",
+
+
+"DefUnit1":
+"1st defensive unit that the AI tries to recruit.<br><br>If it can't afford to recruit a unit slot it tries to recruit the next one in order.",
+
+
+"DefUnit2":
+"2nd defensive unit that the AI tries to recruit.<br><br>If it can't afford to recruit a unit slot it tries to recruit the next one in order.",
+
+
+"DefUnit3":
+"3rd defensive unit that the AI tries to recruit.<br><br>If it can't afford to recruit a unit slot it tries to recruit the next one in order.",
+
+
+"DefUnit4":
+"4th defensive unit that the AI tries to recruit.<br><br>If it can't afford to recruit a unit slot it tries to recruit the next one in order.",
+
+
+"DefUnit5":
+"5th defensive unit that the AI tries to recruit.<br><br>If it can't afford to recruit a unit slot it tries to recruit the next one in order.",
+
+
+"DefUnit6":
+"6th defensive unit that the AI tries to recruit.<br><br>If it can't afford to recruit a unit slot it tries to recruit the next one in order.",
+
+
+"DefUnit7":
+"7th defensive unit that the AI tries to recruit.<br><br>If it can't afford to recruit a unit slot it tries to recruit the next one in order.",
+
+
+"DefUnit8":
+"8th defensive unit that the AI tries to recruit.<br><br>If it can't afford to recruit a unit slot it tries to recruit the next one in order.<br><br>After ‘DefUnit8’, the AI starts over from the top of the list.",
+
+
+"RaidUnitsBase":
+"The amount of units the AI uses to raid the opponents buildings.",
+
+
+"RaidUnitsRandom":
+"The amount of units the AI may add on top of the 'RaidUnitsBase'if it feels strong and has a lot of gold",
+
+
+"RaidUnit1":
+"1st raid unit that the AI tries to recruit.<br><br>If it can't afford to recruit a unit slot it tries to recruit the next one in order.",
+
+
+"RaidUnit2":
+"2nd raid unit that the AI tries to recruit.<br><br>If it can't afford to recruit a unit slot it tries to recruit the next one in order.",
+
+
+"RaidUnit3":
+"3rd raid unit that the AI tries to recruit.<br><br>If it can't afford to recruit a unit slot it tries to recruit the next one in order.",
+
+
+"RaidUnit4":
+"4th raid unit that the AI tries to recruit.<br><br>If it can't afford to recruit a unit slot it tries to recruit the next one in order.",
+
+
+"RaidUnit5":
+"5th raid unit that the AI tries to recruit.<br><br>If it can't afford to recruit a unit slot it tries to recruit the next one in order.",
+
+
+"RaidUnit6":
+"6th raid unit that the AI tries to recruit.<br><br>If it can't afford to recruit a unit slot it tries to recruit the next one in order.",
+
+
+"RaidUnit7":
+"7th raid unit that the AI tries to recruit.<br><br>If it can't afford to recruit a unit slot it tries to recruit the next one in order.",
+
+
+"RaidUnit8":
+"8th raid unit that the AI tries to recruit.<br><br>If it can't afford to recruit a unit slot it tries to recruit the next one in order.<br><br>After ‘RaidUnit8’, the AI starts over from the top of the list.",
+
+
+"HarassingSiegeEngine1":
+"1st harassing siege engine that the AI recruits.<br><br>They travel from the engineers guild to the enemy castle, shooting buildings on the way (FireBallistas also shoot units).",
+
+
+"HarassingSiegeEngine2":
+"2nd harassing siege engine that the AI recruits.<br><br>They travel from the engineers guild to the enemy castle, shooting buildings on the way (FireBallistas also shoot units).",
+
+
+"HarassingSiegeEngine3":
+"3rd harassing siege engine that the AI recruits.<br><br>They travel from the engineers guild to the enemy castle, shooting buildings on the way (FireBallistas also shoot units).",
+
+
+"HarassingSiegeEngine4":
+"4th harassing siege engine that the AI recruits.<br><br>They travel from the engineers guild to the enemy castle, shooting buildings on the way (FireBallistas also shoot units).",
+
+
+"HarassingSiegeEngine5":
+"5th harassing siege engine that the AI recruits.<br><br>They travel from the engineers guild to the enemy castle, shooting buildings on the way (FireBallistas also shoot units)..",
+
+
+"HarassingSiegeEngine6":
+"6th harassing siege engine that the AI recruits.<br><br>They travel from the engineers guild to the enemy castle, shooting buildings on the way (FireBallistas also shoot units).",
+
+
+"HarassingSiegeEngine7":
+"7th harassing siege engine that the AI recruits.<br><br>They travel from the engineers guild to the enemy castle, shooting buildings on the way (FireBallistas also shoot units).",
+
+
+"HarassingSiegeEngine8":
+"8th harassing siege engine that the AI recruits.<br><br>They travel from the engineers guild to the enemy castle, shooting buildings on the way (FireBallistas also shoot units).<br><br>After ‘HarassingSiegeEngine8’, the AI starts over from the top of the list.",
+
+
+"HarassingSiegeEnginesMax":
+"Maximum amount of harassing siege engines that are on the field at the same time.",
+
+
+"RaidRetargetDelay":
+"Amount of time the AI waits with its raid troops before targeting a new building",
+
+
+"AttForceBase":
+"Amount of attack units the AI recruits before attacking the opponent.<br>Increases with each attack based on what is selected in the UCP, in vanilla by 5 per attack",
+
+
+"AttForceRandom":
+"The amount of units the AI may add on top of the 'AttForceBase'if it feels strong and has a lot of gold.",
+
+
+"AttForceSupportAllyThreshold":
+"Amount of attack units that needs to be recruited before the AI executes Attack/Help commands by the Player",
+
+
+"AttForceRallyPercentage":
+"Amount (in%) of units that needs to gather at the rallypoint before the AI starts its attack",
+
+
+"Unknown129":
+"near 0 impact. Amount(in%) of units that need to reach the rallypoint before the AI initiates a retreat, in case of their attack being deemed too weak to deal damage.<br><br>Also the amount (in%) of those retreating units that need to reach the keep before the recruitment for a new attack begins.",
+
+
+"AttAssaultDelay":
+"Time the AI waits with its attacking units and siege engines at the rallypoint after starting its attack before sending them to attack.",
+
+
+"AttUnitPatrolRecommandDelay":
+"Time the AI waits before retreating after a successful attack.<br><br>Should normally be at 0 because the AI has no reason to wait at the opponents grave.",
+
+
+"Unknown132":
+"The chance (in%) that the AI waits with an attack for an ally to attack as well.<br>At later stages it can also make the AI attack before the full attack is recruited if an ally attacks an enemy, to join them.",
+
+
+"SiegeEngine1":
+"1st siege engine that the AI recruits for attacks.",
+
+
+"SiegeEngine2":
+"2nd siege engine that the AI recruits for attacks.",
+
+
+"SiegeEngine3":
+"3rd siege engine that the AI recruits for attacks.",
+
+
+"SiegeEngine4":
+"4th siege engine that the AI recruits for attacks.",
+
+
+"SiegeEngine5":
+"5th siege engine that the AI recruits for attacks.",
+
+
+"SiegeEngine6":
+"6th siege engine that the AI recruits for attacks.",
+
+
+"SiegeEngine7":
+"7th siege engine that the AI recruits for attacks.",
+
+
+"SiegeEngine8":
+"8th siege engine that the AI recruits for attacks.<br><br>The can only have a maximum of eight attacking siege engines.",
+
+
+"CowThrowInterval":
+"Amount of stones a catapult needs to throw before throwing a Cow instead",
+
+
+"Unknown142":
+"unused value",
+
+
+"AttMaxEngineers":
+"Maximum engineers the AI uses to man the siege engines in the SiegeEngine slots.<br>The amount should be at least as many as your siege engines combined need to be operated.",
+
+
+"AttDiggingUnit":
+"Unit that is used to dig up the enemy's moat during an attack.",
+
+
+"AttDiggingUnitMax":
+"Maximum amount of digging units that get recruited per attack.",
+
+
+"AttUnitVanguard":
+"Unit that runs to attack the enemy castle before every other unit.",
+
+
+"AttUnitVanguardMax":
+"Maximum amount of vanguard units that get recruited per attack.",
+
+
+"AttMaxAssassins":
+"Maximum amount of assassins who try to climb enemy gatehouses during a siege.",
+
+
+"AttMaxLaddermen":
+"Maximum amount of laddermen who try to put their ladder at a wall during a siege.",
+
+
+"AttMaxTunnelers":
+"Maximum amount of tunnelers who try to dig a tunnel in the direction of the enemy keep.",
+
+
+"AttUnitPatrol":
+"Units who patrol around the enemy castle and shoot enemy units.",
+
+
+"AttUnitPatrolMax":
+"Maximum amount of patrol units that get recruited per attack.",
+
+
+"AttUnitPatrolGroupsCount":
+"Amount of groups, patrol units split up into at the start of an attack",
+
+
+"AttUnitBackup":
+"Units who stay at the rallypoint and only attack if there is a path to the enemy keep.<br>(If all other attackers die they retreat)",
+
+
+"AttUnitBackupMax":
+"Maximum amount of backup units that get recruited per attack.",
+
+
+"AttUnitBackupGroupsCount":
+"Amount of groups, backup units split up into when attacking the enemy keep.",
+
+
+"AttUnitEngage":
+"Units who try to attack enemy units and peasant instead of walls.",
+
+
+"AttUnitEngageMax":
+"Maximum amount of engage units that get recruited per attack.",
+
+
+"AttUnitSiegeDef":
+"Siege defense units stay with siege engines during an attack.<br>May not only stay with attacking siege engines, but also harassing and defensive ones.",
+
+
+"AttUnitSiegeDefMax":
+"Maximum amount of siege defense units that get recruited per attack.",
+
+
+"AttUnitSiegeDefGroupsCount":
+"Amount of groups, siege defense units split up into during an attack.",
+
+
+"AttUnitMain1":
+"1st unit that the AI recruits for the main group of attackers.<br>Only these units will scale infinitely.<br><br>If it can't afford to recruit a unit slot it tries to recruit the next one in order.",
+
+
+"AttUnitMain2":
+"2nd unit that the AI recruits for the main group of attackers.<br>Only these units will scale infinitely.<br><br>If it can't afford to recruit a unit slot it tries to recruit the next one in order.",
+
+
+"AttUnitMain3":
+"3rd unit that the AI recruits for the main group of attackers.<br>Only these units will scale infinitely.<br><br>If it can't afford to recruit a unit slot it tries to recruit the next one in order.",
+
+
+"AttUnitMain4":
+"4th unit that the AI recruits for the main group of attackers.<br>Only these units will scale infinitely.<br><br>If it can't afford to recruit a unit slot it tries to recruit the next one in order.<br><br>After ‘AttUnitMain4’, the AI starts over from the top of the list.",
+
+
+"AttMaxDefault":
+"The number of main army units that the AI CAN recruit before having to fully recruit ALL other specialist roles (AttLaddermen, AttAssassins, AttUnitPatrol etc.).<br>If set to 0 all specialist roles will have to be recruited before any of the AttUnitMain can be recruited.",
+
+
+"AttMainGroupsCount":
+"Amount of Groups, AttUnitMain units split up into during an attack.",
+
+
+"TargetChoice":
+"Sets the way the AI chooses the target of an attack.<br><br>Gold: Always attacks the enemy player with the largest amount of gold.<br><br>Balanced: Attacks the enemy based on a calculated 'weakness' score. This is the most complex and nuanced targeting type.<br><br>Closest: Always attacks the closest enemy, measured from keep to keep.<br><br>Any: Attacks the next enemy in the internal player list. This can appear random but follows a fixed order.<br><br>Player: Always targets a human player first. If no human players are enemies, it defaults to Closest.",
+
+
+"AIOxTethers_DisableInitialOxTether":
+"'False' means vanilla behavior, 'True' means do not build an ox tether every time a quarry is (re)built.",
+
+
+"AIOxTethers_Logic":
+"Set the logic to apply.<br>False means vanilla, True means dynamic",
+
+
+"AIOxTethers_MaxOxTethers":
+"The total amount of ox tethers for this AI will never go above this value.",
+
+
+"AIOxTethers_DynamicMaxOxTethers":
+"The total amount of ox tethers for this AI will never go above this value multiplied by the amount of quarries.",
+
+
+"AIOxTethers_MinimumOxTethersPerQuarry":
+"If fewer linked ox tethers take stones from this quarry than this value, an ox tether will be built for this quarry.",
+
+
+"AIOxTethers_MaximumOxTethersPerQuarry":
+"If the amount of linked ox tethers for a quarry is higher than this value, no ox tether is built for this quarry.",
+
+
+"AIOxTethers_ThresholdStoneLoad":
+"If `stones/linked ox tethers` goes above this value for a quarry, another ox tether is built for that quarry.",
+
+
+"RunningUnits_Macemen":
+"If true, maceman will always run, even when grouped with slower units.<br>If false they will match the speed of the slowest unit in their group (like Vanilla)",
+
+
+"RunningUnits_Spearmen":
+"If true, spearman will always run, even when grouped with slower units.<br>If false they will match the speed of the slowest unit in their group (like Vanilla).",
+
+
+"RunningUnits_Slingers":
+"If true, slingers will always run, even when grouped with slower units.<br>If false they will match the speed of the slowest unit in their group (like Vanilla)",
+
+
+"RunningUnits_Slaves":
+"If true, slaves will always run, even when grouped with slower units.<br>If false they will match the speed of the slowest unit in their group (like Vanilla)"
+}
+
+    

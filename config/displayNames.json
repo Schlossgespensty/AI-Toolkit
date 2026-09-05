@@ -1,0 +1,9 @@
+{
+  "AIOxTethers_DisableInitialOxTether": "DisableInitialOxTether",
+  "AIOxTethers_Logic": "AIOxTethers_Logic",
+  "AIOxTethers_MaxOxTethers": "MaxOxTethers",
+  "AIOxTethers_DynamicMaxOxTethers": "DynamicMaxOxTethers",
+  "AIOxTethers_MinimumOxTethersPerQuarry": "MinimumOxTethersPerQuarry",
+  "AIOxTethers_MaximumOxTethersPerQuarry": "MaximumOxTethersPerQuarry",
+  "AIOxTethers_ThresholdStoneLoad": "ThresholdStoneLoad"
+}

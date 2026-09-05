@@ -1,0 +1,17 @@
+{
+  "units": ["None","ArabArcher","Slave","Slinger","Assassin","HorseArcher","ArabSwordsman","FireThrower","EuropArcher","Spearman","Maceman","Crossbowman","Pikeman","Swordsman","Knight","Monk","Tunneler","Engineer"],
+  "raidunits": ["None","ArabArcher","Slave","Slinger","Assassin","HorseArcher","ArabSwordsman","FireThrower","EuropArcher","Spearman","Maceman","Crossbowman","Pikeman","Swordsman","Knight","Monk"],
+  "sortieunits": ["ArabArcher","Slave","Slinger","Assassin","HorseArcher","ArabSwordsman","FireThrower","EuropArcher","Spearman","Maceman","Crossbowman","Pikeman","Swordsman","Knight","Monk","Tunneler"],
+  "siegeengines": ["None","FireBallista","Catapult","Trebuchet","BatteringRam","SiegeTower","Shield"],
+  "firstharassingsiegeengine": ["FireBallista","Catapult"],
+  "harassingsiegeengines": ["None","FireBallista","Catapult"],
+  "farms": ["None","WheatFarm","DairyFarm","AppleFarm","HopFarm"],
+  "resources": ["None","Wheat","Flour","Hop","Beer","Spears","Pikes","Bows","Crossbows","Swords","Maces","LeatherArmors","IronArmors","Iron","Pitch","Stone","Wood","Cheese","Meat","Bread","Apples"],
+  "bool": ["True","False"],
+  "dotcol": ["Yellow","Blue"],
+  "lordtype": ["Europ","Arab"],
+  "blacksmith": ["Swords","Maces","Both"],
+  "fletcher": ["Bows","Crossbows","Both"],
+  "poleturner": ["Spears","Pikes","Both"],
+  "targetchoice": ["Balanced","Closest","Gold","Any","Player"]
+}

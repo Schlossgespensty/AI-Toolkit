@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Toolkit</title>
+</style>
+<link rel="stylesheet" href="css/combined.css">
+</head>
+
+<body>
+<div id="appRoot">
+  <nav class="workspaceTabs" aria-label="Editor workspace">
+    <button id="tabUcp" class="workspaceTab active" type="button" data-workspace="ucp">UCP AI Library</button>
+    <button id="tabCharacter" class="workspaceTab" type="button" data-workspace="character">Character</button>
+    <button id="tabCastle" class="workspaceTab" type="button" data-workspace="castle">Castle</button>
+    <button id="tabAiContent" class="workspaceTab" type="button" data-workspace="content">AI Content</button>
+    <div class="workspaceSpacer"></div>
+    <span id="workspaceStatus" class="workspaceStatus">UCP AI Library</span>
+    <span class="appIdentity" aria-hidden="true"><span>AI</span> Toolkit</span>
+  </nav>
+  <section id="characterWorkspace" class="workspace" aria-hidden="true">
+    <div class="characterApp">
+      <header class="workspaceHeader characterHeader">
+        <div class="workspaceHeading characterHeading">
+          <span class="workspaceEyebrow">Character editor</span>
+          <h1 id="aiName">No Character Loaded</h1>
+          <div id="filePath" class="workspacePath">Open a character.json file or choose an AI from the Library.</div>
+        </div>
+        <div class="workspaceHeaderActions characterHeaderActions">
+          <button type="button" onclick="loadFile()">Open character</button>
+          <button id="saveBtn" class="primaryAction" type="button" onclick="quickSaveFile()">Save character</button>
+          <button id="saveAsBtn" type="button" onclick="saveFile()">Save as</button>
+        </div>
+      </header>
+
+      <div class="characterMain">
+        <aside class="characterSidebar">
+          <section class="editorCard characterOptionsCard">
+            <div class="editorCardHeading">
+              <div>
+                <span class="panelEyebrowHeader">Plugins</span>
+              </div>
+            </div>
+            <label class="switchRow">
+              <span><strong>AI ox tethers</strong><small>Controls the amount of ox tethers built</small></span>
+              <input type="checkbox" id="toggleOx" checked>
+            </label>
+            <label class="switchRow">
+              <span><strong>Running units</strong><small>Controls whether some units will run or walk.</small></span>
+              <input type="checkbox" id="toggleRun" checked>
+            </label>
+          </section>
+
+          <section class="editorCard populationCard">
+            <div class="editorCardHeading populationCardHeading">
+              <div>
+                <span class="panelEyebrowHeader">Population</span>
+              </div>
+              <button id="useCastlePopulationBtn" class="compactAction" type="button" title="Use the population provided by the currently loaded castle">Use castle pop<span id="castleProvidedForCharacter">0</span></button>
+            </div>
+
+            <div class="populationInputRow">
+              <label for="availablePopulation">Available population</label>
+              <div class="populationStepper">
+                <button id="populationMinusEight" class="populationStepButtonLeft" type="button" aria-label="Decrease available population by 8">−8</button>
+                <input id="availablePopulation" class="numberInput" type="number" value="10" min="10" inputmode="numeric">
+                <button id="populationPlusEight" class="populationStepButtonRight" type="button" aria-label="Increase available population by 8">+8</button>
+              </div>
+            </div>
+
+            <div class="metricRow"><span>Maximum workers used</span><strong id="maxPopNeeded">0</strong></div>
+            <div class="metricRow metricPrimary"><span>Max. workers used at set population</span><strong id="actualPopNeeded">0</strong></div>
+
+            <div class="populationBreakdown" aria-label="Worker breakdown">
+              <div><span>Farms</span><strong id="farmCount">0</strong></div>
+              <div><span>Woodcutters</span><strong id="woodcutterCount">0</strong></div>
+              <div><span>Quarries</span><strong id="quarryCount">0</strong></div>
+              <div><span>Ox tethers (up to)</span><strong id="tetherCount">0</strong></div>
+              <div><span>Iron mines</span><strong id="ironmineCount">0</strong></div>
+              <div><span>Pitch rigs</span><strong id="pitchrigCount">0</strong></div>
+            </div>
+
+            <div class="metricRow metricResult castlePopulationCharacterRow">
+              <span>Workers left after castle</span>
+              <strong id="characterCastlePopulationLeft">0</strong>
+            </div>
+            <div class="metricRow metricResult characterCombinedPopulationRow">
+              <span>Left after castle + character</span>
+              <strong id="characterCastlePopulationAfterCharacter">0</strong>
+            </div>
+            <p class="cardNote">Calculator assumes AI ox tethers is on. <br>Hop farms are not included, as they dont have a max!</p>
+          </section>
+        </aside>
+
+        <main class="characterEditorPanel">
+          <div class="characterControlBar">
+            <label class="characterSearch" for="search">
+              <span>Find setting</span>
+              <input type="search" id="search" placeholder="Search character fields…" autocomplete="off" spellcheck="false">
+            </label>
+            <div class="characterControlActions">
+              <div class="segmentedControl" aria-label="Section visibility">
+                <button class="sectionBtn" type="button" onclick="expandAll()">Expand all</button>
+                <button class="sectionBtn" type="button" onclick="collapseAll()">Collapse all</button>
+              </div>
+              <div class="segmentedControl templateButtons" aria-label="Character field order">
+                <button id="btnStandard" class="templateBtn" type="button" onclick="standardTemplate()">Standard template</button>
+                <button id="btnOrdered" class="templateBtn" type="button" onclick="orderedTemplate()">Ordered template</button>
+              </div>
+            </div>
+          </div>
+          <div id="form" class="characterForm"></div>
+        </main>
+      </div>
+    </div>
+
+  </section>
+  <div class="unneeded">
+          <button id="castleNewBtn" type="button">New</button>
+        </div>
+  <section id="castleWorkspace" class="workspace" aria-hidden="true">
+    <div class="castleApp">
+      <div id="castleSaveNotice" class="castleSaveNotice" role="status" aria-live="polite" hidden></div>
+      <header class="castleToolbar workspaceCommandBar">
+        <div class="toolbarGroup toolbarFileGroup">
+          <button id="castleOpenBtn" type="button">Open castle</button>
+          <button id="castleSaveBtn" class="primaryAction" type="button">Save castle</button>
+          <button id="castleSaveAsBtn" type="button">Save as</button>
+        </div>
+        <div class="toolbarGroup castleProjectGroup">
+          <label class="castleProjectChoice" for="ucpCastleSelect">
+            <span>AI castle</span>
+            <select id="ucpCastleSelect" disabled>
+              <option value="">No AI project</option>
+            </select>
+          </label>
+        </div>
+        <div class="toolbarGroup castleTools" role="group" aria-label="Castle tools">
+          <button type="button" class="castleTool active" data-tool="single" title="Shortcut: 1 or S">Single <kbd>1</kbd></button>          
+          <button type="button" class="castleTool" data-tool="line" title="Shortcut: 6 or L">Line <kbd>2</kbd></button>
+          <button type="button" class="castleTool" data-tool="brush" title="Shortcut: 2 or B">Brush <kbd>3</kbd></button>
+          <button type="button" class="castleTool" data-tool="select" title="Shortcut: 3 or V">Select / Move <kbd>4</kbd></button>
+          <button type="button" class="castleTool" data-tool="copy" title="Shortcut: 5 or C">Copy<kbd>5</kbd></button>
+          <button type="button" class="castleTool" data-tool="delete" title="Shortcut: 4 or D">Delete<kbd>4</kbd></button>
+        </div>
+        <div id="castleBlueprintControls" class="toolbarGroup castleBlueprintControls" aria-label="Temporary castle blueprint" hidden>
+          <label class="hidden" title="Show or hide the temporary blueprint">
+            <input id="castleShowBlueprint" type="checkbox" checked disabled> Show
+          </label>
+          <label class="blueprintOpacity" for="castleBlueprintOpacity" title="Blueprint opacity">
+            <span>Custom Background Opacity</span>
+            <input id="castleBlueprintOpacity" type="range" min="5" max="100" value="50" step="5" disabled>
+            <output id="castleBlueprintOpacityValue" for="castleBlueprintOpacity">50%</output>
+          </label>
+        </div>
+        <div class="toolbarGroup toolbarRight">
+          <label class="compactToggle"><input id="castleShowUnitNumbers" type="checkbox"> Unit Order</label>
+          <label class="compactToggle"><input id="castleShowCompatibility" type="checkbox"> Guide lines</label>
+        </div>
+      </header>
+
+      <div class="castleMain">
+        <aside class="castlePanel castleBuildPanel">
+          <div class="panelHeader buildHeader">
+            <div>Build order</div>
+            <span id="castleBuildCount">0 steps</span>
+          </div>
+          <div class="buildScrubber">
+            <div class="buildScrubberLabel">
+              <label for="castleBuildSlider">Current position</label>
+              <output id="castleBuildSliderValue" for="castleBuildSlider">No step selected</output>
+            </div>
+            <input id="castleBuildSlider" type="range" min="1" max="1" value="1" step="1" disabled aria-label="Select and scroll to a build step">
+          </div>
+          <div class="buildHint">Drag steps to reorder. Use Ctrl+click or Shift+click to select several steps.</div>
+          <div id="castleBuildList" class="castleBuildList"></div>
+          <section class="castlePopulationOverview" aria-label="Castle population overview">
+            <div class="populationOverviewTitle">Population</div>
+            <div class="populationOverviewRow"><span>Provided by castle</span><strong id="castlePopulationProvided">0</strong></div>
+            <div class="populationOverviewRow"><span>Required by castle</span><strong id="castlePopulationRequired">0</strong></div>
+            <div class="populationOverviewRow populationOverviewPrimary"><span>Left after castle</span><strong id="castlePopulationLeft">0</strong></div>
+            <div class="populationOverviewDivider"></div>
+            <div class="populationOverviewRow"><span>Required by character at provided pop.</span><strong id="castleCharacterPopulationNeeded">0</strong></div>
+            <div class="populationOverviewRow populationOverviewPrimary"><span>Left after castle + character</span><strong id="castlePopulationAfterCharacter">0</strong></div>
+            <div class="populationOverviewDivider"></div>
+          </section>
+        </aside>
+
+        <main class="castleCanvasColumn">
+          <div id="castleCanvasHost" class="castleCanvasHost">
+            <canvas id="castleCanvas" tabindex="0" aria-label="100 by 100 tile castle map"></canvas>
+          </div>
+          <div class="castleStatusBar">
+            <span id="castleFileLabel">No castle loaded</span>
+            <span id="castleStatus">Ready</span>
+          </div>
+        </main>
+
+        <aside class="castlePanel castlePalettePanel">
+          <div class="panelHeader">
+            <div>Items</div>
+          </div>
+          <div id="castlePalette" class="castlePalette"></div>
+          <div class="selectedItemCard">
+            <div id="castleSelectedItemInfo" class="selectedItemInfo">Select an item</div>
+            <div class="skinButtons">
+              <button id="castleSetSkinBtn" type="button" disabled>Set PNG skin</button>
+              <button id="castleRemoveSkinBtn" type="button" disabled>Remove</button>
+              <button id="castleOpenSkinsBtn" type="button" title="Open the persistent AIV skin folder">Folder</button>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+  <section id="aiContentWorkspace" class="workspace" aria-hidden="true">
+    <div class="aiContentApp">
+      <header class="workspaceHeader aiContentHeader">
+        <div class="workspaceHeading">
+          <span class="workspaceEyebrow">Assets and dialogue</span>
+          <h1>AI Content</h1>
+        </div>
+        <div class="aiContentHeaderActions">
+          <button id="aiContentSaveBtn" class="primaryAction" type="button" disabled>Save lines.json</button>
+          <span id="aiContentStatus" role="status">Open an AI from the Library first.</span>
+        </div>
+        <div id="aiContentPath" class="aiContentPath">No AI project loaded</div>
+      </header>
+      <div id="aiContentEmpty" class="aiContentEmpty">
+        <h2>No AI project loaded</h2>
+        <p>Open an installed AI or create one from the UCP AI Library.</p>
+      </div>
+      <div id="aiContentEditor" class="aiContentEditor" hidden>
+        <main class="aiLinesPanel">
+          <div class="aiContentPanelTitle">
+            <div>
+              <h2>lines.json</h2>
+              <p>Text used for the AI's name, titles, description and reactions.</p>
+            </div>
+            <span id="aiLinesDirtyBadge" class="aiContentBadge">Saved</span>
+          </div>
+          <div id="aiLinesForm" class="aiLinesForm"></div>
+        </main>
+        <aside class="aiPortraitPanel aiAssetsPanel">
+          <section class="aiAssetSection">
+            <div class="aiContentPanelTitle">
+              <div>
+                <h2>Portraits</h2>
+                <p>Images use nearest-neighbor resizing; transparency is kept strictly on or off.</p>
+              </div>
+            </div>
+            <div class="aiPortraitGrid">
+              <section class="aiPortraitCard">
+                <div class="aiPortraitPreview large"><img id="aiPortraitPreview" alt="AI portrait"></div>
+                <div>
+                  <h3>portrait.png</h3>
+                  <p>Saved as 72×72 pixels.</p>
+                  <button id="aiPortraitChangeBtn" type="button">Change portrait</button>
+                </div>
+              </section>
+              <section class="aiPortraitCard">
+                <div class="aiPortraitPreview small"><img id="aiPortraitSmallPreview" alt="Small AI portrait"></div>
+                <div>
+                  <h3>portrait_small.png</h3>
+                  <p>Saved as 36×36 pixels.</p>
+                  <button id="aiPortraitSmallChangeBtn" type="button">Change small portrait</button>
+                </div>
+              </section>
+            </div>
+          </section>
+          <section class="aiAssetSection">
+            <div class="aiContentPanelTitle">
+              <div>
+                <h2>Speech</h2>
+                <p>Mapped WAV files can play here or open in your normal audio program.</p>
+              </div>
+              <div class="aiSpeechHeaderControls">
+                <label for="aiSpeechLanguage">Language</label>
+                <select id="aiSpeechLanguage" disabled>
+                  <option value="">No speech</option>
+                </select>
+                <span id="aiSpeechCount" class="aiContentBadge">0</span>
+              </div>
+            </div>
+            <div id="aiSpeechList" class="aiMediaList"></div>
+          </section>
+          <section class="aiAssetSection">
+            <div class="aiContentPanelTitle">
+              <div>
+                <h2>Bink videos</h2>
+                <p>BIK playback is handed to the program associated with Bink files on Windows.</p>
+              </div>
+              <span id="aiBinkCount" class="aiContentBadge">0</span>
+            </div>
+            <div id="aiBinkList" class="aiMediaList"></div>
+          </section>
+        </aside>
+      </div>
+    </div>
+  </section>
+  <section id="ucpWorkspace" class="workspace active" aria-hidden="false">
+    <div class="ucpLibraryApp">
+      <header class="workspaceHeader ucpLibraryHeader">
+        <div class="workspaceHeading ucpLibraryHeading">
+          <span class="workspaceEyebrow">Project browser</span>
+          <h1>UCP AI Library</h1>
+          <p>Browse and edit installed AI packages, or keep separate variants in My AIs.</p>
+        </div>
+        <div class="ucpLibraryHeaderActions">
+          <button id="ucpCreateAiBtn" type="button" disabled>Create new AI</button>
+          <button id="ucpChooseInstallationBtn" type="button">Choose game folder</button>
+          <button id="ucpOpenPluginsBtn" type="button" disabled>Open plugins folder</button>
+          <button id="ucpRefreshBtn" type="button" disabled>Refresh</button>
+        </div>
+        <div id="ucpInstallationPath" class="ucpInstallationPath">No UCP installation selected</div>
+        <div id="ucpLibraryStatus" class="ucpLibraryStatus" role="status">Choose your Stronghold Crusader folder to begin.</div>
+      </header>
+
+      <div class="ucpLibraryMain">
+        <aside class="ucpLibraryListPanel">
+          <div class="ucpLibraryListHeader">
+            <strong>Installed AIs</strong>
+            <span id="ucpAiCount">0</span>
+          </div>
+          <label class="ucpLibraryFilter ucpLibrarySearch">
+            <span>Search</span>
+            <input id="ucpLibrarySearch" type="search" placeholder="Name, author or plugin…" autocomplete="off" spellcheck="false">
+          </label>
+          <label class="ucpLibraryFilter">
+            <span>Show</span>
+            <select id="ucpLibraryFilter">
+              <option value="all">All installed AIs</option>
+              <option value="active">Active plugins only</option>
+              <option value="owned">My AIs only</option>
+            </select>
+          </label>
+          <div id="ucpAiList" class="ucpAiList">
+            <div class="ucpLibraryEmpty">No installation selected.</div>
+          </div>
+        </aside>
+
+        <main class="ucpLibraryDetails">
+          <div id="ucpAiEmpty" class="ucpLibraryWelcome">
+            <h2>Your existing editors stay unchanged</h2>
+            <p>Select an installed AI to load and edit its Character, castles, lines and portraits together.</p>
+          </div>
+
+          <div id="ucpAiDetails" class="ucpAiDetails" hidden>
+            <div class="ucpAiIdentity">
+              <div class="ucpPortraitFrame"><img id="ucpAiPortrait" alt=""></div>
+              <div>
+                <div class="ucpAiTitleRow">
+                  <h2 id="ucpAiName">AI</h2>
+                  <span id="ucpAiOwnership" class="ucpBadge">Installed</span>
+                  <span id="ucpAiActivity" class="ucpBadge">Inactive</span>
+                </div>
+                <p id="ucpAiDescription" class="ucpAiDescription"></p>
+                <dl class="ucpAiFacts">
+                  <div><dt>Author</dt><dd id="ucpAiAuthor">—</dd></div>
+                  <div><dt>Version</dt><dd id="ucpAiVersion">—</dd></div>
+                  <div><dt>Source plugin</dt><dd id="ucpAiPlugin">—</dd></div>
+                  <div><dt>Folder ID</dt><dd id="ucpAiId">—</dd></div>
+                </dl>
+              </div>
+            </div>
+
+            <section class="ucpActionCard">
+              <h3>Open AI project</h3>
+              <p id="ucpOpenHint">Loads the Character and Castle 1 together. Switch castles from the Castle editor.</p>
+              <div class="ucpActionRow">
+                <button id="ucpOpenAiBtn" type="button">Open in editors</button>
+                <button id="ucpOpenAiFolderBtn" type="button">Open source folder</button>
+              </div>
+              <div id="ucpCastleSummary" class="ucpCastleSummary"></div>
+            </section>
+
+            <section id="ucpCloneCard" class="ucpActionCard">
+              <h3>Clone to My AIs</h3>
+              <p>The complete AI package is copied into the editor-owned UCP plugin so you can make a separate variant.</p>
+              <div class="ucpCloneFields">
+                <label>AI name <input id="ucpCloneName" type="text"></label>
+                <label>Folder ID <input id="ucpCloneId" type="text" spellcheck="false"></label>
+                <label>Version <input id="ucpCloneVersion" type="text" value="1.0.0" spellcheck="false"></label>
+              </div>
+              <button id="ucpCloneBtn" type="button">Clone to My AIs</button>
+            </section>
+
+            <section id="ucpUpdateCard" class="ucpActionCard" hidden>
+              <h3>Install / Update in UCP</h3>
+              <p>Writes the Character and currently open castle through a staging folder, then replaces the managed plugin only after validation succeeds.</p>
+              <div class="ucpActionRow">
+                <button id="ucpUpdateBtn" type="button">Install / Update in UCP</button>
+                <span id="ucpActivationHint">Activate “AI Toolkit - My AIs” in the UCP GUI to use it with AI Swapper.</span>
+              </div>
+            </section>
+          </div>
+        </main>
+      </div>
+    </div>
+    <dialog id="ucpCreateDialog" class="ucpCreateDialog">
+      <form id="ucpCreateForm">
+        <div class="ucpCreateHeading">
+          <h2>Create new AI</h2>
+          <p>Creates a complete blank AI inside AI Toolkit - My AIs.</p>
+        </div>
+        <label>AI name <input id="ucpCreateName" type="text" required autocomplete="off"></label>
+        <label>Folder ID <input id="ucpCreateId" type="text" required spellcheck="false" autocomplete="off"></label>
+        <label>Author <input id="ucpCreateAuthor" type="text" autocomplete="off"></label>
+        <label>Version <input id="ucpCreateVersion" type="text" value="1.0.0" required spellcheck="false"></label>
+        <div class="ucpCreateActions">
+          <button id="ucpCreateCancelBtn" type="button">Cancel</button>
+          <button id="ucpCreateConfirmBtn" type="submit">Create AI</button>
+        </div>
+      </form>
+    </dialog>
+  </section>
+</div>
+
+<dialog id="ucpCastleMappingDialog" class="ucpCreateDialog ucpCastleMappingDialog">
+  <form id="ucpCastleMappingForm">
+    <div class="ucpCreateHeading">
+      <h2>Castle mapping</h2>
+      <p id="ucpCastleMappingHint">Choose the AIV used in each of the AI's eight castle slots. The same file may be selected more than once.</p>
+    </div>
+    <div id="ucpCastleMappingFields" class="ucpCastleMappingFields"></div>
+    <div class="ucpCreateActions">
+      <button id="ucpCastleMappingCancelBtn" type="button">Cancel</button>
+      <button id="ucpCastleMappingSaveBtn" type="submit">Save mapping</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="castleShortcutDialog" class="ucpCreateDialog castleShortcutDialog">
+  <form id="castleShortcutForm">
+    <div class="ucpCreateHeading">
+      <h2>Castle shortcuts</h2>
+      <p>Select a field and press a letter or number. Each key can only be assigned once.</p>
+    </div>
+    <div class="castleShortcutGrid">
+      <strong>Tool</strong><strong>Primary</strong><strong>Alternative</strong>
+      <span>Single</span><input class="castleShortcutKey" data-tool="single" data-slot="0" value="1" readonly><input class="castleShortcutKey" data-tool="single" data-slot="1" value="S" readonly>
+      <span>Brush</span><input class="castleShortcutKey" data-tool="brush" data-slot="0" value="2" readonly><input class="castleShortcutKey" data-tool="brush" data-slot="1" value="B" readonly>
+      <span>Move</span><input class="castleShortcutKey" data-tool="select" data-slot="0" value="3" readonly><input class="castleShortcutKey" data-tool="select" data-slot="1" value="V" readonly>
+      <span>Delete</span><input class="castleShortcutKey" data-tool="delete" data-slot="0" value="4" readonly><input class="castleShortcutKey" data-tool="delete" data-slot="1" value="D" readonly>
+      <span>Copy</span><input class="castleShortcutKey" data-tool="copy" data-slot="0" value="5" readonly><input class="castleShortcutKey" data-tool="copy" data-slot="1" value="C" readonly>
+      <span>Line</span><input class="castleShortcutKey" data-tool="line" data-slot="0" value="6" readonly><input class="castleShortcutKey" data-tool="line" data-slot="1" value="L" readonly>
+    </div>
+    <div id="castleShortcutError" class="castleShortcutError" role="alert"></div>
+    <div class="ucpCreateActions castleShortcutActions">
+      <button id="castleShortcutDefaultsBtn" type="button">Restore defaults</button>
+      <span class="castleShortcutActionSpacer"></span>
+      <button id="castleShortcutCancelBtn" type="button">Cancel</button>
+      <button type="submit">Save shortcuts</button>
+    </div>
+  </form>
+</dialog>
+
+<script src="js/app-shell.js"></script>
+<script src="js/castle-geometry.js"></script>
+<script src="js/castle-editor.js"></script>
+
+<script src="js/character-editor.js"></script>
+<script src="js/ai-content-editor.js"></script>
+<script src="js/ucp-library.js"></script>
+</body>
+</html>

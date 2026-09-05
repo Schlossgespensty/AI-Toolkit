@@ -1,0 +1,12 @@
+
+{
+  "Lord": ["lord.StrengthMultiplier"],
+  "Starting Troops - Normal": ["startTroops.normal.ArabArcher"],
+  "Starting Troops - Cursader": ["startTroops.crusader.ArabArcher"],
+  "Starting Troops - Deathmatch": ["startTroops.deathmatch.ArabArcher"],
+  "Economy": ["aic.CriticalPopularity"],
+  "Military": ["aic.RecruitInterval"],
+  "AI OxTethers": ["aic.AIOxTethers_DisableInitialOxTether"],
+  "Running Units": ["aic.RunningUnits_Macemen"],
+  "Unknown": ["aic.Unknown001"]
+}

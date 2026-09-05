@@ -1,0 +1,684 @@
+{
+    "1": {
+        "name": "Oil Engineer",
+        "size": [
+            1,
+            1
+        ],
+        "maxAmount": 10,
+        "overlap": "allow"
+    },
+    "2": {
+        "name": "Magonel",
+        "size": [
+            1,
+            1
+        ],
+        "maxAmount": 10,
+        "overlap": "allow"
+    },
+    "3": {
+        "name": "Ballista",
+        "size": [
+            1,
+            1
+        ],
+        "maxAmount": 10,
+        "overlap": "allow"
+    },
+    "4": {
+        "name": "Trebuchet",
+        "size": [
+            1,
+            1
+        ],
+        "maxAmount": 10,
+        "overlap": "allow"
+    },
+    "5": {
+        "name": "Fireballista",
+        "size": [
+            1,
+            1
+        ],
+        "maxAmount": 10,
+        "overlap": "allow"
+    },
+    "6": {
+        "name": "Archer",
+        "size": [
+            1,
+            1
+        ],
+        "maxAmount": 10,
+        "overlap": "allow"
+    },
+    "7": {
+        "name": "Crossbowman",
+        "size": [
+            1,
+            1
+        ],
+        "maxAmount": 10,
+        "overlap": "allow"
+    },
+    "8": {
+        "name": "Spearman",
+        "size": [
+            1,
+            1
+        ],
+        "maxAmount": 10,
+        "overlap": "allow"
+    },
+    "9": {
+        "name": "Pikeman",
+        "size": [
+            1,
+            1
+        ],
+        "maxAmount": 10,
+        "overlap": "allow"
+    },
+    "10": {
+        "name": "Maceman",
+        "size": [
+            1,
+            1
+        ],
+        "maxAmount": 10,
+        "overlap": "allow"
+    },
+    "11": {
+        "name": "Swordsman",
+        "size": [
+            1,
+            1
+        ],
+        "maxAmount": 10,
+        "overlap": "allow"
+    },
+    "12": {
+        "name": "Knight",
+        "size": [
+            1,
+            1
+        ],
+        "maxAmount": 10,
+        "overlap": "allow"
+    },
+    "13": {
+        "name": "Slave",
+        "size": [
+            1,
+            1
+        ],
+        "maxAmount": 10,
+        "overlap": "allow"
+    },
+    "14": {
+        "name": "Slinger",
+        "size": [
+            1,
+            1
+        ],
+        "maxAmount": 10,
+        "overlap": "allow"
+    },
+    "15": {
+        "name": "Assassin",
+        "size": [
+            1,
+            1
+        ],
+        "maxAmount": 10,
+        "overlap": "allow"
+    },
+    "16": {
+        "name": "Arab Archer",
+        "size": [
+            1,
+            1
+        ],
+        "maxAmount": 10,
+        "overlap": "allow"
+    },
+    "17": {
+        "name": "Horse Archer",
+        "size": [
+            1,
+            1
+        ],
+        "maxAmount": 10,
+        "overlap": "allow"
+    },
+    "18": {
+        "name": "Arab Swordsman",
+        "size": [
+            1,
+            1
+        ],
+        "maxAmount": 10,
+        "overlap": "allow"
+    },
+    "19": {
+        "name": "Fire Thrower",
+        "size": [
+            1,
+            1
+        ],
+        "maxAmount": 10,
+        "overlap": "allow"
+    },
+    "20": {
+        "name": "Brazier",
+        "size": [
+            1,
+            1
+        ],
+        "maxAmount": 10,
+        "overlap": "allow"
+    },
+    "21": {
+        "name": "Flag",
+        "size": [
+            1,
+            1
+        ],
+        "maxAmount": 10,
+        "overlap": "allow"
+    },
+    "25": {
+        "name": "High Wall",
+        "size": [
+            1,
+            1
+        ],
+        "overlap": "replace"
+    },
+    "26": {
+        "name": "High Crenel",
+        "size": [
+            1,
+            1
+        ]
+    },
+    "35": {
+        "name": "Low Crenel",
+        "size": [
+            1,
+            1
+        ]
+    },
+    "46": {
+        "name": "Low Wall",
+        "size": [
+            1,
+            1
+        ]
+    },
+    "50": {
+        "name": "Fletcher",
+        "size": [
+            4,
+            4
+        ]
+    },
+    "51": {
+        "name": "Woodcutter",
+        "size": [
+            3,
+            3
+        ]
+    },
+    "52": {
+        "name": "Stockpile",
+        "size": [
+            5,
+            5
+        ]
+    },
+    "54": {
+        "name": "House",
+        "size": [
+            4,
+            4
+        ]
+    },
+    "55": {
+        "name": "Ox Tether",
+        "size": [
+            2,
+            2
+        ]
+    },
+    "61": {
+        "name": "Keep",
+        "size": [
+            7,
+            15
+        ],
+        "maxAmount": 1,
+        "overlap": "block"
+    },
+    "65": {
+        "name": "Stables",
+        "size": [
+            6,
+            6
+        ]
+    },
+    "74": {
+        "name": "Windmill",
+        "size": [
+            3,
+            3
+        ]
+    },
+    "75": {
+        "name": "Bakery",
+        "size": [
+            4,
+            4
+        ]
+    },
+    "76": {
+        "name": "Brewery",
+        "size": [
+            4,
+            4
+        ]
+    },
+    "77": {
+        "name": "Trading Post",
+        "size": [
+            5,
+            5
+        ]
+    },
+    "78": {
+        "name": "Hunter's Post",
+        "size": [
+            3,
+            3
+        ]
+    },
+    "80": {
+        "name": "Granary",
+        "size": [
+            4,
+            4
+        ]
+    },
+    "81": {
+        "name": "Armoury",
+        "size": [
+            4,
+            4
+        ]
+    },
+    "82": {
+        "name": "Poleturner",
+        "size": [
+            4,
+            4
+        ]
+    },
+    "83": {
+        "name": "Blacksmith",
+        "size": [
+            4,
+            4
+        ]
+    },
+    "84": {
+        "name": "Armourer",
+        "size": [
+            4,
+            4
+        ]
+    },
+    "85": {
+        "name": "Tanner",
+        "size": [
+            4,
+            4
+        ]
+    },
+    "86": {
+        "name": "Mercenary Post",
+        "size": [
+            10,
+            10
+        ]
+    },
+    "87": {
+        "name": "Barracks",
+        "size": [
+            10,
+            10
+        ]
+    },
+    "88": {
+        "name": "Engineering Guild",
+        "size": [
+            5,
+            10
+        ]
+    },
+    "89": {
+        "name": "Tunnelors Guild",
+        "size": [
+            5,
+            10
+        ]
+    },
+    "92": {
+        "name": "Inn",
+        "size": [
+            5,
+            5
+        ]
+    },
+    "93": {
+        "name": "Healers",
+        "size": [
+            6,
+            6
+        ]
+    },
+    "95": {
+        "name": "Chapel",
+        "size": [
+            6,
+            6
+        ]
+    },
+    "96": {
+        "name": "Church",
+        "size": [
+            9,
+            9
+        ]
+    },
+    "97": {
+        "name": "Cathedral",
+        "size": [
+            13,
+            13
+        ]
+    },
+    "98": {
+        "name": "Killing Pit",
+        "size": [
+            1,
+            1
+        ]
+    },
+    "99": {
+        "name": "Pitch",
+        "size": [
+            1,
+            1
+        ]
+    },
+    "105": {
+        "name": "Drawbridge",
+        "size": [
+            5,
+            5
+        ]
+    },
+    "106": {
+        "name": "Moat x1",
+        "size": [
+            1,
+            1
+        ]
+    },
+    "110": {
+        "name": "Tower1",
+        "size": [
+            3,
+            3
+        ]
+    },
+    "111": {
+        "name": "Tower2",
+        "size": [
+            4,
+            4
+        ]
+    },
+    "112": {
+        "name": "Tower3",
+        "size": [
+            5,
+            5
+        ]
+    },
+    "113": {
+        "name": "Tower4",
+        "size": [
+            6,
+            6
+        ]
+    },
+    "114": {
+        "name": "Tower5",
+        "size": [
+            6,
+            6
+        ]
+    },
+    "144": {
+        "name": "Small Gate NS",
+        "size": [
+            5,
+            5
+        ]
+    },
+    "145": {
+        "name": "Small Gate EW",
+        "size": [
+            5,
+            5
+        ]
+    },
+    "146": {
+        "name": "Large Gate NS",
+        "size": [
+            7,
+            7
+        ]
+    },
+    "147": {
+        "name": "Large Gate EW",
+        "size": [
+            7,
+            7
+        ]
+    },
+    "166": {
+        "name": "Communal Garden",
+        "size": [
+            3,
+            3
+        ]
+    },
+    "169": {
+        "name": "Town Garden",
+        "size": [
+            4,
+            4
+        ]
+    },
+    "175": {
+        "name": "Maypole",
+        "size": [
+            3,
+            3
+        ]
+    },
+    "176": {
+        "name": "Gallows",
+        "size": [
+            2,
+            2
+        ]
+    },
+    "177": {
+        "name": "Stocks",
+        "size": [
+            3,
+            3
+        ]
+    },
+    "180": {
+        "name": "Oil Smelter",
+        "size": [
+            4,
+            8
+        ]
+    },
+    "181": {
+        "name": "Stair 1 (highest)",
+        "size": [
+            1,
+            1
+        ]
+    },
+    "182": {
+        "name": "Stair 2",
+        "size": [
+            1,
+            1
+        ]
+    },
+    "183": {
+        "name": "Stair 3",
+        "size": [
+            1,
+            1
+        ]
+    },
+    "184": {
+        "name": "Stair 4",
+        "size": [
+            1,
+            1
+        ]
+    },
+    "185": {
+        "name": "Stair 5 (lowest)",
+        "size": [
+            1,
+            1
+        ]
+    },
+    "186": {
+        "name": "Stair6 (Floor)",
+        "size": [
+            1,
+            1
+        ]
+    },
+    "200": {
+        "name": "Dummy Step",
+        "size": [
+            1,
+            1
+        ]
+    },
+    "301": {
+        "name": "Cess Pit",
+        "size": [
+            5,
+            5
+        ]
+    },
+    "305": {
+        "name": "Burning Stake",
+        "size": [
+            3,
+            3
+        ]
+    },
+    "306": {
+        "name": "Gibbet",
+        "size": [
+            2,
+            2
+        ]
+    },
+    "307": {
+        "name": "Dungeon",
+        "size": [
+            5,
+            5
+        ]
+    },
+    "308": {
+        "name": "Rack",
+        "size": [
+            3,
+            3
+        ]
+    },
+    "310": {
+        "name": "Chopping Block",
+        "size": [
+            3,
+            3
+        ]
+    },
+    "311": {
+        "name": "Dunking Pool",
+        "size": [
+            5,
+            5
+        ]
+    },
+    "312": {
+        "name": "Caged War Dogs",
+        "size": [
+            3,
+            3
+        ]
+    },
+    "313": {
+        "name": "Statue",
+        "size": [
+            2,
+            2
+        ]
+    },
+    "318": {
+        "name": "Shrine",
+        "size": [
+            2,
+            2
+        ]
+    },
+    "324": {
+        "name": "Dancing Bear",
+        "size": [
+            5,
+            5
+        ]
+    },
+    "330": {
+        "name": "Well",
+        "size": [
+            3,
+            3
+        ]
+    },
+    "342": {
+        "name": "Water Pot",
+        "size": [
+            4,
+            4
+        ]
+    }
+}

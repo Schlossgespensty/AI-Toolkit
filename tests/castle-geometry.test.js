@@ -1,0 +1,102 @@
+const assert = require('node:assert/strict');
+const test = require('node:test');
+
+const geometry = require('../src/js/castle-geometry.js');
+
+test('Keep footprint includes its forced Stockpile but leaves four middle-row tiles free', () => {
+  const footprint = geometry.footprintRectsAtXY(geometry.KEEP_ITEM_TYPE, 20, 50, [7, 15]);
+
+  for (const x of [20, 21, 25, 26]) {
+    assert.equal(geometry.footprintContainsTile(footprint, { x, y: 43 }), false, `tile ${x},43 should be free`);
+  }
+  for (const x of [22, 23, 24]) {
+    assert.equal(geometry.footprintContainsTile(footprint, { x, y: 43 }), true, `tile ${x},43 should be occupied`);
+  }
+
+  assert.equal(geometry.footprintContainsTile(footprint, { x: 27, y: 48 }), true, 'Stockpile top-left');
+  assert.equal(geometry.footprintContainsTile(footprint, { x: 31, y: 44 }), true, 'Stockpile bottom-right');
+  assert.equal(geometry.footprintContainsTile(footprint, { x: 31, y: 43 }), false, 'below Stockpile');
+});
+
+test('Keep collision follows the shaped footprint instead of its bounding rectangle', () => {
+  const keep = geometry.footprintRectsAtXY(geometry.KEEP_ITEM_TYPE, 20, 50, [7, 15]);
+  const freeTile = geometry.footprintRectsAtXY(54, 20, 43, [1, 1]);
+  const centerTile = geometry.footprintRectsAtXY(54, 23, 43, [1, 1]);
+  const stockpileTile = geometry.footprintRectsAtXY(54, 29, 46, [1, 1]);
+
+  assert.equal(geometry.footprintsIntersect(keep, freeTile), false);
+  assert.equal(geometry.footprintsIntersect(keep, centerTile), true);
+  assert.equal(geometry.footprintsIntersect(keep, stockpileTile), true);
+});
+
+test('Keep bounds account for the five-tile Stockpile extension', () => {
+  assert.equal(
+    geometry.footprintIsInBounds(geometry.footprintRectsAtXY(61, 88, 99, [7, 15]), 100),
+    true
+  );
+  assert.equal(
+    geometry.footprintIsInBounds(geometry.footprintRectsAtXY(61, 89, 99, [7, 15]), 100),
+    false
+  );
+  assert.equal(
+    geometry.footprintIsInBounds(geometry.footprintRectsAtXY(61, 20, 13, [7, 15]), 100),
+    false
+  );
+});
+
+test('lineTiles creates gapless horizontal, vertical, and diagonal lines', () => {
+  assert.deepEqual(
+    geometry.lineTiles({ x: 2, y: 4 }, { x: 5, y: 4 }),
+    [{ x: 2, y: 4 }, { x: 3, y: 4 }, { x: 4, y: 4 }, { x: 5, y: 4 }]
+  );
+  assert.deepEqual(
+    geometry.lineTiles({ x: 3, y: 5 }, { x: 3, y: 2 }),
+    [{ x: 3, y: 5 }, { x: 3, y: 4 }, { x: 3, y: 3 }, { x: 3, y: 2 }]
+  );
+  assert.deepEqual(
+    geometry.lineTiles({ x: 1, y: 1 }, { x: 4, y: 4 }),
+    [{ x: 1, y: 1 }, { x: 2, y: 2 }, { x: 3, y: 3 }, { x: 4, y: 4 }]
+  );
+});
+
+test('lineTiles includes both endpoints for shallow and reversed lines', () => {
+  const shallow = geometry.lineTiles({ x: 2, y: 2 }, { x: 7, y: 4 });
+  assert.deepEqual(shallow[0], { x: 2, y: 2 });
+  assert.deepEqual(shallow.at(-1), { x: 7, y: 4 });
+  assert.equal(shallow.length, 6);
+
+  const reversed = geometry.lineTiles({ x: 7, y: 4 }, { x: 2, y: 2 });
+  assert.deepEqual(reversed, [...shallow].reverse());
+});
+
+test('new build steps insert after the selected step and advance the anchor', () => {
+  const frames = [{ itemType: 1 }, { itemType: 2 }, { itemType: 3 }];
+  const first = geometry.insertBuildSteps(frames, [{ itemType: 10 }], 0);
+  assert.deepEqual(frames.map(frame => frame.itemType), [1, 10, 2, 3]);
+  assert.deepEqual(first, { startIndex: 1, endIndex: 1 });
+
+  const second = geometry.insertBuildSteps(frames, [{ itemType: 11 }], first.endIndex);
+  assert.deepEqual(frames.map(frame => frame.itemType), [1, 10, 11, 2, 3]);
+  assert.deepEqual(second, { startIndex: 2, endIndex: 2 });
+});
+
+test('new build steps append when no build step is selected', () => {
+  const frames = [{ itemType: 1 }];
+  const inserted = geometry.insertBuildSteps(frames, [{ itemType: 2 }, { itemType: 3 }]);
+  assert.deepEqual(frames.map(frame => frame.itemType), [1, 2, 3]);
+  assert.deepEqual(inserted, { startIndex: 1, endIndex: 2 });
+});
+
+test('several selected build steps move together while retaining their prior order', () => {
+  const frames = [1, 2, 3, 4, 5, 6].map(itemType => ({ itemType }));
+  const moved = geometry.moveBuildSteps(frames, [1, 3, 4], 5);
+  assert.deepEqual(frames.map(frame => frame.itemType), [1, 3, 6, 2, 4, 5]);
+  assert.deepEqual(moved, { moved: true, startIndex: 3, endIndex: 5 });
+});
+
+test('selected build steps can move upward as one ordered block', () => {
+  const frames = [1, 2, 3, 4, 5].map(itemType => ({ itemType }));
+  const moved = geometry.moveBuildSteps(frames, [2, 4], 0);
+  assert.deepEqual(frames.map(frame => frame.itemType), [3, 5, 1, 2, 4]);
+  assert.deepEqual(moved, { moved: true, startIndex: 0, endIndex: 1 });
+});

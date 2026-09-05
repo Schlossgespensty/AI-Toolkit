@@ -1,0 +1,2385 @@
+(() => {
+  'use strict';
+
+  const GRID = 100;
+  const MIN_CELL = 3;
+  const MAX_CELL = 32;
+  const DEFAULT_CELL = 8;
+  const DEFAULT_KEEP_OFFSET = 5643;
+  const MAX_RENDER_DPR = 1.5;
+  const FUTURE_OPACITY = 0.50;
+  const FUTURE_FILTER = 'grayscale(1) brightness(.42)';
+  const FUTURE_TINT = 'rgba(144, 176, 221, .13)';
+  const SHORTCUT_STORAGE_KEY = 'aiv.castleToolShortcuts.v1';
+  const DEFAULT_TOOL_SHORTCUTS = {
+    single: ['1', 's'],
+    brush: ['2', 'b'],
+    select: ['3', 'v'],
+    delete: ['4', 'd'],
+    copy: ['5', 'c'],
+    line: ['6', 'l']
+  };
+  const deepClone = value => JSON.parse(JSON.stringify(value));
+  const retainSourceBytes = value => {
+    if (!value) return null;
+    if (value instanceof ArrayBuffer) return new Uint8Array(value).slice();
+    if (ArrayBuffer.isView(value)) return new Uint8Array(value.buffer, value.byteOffset, value.byteLength).slice();
+    if (Array.isArray(value)) return Uint8Array.from(value);
+    return null;
+  };
+  const newCastleDocument = () => ({
+    pauseDelayAmount: 100,
+    frames: [{ itemType: 61, tilePositionOfsets: [DEFAULT_KEEP_OFFSET], shouldPause: false }],
+    miscItems: []
+  });
+
+  const els = {
+    canvas: document.getElementById('castleCanvas'),
+    host: document.getElementById('castleCanvasHost'),
+    palette: document.getElementById('castlePalette'),
+    itemInfo: document.getElementById('castleSelectedItemInfo'),
+    buildList: document.getElementById('castleBuildList'),
+    buildCount: document.getElementById('castleBuildCount'),
+    buildSlider: document.getElementById('castleBuildSlider'),
+    buildSliderValue: document.getElementById('castleBuildSliderValue'),
+    status: document.getElementById('castleStatus'),
+    fileLabel: document.getElementById('castleFileLabel'),
+    showUnitNumbers: document.getElementById('castleShowUnitNumbers'),
+    showCompatibility: document.getElementById('castleShowCompatibility'),
+    showBlueprint: document.getElementById('castleShowBlueprint'),
+    blueprintOpacity: document.getElementById('castleBlueprintOpacity'),
+    blueprintOpacityValue: document.getElementById('castleBlueprintOpacityValue'),
+    blueprintControls: document.getElementById('castleBlueprintControls'),
+    shortcutDialog: document.getElementById('castleShortcutDialog'),
+    shortcutForm: document.getElementById('castleShortcutForm'),
+    shortcutError: document.getElementById('castleShortcutError'),
+    shortcutDefaults: document.getElementById('castleShortcutDefaultsBtn'),
+    shortcutCancel: document.getElementById('castleShortcutCancelBtn'),
+    setSkin: document.getElementById('castleSetSkinBtn'),
+    removeSkin: document.getElementById('castleRemoveSkinBtn'),
+    openSkins: document.getElementById('castleOpenSkinsBtn'),
+    populationProvided: document.getElementById('castlePopulationProvided'),
+    populationRequired: document.getElementById('castlePopulationRequired'),
+    populationLeft: document.getElementById('castlePopulationLeft'),
+    characterPopulationNeeded: document.getElementById('castleCharacterPopulationNeeded'),
+    characterPopulationAfterWorkers: document.getElementById('castlePopulationAfterCharacter'),
+    saveNotice: document.getElementById('castleSaveNotice')
+  };
+  const displayCtx = els.canvas.getContext('2d', { alpha: false });
+  const staticCacheCanvas = document.createElement('canvas');
+  const staticCacheCtx = staticCacheCanvas.getContext('2d', { alpha: false });
+  const futureCacheCanvas = document.createElement('canvas');
+  const futureCacheCtx = futureCacheCanvas.getContext('2d');
+  let ctx = displayCtx;
+  const geometry = window.castleGeometry;
+  const mapBackground = new Image();
+  mapBackground.onload = () => scheduleDraw();
+  mapBackground.src = '../assets/aiv/background.png';
+  const bundledKeepImage = new Image();
+  bundledKeepImage.onload = () => scheduleDraw();
+  bundledKeepImage.src = '../assets/aiv/skins/61.png';
+  const bundledStockpileImage = new Image();
+  bundledStockpileImage.onload = () => scheduleDraw();
+  bundledStockpileImage.src = '../assets/aiv/skins/52.png';
+
+  const state = {
+    constants: {},
+    categories: {},
+    populationData: { population_effects: { provides: {}, requires: {} } },
+    unitTypes: new Set(),
+    document: newCastleDocument(),
+    filePath: null,
+    sourcePath: null,
+    sourceBytes: null,
+    readOnly: false,
+    dirty: false,
+    tool: 'single',
+    lastPlacementTool: 'single',
+    currentItemType: null,
+    activeCategory: null,
+    selected: new Set(),
+    insertionFrameIndex: null,
+    copyBuffer: null,
+    undo: [],
+    redo: [],
+    cell: DEFAULT_CELL,
+    panX: 0,
+    panY: 0,
+    canvasWidth: 0,
+    canvasHeight: 0,
+    hoverTile: null,
+    centeredOnce: false,
+    gesture: null,
+    pointerId: null,
+    dragStartTile: null,
+    dragStartScreen: null,
+    marqueeEnd: null,
+    moveStartOffsets: new Map(),
+    moveDelta: { x: 0, y: 0 },
+    brushOffsets: [],
+    brushSeen: new Set(),
+    brushReplacements: new Set(),
+    brushLastTile: null,
+    panning: false,
+    panStart: null,
+    skins: {},
+    customSkinTypes: new Set(),
+    skinImages: {},
+    dragFrameIndexes: [],
+    buildSelectionAnchor: null,
+    renderPending: false,
+    renderDpr: 1,
+    staticCacheDirty: true,
+    placementCache: null,
+    blueprintImage: null,
+    blueprintFileName: '',
+    blueprintOpacity: 0.5,
+    blueprintVisible: true,
+    blueprintLoadToken: 0,
+    toolShortcuts: deepClone(DEFAULT_TOOL_SHORTCUTS)
+  };
+  let saveNoticeTimer = null;
+  let blueprintDialogOpen = false;
+
+  function frames() {
+    if (!Array.isArray(state.document.frames)) state.document.frames = [];
+    return state.document.frames;
+  }
+
+  function selectBuildFrame(frameIndex) {
+    return selectBuildFrames([frameIndex], frameIndex);
+  }
+
+  function selectedBuildFrameIndexes() {
+    const indexes = [];
+    frames().forEach((frame, frameIndex) => {
+      const offsets = frame.tilePositionOfsets || [];
+      if (offsets.length && offsets.every((_offset, offsetIndex) => state.selected.has(frameRefKey(frameIndex, offsetIndex)))) {
+        indexes.push(frameIndex);
+      }
+    });
+    return indexes;
+  }
+
+  function selectBuildFrames(frameIndexes, activeIndex = null, { updateAnchor = true } = {}) {
+    const indexes = [...new Set(frameIndexes)]
+      .filter(index => Number.isInteger(index) && index >= 0 && index < frames().length)
+      .sort((one, two) => one - two);
+    state.selected.clear();
+    for (const frameIndex of indexes) {
+      const frame = frames()[frameIndex];
+      (frame.tilePositionOfsets || []).forEach((_offset, offsetIndex) => {
+        state.selected.add(frameRefKey(frameIndex, offsetIndex));
+      });
+    }
+    if (indexes.length) {
+      state.insertionFrameIndex = indexes.includes(activeIndex) ? activeIndex : indexes.at(-1);
+      if (updateAnchor) state.buildSelectionAnchor = state.insertionFrameIndex;
+    }
+    return indexes.length > 0;
+  }
+
+  function activateBuildStepForRefs(refs, preferredRef = null) {
+    let frameIndex = null;
+    if (preferredRef && refExists(preferredRef)) {
+      const preferred = parseRef(preferredRef);
+      if (preferred.kind === 'frame') frameIndex = preferred.fi;
+    }
+    if (frameIndex == null) {
+      for (const ref of refs) {
+        if (!refExists(ref)) continue;
+        const parsed = parseRef(ref);
+        if (parsed.kind === 'frame') frameIndex = parsed.fi;
+      }
+    }
+    if (frameIndex == null) return false;
+    state.insertionFrameIndex = frameIndex;
+    state.buildSelectionAnchor = frameIndex;
+    return true;
+  }
+
+  function updateBuildSelection(frameIndex, event) {
+    const additive = event.ctrlKey || event.metaKey;
+    const current = new Set(selectedBuildFrameIndexes());
+    let next;
+    if (event.shiftKey) {
+      const anchor = Number.isInteger(state.buildSelectionAnchor) ? state.buildSelectionAnchor : frameIndex;
+      const start = Math.min(anchor, frameIndex);
+      const end = Math.max(anchor, frameIndex);
+      const range = Array.from({ length: end - start + 1 }, (_unused, index) => start + index);
+      next = additive ? new Set([...current, ...range]) : new Set(range);
+      selectBuildFrames([...next], frameIndex, { updateAnchor: false });
+    } else if (additive) {
+      if (current.has(frameIndex)) current.delete(frameIndex);
+      else current.add(frameIndex);
+      next = current;
+      selectBuildFrames([...next], current.has(frameIndex) ? frameIndex : [...current].sort((a, b) => a - b).at(-1));
+    } else {
+      next = new Set([frameIndex]);
+      selectBuildFrame(frameIndex);
+    }
+    return [...next].sort((one, two) => one - two);
+  }
+
+  function insertBuildFrames(newFrames) {
+    const inserted = geometry.insertBuildSteps(frames(), newFrames, state.insertionFrameIndex);
+    invalidatePlacementCache();
+    if (newFrames.length) selectBuildFrame(inserted.endIndex);
+    return inserted;
+  }
+
+  function clampActiveBuildStep() {
+    if (!Number.isInteger(state.insertionFrameIndex)) return;
+    if (!frames().length) {
+      state.insertionFrameIndex = null;
+      state.buildSelectionAnchor = null;
+      return;
+    }
+    state.insertionFrameIndex = Math.max(0, Math.min(frames().length - 1, state.insertionFrameIndex));
+    state.buildSelectionAnchor = state.insertionFrameIndex;
+  }
+
+  function normalizeDocument(doc, diagnostics = null) {
+    if (!doc || typeof doc !== 'object' || Array.isArray(doc)) throw new Error('The AIV castle document is invalid.');
+    if (!Array.isArray(doc.frames)) throw new Error("The AIV file must contain a 'frames' array.");
+    const normalizedFrames = [];
+    doc.frames.forEach((frame, i) => {
+      const emptyLegacyStep = frame == null || (
+        typeof frame === 'object' && !Array.isArray(frame) && (
+          Object.keys(frame).length === 0 ||
+          (Array.isArray(frame.tilePositionOfsets) && frame.tilePositionOfsets.length === 0)
+        )
+      );
+      if (emptyLegacyStep) {
+        if (diagnostics) diagnostics.removedLegacySteps = (diagnostics.removedLegacySteps || 0) + 1;
+        return;
+      }
+      if (!frame || typeof frame !== 'object' || Array.isArray(frame)) throw new Error(`Frame ${i + 1} is not an object.`);
+      if (!Number.isInteger(Number(frame.itemType))) throw new Error(`Frame ${i + 1} has no valid itemType.`);
+      if (!Array.isArray(frame.tilePositionOfsets)) throw new Error(`Frame ${i + 1}: tilePositionOfsets must be an array.`);
+      frame.itemType = Number(frame.itemType);
+      frame.tilePositionOfsets = frame.tilePositionOfsets.map(off => {
+        const n = Number(off);
+        if (!Number.isInteger(n) || n < 0 || n > 9999) throw new Error(`Frame ${i + 1}: invalid tile offset ${off}.`);
+        return n;
+      });
+      frame.shouldPause = Boolean(frame.shouldPause);
+      normalizedFrames.push(frame);
+    });
+    doc.frames = normalizedFrames;
+    if (!Array.isArray(doc.miscItems)) doc.miscItems = [];
+    doc.miscItems.forEach((item, i) => {
+      if (!item || typeof item !== 'object' || Array.isArray(item)) throw new Error(`Misc item ${i + 1} is not an object.`);
+      if (!Number.isInteger(Number(item.itemType))) throw new Error(`Misc item ${i + 1} has no valid itemType.`);
+      const offset = Number(item.positionOfset);
+      if (!Number.isInteger(offset) || offset < 0 || offset > 9999) throw new Error(`Misc item ${i + 1}: invalid positionOfset ${item.positionOfset}.`);
+      item.itemType = Number(item.itemType);
+      item.positionOfset = offset;
+    });
+    return doc;
+  }
+
+  function itemInfo(type) { return state.constants[String(type)] || {}; }
+  function itemName(type) { return itemInfo(type).name || `Item ${type}`; }
+  function itemSize(type) {
+    const size = itemInfo(type).size;
+    if (!Array.isArray(size) || size.length < 2) return [1, 1];
+    return [Math.max(1, Number(size[0]) || 1), Math.max(1, Number(size[1]) || 1)];
+  }
+  function overlapMode(type) {
+    if (isUnitType(type)) return 'allow';
+    return String(itemInfo(type).overlap || 'block').toLowerCase();
+  }
+  function maxAmount(type) {
+    const configured = itemInfo(type).maxAmount;
+    return configured == null && isUnitType(type) ? 10 : configured;
+  }
+  function offsetToXY(offset) { return { x: offset % GRID, y: Math.floor(offset / GRID) }; }
+  function xyToOffset(x, y) { return y * GRID + x; }
+  function frameRefKey(fi, oi) { return `f:${fi}:${oi}`; }
+  function unitRefKey(mi) { return `u:${mi}`; }
+  function parseRef(ref) {
+    const [kind, first, second] = String(ref).split(':');
+    return kind === 'u'
+      ? { kind: 'unit', mi: Number(first) }
+      : { kind: 'frame', fi: Number(first), oi: Number(second) };
+  }
+
+  function isUnitType(type) { return state.unitTypes.has(Number(type)); }
+
+  function allowsMultiplePerStep(type) {
+    return itemInfo(type).multiPlacement !== false;
+  }
+
+  function renumberUnits(doc = state.document) {
+    const nextNumber = new Map();
+    for (const item of doc.miscItems || []) {
+      const type = Number(item.itemType);
+      if (!isUnitType(type)) continue;
+      const number = nextNumber.get(type) || 0;
+      item.number = number;
+      nextNumber.set(type, number + 1);
+    }
+  }
+
+  function normalizeUnitStorage(doc = state.document) {
+    if (!state.unitTypes.size) return doc;
+    const retainedFrames = [];
+    for (const frame of doc.frames || []) {
+      const type = Number(frame.itemType);
+      if (!isUnitType(type)) {
+        retainedFrames.push(frame);
+        continue;
+      }
+      for (const offset of frame.tilePositionOfsets || []) {
+        doc.miscItems.push({ positionOfset: Number(offset), itemType: type, number: 0 });
+      }
+    }
+    doc.frames = retainedFrames;
+    renumberUnits(doc);
+    return doc;
+  }
+
+  function refExists(ref) {
+    const parsed = parseRef(ref);
+    if (parsed.kind === 'unit') {
+      return parsed.mi >= 0 && parsed.mi < state.document.miscItems.length;
+    }
+    const { fi, oi } = parsed;
+    return fi >= 0 && fi < frames().length && oi >= 0 && oi < (frames()[fi].tilePositionOfsets || []).length;
+  }
+
+  function refOffset(ref) {
+    const parsed = parseRef(ref);
+    if (parsed.kind === 'unit') return Number(state.document.miscItems[parsed.mi].positionOfset);
+    return Number(frames()[parsed.fi].tilePositionOfsets[parsed.oi]);
+  }
+
+  function refType(ref) {
+    const parsed = parseRef(ref);
+    if (parsed.kind === 'unit') return Number(state.document.miscItems[parsed.mi].itemType);
+    return Number(frames()[parsed.fi].itemType);
+  }
+
+  function placementRefs() {
+    if (state.placementCache) return state.placementCache;
+    const out = [];
+    frames().forEach((frame, fi) => {
+      const type = Number(frame.itemType);
+      (frame.tilePositionOfsets || []).forEach((off, oi) => out.push({
+        ref: frameRefKey(fi, oi), kind: 'frame', fi, oi, type, off: Number(off)
+      }));
+    });
+    state.document.miscItems.forEach((item, mi) => {
+      if (!isUnitType(item.itemType)) return;
+      out.push({
+        ref: unitRefKey(mi), kind: 'unit', mi, type: Number(item.itemType),
+        off: Number(item.positionOfset), number: Number(item.number)
+      });
+    });
+    state.placementCache = out;
+    return state.placementCache;
+  }
+
+  function calculatePopulationSummary() {
+    const effects = state.populationData?.population_effects || {};
+    const provides = effects.provides || {};
+    const requires = effects.requires || {};
+    let provided = 0;
+    let required = 0;
+    const counts = {};
+
+    for (const placement of placementRefs()) {
+      const key = String(placement.type);
+      counts[key] = (counts[key] || 0) + 1;
+      provided += Number(provides[key]) || 0;
+      required += Number(requires[key]) || 0;
+    }
+
+    return { provided, required, left: provided - required, counts };
+  }
+
+  function setPopulationValue(el, value, markNegative = false) {
+    if (!el) return;
+    el.textContent = String(value);
+    el.classList.toggle('populationNegative', markNegative && Number(value) < 0);
+  }
+
+  function updatePopulationPanel(emitCastleEvent = true) {
+    const summary = calculatePopulationSummary();
+    setPopulationValue(els.populationProvided, summary.provided);
+    setPopulationValue(els.populationRequired, summary.required);
+    setPopulationValue(els.populationLeft, summary.left, true);
+
+    const characterPopulation = window.characterPopulation;
+    // The Castle workspace calculates character workers independently from the
+    // Character page, using the castle's total PROVIDED population as its base.
+    // Castle building requirements remain visible separately and are only subtracted
+    // when showing the final population left after both castle + character workers.
+    const castleProvided = Math.max(0, Number(summary.provided) || 0);
+    const characterStats = characterPopulation?.calculateAt?.(castleProvided) || { population: 0 };
+    const characterNeeded = Number(characterStats.population) || 0;
+    setPopulationValue(els.characterPopulationNeeded, characterNeeded);
+    setPopulationValue(els.characterPopulationAfterWorkers, summary.left - characterNeeded, true);
+
+    if (emitCastleEvent) {
+      window.dispatchEvent(new CustomEvent('castle-population-changed', { detail: summary }));
+    }
+    return summary;
+  }
+
+  function footprintRectsAtXY(type, x, y) {
+    return geometry.footprintRectsAtXY(Number(type), x, y, itemSize(type));
+  }
+
+  function footprintRects(type, offset) {
+    const { x, y } = offsetToXY(offset);
+    return footprintRectsAtXY(type, x, y);
+  }
+
+  function itemRect(type, offset) {
+    return geometry.footprintBounds(footprintRects(type, offset));
+  }
+
+  function countType(type, ignore = new Set()) {
+    let count = 0;
+    for (const p of placementRefs()) if (p.type === type && !ignore.has(p.ref)) count++;
+    return count;
+  }
+
+  function boundsError(type, x, y) {
+    if (!geometry.footprintIsInBounds(footprintRectsAtXY(type, x, y), GRID)) {
+      return `${itemName(type)} would extend outside the 100×100 field.`;
+    }
+    return '';
+  }
+
+  function validatePlacement(type, offset, options = {}) {
+    const ignore = options.ignoreRefs || new Set();
+    const extraNew = options.extraNew || [];
+    const checkMax = options.checkMax !== false;
+    const { x, y } = offsetToXY(offset);
+    const outside = boundsError(type, x, y);
+    if (outside) return { ok: false, reason: outside, replacements: new Set() };
+
+    if (checkMax) {
+      const maximum = maxAmount(type);
+      if (maximum != null && countType(type, ignore) >= Number(maximum)) {
+        return { ok: false, reason: `Maximum amount for ${itemName(type)} is ${maximum}.`, replacements: new Set() };
+      }
+    }
+
+    if (overlapMode(type) === 'allow') return { ok: true, reason: '', replacements: new Set() };
+
+    const proposedFootprint = footprintRects(type, offset);
+    const replacements = new Set();
+    for (const p of placementRefs()) {
+      if (ignore.has(p.ref)) continue;
+      if (!geometry.footprintsIntersect(proposedFootprint, footprintRects(p.type, p.off))) continue;
+      const existingMode = overlapMode(p.type);
+      if (existingMode === 'allow') continue;
+      if (existingMode === 'replace') {
+        replacements.add(p.ref);
+        continue;
+      }
+      return { ok: false, reason: `Blocked by ${itemName(p.type)}.`, replacements: new Set() };
+    }
+
+    for (const other of extraNew) {
+      if (overlapMode(other.type) === 'allow') continue;
+      if (geometry.footprintsIntersect(proposedFootprint, footprintRects(other.type, other.off))) {
+        return { ok: false, reason: 'Overlaps another item in this brush stroke.', replacements: new Set() };
+      }
+    }
+    return { ok: true, reason: '', replacements };
+  }
+
+  function stableColor(type) {
+    const hue = (Number(type) * 47) % 360;
+    return `hsl(${hue} 45% 62%)`;
+  }
+
+  function setStatus(text) {
+    els.status.textContent = text;
+    if (window.appWorkspace?.getActive() === 'castle') window.appWorkspace.setStatus(text);
+  }
+
+  function showSaveNotice(message, type = '') {
+    clearTimeout(saveNoticeTimer);
+    els.saveNotice.textContent = message;
+    els.saveNotice.className = `castleSaveNotice${type ? ` ${type}` : ''}`;
+    els.saveNotice.hidden = false;
+    saveNoticeTimer = setTimeout(() => { els.saveNotice.hidden = true; }, type === 'error' ? 5000 : 3200);
+  }
+
+  function setDirty(value) {
+    state.dirty = value;
+    updateFileLabel();
+  }
+
+  function updateFileLabel() {
+    const name = state.filePath ? state.filePath.split(/[\\/]/).pop() : 'Untitled.aiv';
+    els.fileLabel.textContent = `${name}${state.dirty ? ' *' : ''}${state.readOnly ? ' [read-only]' : ''}`;
+    els.fileLabel.title = state.filePath || '';
+    document.getElementById('castleSaveBtn').disabled = false;
+    document.getElementById('castleSaveAsBtn').disabled = false;
+  }
+
+  function pushUndo() {
+    state.undo.push(deepClone(state.document));
+    if (state.undo.length > 100) state.undo.shift();
+    state.redo.length = 0;
+  }
+
+  function changed(message) {
+    invalidatePlacementCache();
+    setDirty(true);
+    renderBuildList();
+    scheduleDraw();
+    setStatus(message);
+  }
+
+  function undo() {
+    if (!state.undo.length) return setStatus('Nothing to undo');
+    const activeStep = state.insertionFrameIndex;
+    state.redo.push(deepClone(state.document));
+    state.document = state.undo.pop();
+    normalizeDocument(state.document);
+    invalidatePlacementCache();
+    state.selected.clear();
+    state.insertionFrameIndex = activeStep;
+    clampActiveBuildStep();
+    state.copyBuffer = null;
+    setDirty(true);
+    renderBuildList();
+    scheduleDraw();
+    setStatus('Undo');
+  }
+
+  function redo() {
+    if (!state.redo.length) return setStatus('Nothing to redo');
+    const activeStep = state.insertionFrameIndex;
+    state.undo.push(deepClone(state.document));
+    state.document = state.redo.pop();
+    normalizeDocument(state.document);
+    invalidatePlacementCache();
+    state.selected.clear();
+    state.insertionFrameIndex = activeStep;
+    clampActiveBuildStep();
+    state.copyBuffer = null;
+    setDirty(true);
+    renderBuildList();
+    scheduleDraw();
+    setStatus('Redo');
+  }
+
+  async function newFile() {
+    if (!await window.unsavedChanges?.confirmEditor('castle', 'creating a new castle')) return false;
+    state.document = newCastleDocument();
+    invalidatePlacementCache();
+    state.filePath = null;
+    state.sourcePath = null;
+    state.sourceBytes = null;
+    state.readOnly = false;
+    state.undo.length = 0;
+    state.redo.length = 0;
+    state.selected.clear();
+    selectBuildFrame(0);
+    state.buildSelectionAnchor = 0;
+    state.copyBuffer = null;
+    window.ucpLibrary?.detachCastleProject?.();
+    setDirty(false);
+    renderBuildList();
+    scheduleDraw();
+    setStatus('New castle');
+    return true;
+  }
+
+  async function openFile() {
+    if (!await window.unsavedChanges?.confirmEditor('castle', 'opening another castle')) return false;
+    const result = await window.electronAPI.openFile('aiv');
+    if (!result) return false;
+    loadDocument(result.document, result.path, { source: result.source, sourceBytes: result.sourceBytes });
+    return true;
+  }
+
+  function loadDocument(document, path, options = {}) {
+    try {
+      const diagnostics = { removedLegacySteps: 0 };
+      const parsed = normalizeUnitStorage(normalizeDocument(deepClone(document), diagnostics));
+      state.document = parsed;
+      invalidatePlacementCache();
+      state.filePath = path || null;
+      state.sourcePath = options.source === 'aiv' && path ? path : null;
+      state.sourceBytes = options.source === 'aiv' ? retainSourceBytes(options.sourceBytes) : null;
+      state.readOnly = false;
+      state.undo.length = 0;
+      state.redo.length = 0;
+      state.selected.clear();
+      state.insertionFrameIndex = null;
+      state.buildSelectionAnchor = null;
+      state.copyBuffer = null;
+      state.currentItemType = null;
+      if (!options.projectManaged) window.ucpLibrary?.detachCastleProject?.();
+      renderPalette();
+      setDirty(false);
+      renderBuildList();
+      centerMap();
+      const legacyNote = diagnostics.removedLegacySteps
+        ? ` — removed ${diagnostics.removedLegacySteps} empty legacy step${diagnostics.removedLegacySteps === 1 ? '' : 's'}`
+        : '';
+      const formatNote = options.source === 'aiv'
+        ? 'native AIV'
+        : options.source === 'aivjson' ? 'AIVJSON compatibility import' : 'castle document';
+      setStatus(`Opened ${path ? path.split(/[\\/]/).pop() : 'castle'} — ${frames().length} build steps · ${formatNote}${legacyNote}`);
+    } catch (err) {
+      alert(`Could not open AIV castle:\n\n${err.message}`);
+      console.error(err);
+    }
+  }
+
+  function loadFromContent(content, path, options = {}) {
+    try {
+      const document = typeof content === 'string' ? JSON.parse(content) : content;
+      loadDocument(document, path, { ...options, source: options.source || 'aivjson' });
+    } catch (err) {
+      alert(`Could not import AIVJSON castle:\n\n${err.message}`);
+      console.error(err);
+    }
+  }
+
+  function outputDocument() {
+    const out = deepClone(state.document);
+    normalizeDocument(out);
+    normalizeUnitStorage(out);
+    return out;
+  }
+
+  function outputContent() {
+    return JSON.stringify(outputDocument(), null, 2) + '\n';
+  }
+
+  async function saveFile() {
+    if (!state.filePath || !/\.aiv$/i.test(state.filePath)) return saveAs();
+    try {
+      const result = await window.electronAPI.quickSaveFile({
+        path: state.filePath,
+        content: outputDocument(),
+        kind: 'aiv',
+        sourcePath: state.sourcePath,
+        sourceBytes: state.sourceBytes,
+        unchanged: !state.dirty
+      });
+      if (!result) {
+        setStatus('Save cancelled; the existing castle was not changed');
+        return false;
+      }
+      state.sourcePath = state.filePath;
+      state.sourceBytes = retainSourceBytes(result.sourceBytes) || state.sourceBytes;
+      setDirty(false);
+      const name = state.filePath.split(/[\\/]/).pop();
+      const message = `Saved ${name}`;
+      setStatus(message);
+      showSaveNotice(`✓ ${message}`);
+      return true;
+    } catch (err) {
+      alert(`Could not save AIV castle:\n\n${err.message}`);
+      showSaveNotice('Castle was not saved', 'error');
+      return false;
+    }
+  }
+
+  async function saveAs() {
+    try {
+      const defaultPath = state.filePath
+        ? state.filePath.replace(/\.aivjson$/i, '.aiv')
+        : 'Castle.aiv';
+      const result = await window.electronAPI.saveFile(outputDocument(), 'aiv', defaultPath, {
+        sourcePath: state.sourcePath,
+        sourceBytes: state.sourceBytes,
+        unchanged: !state.dirty
+      });
+      if (!result) return false;
+      state.filePath = result.path || result;
+      state.sourcePath = state.filePath;
+      state.sourceBytes = retainSourceBytes(result.sourceBytes) || state.sourceBytes;
+      state.readOnly = false;
+      setDirty(false);
+      const name = state.filePath.split(/[\\/]/).pop();
+      const message = `Saved ${name}`;
+      setStatus(message);
+      showSaveNotice(`✓ ${message}`);
+      return true;
+    } catch (err) {
+      alert(`Could not save AIV castle:\n\n${err.message}`);
+      showSaveNotice('Castle was not saved', 'error');
+      return false;
+    }
+  }
+
+  function deleteRefs(refs) {
+    const groupedFrames = new Map();
+    const unitIndexes = [];
+    for (const ref of refs) {
+      if (!refExists(ref)) continue;
+      const parsed = parseRef(ref);
+      if (parsed.kind === 'unit') {
+        unitIndexes.push(parsed.mi);
+        continue;
+      }
+      if (!groupedFrames.has(parsed.fi)) groupedFrames.set(parsed.fi, []);
+      groupedFrames.get(parsed.fi).push(parsed.oi);
+    }
+    const frameIndexes = Array.from(groupedFrames.keys()).sort((a, b) => b - a);
+    for (const fi of frameIndexes) {
+      const offsets = frames()[fi].tilePositionOfsets;
+      const indexes = Array.from(new Set(groupedFrames.get(fi))).sort((a, b) => b - a);
+      for (const oi of indexes) if (oi >= 0 && oi < offsets.length) offsets.splice(oi, 1);
+      if (!offsets.length) {
+        frames().splice(fi, 1);
+        if (state.insertionFrameIndex != null && fi <= state.insertionFrameIndex) state.insertionFrameIndex -= 1;
+      }
+    }
+    for (const mi of Array.from(new Set(unitIndexes)).sort((a, b) => b - a)) {
+      if (mi >= 0 && mi < state.document.miscItems.length) state.document.miscItems.splice(mi, 1);
+    }
+    renumberUnits();
+    clampActiveBuildStep();
+    invalidatePlacementCache();
+  }
+
+  function deleteSelected() {
+    const refs = new Set(Array.from(state.selected).filter(refExists));
+    if (!refs.size) return;
+    pushUndo();
+    deleteRefs(refs);
+    state.selected.clear();
+    changed(`Deleted ${refs.size} placement${refs.size === 1 ? '' : 's'}`);
+  }
+
+  function placeSingle(tile) {
+    if (state.currentItemType == null) return setStatus('Choose an item first.');
+    const type = state.currentItemType;
+    const off = xyToOffset(tile.x, tile.y);
+    const result = validatePlacement(type, off);
+    if (!result.ok) return setStatus(result.reason);
+    pushUndo();
+    deleteRefs(result.replacements);
+    if (isUnitType(type)) {
+      const mi = state.document.miscItems.length;
+      state.document.miscItems.push({ positionOfset: off, itemType: type, number: countType(type) });
+      state.selected = new Set([unitRefKey(mi)]);
+      changed(`Placed ${itemName(type)} rallypoint #${state.document.miscItems[mi].number} at ${off}`);
+    } else {
+      insertBuildFrames([{ itemType: type, tilePositionOfsets: [off], shouldPause: false }]);
+      changed(`Placed ${itemName(type)} at ${off}`);
+    }
+  }
+
+  function brushAdd(tile) {
+    if (state.currentItemType == null) return;
+    const type = state.currentItemType;
+    const off = xyToOffset(tile.x, tile.y);
+    if (state.brushSeen.has(off)) return;
+    state.brushSeen.add(off);
+
+    const pending = state.brushOffsets.map(p => ({ type, off: p }));
+    const result = validatePlacement(type, off, {
+      ignoreRefs: state.brushReplacements,
+      extraNew: pending,
+      checkMax: false
+    });
+    if (!result.ok) {
+      setStatus(result.reason);
+      return;
+    }
+
+    const maximum = maxAmount(type);
+    if (maximum != null) {
+      const current = countType(type, state.brushReplacements);
+      if (current + state.brushOffsets.length + 1 > Number(maximum)) {
+        setStatus(`Maximum amount for ${itemName(type)} is ${maximum}.`);
+        return;
+      }
+    }
+
+    state.brushOffsets.push(off);
+    for (const ref of result.replacements) state.brushReplacements.add(ref);
+    scheduleDraw(false);
+  }
+
+  function commitBrush(toolName = 'Brush') {
+    if (state.currentItemType == null || !state.brushOffsets.length) return setStatus(`${toolName} placed nothing.`);
+    pushUndo();
+    deleteRefs(state.brushReplacements);
+    const type = state.currentItemType;
+    if (isUnitType(type)) {
+      const firstMi = state.document.miscItems.length;
+      let nextNumber = countType(type);
+      for (const off of state.brushOffsets) {
+        state.document.miscItems.push({ positionOfset: off, itemType: type, number: nextNumber++ });
+      }
+      state.selected = new Set(state.brushOffsets.map((_off, i) => unitRefKey(firstMi + i)));
+      changed(`${toolName}: placed ${state.brushOffsets.length} ${itemName(type)} rallypoints`);
+    } else {
+      insertBuildFrames([{ itemType: type, tilePositionOfsets: [...state.brushOffsets], shouldPause: false }]);
+      changed(`${toolName} step: ${state.brushOffsets.length} × ${itemName(type)}`);
+    }
+  }
+
+  function topmostRefAtTile(tile) {
+    for (let mi = state.document.miscItems.length - 1; mi >= 0; mi--) {
+      const item = state.document.miscItems[mi];
+      if (!isUnitType(item.itemType)) continue;
+      if (geometry.footprintContainsTile(footprintRects(Number(item.itemType), Number(item.positionOfset)), tile)) return unitRefKey(mi);
+    }
+    for (let fi = frames().length - 1; fi >= 0; fi--) {
+      const frame = frames()[fi];
+      const type = Number(frame.itemType);
+      const offsets = frame.tilePositionOfsets || [];
+      for (let oi = offsets.length - 1; oi >= 0; oi--) {
+        if (geometry.footprintContainsTile(footprintRects(type, Number(offsets[oi])), tile)) return frameRefKey(fi, oi);
+      }
+    }
+    return null;
+  }
+
+  function screenRectForXY(type, x, y) {
+    const [w, h] = itemSize(type);
+    if (isUnitType(type)) {
+      return {
+        x: state.panX + (x - 0.5) * state.cell,
+        y: state.panY + (98.5 - y) * state.cell,
+        w: 2 * state.cell,
+        h: 2 * state.cell
+      };
+    }
+    return {
+      x: state.panX + x * state.cell,
+      y: state.panY + (99 - y) * state.cell,
+      w: w * state.cell,
+      h: h * state.cell
+    };
+  }
+
+  function screenRectsForPlacement(type, off) {
+    return footprintRects(type, off).map(rect => ({
+      x: state.panX + rect.left * state.cell,
+      y: state.panY + (99 - rect.top) * state.cell,
+      w: (rect.right - rect.left + 1) * state.cell,
+      h: (rect.top - rect.bottom + 1) * state.cell
+    }));
+  }
+
+  function refsInMarquee() {
+    if (!state.dragStartScreen || !state.marqueeEnd) return new Set();
+    const x0 = Math.min(state.dragStartScreen.x, state.marqueeEnd.x);
+    const y0 = Math.min(state.dragStartScreen.y, state.marqueeEnd.y);
+    const x1 = Math.max(state.dragStartScreen.x, state.marqueeEnd.x);
+    const y1 = Math.max(state.dragStartScreen.y, state.marqueeEnd.y);
+    const refs = new Set();
+    for (const p of placementRefs()) {
+      const intersects = screenRectsForPlacement(p.type, p.off).some(r => (
+        !(r.x + r.w < x0 || x1 < r.x || r.y + r.h < y0 || y1 < r.y)
+      ));
+      if (intersects) refs.add(p.ref);
+    }
+    return refs;
+  }
+
+  function captureCopyBuffer(refs) {
+    const selected = placementRefs()
+      .filter(p => refs.has(p.ref) && p.kind === 'frame' && p.type !== geometry.KEEP_ITEM_TYPE)
+      .sort((a, b) => {
+        if (a.kind !== b.kind) return a.kind === 'frame' ? -1 : 1;
+        return a.kind === 'frame' ? a.fi - b.fi || a.oi - b.oi : a.mi - b.mi;
+      });
+    if (!selected.length) {
+      state.copyBuffer = null;
+      return false;
+    }
+
+    let anchorX = Infinity;
+    let anchorY = -Infinity;
+    for (const p of selected) {
+      const r = itemRect(p.type, p.off);
+      anchorX = Math.min(anchorX, r.left);
+      anchorY = Math.max(anchorY, r.top);
+    }
+
+    const groupMap = new Map();
+    for (const p of selected) {
+      const xy = offsetToXY(p.off);
+      const key = p.kind === 'frame' ? `f:${p.fi}` : `u:${p.type}`;
+      if (!groupMap.has(key)) groupMap.set(key, { kind: p.kind, itemType: p.type, entries: [] });
+      groupMap.get(key).entries.push({
+        type: p.type,
+        dx: xy.x - anchorX,
+        dy: xy.y - anchorY
+      });
+    }
+
+    state.copyBuffer = {
+      groups: Array.from(groupMap.entries())
+        .map(([, group]) => group),
+      count: selected.length
+    };
+    return true;
+  }
+
+  function copyProposalAt(tile) {
+    if (!state.copyBuffer || !tile) return { entries: [], groups: [] };
+    const entries = [];
+    const groups = state.copyBuffer.groups.map(group => {
+      const proposed = group.entries.map(entry => {
+        const x = tile.x + entry.dx;
+        const y = tile.y + entry.dy;
+        const out = { type: entry.type, x, y, off: xyToOffset(x, y) };
+        entries.push(out);
+        return out;
+      });
+      return { kind: group.kind, itemType: group.itemType, entries: proposed };
+    });
+    return { entries, groups };
+  }
+
+  function validateCopyAt(tile) {
+    if (!state.copyBuffer) return { ok: false, reason: 'Drag over items to copy first.', replacements: new Set(), proposal: null };
+    const proposal = copyProposalAt(tile);
+    const replacements = new Set();
+    const copyCounts = {};
+
+    for (const entry of proposal.entries) {
+      const outside = boundsError(entry.type, entry.x, entry.y);
+      if (outside) return { ok: false, reason: outside, replacements: new Set(), proposal };
+      const key = String(entry.type);
+      copyCounts[key] = (copyCounts[key] || 0) + 1;
+    }
+
+    for (const [key, amount] of Object.entries(copyCounts)) {
+      const type = Number(key);
+      const maximum = maxAmount(type);
+      if (maximum != null && countType(type) + amount > Number(maximum)) {
+        return { ok: false, reason: `Maximum amount for ${itemName(type)} is ${maximum}.`, replacements: new Set(), proposal };
+      }
+    }
+
+    const existing = placementRefs();
+    for (const entry of proposal.entries) {
+      if (overlapMode(entry.type) === 'allow') continue;
+      const entryFootprint = footprintRectsAtXY(entry.type, entry.x, entry.y);
+      for (const other of existing) {
+        if (!geometry.footprintsIntersect(entryFootprint, footprintRects(other.type, other.off))) continue;
+        const mode = overlapMode(other.type);
+        if (mode === 'allow') continue;
+        if (mode === 'replace') {
+          replacements.add(other.ref);
+          continue;
+        }
+        return { ok: false, reason: `Copy blocked by ${itemName(other.type)}.`, replacements: new Set(), proposal };
+      }
+    }
+    return { ok: true, reason: '', replacements, proposal };
+  }
+
+  function placeCopy(tile) {
+    const result = validateCopyAt(tile);
+    if (!result.ok) return setStatus(result.reason);
+    pushUndo();
+    deleteRefs(result.replacements);
+    const startUnit = state.document.miscItems.length;
+    const newUnitSelection = new Set();
+    const newFrames = [];
+    const nextUnitNumber = new Map();
+    for (const group of result.proposal.groups) {
+      const offsets = group.entries.map(entry => xyToOffset(entry.x, entry.y));
+      if (group.kind === 'unit') {
+        const type = Number(group.itemType);
+        let number = nextUnitNumber.has(type) ? nextUnitNumber.get(type) : countType(type);
+        for (const off of offsets) {
+          const mi = state.document.miscItems.length;
+          state.document.miscItems.push({ positionOfset: off, itemType: type, number: number++ });
+          newUnitSelection.add(unitRefKey(mi));
+        }
+        nextUnitNumber.set(type, number);
+        continue;
+      }
+      newFrames.push({ itemType: Number(group.itemType), tilePositionOfsets: offsets, shouldPause: false });
+    }
+    if (newFrames.length) insertBuildFrames(newFrames);
+    else state.selected = newUnitSelection;
+    const addedFrames = newFrames.length;
+    const addedUnits = state.document.miscItems.length - startUnit;
+    const details = [
+      addedFrames ? `${addedFrames} build step${addedFrames === 1 ? '' : 's'}` : '',
+      addedUnits ? `${addedUnits} rallypoint${addedUnits === 1 ? '' : 's'}` : ''
+    ].filter(Boolean).join(' and ');
+    changed(`Placed copy of ${state.copyBuffer.count} placement${state.copyBuffer.count === 1 ? '' : 's'} as ${details}`);
+  }
+
+  function validateMove(proposed) {
+    const selectedRefs = new Set(proposed.keys());
+    const replacements = new Set();
+    for (const [ref, newOff] of proposed.entries()) {
+      const type = refType(ref);
+      // Validate from the unwrapped x/y delta. Converting x=100 to an offset first
+      // would wrap it onto the next row (5100 -> x=0,y=51).
+      const oldOff = state.moveStartOffsets.get(ref);
+      const oldXY = offsetToXY(oldOff);
+      const x = oldXY.x + state.moveDelta.x;
+      const y = oldXY.y + state.moveDelta.y;
+      const outside = boundsError(type, x, y);
+      if (outside) return { ok: false, reason: outside, replacements: new Set() };
+      if (overlapMode(type) === 'allow') continue;
+      const movedFootprint = footprintRectsAtXY(type, x, y);
+      for (const other of placementRefs()) {
+        if (selectedRefs.has(other.ref)) continue;
+        if (!geometry.footprintsIntersect(movedFootprint, footprintRects(other.type, other.off))) continue;
+        const mode = overlapMode(other.type);
+        if (mode === 'allow') continue;
+        if (mode === 'replace') { replacements.add(other.ref); continue; }
+        return { ok: false, reason: `Move blocked by ${itemName(other.type)}.`, replacements: new Set() };
+      }
+    }
+    return { ok: true, reason: '', replacements };
+  }
+
+  function proposedMove() {
+    const proposed = new Map();
+    for (const [ref, oldOff] of state.moveStartOffsets.entries()) {
+      if (!refExists(ref)) continue;
+      const { x, y } = offsetToXY(oldOff);
+      const nx = x + state.moveDelta.x;
+      const ny = y + state.moveDelta.y;
+      if (nx < 0 || nx > 99 || ny < 0 || ny > 99) {
+        proposed.set(ref, xyToOffset(nx, ny));
+      } else {
+        proposed.set(ref, xyToOffset(nx, ny));
+      }
+    }
+    return proposed;
+  }
+
+  function commitMove() {
+    if (!state.selected.size || (state.moveDelta.x === 0 && state.moveDelta.y === 0)) return scheduleDraw();
+    const proposed = proposedMove();
+    const result = validateMove(proposed);
+    if (!result.ok) {
+      state.moveDelta = { x: 0, y: 0 };
+      scheduleDraw();
+      return setStatus(result.reason);
+    }
+    pushUndo();
+    for (const [ref, newOff] of proposed.entries()) {
+      if (!refExists(ref)) continue;
+      const parsed = parseRef(ref);
+      if (parsed.kind === 'unit') state.document.miscItems[parsed.mi].positionOfset = newOff;
+      else frames()[parsed.fi].tilePositionOfsets[parsed.oi] = newOff;
+    }
+    deleteRefs(result.replacements);
+    state.selected.clear();
+    changed(`Moved ${proposed.size} placement${proposed.size === 1 ? '' : 's'}`);
+  }
+
+  function clearSelectionAndItem() {
+    state.selected.clear();
+    state.currentItemType = null;
+    state.copyBuffer = null;
+    state.gesture = null;
+    state.brushOffsets = [];
+    state.brushSeen.clear();
+    state.brushReplacements.clear();
+    updateToolAvailability();
+    renderPalette();
+    updateSelectedItemInfo();
+    renderBuildList();
+    scheduleDraw();
+    setStatus('Selection cleared');
+  }
+
+  function toolLabel(tool) {
+    return ({ single: 'Single', brush: 'Brush', line: 'Line', select: 'Select / Move', copy: 'Copy Selection', delete: 'Delete Area' })[tool] || tool;
+  }
+
+  function isPlacementTool(tool) {
+    return tool === 'single' || tool === 'brush' || tool === 'line';
+  }
+
+  function updateToolAvailability() {
+    const multiPlacementDisabled = state.currentItemType != null && !allowsMultiplePerStep(state.currentItemType);
+    document.querySelectorAll('.castleTool').forEach(btn => {
+      btn.disabled = multiPlacementDisabled && (btn.dataset.tool === 'brush' || btn.dataset.tool === 'line');
+    });
+  }
+
+  function setTool(tool) {
+    if ((tool === 'brush' || tool === 'line') && state.currentItemType != null && !allowsMultiplePerStep(state.currentItemType)) {
+      tool = 'single';
+    }
+    state.tool = tool;
+    if (isPlacementTool(tool)) state.lastPlacementTool = tool;
+    if (tool !== 'copy') state.copyBuffer = null;
+    if (tool === 'copy') state.currentItemType = null;
+    document.querySelectorAll('.castleTool').forEach(btn => btn.classList.toggle('active', btn.dataset.tool === tool));
+    els.canvas.classList.toggle('tool-select', tool === 'select' || tool === 'copy');
+    updateToolAvailability();
+    updateSelectedItemInfo();
+    renderPalette();
+    setStatus(`${toolLabel(tool)} tool`);
+    scheduleDraw();
+  }
+
+  function normalizeShortcutKey(value) {
+    const key = String(value || '').trim().toLowerCase();
+    return /^[a-z0-9]$/.test(key) ? key : '';
+  }
+
+  function validateToolShortcuts(candidate) {
+    const normalized = {};
+    const used = new Set();
+    for (const tool of Object.keys(DEFAULT_TOOL_SHORTCUTS)) {
+      const supplied = Array.isArray(candidate?.[tool]) ? candidate[tool] : [];
+      const keys = [normalizeShortcutKey(supplied[0]), normalizeShortcutKey(supplied[1])];
+      if (!keys[0]) throw new Error(`${toolLabel(tool)} needs a primary shortcut.`);
+      for (const key of keys) {
+        if (!key) continue;
+        if (used.has(key)) throw new Error(`The key ${key.toUpperCase()} is assigned more than once.`);
+        used.add(key);
+      }
+      normalized[tool] = keys;
+    }
+    return normalized;
+  }
+
+  function updateToolShortcutHints() {
+    document.querySelectorAll('.castleTool').forEach(button => {
+      const keys = state.toolShortcuts[button.dataset.tool] || [];
+      const labels = keys.filter(Boolean).map(key => key.toUpperCase());
+      const badge = button.querySelector('kbd');
+      if (badge) badge.textContent = labels[0] || '';
+      button.title = labels.length ? `Shortcuts: ${labels.join(' or ')}` : '';
+    });
+  }
+
+  function loadToolShortcuts() {
+    try {
+      const saved = JSON.parse(localStorage.getItem(SHORTCUT_STORAGE_KEY) || 'null');
+      if (saved) state.toolShortcuts = validateToolShortcuts(saved);
+    } catch (error) {
+      console.warn('Ignoring invalid saved Castle shortcuts:', error);
+      state.toolShortcuts = deepClone(DEFAULT_TOOL_SHORTCUTS);
+    }
+    updateToolShortcutHints();
+  }
+
+  function populateShortcutDialog(shortcuts = state.toolShortcuts) {
+    for (const input of els.shortcutForm.querySelectorAll('.castleShortcutKey')) {
+      const key = shortcuts[input.dataset.tool]?.[Number(input.dataset.slot)] || '';
+      input.value = key.toUpperCase();
+    }
+    els.shortcutError.textContent = '';
+  }
+
+  function showShortcutDialog() {
+    populateShortcutDialog();
+    els.shortcutDialog.showModal();
+    els.shortcutForm.querySelector('.castleShortcutKey')?.focus();
+  }
+
+  function shortcutDraft() {
+    const draft = {};
+    for (const tool of Object.keys(DEFAULT_TOOL_SHORTCUTS)) draft[tool] = ['', ''];
+    for (const input of els.shortcutForm.querySelectorAll('.castleShortcutKey')) {
+      draft[input.dataset.tool][Number(input.dataset.slot)] = normalizeShortcutKey(input.value);
+    }
+    return draft;
+  }
+
+  function saveShortcutDialog(event) {
+    event.preventDefault();
+    try {
+      state.toolShortcuts = validateToolShortcuts(shortcutDraft());
+      localStorage.setItem(SHORTCUT_STORAGE_KEY, JSON.stringify(state.toolShortcuts));
+      updateToolShortcutHints();
+      els.shortcutDialog.close();
+      setStatus('Castle shortcuts saved');
+    } catch (error) {
+      els.shortcutError.textContent = error.message;
+    }
+  }
+
+  function toolForShortcut(key) {
+    const normalized = normalizeShortcutKey(key);
+    if (!normalized) return null;
+    return Object.entries(state.toolShortcuts).find(([_tool, keys]) => keys.includes(normalized))?.[0] || null;
+  }
+
+  function selectItem(type) {
+    state.currentItemType = Number(type);
+    state.selected.clear();
+    const preferredTool = allowsMultiplePerStep(type) ? state.lastPlacementTool : 'single';
+    setTool(preferredTool);
+    renderPalette();
+    updateSelectedItemInfo();
+    setStatus(`Selected ${itemName(type)} — click the map to place`);
+  }
+
+  function updateSelectedItemInfo() {
+    if (state.currentItemType == null) {
+      els.itemInfo.textContent = 'Select an item';
+      els.setSkin.disabled = true;
+      els.removeSkin.disabled = true;
+      return;
+    }
+    const type = state.currentItemType;
+    const info = itemInfo(type);
+    const [w, h] = itemSize(type);
+    const maximum = maxAmount(type);
+    const max = maximum == null ? '∞' : maximum;
+    const kind = isUnitType(type) ? 'rallypoint · ' : '';
+    const sizeLabel = type === geometry.KEEP_ITEM_TYPE ? `${w}×${h} + forced 5×5 Stockpile` : `${w}×${h}`;
+    els.itemInfo.textContent = `${itemName(type)} [${type}] · ${kind}${sizeLabel} · overlap: ${overlapMode(type)} · max: ${max}`;
+    els.setSkin.disabled = false;
+    els.removeSkin.disabled = !state.customSkinTypes.has(String(type));
+  }
+
+  function getPaletteGroups() {
+    const categorized = new Set();
+    const groups = [];
+    for (const [category, ids] of Object.entries(state.categories)) {
+      const valid = (ids || []).map(String).filter(id => state.constants[id]);
+      valid.forEach(id => categorized.add(id));
+      groups.push([category, valid]);
+    }
+    const others = Object.keys(state.constants).filter(id => !categorized.has(id)).sort((a, b) => Number(a) - Number(b));
+    if (others.length) groups.push(['Other', others]);
+    return groups;
+  }
+
+  function renderPalette() {
+    const groups = getPaletteGroups();
+    if (!groups.length) {
+      els.palette.innerHTML = '<div class="paletteEmpty">No item categories configured.</div>';
+      return;
+    }
+    if (!state.activeCategory || !groups.some(([name]) => name === state.activeCategory)) {
+      state.activeCategory = groups[0][0];
+    }
+
+    els.palette.innerHTML = '';
+    const categoryButtons = document.createElement('div');
+    categoryButtons.className = 'paletteCategoryButtons';
+    for (const [category, ids] of groups) {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'paletteCategoryButton';
+      if (category === state.activeCategory) button.classList.add('active');
+      button.textContent = category;
+      button.title = `${category} (${ids.length})`;
+      button.addEventListener('click', () => {
+        state.activeCategory = category;
+        renderPalette();
+      });
+      categoryButtons.appendChild(button);
+    }
+    els.palette.appendChild(categoryButtons);
+
+    const active = groups.find(([name]) => name === state.activeCategory) || groups[0];
+    const items = document.createElement('div');
+    items.className = 'paletteItems';
+    const visible = active[1];
+
+    if (!visible.length) {
+      const empty = document.createElement('div');
+      empty.className = 'paletteEmpty';
+      empty.textContent = `No items in ${active[0]}.`;
+      items.appendChild(empty);
+    }
+
+    for (const id of visible) {
+      const info = state.constants[id];
+      const row = document.createElement('button');
+      row.type = 'button';
+      row.className = 'paletteItem';
+      if (state.currentItemType === Number(id)) row.classList.add('selected');
+      row.dataset.itemType = id;
+
+      const thumb = document.createElement('span');
+      thumb.className = 'paletteThumb';
+      if (state.skins[id]) {
+        const img = document.createElement('img');
+        img.src = state.skins[id];
+        img.alt = '';
+        thumb.appendChild(img);
+      } else {
+        thumb.textContent = id;
+        thumb.style.background = stableColor(Number(id));
+        thumb.style.color = '#111';
+      }
+
+      const name = document.createElement('span');
+      name.className = 'paletteItemName';
+      name.textContent = info.name || `Item ${id}`;
+      const meta = document.createElement('span');
+      meta.className = 'paletteItemMeta';
+      const size = itemSize(Number(id));
+      meta.textContent = Number(id) === geometry.KEEP_ITEM_TYPE
+        ? `${size[0]}×${size[1]} + SP`
+        : `${size[0]}×${size[1]}`;
+      row.append(thumb, name, meta);
+      row.addEventListener('click', () => selectItem(Number(id)));
+      items.appendChild(row);
+    }
+    els.palette.appendChild(items);
+  }
+
+  function renderBuildList() {
+    updatePopulationPanel();
+    els.buildList.innerHTML = '';
+    const activeStep = Number.isInteger(state.insertionFrameIndex) && state.insertionFrameIndex >= 0 && state.insertionFrameIndex < frames().length
+      ? state.insertionFrameIndex
+      : null;
+    els.buildSlider.min = '1';
+    els.buildSlider.max = String(Math.max(1, frames().length));
+    els.buildSlider.value = String(activeStep == null ? 1 : activeStep + 1);
+    els.buildSlider.disabled = frames().length === 0;
+    els.buildSliderValue.textContent = activeStep == null ? 'No step selected' : `Step ${activeStep + 1}`;
+    const rallypointCount = state.document.miscItems.filter(item => isUnitType(item.itemType)).length;
+    els.buildCount.textContent = `${frames().length} step${frames().length === 1 ? '' : 's'}`;
+    frames().forEach((frame, fi) => {
+      const type = Number(frame.itemType);
+      const count = (frame.tilePositionOfsets || []).length;
+      const row = document.createElement('div');
+      row.className = 'buildStep';
+      row.draggable = true;
+      row.dataset.index = String(fi);
+      const allSelected = count > 0 && frame.tilePositionOfsets.every((_off, oi) => state.selected.has(frameRefKey(fi, oi)));
+      if (allSelected || fi === state.insertionFrameIndex) row.classList.add('selected');
+      if (activeStep != null && fi > activeStep) row.classList.add('future');
+      if (fi === activeStep) {
+        row.classList.add('current');
+        row.setAttribute('aria-current', 'step');
+      }
+
+      const index = document.createElement('span');
+      index.className = 'buildIndex';
+      index.textContent = String(fi + 1);
+      const name = document.createElement('span');
+      name.className = 'buildName';
+      name.textContent = itemName(type);
+      name.title = `${itemName(type)} [${type}]`;
+      const right = document.createElement('div');
+      right.className = 'buildStepControls';
+      const meta = document.createElement('span');
+      meta.className = 'buildMeta';
+      meta.textContent = count > 1 ? `×${count}` : '';
+      const up = document.createElement('button');
+      up.type = 'button'; up.textContent = '↑'; up.title = 'Move selected step(s) up';
+      const down = document.createElement('button');
+      down.type = 'button'; down.textContent = '↓'; down.title = 'Move selected step(s) down';
+      up.addEventListener('click', e => { e.stopPropagation(); moveBuildSelection(fi, -1); });
+      down.addEventListener('click', e => { e.stopPropagation(); moveBuildSelection(fi, 1); });
+      right.append(meta, up, down);
+      row.append(index, name, right);
+
+      row.addEventListener('click', event => {
+        const selectedFrames = updateBuildSelection(fi, event);
+        renderBuildList();
+        scheduleDraw();
+        setStatus(selectedFrames.length > 1
+          ? `Selected ${selectedFrames.length} build steps — drag or use the arrows to move them together`
+          : `Selected build step ${fi + 1} — new buildings will be inserted after it`);
+      });
+      row.addEventListener('dragstart', e => {
+        let selectedFrames = selectedBuildFrameIndexes();
+        if (!selectedFrames.includes(fi)) {
+          selectBuildFrame(fi);
+          selectedFrames = [fi];
+          renderBuildList();
+        }
+        state.dragFrameIndexes = selectedFrames;
+        for (const candidate of els.buildList.querySelectorAll('.buildStep')) {
+          candidate.classList.toggle('dragging', selectedFrames.includes(Number(candidate.dataset.index)));
+        }
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/plain', selectedFrames.join(','));
+      });
+      row.addEventListener('dragend', () => {
+        state.dragFrameIndexes = [];
+        for (const candidate of els.buildList.querySelectorAll('.buildStep')) candidate.classList.remove('dragging');
+      });
+      row.addEventListener('dragover', e => { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; });
+      row.addEventListener('drop', e => {
+        e.preventDefault();
+        const dragged = state.dragFrameIndexes.length
+          ? state.dragFrameIndexes
+          : String(e.dataTransfer.getData('text/plain')).split(',').map(Number);
+        moveBuildSteps(dragged, fi);
+      });
+      els.buildList.appendChild(row);
+    });
+  }
+
+  function selectBuildStepFromSlider() {
+    if (els.buildSlider.disabled || frames().length === 0) return;
+    const frameIndex = Math.max(0, Math.min(frames().length - 1, Number(els.buildSlider.value) - 1));
+    selectBuildFrame(frameIndex);
+    renderBuildList();
+    els.buildList.querySelector(`.buildStep[data-index="${frameIndex}"]`)?.scrollIntoView({ block: 'nearest' });
+    scheduleDraw();
+    setStatus(`Selected build step ${frameIndex + 1} — new buildings will be inserted after it`);
+  }
+
+  function moveBuildSteps(indexes, targetIndex) {
+    if (!indexes.length) return false;
+    pushUndo();
+    const result = geometry.moveBuildSteps(frames(), indexes, targetIndex);
+    if (!result.moved) {
+      state.undo.pop();
+      return false;
+    }
+    const movedIndexes = Array.from(
+      { length: result.endIndex - result.startIndex + 1 },
+      (_unused, index) => result.startIndex + index
+    );
+    selectBuildFrames(movedIndexes, result.endIndex);
+    changed(`${movedIndexes.length} build step${movedIndexes.length === 1 ? '' : 's'} moved together`);
+    return true;
+  }
+
+  function moveBuildSelection(clickedIndex, direction) {
+    let selectedFrames = selectedBuildFrameIndexes();
+    if (!selectedFrames.includes(clickedIndex)) {
+      selectBuildFrame(clickedIndex);
+      selectedFrames = [clickedIndex];
+    }
+    const selected = new Set(selectedFrames);
+    let target = direction < 0 ? Math.min(...selectedFrames) - 1 : Math.max(...selectedFrames) + 1;
+    while (target >= 0 && target < frames().length && selected.has(target)) target += direction;
+    if (target < 0 || target >= frames().length) return false;
+    return moveBuildSteps(selectedFrames, target);
+  }
+
+  function loadSkinImages() {
+    state.skinImages = {};
+    for (const [id, url] of Object.entries(state.skins)) {
+      const img = new Image();
+      img.onload = scheduleDraw;
+      img.src = url;
+      state.skinImages[id] = img;
+    }
+  }
+
+  function applyLoadedSkins(loaded) {
+    state.skins = loaded?.skins || loaded || {};
+    state.customSkinTypes = new Set((loaded?.customSkinTypes || []).map(String));
+    loadSkinImages();
+  }
+
+  async function setSkin() {
+    if (state.currentItemType == null) return;
+    const id = String(state.currentItemType);
+    const url = await window.electronAPI.chooseAivSkin(state.currentItemType);
+    if (!url) return;
+    state.skins[id] = url;
+    state.customSkinTypes.add(id);
+    loadSkinImages();
+    renderPalette();
+    updateSelectedItemInfo();
+    setStatus(`Set PNG skin for ${itemName(state.currentItemType)}`);
+  }
+
+  async function removeSkin() {
+    if (state.currentItemType == null) return;
+    await window.electronAPI.removeAivSkin(state.currentItemType);
+    applyLoadedSkins(await window.electronAPI.loadAivSkins());
+    renderPalette();
+    updateSelectedItemInfo();
+    scheduleDraw();
+    setStatus(`Removed skin for ${itemName(state.currentItemType)}`);
+  }
+
+  function resizeCanvas() {
+    const rect = els.host.getBoundingClientRect();
+    if (rect.width <= 0 || rect.height <= 0) return;
+    const dpr = Math.min(MAX_RENDER_DPR, Math.max(1, window.devicePixelRatio || 1));
+    const width = Math.floor(rect.width);
+    const height = Math.floor(rect.height);
+    if (state.canvasWidth === width && state.canvasHeight === height && els.canvas.width === Math.floor(width * dpr)) return;
+    state.canvasWidth = width;
+    state.canvasHeight = height;
+    state.renderDpr = dpr;
+    els.canvas.width = Math.floor(width * dpr);
+    els.canvas.height = Math.floor(height * dpr);
+    staticCacheCanvas.width = els.canvas.width;
+    staticCacheCanvas.height = els.canvas.height;
+    futureCacheCanvas.width = els.canvas.width;
+    futureCacheCanvas.height = els.canvas.height;
+    els.canvas.style.width = `${width}px`;
+    els.canvas.style.height = `${height}px`;
+    displayCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    staticCacheCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    futureCacheCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    state.staticCacheDirty = true;
+    if (!state.centeredOnce) {
+      state.centeredOnce = true;
+      centerMap();
+    } else {
+      clampPan();
+      scheduleDraw();
+    }
+  }
+
+  function centerMap() {
+    if (!state.canvasWidth || !state.canvasHeight) resizeCanvas();
+    const map = GRID * state.cell;
+    state.panX = (state.canvasWidth - map) / 2;
+    state.panY = (state.canvasHeight - map) / 2;
+    scheduleDraw();
+  }
+
+  function clampPan() {
+    const map = GRID * state.cell;
+    const margin = 40;
+    if (map <= state.canvasWidth) state.panX = (state.canvasWidth - map) / 2;
+    else state.panX = Math.min(margin, Math.max(state.canvasWidth - map - margin, state.panX));
+    if (map <= state.canvasHeight) state.panY = (state.canvasHeight - map) / 2;
+    else state.panY = Math.min(margin, Math.max(state.canvasHeight - map - margin, state.panY));
+  }
+
+  function invalidatePlacementCache() {
+    state.placementCache = null;
+    state.staticCacheDirty = true;
+  }
+
+  function scheduleDraw(staticChanged = true) {
+    if (staticChanged) state.staticCacheDirty = true;
+    if (state.renderPending) return;
+    state.renderPending = true;
+    requestAnimationFrame(() => {
+      state.renderPending = false;
+      draw();
+    });
+  }
+
+  function updateBlueprintControls() {
+    const loaded = Boolean(state.blueprintImage);
+    els.blueprintControls.hidden = !loaded;
+    els.showBlueprint.disabled = !loaded;
+    els.blueprintOpacity.disabled = !loaded;
+    els.showBlueprint.checked = state.blueprintVisible;
+    els.blueprintOpacity.value = String(Math.round(state.blueprintOpacity * 100));
+    els.blueprintOpacityValue.textContent = `${Math.round(state.blueprintOpacity * 100)}%`;
+  }
+
+  async function chooseBlueprint() {
+    if (blueprintDialogOpen) return false;
+    blueprintDialogOpen = true;
+    try {
+      const selection = await window.electronAPI.chooseCastleBackground();
+      if (!selection) return false;
+      loadBlueprintSelection(selection);
+      return true;
+    } catch (error) {
+      setStatus(`Could not load background: ${error.message}`);
+      return false;
+    } finally {
+      blueprintDialogOpen = false;
+    }
+  }
+
+  function clearBlueprint({ announce = true } = {}) {
+    state.blueprintLoadToken += 1;
+    state.blueprintImage = null;
+    state.blueprintFileName = '';
+    updateBlueprintControls();
+    scheduleDraw();
+    if (announce) setStatus('Temporary blueprint cleared');
+  }
+
+  function loadBlueprintSelection(selection) {
+    if (!selection?.dataUrl) return;
+    const token = ++state.blueprintLoadToken;
+    const image = new Image();
+    image.onload = () => {
+      if (token !== state.blueprintLoadToken) return;
+      state.blueprintImage = image;
+      state.blueprintFileName = selection.fileName || 'background image';
+      state.blueprintVisible = true;
+      updateBlueprintControls();
+      scheduleDraw();
+      setStatus(`Temporary blueprint loaded: ${state.blueprintFileName}`);
+    };
+    image.onerror = () => {
+      if (token !== state.blueprintLoadToken) return;
+      setStatus('Could not open the selected blueprint image');
+    };
+    image.src = selection.dataUrl;
+  }
+
+  function drawBlueprint(mapSize) {
+    if (!state.blueprintVisible || !imageReady(state.blueprintImage)) return;
+    ctx.save();
+    ctx.globalAlpha = state.blueprintOpacity;
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
+    ctx.drawImage(state.blueprintImage, state.panX, state.panY, mapSize, mapSize);
+    ctx.restore();
+  }
+
+  function clearCacheContext(cacheCtx, cacheCanvas) {
+    cacheCtx.save();
+    cacheCtx.setTransform(1, 0, 0, 1, 0, 0);
+    cacheCtx.clearRect(0, 0, cacheCanvas.width, cacheCanvas.height);
+    cacheCtx.restore();
+  }
+
+  function rebuildStaticCache() {
+    clearCacheContext(staticCacheCtx, staticCacheCanvas);
+    clearCacheContext(futureCacheCtx, futureCacheCanvas);
+
+    ctx = staticCacheCtx;
+    ctx.clearRect(0, 0, state.canvasWidth, state.canvasHeight);
+    ctx.fillStyle = '#101216';
+    ctx.fillRect(0, 0, state.canvasWidth, state.canvasHeight);
+    const mapSize = GRID * state.cell;
+    if (mapBackground.complete && mapBackground.naturalWidth) {
+      ctx.drawImage(mapBackground, state.panX, state.panY, mapSize, mapSize);
+    } else {
+      ctx.fillStyle = css('--map-bg', '#171a1f');
+      ctx.fillRect(state.panX, state.panY, mapSize, mapSize);
+    }
+
+    drawBlueprint(mapSize);
+    if (els.showCompatibility.checked) drawCompatibilityGuide(mapSize);
+    drawGrid(mapSize);
+
+    const movingRefs = state.gesture === 'move' ? state.moveStartOffsets : null;
+    const activeStep = Number.isInteger(state.insertionFrameIndex) ? state.insertionFrameIndex : null;
+    const futurePlacements = [];
+    const unitPlacements = [];
+    for (const placement of placementRefs()) {
+      if (movingRefs?.has(placement.ref)) continue;
+      if (placement.kind === 'unit') {
+        unitPlacements.push(placement);
+      } else if (activeStep != null && placement.fi > activeStep) {
+        futurePlacements.push(placement);
+      } else {
+        drawPlacement(placement.type, placement.off, state.selected.has(placement.ref));
+      }
+    }
+
+    if (futurePlacements.length) {
+      ctx = futureCacheCtx;
+      for (const placement of futurePlacements) {
+        drawPlacement(placement.type, placement.off);
+      }
+      futureCacheCtx.save();
+      futureCacheCtx.globalCompositeOperation = 'source-atop';
+      futureCacheCtx.fillStyle = FUTURE_TINT;
+      futureCacheCtx.fillRect(0, 0, state.canvasWidth, state.canvasHeight);
+      futureCacheCtx.restore();
+
+      staticCacheCtx.save();
+      staticCacheCtx.setTransform(1, 0, 0, 1, 0, 0);
+      staticCacheCtx.globalAlpha = FUTURE_OPACITY;
+      staticCacheCtx.filter = FUTURE_FILTER;
+      staticCacheCtx.drawImage(futureCacheCanvas, 0, 0);
+      staticCacheCtx.restore();
+
+      ctx = staticCacheCtx;
+      for (const placement of futurePlacements) {
+        if (state.selected.has(placement.ref)) drawPlacementOutline(placement.type, placement.off);
+      }
+    }
+
+    ctx = staticCacheCtx;
+    for (const placement of unitPlacements) {
+      drawPlacement(placement.type, placement.off, state.selected.has(placement.ref), null, 1, false, placement.number);
+    }
+
+    ctx = displayCtx;
+    state.staticCacheDirty = false;
+  }
+
+  function draw() {
+    if (!state.canvasWidth || !state.canvasHeight) return;
+    if (state.staticCacheDirty) rebuildStaticCache();
+
+    ctx = displayCtx;
+    displayCtx.save();
+    displayCtx.setTransform(1, 0, 0, 1, 0, 0);
+    displayCtx.drawImage(staticCacheCanvas, 0, 0);
+    displayCtx.restore();
+
+    const proposed = state.gesture === 'move' ? proposedMove() : null;
+
+    if (proposed) {
+      const moveCheck = validateMove(proposed);
+      for (const [ref, off] of proposed.entries()) {
+        if (!refExists(ref)) continue;
+        const parsed = parseRef(ref);
+        const number = parsed.kind === 'unit' ? Number(state.document.miscItems[parsed.mi].number) : null;
+        drawPlacement(refType(ref), off, true, moveCheck.ok ? css('--selected', '#ffb24d') : css('--danger', '#d75f5f'), 0.82, false, number);
+      }
+    }
+
+    if ((state.gesture === 'brush' || state.gesture === 'line') && state.currentItemType != null) {
+      for (const off of state.brushOffsets) drawPlacement(state.currentItemType, off, false, css('--valid', '#55c271'), 0.62, true);
+    }
+
+    if (state.hoverTile && state.currentItemType != null && (state.tool === 'single' || state.tool === 'brush' || state.tool === 'line') && state.gesture !== 'brush' && state.gesture !== 'line') {
+      const off = xyToOffset(state.hoverTile.x, state.hoverTile.y);
+      const result = validatePlacement(state.currentItemType, off);
+      const color = !result.ok ? css('--danger', '#d75f5f') : result.replacements.size ? css('--replace', '#dda94b') : css('--valid', '#55c271');
+      drawPlacement(state.currentItemType, off, false, color, 0.48, true);
+    }
+
+    if (state.tool === 'copy' && state.copyBuffer && state.hoverTile && state.gesture !== 'copy-marquee') {
+      const result = validateCopyAt(state.hoverTile);
+      const color = !result.ok ? css('--danger', '#d75f5f') : result.replacements.size ? css('--replace', '#dda94b') : css('--valid', '#55c271');
+      for (const entry of result.proposal?.entries || []) {
+        drawPlacementXY(entry.type, entry.x, entry.y, false, color, 0.55, true);
+      }
+    }
+
+    if ((state.gesture === 'select-marquee' || state.gesture === 'copy-marquee' || state.gesture === 'delete-marquee') && state.dragStartScreen && state.marqueeEnd) {
+      const x = Math.min(state.dragStartScreen.x, state.marqueeEnd.x);
+      const y = Math.min(state.dragStartScreen.y, state.marqueeEnd.y);
+      const w = Math.abs(state.dragStartScreen.x - state.marqueeEnd.x);
+      const h = Math.abs(state.dragStartScreen.y - state.marqueeEnd.y);
+      const deleting = state.gesture === 'delete-marquee';
+      const copying = state.gesture === 'copy-marquee';
+      ctx.save();
+      ctx.fillStyle = deleting ? 'rgba(215,95,95,.16)' : copying ? 'rgba(174,120,255,.16)' : 'rgba(58,123,213,.15)';
+      ctx.strokeStyle = deleting ? css('--danger', '#d75f5f') : copying ? css('--copy', '#ae78ff') : css('--accent', '#3a7bd5');
+      ctx.lineWidth = 2;
+      ctx.setLineDash([6, 4]);
+      ctx.fillRect(x, y, w, h);
+      ctx.strokeRect(x, y, w, h);
+      ctx.restore();
+    }
+    if (els.showCompatibility.checked) drawCompatibilityOriginMarker();
+  }
+
+  function drawCompatibilityGuide(mapSize) {
+    const margin = 14 * state.cell;
+    const safeSize = mapSize - margin * 2;
+    ctx.save();
+    ctx.fillStyle = 'rgba(194, 67, 60, .20)';
+    ctx.fillRect(state.panX, state.panY, mapSize, margin);
+    ctx.fillRect(state.panX, state.panY + mapSize - margin, mapSize, margin);
+    ctx.fillRect(state.panX, state.panY + margin, margin, safeSize);
+    ctx.fillRect(state.panX + mapSize - margin, state.panY + margin, margin, safeSize);
+
+    ctx.strokeStyle = 'rgba(255, 190, 74, .95)';
+    ctx.lineWidth = Math.max(2, Math.min(4, state.cell / 2));
+    ctx.strokeRect(
+      state.panX + margin,
+      state.panY + margin,
+      safeSize,
+      safeSize
+    );
+
+    const keep = offsetToXY(DEFAULT_KEEP_OFFSET);
+    const keepScreenX = state.panX + keep.x * state.cell;
+    const keepScreenY = state.panY + (99 - keep.y) * state.cell;
+    ctx.fillStyle = 'rgba(64, 184, 108, .72)';
+    ctx.fillRect(keepScreenX, keepScreenY, state.cell, state.cell);
+    ctx.strokeStyle = 'rgba(221, 255, 230, .98)';
+    ctx.lineWidth = Math.max(1, Math.min(3, state.cell / 3));
+    ctx.strokeRect(keepScreenX + .5, keepScreenY + .5, Math.max(0, state.cell - 1), Math.max(0, state.cell - 1));
+    ctx.restore();
+  }
+
+  function drawCompatibilityOriginMarker() {
+    const keep = offsetToXY(DEFAULT_KEEP_OFFSET);
+    const x = state.panX + keep.x * state.cell;
+    const y = state.panY + (99 - keep.y) * state.cell;
+    ctx.save();
+    ctx.strokeStyle = 'rgba(102, 255, 155, .98)';
+    ctx.lineWidth = Math.max(2, Math.min(4, state.cell / 2));
+    ctx.setLineDash([Math.max(2, state.cell / 2), Math.max(2, state.cell / 3)]);
+    ctx.strokeRect(x + 1, y + 1, Math.max(0, state.cell - 2), Math.max(0, state.cell - 2));
+    ctx.restore();
+  }
+
+  function drawGrid(mapSize) {
+    const minor = css('--grid', '#272c34');
+    const major = css('--grid-major', '#414956');
+    ctx.save();
+    ctx.lineWidth = 1;
+    const minorPath = new Path2D();
+    const majorPath = new Path2D();
+    for (let i = 0; i <= GRID; i++) {
+      const p = Math.round(state.panX + i * state.cell) + 0.5;
+      const q = Math.round(state.panY + i * state.cell) + 0.5;
+      const path = i % 10 === 0 ? majorPath : minorPath;
+      path.moveTo(p, state.panY);
+      path.lineTo(p, state.panY + mapSize);
+      path.moveTo(state.panX, q);
+      path.lineTo(state.panX + mapSize, q);
+    }
+    ctx.strokeStyle = minor;
+    ctx.stroke(minorPath);
+    ctx.strokeStyle = major;
+    ctx.stroke(majorPath);
+    ctx.restore();
+  }
+
+  function drawPlacement(type, off, selected = false, outlineOverride = null, alpha = 1, preview = false, unitNumber = null) {
+    const { x, y } = offsetToXY(off);
+    drawPlacementXY(type, x, y, selected, outlineOverride, alpha, preview, unitNumber);
+  }
+
+  function drawPlacementOutline(type, off, color = css('--selected', '#ffb24d')) {
+    ctx.save();
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 3;
+    for (const rect of screenRectsForPlacement(type, off)) {
+      ctx.strokeRect(rect.x + .5, rect.y + .5, Math.max(0, rect.w - 1), Math.max(0, rect.h - 1));
+    }
+    ctx.restore();
+  }
+
+  function screenRectForFootprintRect(rect) {
+    return {
+      x: state.panX + rect.left * state.cell,
+      y: state.panY + (99 - rect.top) * state.cell,
+      w: (rect.right - rect.left + 1) * state.cell,
+      h: (rect.top - rect.bottom + 1) * state.cell
+    };
+  }
+
+  function imageReady(image) {
+    return image?.complete && image.naturalWidth;
+  }
+
+  function drawKeepCompositeXY(x, y, selected, outlineOverride, alpha, preview) {
+    const footprint = footprintRectsAtXY(geometry.KEEP_ITEM_TYPE, x, y);
+    const keepParts = footprint.filter(rect => rect.part === 'keep');
+    const stockpilePart = footprint.find(rect => rect.part === 'stockpile');
+    const keepImage = state.skinImages[String(geometry.KEEP_ITEM_TYPE)] || bundledKeepImage;
+    const stockpileImage = state.skinImages[String(geometry.FORCED_STOCKPILE_ITEM_TYPE)] || bundledStockpileImage;
+    const keepArtRect = screenRectForXY(geometry.KEEP_ITEM_TYPE, x, y);
+    const stockpileRect = screenRectForFootprintRect(stockpilePart);
+    const screenParts = footprint.map(screenRectForFootprintRect);
+
+    ctx.save();
+    ctx.globalAlpha = alpha;
+
+    if (imageReady(keepImage)) {
+      ctx.save();
+      ctx.beginPath();
+      for (const part of keepParts.map(screenRectForFootprintRect)) ctx.rect(part.x, part.y, part.w, part.h);
+      ctx.clip();
+      ctx.drawImage(keepImage, keepArtRect.x, keepArtRect.y, keepArtRect.w, keepArtRect.h);
+      ctx.restore();
+    } else {
+      ctx.fillStyle = stableColor(geometry.KEEP_ITEM_TYPE);
+      for (const part of keepParts.map(screenRectForFootprintRect)) ctx.fillRect(part.x, part.y, part.w, part.h);
+    }
+
+    if (imageReady(stockpileImage)) {
+      ctx.drawImage(stockpileImage, stockpileRect.x, stockpileRect.y, stockpileRect.w, stockpileRect.h);
+    } else {
+      ctx.fillStyle = stableColor(geometry.FORCED_STOCKPILE_ITEM_TYPE);
+      ctx.fillRect(stockpileRect.x, stockpileRect.y, stockpileRect.w, stockpileRect.h);
+    }
+
+    if (preview) {
+      ctx.fillStyle = outlineOverride || css('--valid', '#55c271');
+      ctx.globalAlpha = alpha * 0.24;
+      for (const part of screenParts) ctx.fillRect(part.x, part.y, part.w, part.h);
+      ctx.globalAlpha = alpha;
+    }
+
+    ctx.strokeStyle = outlineOverride || (selected ? css('--selected', '#ffb24d') : '#444a54');
+    ctx.lineWidth = selected || outlineOverride ? 3 : 1;
+    for (const part of screenParts) {
+      ctx.strokeRect(part.x + .5, part.y + .5, Math.max(0, part.w - 1), Math.max(0, part.h - 1));
+    }
+
+    ctx.restore();
+  }
+
+  function drawPlacementXY(type, x, y, selected = false, outlineOverride = null, alpha = 1, preview = false, unitNumber = null) {
+    if (Number(type) === geometry.KEEP_ITEM_TYPE) {
+      drawKeepCompositeXY(x, y, selected, outlineOverride, alpha, preview);
+      return;
+    }
+    const r = screenRectForXY(type, x, y);
+    const img = state.skinImages[String(type)];
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    if (img?.complete && img.naturalWidth) {
+      ctx.drawImage(img, r.x, r.y, r.w, r.h);
+      if (preview) {
+        ctx.fillStyle = outlineOverride || css('--valid', '#55c271');
+        ctx.globalAlpha = alpha * 0.24;
+        ctx.fillRect(r.x, r.y, r.w, r.h);
+        ctx.globalAlpha = alpha;
+      }
+    } else {
+      ctx.fillStyle = stableColor(type);
+      ctx.fillRect(r.x, r.y, r.w, r.h);
+    }
+
+    if (!isUnitType(type) || selected || outlineOverride) {
+      ctx.strokeStyle = outlineOverride || (selected ? css('--selected', '#ffb24d') : '#444a54');
+      ctx.lineWidth = selected || outlineOverride ? 3 : 1;
+      ctx.strokeRect(r.x + .5, r.y + .5, Math.max(0, r.w - 1), Math.max(0, r.h - 1));
+    }
+
+    if (unitNumber != null && els.showUnitNumbers.checked && !preview) {
+      const label = String(unitNumber);
+      const fontSize = Math.max(8, Math.min(12, state.cell));
+      ctx.font = `bold ${fontSize}px monospace`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = 'rgba(0,0,0,.9)';
+      ctx.strokeText(label, r.x + r.w / 2, r.y + r.h / 2);
+      ctx.fillStyle = '#fff';
+      ctx.fillText(label, r.x + r.w / 2, r.y + r.h / 2);
+      ctx.textAlign = 'start';
+      ctx.textBaseline = 'alphabetic';
+    }
+
+    ctx.restore();
+  }
+
+  function css(name, fallback) {
+    return getComputedStyle(document.documentElement).getPropertyValue(name).trim() || fallback;
+  }
+
+  function pointerPosition(event) {
+    const rect = els.canvas.getBoundingClientRect();
+    return { x: event.clientX - rect.left, y: event.clientY - rect.top };
+  }
+
+  function screenToTile(pos) {
+    const localX = (pos.x - state.panX) / state.cell;
+    const localY = (pos.y - state.panY) / state.cell;
+    const x = Math.floor(localX);
+    const row = Math.floor(localY);
+    const y = 99 - row;
+    if (x < 0 || x > 99 || y < 0 || y > 99) return null;
+    return { x, y };
+  }
+
+  function onPointerDown(event) {
+    if (event.button === 1) {
+      event.preventDefault();
+      state.panning = true;
+      state.pointerId = event.pointerId;
+      state.panStart = { ...pointerPosition(event), panX: state.panX, panY: state.panY };
+      els.canvas.classList.add('panning');
+      els.canvas.setPointerCapture(event.pointerId);
+      return;
+    }
+    if (event.button !== 0) return;
+    const pos = pointerPosition(event);
+    const tile = screenToTile(pos);
+    if (!tile) return;
+    els.canvas.focus();
+    state.pointerId = event.pointerId;
+    els.canvas.setPointerCapture(event.pointerId);
+    state.dragStartTile = tile;
+    state.dragStartScreen = pos;
+    state.marqueeEnd = pos;
+
+    if (state.tool === 'single') {
+      placeSingle(tile);
+      state.gesture = null;
+      return;
+    }
+    if (state.tool === 'brush') {
+      if (state.currentItemType == null) return setStatus('Choose an item first.');
+      state.gesture = 'brush';
+      state.brushOffsets = [];
+      state.brushSeen = new Set();
+      state.brushReplacements = new Set();
+      state.brushLastTile = tile;
+      brushAdd(tile);
+      return;
+    }
+    if (state.tool === 'line') {
+      if (state.currentItemType == null) return setStatus('Choose an item first.');
+      state.gesture = 'line';
+      state.brushOffsets = [];
+      state.brushSeen = new Set();
+      state.brushReplacements = new Set();
+      state.brushLastTile = tile;
+      brushAdd(tile);
+      return;
+    }
+    if (state.tool === 'copy') {
+      if (state.copyBuffer) {
+        placeCopy(tile);
+        state.gesture = null;
+        return;
+      }
+      state.selected.clear();
+      state.gesture = 'copy-marquee';
+      scheduleDraw();
+      return;
+    }
+    if (state.tool === 'delete') {
+      state.gesture = 'delete-marquee';
+      scheduleDraw();
+      return;
+    }
+    if (state.tool === 'select') {
+      const hit = topmostRefAtTile(tile);
+      if (hit) {
+        if (!state.selected.has(hit)) {
+          if (!event.shiftKey) state.selected.clear();
+          state.selected.add(hit);
+        }
+        activateBuildStepForRefs(state.selected);
+        state.currentItemType = null;
+        state.gesture = 'move';
+        state.moveStartOffsets = new Map();
+        for (const ref of state.selected) if (refExists(ref)) state.moveStartOffsets.set(ref, refOffset(ref));
+        state.moveDelta = { x: 0, y: 0 };
+        renderPalette();
+        updateSelectedItemInfo();
+        renderBuildList();
+        scheduleDraw();
+      } else {
+        if (!event.shiftKey) {
+          state.selected.clear();
+        }
+        state.gesture = 'select-marquee';
+        renderBuildList();
+        scheduleDraw();
+      }
+    }
+  }
+
+  function onPointerMove(event) {
+    const pos = pointerPosition(event);
+    if (state.panning && state.panStart) {
+      state.panX = state.panStart.panX + pos.x - state.panStart.x;
+      state.panY = state.panStart.panY + pos.y - state.panStart.y;
+      clampPan();
+      scheduleDraw();
+      return;
+    }
+
+    const tile = screenToTile(pos);
+    const previousTile = state.hoverTile;
+    const tileChanged = previousTile?.x !== tile?.x || previousTile?.y !== tile?.y;
+    const hadHoverPreview = Boolean(previousTile) && (
+      (state.currentItemType != null && isPlacementTool(state.tool)) ||
+      (state.tool === 'copy' && state.copyBuffer)
+    );
+    state.hoverTile = tile;
+    if (tileChanged && tile) {
+      const off = xyToOffset(tile.x, tile.y);
+      if (state.currentItemType != null && isPlacementTool(state.tool)) {
+        const result = validatePlacement(state.currentItemType, off);
+        setStatus(result.ok ? `x=${tile.x}, y=${tile.y}, offset=${off}` : result.reason);
+      } else if (state.tool === 'copy' && state.copyBuffer) {
+        const result = validateCopyAt(tile);
+        setStatus(result.ok ? `Copy ready at x=${tile.x}, y=${tile.y} — click to place` : result.reason);
+      } else {
+        setStatus(`x=${tile.x}, y=${tile.y}, offset=${off}`);
+      }
+    } else if (tileChanged) setStatus('Outside map');
+
+    if (state.gesture === 'brush' && tile && tileChanged) {
+      const from = state.brushLastTile || tile;
+      for (const p of geometry.lineTiles(from, tile)) brushAdd(p);
+      state.brushLastTile = tile;
+    } else if (state.gesture === 'line' && tile && state.dragStartTile && tileChanged) {
+      state.brushOffsets = [];
+      state.brushSeen = new Set();
+      state.brushReplacements = new Set();
+      for (const p of geometry.lineTiles(state.dragStartTile, tile)) brushAdd(p);
+    } else if (state.gesture === 'select-marquee' || state.gesture === 'copy-marquee' || state.gesture === 'delete-marquee') {
+      state.marqueeEnd = pos;
+      scheduleDraw(false);
+    } else if (state.gesture === 'move' && tile && state.dragStartTile) {
+      const nextDelta = { x: tile.x - state.dragStartTile.x, y: tile.y - state.dragStartTile.y };
+      if (nextDelta.x === state.moveDelta.x && nextDelta.y === state.moveDelta.y) return;
+      state.moveDelta = nextDelta;
+      const result = validateMove(proposedMove());
+      if (!result.ok) setStatus(result.reason);
+      scheduleDraw(false);
+    } else if (tileChanged) {
+      const hasHoverPreview = Boolean(tile) && (
+        (state.currentItemType != null && isPlacementTool(state.tool)) ||
+        (state.tool === 'copy' && state.copyBuffer)
+      );
+      if (hadHoverPreview || hasHoverPreview) scheduleDraw(false);
+    }
+  }
+
+  function onPointerUp(event) {
+    if (state.panning && event.pointerId === state.pointerId) {
+      state.panning = false;
+      state.panStart = null;
+      els.canvas.classList.remove('panning');
+      try { els.canvas.releasePointerCapture(event.pointerId); } catch (_) {}
+      return;
+    }
+    if (event.button !== 0) return;
+
+    if (state.gesture === 'brush') {
+      commitBrush();
+    } else if (state.gesture === 'line') {
+      commitBrush('Line');
+    } else if (state.gesture === 'select-marquee') {
+      const refs = refsInMarquee();
+      if (event.shiftKey) refs.forEach(ref => state.selected.add(ref));
+      else state.selected = refs;
+      activateBuildStepForRefs(state.selected);
+      renderBuildList();
+      scheduleDraw();
+      setStatus(`Selected ${state.selected.size} placement${state.selected.size === 1 ? '' : 's'}`);
+    } else if (state.gesture === 'copy-marquee') {
+      const candidates = refsInMarquee();
+      const refs = new Set(placementRefs()
+        .filter(p => candidates.has(p.ref) && p.kind === 'frame' && p.type !== geometry.KEEP_ITEM_TYPE)
+        .map(p => p.ref));
+      const ignored = candidates.size - refs.size;
+      state.selected = refs;
+      if (captureCopyBuffer(refs)) {
+        renderBuildList();
+        scheduleDraw();
+        const ignoredNote = ignored ? ` (${ignored} unit/Keep placement${ignored === 1 ? '' : 's'} ignored)` : '';
+        setStatus(`Copied selection prepared: ${refs.size} placement${refs.size === 1 ? '' : 's'}${ignoredNote} — move the cursor and click to place`);
+      } else {
+        state.selected.clear();
+        setStatus(ignored ? 'Nothing copyable selected. Units and the Keep are ignored.' : 'Nothing selected to copy.');
+      }
+    } else if (state.gesture === 'delete-marquee') {
+      const refs = refsInMarquee();
+      if (refs.size) {
+        pushUndo();
+        deleteRefs(refs);
+        state.selected.clear();
+        changed(`Deleted ${refs.size} placement${refs.size === 1 ? '' : 's'}`);
+      }
+    } else if (state.gesture === 'move') {
+      commitMove();
+    }
+
+    state.gesture = null;
+    state.dragStartTile = null;
+    state.dragStartScreen = null;
+    state.marqueeEnd = null;
+    state.moveStartOffsets = new Map();
+    state.moveDelta = { x: 0, y: 0 };
+    state.brushOffsets = [];
+    state.brushSeen = new Set();
+    state.brushReplacements = new Set();
+    state.brushLastTile = null;
+    try { els.canvas.releasePointerCapture(event.pointerId); } catch (_) {}
+    scheduleDraw();
+  }
+
+  function onWheel(event) {
+    event.preventDefault();
+    const pos = pointerPosition(event);
+    if (event.ctrlKey) {
+      const delta = event.deltaY !== 0 ? event.deltaY : event.deltaX;
+      state.panX -= delta;
+      clampPan();
+      scheduleDraw();
+      return;
+    }
+    if (event.altKey) {
+      const old = state.cell;
+      const direction = event.deltaY < 0 ? 1 : -1;
+      const next = Math.max(MIN_CELL, Math.min(MAX_CELL, old + direction));
+      if (next === old) return;
+      const worldX = (pos.x - state.panX) / old;
+      const worldY = (pos.y - state.panY) / old;
+      state.cell = next;
+      state.panX = pos.x - worldX * next;
+      state.panY = pos.y - worldY * next;
+      clampPan();
+      scheduleDraw();
+      return;
+    }
+
+    const delta = event.deltaY !== 0 ? event.deltaY : event.deltaX;
+    state.panY -= delta;
+    clampPan();
+    scheduleDraw();
+  }
+
+  async function init() {
+    try {
+      const [constants, categories, populationData, skins] = await Promise.all([
+        window.electronAPI.loadConfig('aiv_constants.json'),
+        window.electronAPI.loadConfig('aiv_categories.json'),
+        window.electronAPI.loadConfig('aiv_gamedata.json'),
+        window.electronAPI.loadAivSkins()
+      ]);
+      state.constants = constants || {};
+      state.categories = categories?.categories || {};
+      const unitCategory = Object.entries(state.categories)
+        .find(([name]) => name.toLowerCase() === 'units');
+      state.unitTypes = new Set((unitCategory?.[1] || []).map(Number));
+      state.populationData = populationData || { population_effects: { provides: {}, requires: {} } };
+      applyLoadedSkins(skins);
+      if (skins?.background) mapBackground.src = skins.background;
+      if (skins?.skins?.[String(geometry.KEEP_ITEM_TYPE)]) bundledKeepImage.src = skins.skins[String(geometry.KEEP_ITEM_TYPE)];
+      if (skins?.skins?.[String(geometry.FORCED_STOCKPILE_ITEM_TYPE)]) bundledStockpileImage.src = skins.skins[String(geometry.FORCED_STOCKPILE_ITEM_TYPE)];
+      normalizeUnitStorage(state.document);
+      renderPalette();
+      updateSelectedItemInfo();
+      renderBuildList();
+      updateFileLabel();
+      updateBlueprintControls();
+      loadToolShortcuts();
+      resizeCanvas();
+    } catch (err) {
+      console.error('Castle editor initialization failed:', err);
+      setStatus('Castle editor configuration failed to load');
+    }
+  }
+
+  document.querySelectorAll('.castleTool').forEach(btn => btn.addEventListener('click', () => setTool(btn.dataset.tool)));
+  document.getElementById('castleNewBtn').addEventListener('click', newFile);
+  document.getElementById('castleOpenBtn').addEventListener('click', openFile);
+  document.getElementById('castleSaveBtn').addEventListener('click', saveFile);
+  document.getElementById('castleSaveAsBtn').addEventListener('click', saveAs);
+  els.showUnitNumbers.addEventListener('change', scheduleDraw);
+  els.showCompatibility.addEventListener('change', scheduleDraw);
+  els.showBlueprint.addEventListener('change', () => {
+    state.blueprintVisible = els.showBlueprint.checked;
+    scheduleDraw();
+    setStatus(state.blueprintVisible ? 'Temporary blueprint shown' : 'Temporary blueprint hidden');
+  });
+  els.blueprintOpacity.addEventListener('input', () => {
+    state.blueprintOpacity = Number(els.blueprintOpacity.value) / 100;
+    els.blueprintOpacityValue.textContent = `${els.blueprintOpacity.value}%`;
+    scheduleDraw();
+  });
+  for (const input of els.shortcutForm.querySelectorAll('.castleShortcutKey')) {
+    input.addEventListener('keydown', event => {
+      if (event.key === 'Tab' || event.key === 'Escape') return;
+      event.preventDefault();
+      if (event.key === 'Backspace' || event.key === 'Delete') {
+        input.value = '';
+        els.shortcutError.textContent = '';
+        return;
+      }
+      const key = normalizeShortcutKey(event.key);
+      if (!key || event.ctrlKey || event.metaKey || event.altKey) {
+        els.shortcutError.textContent = 'Use one letter or number without modifier keys.';
+        return;
+      }
+      input.value = key.toUpperCase();
+      els.shortcutError.textContent = '';
+    });
+  }
+  els.shortcutDefaults.addEventListener('click', () => populateShortcutDialog(DEFAULT_TOOL_SHORTCUTS));
+  els.shortcutCancel.addEventListener('click', () => els.shortcutDialog.close());
+  els.shortcutForm.addEventListener('submit', saveShortcutDialog);
+  els.setSkin.addEventListener('click', setSkin);
+  els.removeSkin.addEventListener('click', removeSkin);
+  els.openSkins.addEventListener('click', () => window.electronAPI.openAivSkinsFolder());
+  els.buildSlider.addEventListener('input', selectBuildStepFromSlider);
+  window.addEventListener('character-population-changed', () => updatePopulationPanel(false));
+
+  els.canvas.addEventListener('pointerdown', onPointerDown);
+  els.canvas.addEventListener('pointermove', onPointerMove);
+  els.canvas.addEventListener('pointerup', onPointerUp);
+  els.canvas.addEventListener('pointercancel', onPointerUp);
+  els.canvas.addEventListener('wheel', onWheel, { passive: false });
+  els.canvas.addEventListener('contextmenu', event => {
+    event.preventDefault();
+    clearSelectionAndItem();
+  });
+  els.canvas.addEventListener('mouseleave', () => {
+    const hadPreview = state.hoverTile && (
+      (state.currentItemType != null && isPlacementTool(state.tool)) ||
+      (state.tool === 'copy' && state.copyBuffer)
+    );
+    state.hoverTile = null;
+    if (hadPreview) scheduleDraw(false);
+  });
+
+  window.addEventListener('keydown', event => {
+    if (window.appWorkspace?.getActive() !== 'castle') return;
+    const editing = ['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName);
+    if (editing) return;
+    const key = event.key.toLowerCase();
+    const shortcutTool = !event.ctrlKey && !event.metaKey && !event.altKey ? toolForShortcut(key) : null;
+    if ((event.ctrlKey || event.metaKey) && key === 'z') {
+      event.preventDefault();
+      event.shiftKey ? redo() : undo();
+    } else if ((event.ctrlKey || event.metaKey) && key === 'y') {
+      event.preventDefault(); redo();
+    } else if (shortcutTool) {
+      event.preventDefault();
+      setTool(shortcutTool);
+    } else if (event.key === 'Delete') {
+      event.preventDefault(); deleteSelected();
+    } else if (event.key === 'Escape') {
+      event.preventDefault(); clearSelectionAndItem();
+    }
+  });
+
+  window.electronAPI.onTriggerUndo(() => {
+    if (window.appWorkspace?.getActive() === 'castle') undo();
+    else document.execCommand?.('undo');
+  });
+  window.electronAPI.onTriggerRedo(() => {
+    if (window.appWorkspace?.getActive() === 'castle') redo();
+    else document.execCommand?.('redo');
+  });
+  window.electronAPI.onTriggerDeleteSelected(() => {
+    if (window.appWorkspace?.getActive() === 'castle') deleteSelected();
+  });
+  window.electronAPI.onTriggerLoadCastleBackground(() => {
+    if (window.appWorkspace?.getActive() === 'castle') chooseBlueprint();
+  });
+  window.electronAPI.onTriggerClearCastleBackground(() => {
+    if (window.appWorkspace?.getActive() === 'castle') clearBlueprint();
+  });
+  window.electronAPI.onTriggerCustomizeCastleShortcuts(() => {
+    if (window.appWorkspace?.getActive() === 'castle') showShortcutDialog();
+  });
+
+  const resizeObserver = new ResizeObserver(() => resizeCanvas());
+  resizeObserver.observe(els.host);
+
+  window.castleEditor = {
+    openFile,
+    saveFile,
+    saveAs,
+    newFile,
+    loadDocument,
+    loadFromContent,
+    undo,
+    redo,
+    deleteSelected,
+    chooseBlueprint,
+    clearBlueprint,
+    showShortcutDialog,
+    setStatus,
+    isDirty: () => state.dirty,
+    getPath: () => state.filePath,
+    isReadOnly: () => state.readOnly,
+    markSaved: sourceBytes => {
+      state.sourceBytes = retainSourceBytes(sourceBytes) || state.sourceBytes;
+      setDirty(false);
+    },
+    getSourceBytes: () => state.sourceBytes,
+    getDocument: outputDocument,
+    getContent: outputContent,
+    hasDocument: () => Boolean(state.document),
+    getPopulationSummary: calculatePopulationSummary,
+    refreshPopulation: () => updatePopulationPanel(false),
+    onWorkspaceShown() { resizeCanvas(); clampPan(); updatePopulationPanel(false); scheduleDraw(); }
+  };
+
+  init();
+})();
