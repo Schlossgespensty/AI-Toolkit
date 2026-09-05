@@ -194,28 +194,35 @@
             1,
             1
         ],
-        "overlap": "replace"
+        "overlap": "replace",
+        "multiPlacement": true
     },
     "26": {
         "name": "High Crenel",
         "size": [
             1,
             1
-        ]
+        ],
+        "overlap": "replace",
+        "multiPlacement": true
     },
     "35": {
         "name": "Low Crenel",
         "size": [
             1,
             1
-        ]
+        ],
+        "overlap": "replace",
+        "multiPlacement": true
     },
     "46": {
         "name": "Low Wall",
         "size": [
             1,
             1
-        ]
+        ],
+        "overlap": "replace",
+        "multiPlacement": true
     },
     "50": {
         "name": "Fletcher",
@@ -419,14 +426,17 @@
             1,
             1
         ],
-        "maxAmount": 100
+        "maxAmount": 100,
+        "overlap": "replace"
     },
     "99": {
         "name": "Pitch",
         "size": [
             1,
             1
-        ]
+        ],
+        "overlap": "replace",
+        "multiPlacement": true
     },
     "105": {
         "name": "Drawbridge",
@@ -440,7 +450,9 @@
         "size": [
             1,
             1
-        ]
+        ],
+        "overlap": "replace",
+        "multiPlacement": true
     },
     "110": {
         "name": "Tower1",
@@ -588,6 +600,36 @@
             1,
             1
         ]
+    },
+    "10001": {
+        "name": "High Stair",
+        "size": [
+            1,
+            1
+        ],
+        "editorOnly": true,
+        "lineSequence": [
+            181,
+            182,
+            183,
+            184,
+            185
+        ],
+        "multiPlacement": true
+    },
+    "10002": {
+        "name": "Low Stair",
+        "size": [
+            1,
+            1
+        ],
+        "editorOnly": true,
+        "lineSequence": [
+            183,
+            184,
+            185
+        ],
+        "multiPlacement": true
     },
     "200": {
         "name": "Dummy Step",

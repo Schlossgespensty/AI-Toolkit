@@ -118,6 +118,8 @@
     moveStartOffsets: new Map(),
     moveDelta: { x: 0, y: 0 },
     brushOffsets: [],
+    brushTypes: [],
+    brushError: '',
     brushSeen: new Set(),
     brushReplacements: new Set(),
     brushLastTile: null,
@@ -309,7 +311,17 @@
   function isUnitType(type) { return state.unitTypes.has(Number(type)); }
 
   function allowsMultiplePerStep(type) {
-    return itemInfo(type).multiPlacement !== false;
+    return isUnitType(type) || itemInfo(type).multiPlacement === true;
+  }
+
+  function lineSequence(type) {
+    const configured = itemInfo(type).lineSequence;
+    if (!Array.isArray(configured)) return [];
+    return configured.map(Number).filter(itemType => Number.isInteger(itemType) && state.constants[String(itemType)]);
+  }
+
+  function isLineSequence(type) {
+    return lineSequence(type).length > 0;
   }
 
   function renumberUnits(doc = state.document) {
@@ -660,6 +672,7 @@
       state.buildSelectionAnchor = null;
       state.copyBuffer = null;
       state.currentItemType = null;
+      updateToolAvailability();
       if (!options.projectManaged) window.ucpLibrary?.detachCastleProject?.();
       renderPalette();
       setDirty(false);
@@ -800,6 +813,7 @@
   function placeSingle(tile) {
     if (state.currentItemType == null) return setStatus('Choose an item first.');
     const type = state.currentItemType;
+    if (isLineSequence(type)) return setStatus(`${itemName(type)} can only be placed with the Line tool.`);
     const off = xyToOffset(tile.x, tile.y);
     const result = validatePlacement(type, off);
     if (!result.ok) return setStatus(result.reason);
@@ -819,6 +833,7 @@
   function brushAdd(tile) {
     if (state.currentItemType == null) return;
     const type = state.currentItemType;
+    if (isLineSequence(type)) return;
     const off = xyToOffset(tile.x, tile.y);
     if (state.brushSeen.has(off)) return;
     state.brushSeen.add(off);
@@ -844,16 +859,64 @@
     }
 
     state.brushOffsets.push(off);
+    state.brushTypes.push(type);
     for (const ref of result.replacements) state.brushReplacements.add(ref);
+    scheduleDraw(false);
+  }
+
+  function updateLineSequencePreview(start, end) {
+    const types = lineSequence(state.currentItemType);
+    const tiles = geometry.limitedLineTiles(start, end, types.length);
+    state.brushOffsets = tiles.map(tile => xyToOffset(tile.x, tile.y));
+    state.brushTypes = types.slice(0, tiles.length);
+    state.brushReplacements = new Set();
+    state.brushError = '';
+
+    const pending = [];
+    for (let index = 0; index < tiles.length && !state.brushError; index++) {
+      const type = state.brushTypes[index];
+      const off = state.brushOffsets[index];
+      const maximum = maxAmount(type);
+      const pendingOfType = pending.filter(entry => entry.type === type).length;
+      if (maximum != null && countType(type, state.brushReplacements) + pendingOfType >= Number(maximum)) {
+        state.brushError = `Maximum amount for ${itemName(type)} is ${maximum}.`;
+        break;
+      }
+      const result = validatePlacement(type, off, {
+        ignoreRefs: state.brushReplacements,
+        extraNew: pending,
+        checkMax: false
+      });
+      if (!result.ok) {
+        state.brushError = result.reason;
+        break;
+      }
+      pending.push({ type, off });
+      for (const ref of result.replacements) state.brushReplacements.add(ref);
+    }
+    setStatus(state.brushError || `${itemName(state.currentItemType)} ready — ${tiles.length}/${types.length} steps — release to place`);
     scheduleDraw(false);
   }
 
   function commitBrush(toolName = 'Brush') {
     if (state.currentItemType == null || !state.brushOffsets.length) return setStatus(`${toolName} placed nothing.`);
+    if (state.brushError) return setStatus(state.brushError);
+    const type = state.currentItemType;
+    const sequence = lineSequence(type);
+    if (sequence.length && (state.brushTypes.length !== state.brushOffsets.length || state.brushOffsets.length > sequence.length)) {
+      return setStatus(`Could not build the ${itemName(type)} sequence.`);
+    }
     pushUndo();
     deleteRefs(state.brushReplacements);
-    const type = state.currentItemType;
-    if (isUnitType(type)) {
+    if (sequence.length) {
+      const newFrames = state.brushOffsets.map((off, index) => ({
+        itemType: state.brushTypes[index],
+        tilePositionOfsets: [off],
+        shouldPause: false
+      }));
+      insertBuildFrames(newFrames);
+      changed(`${itemName(type)}: placed ${newFrames.length} consecutive stair steps`);
+    } else if (isUnitType(type)) {
       const firstMi = state.document.miscItems.length;
       let nextNumber = countType(type);
       for (const off of state.brushOffsets) {
@@ -862,8 +925,13 @@
       state.selected = new Set(state.brushOffsets.map((_off, i) => unitRefKey(firstMi + i)));
       changed(`${toolName}: placed ${state.brushOffsets.length} ${itemName(type)} rallypoints`);
     } else {
-      insertBuildFrames([{ itemType: type, tilePositionOfsets: [...state.brushOffsets], shouldPause: false }]);
-      changed(`${toolName} step: ${state.brushOffsets.length} × ${itemName(type)}`);
+      const newFrames = allowsMultiplePerStep(type)
+        ? [{ itemType: type, tilePositionOfsets: [...state.brushOffsets], shouldPause: false }]
+        : state.brushOffsets.map(off => ({ itemType: type, tilePositionOfsets: [off], shouldPause: false }));
+      insertBuildFrames(newFrames);
+      changed(allowsMultiplePerStep(type)
+        ? `${toolName} step: ${state.brushOffsets.length} × ${itemName(type)}`
+        : `${toolName}: placed ${state.brushOffsets.length} ${itemName(type)} in consecutive build steps`);
     }
   }
 
@@ -1044,7 +1112,12 @@
         nextUnitNumber.set(type, number);
         continue;
       }
-      newFrames.push({ itemType: Number(group.itemType), tilePositionOfsets: offsets, shouldPause: false });
+      const type = Number(group.itemType);
+      if (allowsMultiplePerStep(type)) {
+        newFrames.push({ itemType: type, tilePositionOfsets: offsets, shouldPause: false });
+      } else {
+        for (const off of offsets) newFrames.push({ itemType: type, tilePositionOfsets: [off], shouldPause: false });
+      }
     }
     if (newFrames.length) insertBuildFrames(newFrames);
     else state.selected = newUnitSelection;
@@ -1127,6 +1200,8 @@
     state.copyBuffer = null;
     state.gesture = null;
     state.brushOffsets = [];
+    state.brushTypes = [];
+    state.brushError = '';
     state.brushSeen.clear();
     state.brushReplacements.clear();
     updateToolAvailability();
@@ -1146,18 +1221,17 @@
   }
 
   function updateToolAvailability() {
-    const multiPlacementDisabled = state.currentItemType != null && !allowsMultiplePerStep(state.currentItemType);
-    document.querySelectorAll('.castleTool').forEach(btn => {
-      btn.disabled = multiPlacementDisabled && (btn.dataset.tool === 'brush' || btn.dataset.tool === 'line');
+    const lineOnly = state.currentItemType != null && isLineSequence(state.currentItemType);
+    document.querySelectorAll('.castleTool').forEach(button => {
+      button.disabled = lineOnly && (button.dataset.tool === 'single' || button.dataset.tool === 'brush');
     });
   }
 
   function setTool(tool) {
-    if ((tool === 'brush' || tool === 'line') && state.currentItemType != null && !allowsMultiplePerStep(state.currentItemType)) {
-      tool = 'single';
-    }
+    const lineOnly = state.currentItemType != null && isLineSequence(state.currentItemType);
+    if (lineOnly && isPlacementTool(tool)) tool = 'line';
     state.tool = tool;
-    if (isPlacementTool(tool)) state.lastPlacementTool = tool;
+    if (isPlacementTool(tool) && !lineOnly) state.lastPlacementTool = tool;
     if (tool !== 'copy') state.copyBuffer = null;
     if (tool === 'copy') state.currentItemType = null;
     document.querySelectorAll('.castleTool').forEach(btn => btn.classList.toggle('active', btn.dataset.tool === tool));
@@ -1257,8 +1331,7 @@
   function selectItem(type) {
     state.currentItemType = Number(type);
     state.selected.clear();
-    const preferredTool = allowsMultiplePerStep(type) ? state.lastPlacementTool : 'single';
-    setTool(preferredTool);
+    setTool(state.lastPlacementTool);
     renderPalette();
     updateSelectedItemInfo();
     setStatus(`Selected ${itemName(type)} — click the map to place`);
@@ -1276,7 +1349,12 @@
     const [w, h] = itemSize(type);
     const maximum = maxAmount(type);
     const max = maximum == null ? '∞' : maximum;
-    const kind = isUnitType(type) ? 'rallypoint · ' : '';
+    const sequence = lineSequence(type);
+    const kind = sequence.length
+      ? `line only · up to ${sequence.length} consecutive steps · `
+      : isUnitType(type)
+      ? 'rallypoint · '
+      : `${allowsMultiplePerStep(type) ? 'multiple per step' : 'single per step'} · `;
     const sizeLabel = type === geometry.KEEP_ITEM_TYPE ? `${w}×${h} + forced 5×5 Stockpile` : `${w}×${h}`;
     els.itemInfo.textContent = `${itemName(type)} [${type}] · ${kind}${sizeLabel} · overlap: ${overlapMode(type)} · max: ${max}`;
     els.setSkin.disabled = false;
@@ -1346,9 +1424,11 @@
 
       const thumb = document.createElement('span');
       thumb.className = 'paletteThumb';
-      if (state.skins[id]) {
+      const sequence = lineSequence(Number(id));
+      const thumbnailType = String(sequence[0] ?? id);
+      if (state.skins[thumbnailType]) {
         const img = document.createElement('img');
-        img.src = state.skins[id];
+        img.src = state.skins[thumbnailType];
         img.alt = '';
         thumb.appendChild(img);
       } else {
@@ -1363,7 +1443,9 @@
       const meta = document.createElement('span');
       meta.className = 'paletteItemMeta';
       const size = itemSize(Number(id));
-      meta.textContent = Number(id) === geometry.KEEP_ITEM_TYPE
+      meta.textContent = sequence.length
+        ? `Line · up to ${sequence.length} steps`
+        : Number(id) === geometry.KEEP_ITEM_TYPE
         ? `${size[0]}×${size[1]} + SP`
         : `${size[0]}×${size[1]}`;
       row.append(thumb, name, meta);
@@ -1765,14 +1847,18 @@
     }
 
     if ((state.gesture === 'brush' || state.gesture === 'line') && state.currentItemType != null) {
-      for (const off of state.brushOffsets) drawPlacement(state.currentItemType, off, false, css('--valid', '#55c271'), 0.62, true);
+      const color = state.brushError ? css('--danger', '#d75f5f') : css('--valid', '#55c271');
+      state.brushOffsets.forEach((off, index) => {
+        drawPlacement(state.brushTypes[index] ?? state.currentItemType, off, false, color, 0.62, true);
+      });
     }
 
     if (state.hoverTile && state.currentItemType != null && (state.tool === 'single' || state.tool === 'brush' || state.tool === 'line') && state.gesture !== 'brush' && state.gesture !== 'line') {
       const off = xyToOffset(state.hoverTile.x, state.hoverTile.y);
-      const result = validatePlacement(state.currentItemType, off);
+      const previewType = lineSequence(state.currentItemType)[0] ?? state.currentItemType;
+      const result = validatePlacement(previewType, off);
       const color = !result.ok ? css('--danger', '#d75f5f') : result.replacements.size ? css('--replace', '#dda94b') : css('--valid', '#55c271');
-      drawPlacement(state.currentItemType, off, false, color, 0.48, true);
+      drawPlacement(previewType, off, false, color, 0.48, true);
     }
 
     if (state.tool === 'copy' && state.copyBuffer && state.hoverTile && state.gesture !== 'copy-marquee') {
@@ -2123,6 +2209,8 @@
       if (state.currentItemType == null) return setStatus('Choose an item first.');
       state.gesture = 'brush';
       state.brushOffsets = [];
+      state.brushTypes = [];
+      state.brushError = '';
       state.brushSeen = new Set();
       state.brushReplacements = new Set();
       state.brushLastTile = tile;
@@ -2133,10 +2221,16 @@
       if (state.currentItemType == null) return setStatus('Choose an item first.');
       state.gesture = 'line';
       state.brushOffsets = [];
+      state.brushTypes = [];
+      state.brushError = '';
       state.brushSeen = new Set();
       state.brushReplacements = new Set();
       state.brushLastTile = tile;
-      brushAdd(tile);
+      if (isLineSequence(state.currentItemType)) {
+        updateLineSequencePreview(tile, tile);
+      } else {
+        brushAdd(tile);
+      }
       return;
     }
     if (state.tool === 'copy') {
@@ -2164,6 +2258,7 @@
         }
         activateBuildStepForRefs(state.selected);
         state.currentItemType = null;
+        updateToolAvailability();
         state.gesture = 'move';
         state.moveStartOffsets = new Map();
         for (const ref of state.selected) if (refExists(ref)) state.moveStartOffsets.set(ref, refOffset(ref));
@@ -2204,8 +2299,16 @@
     if (tileChanged && tile) {
       const off = xyToOffset(tile.x, tile.y);
       if (state.currentItemType != null && isPlacementTool(state.tool)) {
-        const result = validatePlacement(state.currentItemType, off);
-        setStatus(result.ok ? `x=${tile.x}, y=${tile.y}, offset=${off}` : result.reason);
+        const sequence = lineSequence(state.currentItemType);
+        if (sequence.length) {
+          const result = validatePlacement(sequence[0], off);
+          setStatus(result.ok
+            ? `Drag from x=${tile.x}, y=${tile.y} to choose the ${itemName(state.currentItemType)} direction.`
+            : result.reason);
+        } else {
+          const result = validatePlacement(state.currentItemType, off);
+          setStatus(result.ok ? `x=${tile.x}, y=${tile.y}, offset=${off}` : result.reason);
+        }
       } else if (state.tool === 'copy' && state.copyBuffer) {
         const result = validateCopyAt(tile);
         setStatus(result.ok ? `Copy ready at x=${tile.x}, y=${tile.y} — click to place` : result.reason);
@@ -2219,12 +2322,18 @@
       for (const p of geometry.lineTiles(from, tile)) brushAdd(p);
       state.brushLastTile = tile;
     } else if (state.gesture === 'line' && tile && state.dragStartTile && tileChanged) {
-      state.brushOffsets = [];
-      state.brushSeen = new Set();
-      state.brushReplacements = new Set();
-      const route = routedLineTiles(state.dragStartTile, tile);
-      if (!route.length) setStatus('No unobstructed route to that tile.');
-      for (const p of route) brushAdd(p);
+      if (isLineSequence(state.currentItemType)) {
+        updateLineSequencePreview(state.dragStartTile, tile);
+      } else {
+        state.brushOffsets = [];
+        state.brushTypes = [];
+        state.brushError = '';
+        state.brushSeen = new Set();
+        state.brushReplacements = new Set();
+        const route = routedLineTiles(state.dragStartTile, tile);
+        if (!route.length) setStatus('No unobstructed route to that tile.');
+        for (const p of route) brushAdd(p);
+      }
     } else if (state.gesture === 'select-marquee' || state.gesture === 'copy-marquee' || state.gesture === 'delete-marquee') {
       state.marqueeEnd = pos;
       scheduleDraw(false);
@@ -2301,6 +2410,8 @@
     state.moveStartOffsets = new Map();
     state.moveDelta = { x: 0, y: 0 };
     state.brushOffsets = [];
+    state.brushTypes = [];
+    state.brushError = '';
     state.brushSeen = new Set();
     state.brushReplacements = new Set();
     state.brushLastTile = null;

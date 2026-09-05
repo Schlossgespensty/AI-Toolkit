@@ -69,6 +69,27 @@ test('lineTiles includes both endpoints for shallow and reversed lines', () => {
   assert.deepEqual(reversed, [...shallow].reverse());
 });
 
+test('limitedLineTiles grows with the drag and stops at the stair sequence length', () => {
+  assert.deepEqual(
+    geometry.limitedLineTiles({ x: 10, y: 10 }, { x: 30, y: 10 }, 5),
+    [
+      { x: 10, y: 10 },
+      { x: 11, y: 10 },
+      { x: 12, y: 10 },
+      { x: 13, y: 10 },
+      { x: 14, y: 10 }
+    ]
+  );
+  assert.deepEqual(
+    geometry.limitedLineTiles({ x: 10, y: 10 }, { x: 8, y: 8 }, 5),
+    [{ x: 10, y: 10 }, { x: 9, y: 9 }, { x: 8, y: 8 }]
+  );
+  assert.deepEqual(
+    geometry.limitedLineTiles({ x: 10, y: 10 }, { x: 10, y: 10 }, 5),
+    [{ x: 10, y: 10 }]
+  );
+});
+
 test('routedLineTiles preserves a straight line when it is unobstructed', () => {
   const start = { x: 1, y: 2 };
   const end = { x: 7, y: 5 };
