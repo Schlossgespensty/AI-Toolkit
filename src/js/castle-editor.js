@@ -2079,8 +2079,19 @@
   }
 
   function pointerPosition(event) {
+    // Events coming from another view (2.5D) already know which tile they
+    // mean; this canvas is hidden then and its rectangle would be empty.
+    if (event && event.tileFromOutside) return tileToScreenPos(event.tileFromOutside);
     const rect = els.canvas.getBoundingClientRect();
     return { x: event.clientX - rect.left, y: event.clientY - rect.top };
+  }
+
+  // Centre of a tile, in this map's screen coordinates
+  function tileToScreenPos(tile) {
+    return {
+      x: state.panX + (tile.x + 0.5) * state.cell,
+      y: state.panY + (99 - tile.y + 0.5) * state.cell
+    };
   }
 
   function screenToTile(pos) {
@@ -2100,7 +2111,7 @@
       state.pointerId = event.pointerId;
       state.panStart = { ...pointerPosition(event), panX: state.panX, panY: state.panY };
       els.canvas.classList.add('panning');
-      els.canvas.setPointerCapture(event.pointerId);
+      try { els.canvas.setPointerCapture(event.pointerId); } catch (_) {}
       return;
     }
     if (event.button !== 0) return;
@@ -2109,7 +2120,7 @@
     if (!tile) return;
     els.canvas.focus();
     state.pointerId = event.pointerId;
-    els.canvas.setPointerCapture(event.pointerId);
+    try { els.canvas.setPointerCapture(event.pointerId); } catch (_) {}
     state.dragStartTile = tile;
     state.dragStartScreen = pos;
     state.marqueeEnd = pos;
@@ -2502,6 +2513,16 @@
     },
     getSourceBytes: () => state.sourceBytes,
     getDocument: outputDocument,
+    // Fuer die 2.5D-Ansicht: ein Zeigerereignis mit { tileFromOutside: {x, y} }
+    // durchreichen. Alles andere - Werkzeugwahl, Vorschau, Rueckgaengig -
+    // bleibt genau wie beim Zeichnen auf der Karte.
+    pointerFromOutside(phase, event) {
+      if (phase === 'down') return onPointerDown(event);
+      if (phase === 'move') return onPointerMove(event);
+      if (phase === 'up') return onPointerUp(event);
+    },
+    getTool: () => state.tool,
+    getCurrentItemType: () => state.currentItemType,
     getContent: outputContent,
     hasDocument: () => Boolean(state.document),
     getPopulationSummary: calculatePopulationSummary,

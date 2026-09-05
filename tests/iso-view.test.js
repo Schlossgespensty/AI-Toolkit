@@ -105,36 +105,30 @@ test('fitView puts the whole grid into the box', () => {
 
 // ----------------------------------------------------------------- wiring
 
-test('the 2.5D tab exists exactly once and sits right after Castle', () => {
-  const tabs = [...html.matchAll(/data-workspace="([a-z]+)"/g)].map(m => m[1]);
-  assert.equal(tabs.filter(t => t === 'iso').length, 1, 'exactly one 2.5D tab');
-  assert.equal(tabs[tabs.indexOf('castle') + 1], 'iso', 'right after Castle');
+test('the 2.5D view is opened from the castle toolbar, not as a tab', () => {
+  assert.ok(html.includes('id="castleIsoBtn"'), 'the button lives in the castle toolbar');
+  assert.ok(!html.includes('data-workspace="iso"'), 'no separate tab any more');
+  assert.ok(!html.includes('id="isoWorkspace"'), 'no separate workspace any more');
+  assert.ok(!shell.includes('isoWorkspace'), 'the shell does not know it either');
 });
 
-test('the 2.5D workspace is a sibling of the others, not nested', () => {
-  // Between the start of the iso section and its end there must be no other
-  // workspace, and it must lie outside castleWorkspace.
-  const start = html.indexOf('<section id="isoWorkspace"');
-  assert.ok(start > 0, 'section exists');
-  const castleStart = html.indexOf('<section id="castleWorkspace"');
-  const contentStart = html.indexOf('<section id="aiContentWorkspace"');
-  assert.ok(castleStart < start && start < contentStart, 'sits between castle and content');
-
-  // count section tags between castleWorkspace and isoWorkspace: they must balance
-  const between = html.slice(castleStart, start);
-  const opened = (between.match(/<section\b/g) || []).length;
-  const closed = (between.match(/<\/section>/g) || []).length;
-  assert.equal(opened, closed, 'castleWorkspace is closed before the 2.5D section starts');
+test('the castle editor lets an outside view use its tools', () => {
+  const editor = fs.readFileSync(path.join(root, 'src', 'js', 'castle-editor.js'), 'utf8');
+  assert.ok(editor.includes('pointerFromOutside'), 'the bridge exists');
+  assert.ok(editor.includes('tileFromOutside'), 'pointerPosition honours a given tile');
+  assert.ok(editor.includes('function tileToScreenPos'), 'a tile can be turned back into screen coordinates');
+  // synthetic events have no real pointer, so every capture must be guarded
+  const capture = (editor.match(/\.setPointerCapture\(/g) || []).length;
+  const guarded = (editor.match(/try \{ els\.canvas\.setPointerCapture\(/g) || []).length;
+  assert.equal(capture, guarded, `${capture} calls to setPointerCapture, only ${guarded} of them guarded`);
 });
 
-test('every workspace has an id the shell knows, and a height rule', () => {
-  const ids = [...html.matchAll(/<section id="(\w+Workspace)"/g)].map(m => m[1]);
-  assert.ok(ids.includes('isoWorkspace'));
-  for (const id of ids) {
-    assert.ok(css.includes(`#${id}.active`), `${id} needs a height rule, else it stays empty`);
-  }
-  assert.ok(shell.includes("iso: document.getElementById('isoWorkspace')"), 'shell knows the workspace');
-  assert.ok(/name === 'iso'/.test(shell), 'shell tells the view when it becomes visible');
+test('the view hands every gesture to the editor, it keeps no rules of its own', () => {
+  const view = fs.readFileSync(path.join(root, 'src', 'js', 'iso-view.js'), 'utf8');
+  for (const phase of ['down', 'move', 'up'])
+    assert.ok(view.includes(`toEditor('${phase}'`), 'phase ' + phase + ' is forwarded');
+  for (const wort of ['placeSingle', 'brushAdd', 'routedLineTiles', 'placeCopy'])
+    assert.ok(!view.includes(wort), 'the view must not carry its own copy of ' + wort);
 });
 
 test('the view scripts are loaded, geometry before the view', () => {
@@ -144,12 +138,20 @@ test('the view scripts are loaded, geometry before the view', () => {
   assert.ok(geo < view, 'geometry has to be there before the view uses it');
 });
 
-test('every element the view talks to exists in the html', () => {
+test('every element the view expects in the main window exists in the html', () => {
   const viewSource = fs.readFileSync(path.join(root, 'src', 'js', 'iso-view.js'), 'utf8');
-  const wanted = [...viewSource.matchAll(/getElementById\('([^']+)'\)/g)].map(m => m[1]);
-  assert.ok(wanted.length > 0);
+  // The detached window builds its own elements; those ids are written into
+  // its body and are looked up on win.document, not on the main document.
+  const eigene = [...viewSource.matchAll(/win\.document\.getElementById\('([^']+)'\)/g)].map(m => m[1]);
+  const wanted = [...viewSource.matchAll(/(?<!win\.)document\.getElementById\('([^']+)'\)/g)]
+    .map(m => m[1]).filter(id => !eigene.includes(id));
+  assert.ok(wanted.length > 0, 'the view talks to at least one element of the main window');
   for (const id of wanted) {
     assert.ok(html.includes(`id="${id}"`), `the html is missing #${id}`);
+  }
+  // and the ids it builds itself must actually be written into the new body
+  for (const id of eigene) {
+    assert.ok(viewSource.includes(`id="${id}"`), `the window body never creates #${id}`);
   }
 });
 

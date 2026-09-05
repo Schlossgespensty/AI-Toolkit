@@ -5,8 +5,7 @@
     character: document.getElementById('characterWorkspace'),
     castle: document.getElementById('castleWorkspace'),
     content: document.getElementById('aiContentWorkspace'),
-    ucp: document.getElementById('ucpWorkspace'),
-    iso: document.getElementById('isoWorkspace')
+    ucp: document.getElementById('ucpWorkspace')
   };
   const status = document.getElementById('workspaceStatus');
 
@@ -23,12 +22,10 @@
     status.textContent = name === 'castle'
       ? 'Castle editor'
       : name === 'content' ? 'AI Content'
-      : name === 'ucp' ? 'UCP AI Library'
-      : name === 'iso' ? '2.5D view' : 'Character editor';
+      : name === 'ucp' ? 'UCP AI Library' : 'Character editor';
     if (name === 'castle') requestAnimationFrame(() => window.castleEditor?.onWorkspaceShown());
     if (name === 'content') window.aiContentEditor?.onWorkspaceShown?.();
     if (name === 'ucp') window.ucpLibrary?.onWorkspaceShown?.();
-    if (name === 'iso') requestAnimationFrame(() => window.isoView?.onWorkspaceShown?.());
   }
 
   function getActive() { return active; }

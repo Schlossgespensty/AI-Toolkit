@@ -1,12 +1,13 @@
-// 2.5D view — the castle as the game draws it.
+// 2.5D view — the castle in its own window, drawn the way the game draws it.
 //
-// The castle editor works top-down: every item is a rectangle on a 100x100
-// grid. This view takes the very same document and paints it slanted, with
-// the real building sprites from the game's own .gm1 archives (exported
-// beforehand into assets/aiv/iso by Village Studio's _exportiere_iso.js).
+// Opened from the Castle tab. It is not a second editor: every click is
+// turned into a tile and handed to the castle editor, which then does what
+// its current tool says. Single, Line, Brush, Select/Move, Copy and Delete
+// therefore work exactly as on the top-down map, including undo, previews
+// and build steps - there is no second set of rules to keep in step.
 //
-// All the arithmetic lives in iso-geometry.js so it can be tested without a
-// screen; this file only talks to the canvas and to the app shell.
+// All the arithmetic lives in iso-geometry.js and is tested without a
+// screen (tests/iso-view.test.js).
 
 (() => {
   'use strict';
@@ -14,18 +15,19 @@
   const geo = (typeof globalThis !== 'undefined' && globalThis.isoGeometry) || null;
   const CATALOGUE_PATH = '../assets/aiv/iso/verzeichnis.json';
   const SPRITE_PATH = '../assets/aiv/iso/';
-  const DETACHED_CANVAS_ID = 'isoDetachedCanvas';
 
   const state = {
     catalogue: null,
     images: new Map(),
     view: { zoom: 1, panX: 0, panY: 0 },
     fitted: false,
-    document: null,
-    detached: null
+    win: null,
+    canvas: null,
+    statusEl: null,
+    panning: false,
+    panStart: null,
+    drawing: false
   };
-
-  const els = {};
 
   // ---------------------------------------------------------- sprites
 
@@ -37,7 +39,6 @@
       state.catalogue = await response.json();
     } catch {
       state.catalogue = { gegenstaende: {} };
-      setStatus('No sprites found — run _exportiere_iso.js from Village Studio.');
     }
     return state.catalogue;
   }
@@ -47,13 +48,18 @@
     let img = state.images.get(filename);
     if (img) return img;
     img = new Image();
-    img.onload = () => draw();
+    img.onload = () => paint();
     img.src = SPRITE_PATH + filename;
     state.images.set(filename, img);
     return img;
   }
 
   // ---------------------------------------------------------- drawing
+
+  function currentDocument() {
+    const editor = window.castleEditor;
+    return (editor && editor.hasDocument && editor.hasDocument()) ? editor.getDocument() : null;
+  }
 
   function drawSprite(ctx, sprite, gx, gy, tiles) {
     const img = image(sprite.bild);
@@ -63,7 +69,7 @@
     return true;
   }
 
-  function drawDiamond(ctx, gx, gy, tiles, fill) {
+  function drawDiamond(ctx, gx, gy, tiles, fill, stroke) {
     ctx.beginPath();
     [[gx, gy], [gx + tiles, gy], [gx + tiles, gy + tiles], [gx, gy + tiles]]
       .forEach(([cx, cy], index) => {
@@ -71,22 +77,25 @@
         if (index === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
       });
     ctx.closePath();
-    ctx.fillStyle = fill;
-    ctx.fill();
+    if (fill) { ctx.fillStyle = fill; ctx.fill(); }
+    if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = 2; ctx.stroke(); }
   }
 
-  function paint(canvas, width, height) {
+  function paint() {
+    if (!state.canvas || !state.win || state.win.closed || !geo) return;
+    const width = state.win.innerWidth;
+    const height = state.win.innerHeight;
+    const canvas = state.canvas;
     const ctx = canvas.getContext('2d');
-    const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
-    canvas.width = Math.round(width * dpr);
-    canvas.height = Math.round(height * dpr);
+    canvas.width = width;
+    canvas.height = height;
     canvas.style.width = width + 'px';
     canvas.style.height = height + 'px';
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    if (!state.fitted) { state.view = geo.fitView(width, height); state.fitted = true; }
     ctx.clearRect(0, 0, width, height);
     ctx.imageSmoothingEnabled = state.view.zoom < 1;
 
-    // ground
     ctx.fillStyle = '#232a1c';
     ctx.beginPath();
     [[0, 0], [geo.GRID, 0], [geo.GRID, geo.GRID], [0, geo.GRID]].forEach(([cx, cy], index) => {
@@ -96,9 +105,7 @@
     ctx.closePath();
     ctx.fill();
 
-    const items = geo.collectItems(state.document, state.catalogue);
-    if (!items.length) return { items: 0, missing: 0 };
-
+    const items = geo.collectItems(currentDocument(), state.catalogue);
     for (const plate of geo.collectPlates(items).sort(geo.byDepth))
       drawSprite(ctx, plate.sprite, plate.gx, plate.gy, plate.tiles);
 
@@ -108,111 +115,143 @@
       drawDiamond(ctx, item.gx, item.gy, item.tiles, 'rgba(210,170,90,.55)');
       missing++;
     }
-    return { items: items.length, missing };
-  }
 
-  function draw() {
-    if (!els.canvas || !geo) return;
-    const host = els.canvas.parentElement;
-    const rect = host.getBoundingClientRect();
-    if (!rect.width || !rect.height) return;
-    if (!state.fitted) { state.view = geo.fitView(rect.width, rect.height); state.fitted = true; }
-    const result = paint(els.canvas, rect.width, rect.height);
-    if (els.zoom) els.zoom.textContent = Math.round(state.view.zoom * 100) + ' %';
-    setStatus(result.items
-      ? result.items + ' items' + (result.missing ? ', ' + result.missing + ' without a sprite' : '')
-      : (state.document ? 'Nothing placed yet.' : 'Open a castle in the Castle tab.'));
-    paintDetached();
-  }
+    // where the mouse is
+    if (state.hover) drawDiamond(ctx, state.hover.gx, state.hover.gy, 1, null, 'rgba(255,255,255,.5)');
 
-  function setStatus(text) { if (els.status) els.status.textContent = text; }
-
-  // ------------------------------------------------------ detached window
-
-  function paintDetached() {
-    const win = state.detached;
-    if (!win || win.closed) return;
-    const canvas = win.document.getElementById(DETACHED_CANVAS_ID);
-    if (!canvas) return;
-    const width = win.innerWidth, height = win.innerHeight;
-    const keep = state.view;
-    state.view = geo.fitView(width, height);
-    try { paint(canvas, width, height); } finally { state.view = keep; }
-  }
-
-  function detach() {
-    const win = window.open('', 'aiToolkitIsoView', 'width=1200,height=820');
-    if (!win) { setStatus('The window could not be opened.'); return; }
-    state.detached = win;
-    win.document.title = '2.5D view';
-    win.document.body.style.cssText = 'margin:0;background:#171a14;overflow:hidden';
-    win.document.body.innerHTML =
-      '<canvas id="' + DETACHED_CANVAS_ID + '" style="display:block"></canvas>';
-    win.addEventListener('resize', paintDetached);
-    setTimeout(paintDetached, 100);
-  }
-
-  // ------------------------------------------------------------- wiring
-
-  function refresh() {
     const editor = window.castleEditor;
-    state.document = (editor && editor.hasDocument && editor.hasDocument()) ? editor.getDocument() : null;
-    draw();
+    const tool = editor && editor.getTool ? editor.getTool() : '—';
+    setStatus(items.length + ' items' + (missing ? ', ' + missing + ' without a sprite' : '') +
+              ' · tool: ' + tool + ' · middle mouse pans, wheel zooms');
   }
 
-  function fit() { state.fitted = false; draw(); }
+  function setStatus(text) { if (state.statusEl) state.statusEl.textContent = text; }
 
-  function bind() {
-    els.canvas = document.getElementById('isoCanvas');
-    els.status = document.getElementById('isoStatus');
-    els.zoom = document.getElementById('isoZoomValue');
-    if (!els.canvas) return;
+  // ------------------------------------------------------------- input
 
-    let dragging = false, lastX = 0, lastY = 0;
-    els.canvas.addEventListener('pointerdown', event => {
-      dragging = true; lastX = event.clientX; lastY = event.clientY;
-      els.canvas.setPointerCapture(event.pointerId);
+  function pointOf(event) {
+    const rect = state.canvas.getBoundingClientRect();
+    return { x: event.clientX - rect.left, y: event.clientY - rect.top };
+  }
+
+  // A click becomes a tile, and the tile goes to the castle editor. The
+  // editor decides what happens - that is the whole point.
+  function toEditor(phase, event, tile) {
+    const editor = window.castleEditor;
+    if (!editor || !editor.pointerFromOutside) return;
+    editor.pointerFromOutside(phase, {
+      button: event.button,
+      pointerId: event.pointerId || 1,
+      shiftKey: event.shiftKey,
+      ctrlKey: event.ctrlKey,
+      altKey: event.altKey,
+      tileFromOutside: tile,
+      preventDefault() {},
+      stopPropagation() {}
     });
-    els.canvas.addEventListener('pointermove', event => {
-      if (!dragging) return;
-      state.view.panX += event.clientX - lastX;
-      state.view.panY += event.clientY - lastY;
-      lastX = event.clientX; lastY = event.clientY;
-      draw();
+    paint();
+  }
+
+  function bindWindow(win, canvas) {
+    canvas.addEventListener('contextmenu', e => e.preventDefault());
+
+    canvas.addEventListener('pointerdown', event => {
+      if (event.button === 1 || event.button === 2) {      // middle or right: pan
+        event.preventDefault();
+        state.panning = true;
+        const p = pointOf(event);
+        state.panStart = { x: p.x, y: p.y, panX: state.view.panX, panY: state.view.panY };
+        return;
+      }
+      const p = pointOf(event);
+      const tile = geo.editorTileFromPoint(p.x, p.y, state.view);
+      if (!tile) return;
+      state.drawing = true;
+      toEditor('down', event, tile);
     });
-    els.canvas.addEventListener('pointerup', () => { dragging = false; });
-    els.canvas.addEventListener('wheel', event => {
+
+    canvas.addEventListener('pointermove', event => {
+      const p = pointOf(event);
+      if (state.panning && state.panStart) {
+        state.view.panX = state.panStart.panX + p.x - state.panStart.x;
+        state.view.panY = state.panStart.panY + p.y - state.panStart.y;
+        paint();
+        return;
+      }
+      const tile = geo.editorTileFromPoint(p.x, p.y, state.view);
+      const grid = geo.tileFromPoint(p.x, p.y, state.view);
+      const moved = !state.hover || !grid || state.hover.gx !== grid.gx || state.hover.gy !== grid.gy;
+      state.hover = grid;
+      if (tile && (state.drawing || moved)) toEditor('move', event, tile);
+      else if (moved) paint();
+    });
+
+    const ende = event => {
+      if (state.panning) { state.panning = false; state.panStart = null; return; }
+      if (!state.drawing) return;
+      state.drawing = false;
+      const p = pointOf(event);
+      const tile = geo.editorTileFromPoint(p.x, p.y, state.view) ||
+                   (state.hover ? { x: state.hover.gx, y: geo.GRID - 1 - state.hover.gy } : null);
+      if (tile) toEditor('up', event, tile);
+    };
+    canvas.addEventListener('pointerup', ende);
+    canvas.addEventListener('pointerleave', () => { state.hover = null; paint(); });
+
+    canvas.addEventListener('wheel', event => {
       event.preventDefault();
       const before = state.view.zoom;
       const next = Math.max(0.15, Math.min(8, before * (event.deltaY < 0 ? 1.15 : 1 / 1.15)));
-      const rect = els.canvas.getBoundingClientRect();
-      const mx = event.clientX - rect.left, my = event.clientY - rect.top;
+      const p = pointOf(event);
       state.view.zoom = next;
-      state.view.panX = mx - (mx - state.view.panX) * (next / before);
-      state.view.panY = my - (my - state.view.panY) * (next / before);
-      draw();
+      state.view.panX = p.x - (p.x - state.view.panX) * (next / before);
+      state.view.panY = p.y - (p.y - state.view.panY) * (next / before);
+      paint();
     }, { passive: false });
 
-    const on = (id, handler) => {
-      const el = document.getElementById(id);
-      if (el) el.addEventListener('click', handler);
-    };
-    on('isoRefresh', refresh);
-    on('isoFit', fit);
-    on('isoDetach', detach);
-    window.addEventListener('resize', () => draw());
+    win.addEventListener('resize', paint);
+    win.addEventListener('beforeunload', () => { state.win = null; state.canvas = null; });
+
+    // keyboard: the tool shortcuts of the editor, forwarded
+    win.addEventListener('keydown', event => {
+      const editor = window.castleEditor;
+      if (!editor || !editor.handleKey) return;
+      editor.handleKey(event);
+      paint();
+    });
   }
 
-  async function init() {
-    bind();
+  // ------------------------------------------------------------ window
+
+  async function open() {
+    if (state.win && !state.win.closed) { state.win.focus(); paint(); return; }
     await loadCatalogue();
+    const win = window.open('', 'aiToolkitIsoView', 'width=1280,height=860');
+    if (!win) return;
+    state.win = win;
+    state.fitted = false;
+    win.document.title = '2.5D view — AI Toolkit';
+    win.document.body.style.cssText =
+      'margin:0;background:#171a14;overflow:hidden;font:12px/1.4 system-ui,sans-serif;color:#cfd6c8';
+    win.document.body.innerHTML =
+      '<canvas id="isoWindowCanvas" style="display:block;cursor:crosshair"></canvas>' +
+      '<div id="isoWindowStatus" style="position:fixed;left:0;right:0;bottom:0;padding:5px 10px;' +
+      'background:rgba(0,0,0,.55);pointer-events:none"></div>';
+    state.canvas = win.document.getElementById('isoWindowCanvas');
+    state.statusEl = win.document.getElementById('isoWindowStatus');
+    bindWindow(win, state.canvas);
+    paint();
   }
 
-  window.isoView = {
-    init,
-    refresh,
-    onWorkspaceShown() { refresh(); }
-  };
+  function refresh() { if (state.win && !state.win.closed) paint(); }
+
+  function init() {
+    const button = document.getElementById('castleIsoBtn');
+    if (button) button.addEventListener('click', open);
+    loadCatalogue();
+  }
+
+  window.isoView = { init, open, refresh, paint };
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();

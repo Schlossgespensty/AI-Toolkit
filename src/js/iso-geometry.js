@@ -38,6 +38,28 @@
     return [view.panX + (gx - gy) * hw, view.panY + (gx + gy) * hh];
   }
 
+  // The other way round: which tile is under a point on screen? Solving
+  //   px = panX + (gx - gy) * hw
+  //   py = panY + (gx + gy) * hh
+  // for gx and gy. Returns null outside the grid.
+  function tileFromPoint(px, py, view) {
+    const hw = HALF_W * view.zoom;
+    const hh = HALF_H * view.zoom;
+    const a = (px - view.panX) / hw;      // gx - gy
+    const b = (py - view.panY) / hh;      // gx + gy
+    const gx = Math.floor((a + b) / 2);
+    const gy = Math.floor((b - a) / 2);
+    if (gx < 0 || gx >= GRID || gy < 0 || gy >= GRID) return null;
+    return { gx, gy };
+  }
+
+  // A point on screen straight into the editor's own tile coordinates
+  function editorTileFromPoint(px, py, view) {
+    const grid = tileFromPoint(px, py, view);
+    if (!grid) return null;
+    return { x: grid.gx, y: (GRID - 1) - grid.gy };
+  }
+
   // What is further back has to be painted first. The measure is the lowest
   // corner of the item: an item of n tiles reaches n-1 further in both
   // directions.
@@ -107,5 +129,6 @@
   }
 
   return { GRID, HALF_W, HALF_H, gridFromOffset, offsetFromGrid, isoPoint,
+           tileFromPoint, editorTileFromPoint,
            depth, byDepth, spriteRect, collectItems, collectPlates, fitView };
 });
