@@ -30,7 +30,8 @@
     hysteresis: 12,     // how much the active zone's band grows while dragging
     panelMin: 220,
     tearOff: 48,        // drop this far outside the box and it becomes a window
-    tolerance: 12       // snapping reach of the splitter
+    tolerance: 12,      // snapping reach of the splitter
+    carryMax: 360       // longest side of the panel while it is being carried
   };
 
   // Extras the caller adds (`sizes`, `remembered`) are carried through; only
@@ -225,17 +226,35 @@
     return { size, snapped: hit !== null && size === hit };
   }
 
-  // Where the floating panel sits while it is being carried: the box it
-  // started in, moved by exactly as far as the pointer has travelled. That
-  // keeps the spot the user grabbed under the pointer for the whole drag.
+  // How much smaller the panel is drawn while it is carried. A panel docked
+  // to a side is as tall as the whole map (or, top and bottom, as wide), so
+  // at full size it can never be over the map: one edge always hangs off,
+  // whatever the hand does. Shrunk to a card it fits, and the whole gesture
+  // - pick up, carry across, let go - is one the user can see from start to
+  // end. One number for the whole drag, worked out from the size the panel
+  // had in the grid, so the card does not change size in mid-air.
+  function carryScale(start, opt) {
+    if (!usable(start)) return 1;
+    const o = options(opt);
+    const longest = Math.max(start.w, start.h);
+    if (!(o.carryMax > 0) || !(longest > o.carryMax)) return 1;
+    return o.carryMax / longest;
+  }
+
+  // Where the floating panel sits while it is being carried, and how big it
+  // is drawn: the box it started in, shrunk to a card, put so that the spot
+  // the user grabbed stays under the pointer for the whole drag - the same
+  // spot of the card, not the same number of pixels, or the card would drift
+  // out from under the hand the smaller it is.
   // Nothing here clamps it - the panel is allowed off the box and off the
   // map, because "let go outside" is a gesture of its own (see dropAction).
-  function dragGhostRect(start, from, point) {
-    if (!usable(start) || !from || !point) return null;
-    const dx = point.x - from.x;
-    const dy = point.y - from.y;
-    if (!Number.isFinite(dx) || !Number.isFinite(dy)) return null;
-    return { x: start.x + dx, y: start.y + dy, w: start.w, h: start.h };
+  function dragGhostRect(start, from, point, opt) {
+    if (!usable(start) || !readable(from) || !readable(point)) return null;
+    const scale = carryScale(start, opt);
+    const x = point.x - (from.x - start.x) * scale;
+    const y = point.y - (from.y - start.y) * scale;
+    if (!Number.isFinite(x) || !Number.isFinite(y)) return null;
+    return { x, y, w: start.w * scale, h: start.h * scale, scale };
   }
 
   // The whole picture of one moment of the drag: which side is being aimed
@@ -285,6 +304,6 @@
   return {
     DOCK_SIDES, DEFAULTS, dockBands, dockZoneAt, stableZone, homeSides,
     panelSize, panelRectFor, dockPreviewRect, outsideDistance,
-    snapTo, splitterSize, dragGhostRect, dragVisibility, dropAction
+    snapTo, splitterSize, carryScale, dragGhostRect, dragVisibility, dropAction
   };
 });

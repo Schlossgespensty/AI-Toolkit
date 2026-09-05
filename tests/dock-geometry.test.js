@@ -147,12 +147,15 @@ test('snapTo leaves a value alone when nothing is near', () => {
 test('the carried panel keeps the spot it was grabbed by under the pointer', () => {
   const start = { x: 900, y: 200, w: 380, h: 500 };
   const grabbed = { x: 1000, y: 250 };                 // 100 in, 50 down
+  // 500 tall, so it is drawn at 360/500 while it is carried
+  const scale = 0.72;
   const carried = G.dragGhostRect(start, grabbed, { x: 300, y: 700 });
-  assert.deepEqual(carried, { x: 200, y: 650, w: 380, h: 500 });
+  assert.deepEqual(carried, { x: 228, y: 664, w: 380 * scale, h: 360, scale });
   // said the other way round, because that is the promise: wherever the
-  // pointer goes, it stays over the same spot of the panel
-  assert.equal(300 - carried.x, grabbed.x - start.x);
-  assert.equal(700 - carried.y, grabbed.y - start.y);
+  // pointer goes, it stays over the same spot of the panel - the same spot
+  // of the card that is drawn, which is that spot shrunk with it
+  assert.equal(300 - carried.x, (grabbed.x - start.x) * scale);
+  assert.equal(700 - carried.y, (grabbed.y - start.y) * scale);
 });
 
 test('nothing keeps the carried panel inside anything', () => {
@@ -160,7 +163,7 @@ test('nothing keeps the carried panel inside anything', () => {
   // a window of its own has to be able to leave.
   const start = { x: 0, y: 0, w: 200, h: 100 };
   assert.deepEqual(G.dragGhostRect(start, { x: 10, y: 10 }, { x: -900, y: -900 }),
-    { x: -910, y: -910, w: 200, h: 100 });
+    { x: -910, y: -910, w: 200, h: 100, scale: 1 });
   assert.equal(G.dragGhostRect({ x: 0, y: 0, w: 0, h: 100 }, { x: 0, y: 0 }, { x: 5, y: 5 }), null);
   assert.equal(G.dragGhostRect(start, { x: 0, y: 0 }, null), null);
   assert.equal(G.dragGhostRect(start, { x: NaN, y: 0 }, { x: 5, y: 5 }), null);

@@ -1641,14 +1641,23 @@ button:disabled { cursor: default; }
   top: 0;
   width: var(--drag-w, 0px);
   height: var(--drag-h, 0px);
-  transform: translate(var(--drag-x, 0px), var(--drag-y, 0px));
+  /* Carried as a card, not as the full-height slab it is when docked: at its
+     docked size it covers the map instead of moving over it, and one edge
+     always hangs off the screen. The shrinking is done here, by the drawing,
+     so the panel's own box keeps its size and the canvas inside it is not
+     rebuilt when the drag starts and again when it ends. */
+  transform-origin: 0 0;
+  transform: translate(var(--drag-x, 0px), var(--drag-y, 0px)) scale(var(--drag-s, 1));
   z-index: 40;
   border-radius: var(--radius-sm);
   /* The ring is drawn by the shadow, never by a border: a border would take
      its two pixels out of the panel, the body inside would shrink, and the
      ResizeObserver in iso-view.js would rebuild the canvas at the start and
      the end of every drag. */
-  box-shadow: 0 0 0 1px var(--accent-strong), 0 12px 30px rgba(0, 0, 0, .55);
+  /* Divided by the scale, so the ring stays one pixel wide on screen however
+     far the card is shrunk - a ring that shrinks with it disappears. */
+  box-shadow: 0 0 0 calc(1px / var(--drag-s, 1)) var(--accent-strong),
+              0 calc(12px / var(--drag-s, 1)) calc(30px / var(--drag-s, 1)) rgba(0, 0, 0, .55);
 }
 .dockPanel.dockFloating.dockGhostHidden { opacity: 0; }
 .dockPreview {

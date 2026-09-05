@@ -75,15 +75,52 @@ test('wherever the hand goes, the grabbed spot of the panel goes with it', () =>
     { x: BOX.x - 400, y: BOX.y - 400 },              // off the box, up and left
     { x: BOX.x + BOX.w + 900, y: BOX.y + BOX.h + 900 } // and far off the other way
   ];
+  // The panel is 600 tall, so it is carried at 360/600 of its size. The grip
+  // keeps the same spot OF THE CARD under the pointer, which is that many
+  // pixels in - not the 90 it was in the grid, or the card would hang
+  // further and further out of the hand the smaller it is drawn.
+  const scale = G.carryScale(start);
+  assert.equal(scale, 0.6, 'the tall side decides');
   for (const point of path) {
     const box = G.dragGhostRect(start, grab, point);
     const where = 'at ' + point.x + ',' + point.y;
     everyNumberIsReal(box, where);
-    assert.equal(point.x - box.x, grab.x - start.x, where + ': the grip slipped sideways');
-    assert.equal(point.y - box.y, grab.y - start.y, where + ': the grip slipped downwards');
-    assert.equal(box.w, start.w, where + ': the panel changed width in mid-air');
-    assert.equal(box.h, start.h, where + ': the panel changed height in mid-air');
+    // to the pixel, not to the last bit: 14 * 0.6 is 8.399999999999999 the
+    // one way round and 8.4 the other, and no eye can tell them apart
+    assert.ok(Math.abs((point.x - box.x) - (grab.x - start.x) * scale) < 1e-9,
+      where + ': the grip slipped sideways');
+    assert.ok(Math.abs((point.y - box.y) - (grab.y - start.y) * scale) < 1e-9,
+      where + ': the grip slipped downwards');
+    assert.equal(box.w, start.w * scale, where + ': the card changed width in mid-air');
+    assert.equal(box.h, start.h * scale, where + ': the card changed height in mid-air');
   }
+});
+
+test('the carried card fits inside the map it is dragged across', () => {
+  // The whole point of shrinking it. A panel docked to a side is as tall as
+  // the map; carried at that size there is no place to put it that is not
+  // half off an edge, and "drag it over the other one" is impossible however
+  // steady the hand. As a card there is room to spare in both directions.
+  const start = { x: BOX.x + BOX.w - 380, y: BOX.y, w: 380, h: BOX.h };
+  const grab = { x: start.x + 40, y: start.y + 10 };
+  assert.ok(start.h >= BOX.h, 'docked, the panel is as tall as the whole map');
+  // Well inside the middle: no band reaches here, so this is a place the
+  // panel is really seen at, not one it would have vanished at.
+  const point = { x: BOX.x + 300, y: BOX.y + 220 };
+  const view = G.dragVisibility(BOX, point, null, OPT);
+  assert.equal(view.zone, 'center');
+  assert.equal(view.ghost, 'visible', 'the middle takes no drop, so the card is in sight');
+  const card = G.dragGhostRect(start, grab, point);
+  assert.ok(card.w < BOX.w && card.h < BOX.h, 'a card, not a slab');
+  assert.ok(card.x >= BOX.x && card.y >= BOX.y &&
+            card.x + card.w <= BOX.x + BOX.w && card.y + card.h <= BOX.y + BOX.h,
+    'and all four of its edges are over the map: ' + JSON.stringify(card));
+});
+
+test('a panel small enough already is carried at its own size', () => {
+  const small = { x: 0, y: 0, w: 200, h: 100 };
+  assert.equal(G.carryScale(small), 1);
+  assert.equal(G.dragGhostRect(small, { x: 10, y: 10 }, { x: 500, y: 400 }).w, 200);
 });
 
 test('a step back and forth lands on exactly the same place, not near it', () => {
@@ -92,9 +129,13 @@ test('a step back and forth lands on exactly the same place, not near it', () =>
   // drifts away from the hand.
   const start = { x: 300, y: 200, w: 380, h: 600 };
   const grab = { x: 400, y: 250 };
+  const scale = G.carryScale(start);
   const there = G.dragGhostRect(start, grab, { x: 1234.5, y: 987.25 });
   const back = G.dragGhostRect(start, grab, grab);
-  assert.deepEqual(back, start, 'back at the grab point the panel is exactly where it began');
+  assert.deepEqual(back, { x: grab.x - (grab.x - start.x) * scale,
+                           y: grab.y - (grab.y - start.y) * scale,
+                           w: start.w * scale, h: start.h * scale, scale },
+    'back at the grab point the card hangs under the pointer exactly as it did at the first pixel');
   assert.deepEqual(G.dragGhostRect(start, grab, { x: 1234.5, y: 987.25 }), there,
     'the same pointer position always means the same box');
 });
@@ -442,8 +483,8 @@ test('one long drag: out of the grid, across the map, hidden and back', () => {
     assert.equal(view.zone, zone, where + ': wrong zone');
     assert.equal(view.ghost, ghost, where + ': wrong visibility');
     const carried = G.dragGhostRect(start, grab, point);
-    assert.equal(point.x - carried.x, grab.x - start.x, where + ': the panel lost the hand');
-    assert.equal(carried.w, start.w, where + ': and it must not change size on the way');
+    assert.equal(point.x - carried.x, (grab.x - start.x) * carried.scale, where + ': the panel lost the hand');
+    assert.equal(carried.w, start.w * G.carryScale(start), where + ': and it must not change size on the way');
     previous = view.zone;
   }
   // let go out there: a window, and only because the last step was far enough

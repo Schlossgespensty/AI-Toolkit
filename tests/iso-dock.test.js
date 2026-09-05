@@ -214,6 +214,9 @@ const PANEL_IDS = ['castleCanvasColumn', 'castleDockOverlay', 'castleDockPreview
 // carried panel is measured from it and a box of no size would be carried
 // nowhere at all.
 const PANEL_BOX = { left: BOX.x + BOX.w - 380, top: BOX.y, width: 380, height: BOX.h };
+// The panel is 600 tall, so while it is carried it is drawn at 360/600 of
+// its size - the grabbed spot stays under the pointer, that many pixels in.
+const CARRY = G.carryScale({ x: PANEL_BOX.left, y: PANEL_BOX.top, w: PANEL_BOX.width, h: PANEL_BOX.height });
 
 function boot(saved) {
   const els = {};
@@ -283,7 +286,7 @@ function boot(saved) {
     ghostHidden: () => els.isoDockPanel.classList.contains('dockGhostHidden'),
     carried: () => {
       const p = els.isoDockPanel.style.props;
-      return { x: p['--drag-x'], y: p['--drag-y'], w: p['--drag-w'], h: p['--drag-h'] };
+      return { x: p['--drag-x'], y: p['--drag-y'], w: p['--drag-w'], h: p['--drag-h'], s: p['--drag-s'] };
     },
     hot: () => els.castleDockOverlay.children.filter(c => c.classList.contains('hot')).map(c => c.dataset.zone),
     saved: () => JSON.parse(store.get('castle.isoDock.v1')),
@@ -507,11 +510,12 @@ test('the panel is carried by the hand and steps aside over a drop zone', () => 
   grip.fire('pointermove', { pointerId: 30, clientX: 700, clientY: 300 });
   assert.equal(app.floating(), true, 'moving far enough picks it up');
   assert.deepEqual(app.carried(), {
-    x: (PANEL_BOX.left - 100) + 'px',
-    y: (PANEL_BOX.top + 200) + 'px',
+    x: (700 - 80 * CARRY) + 'px',
+    y: (300 - 50 * CARRY) + 'px',
     w: PANEL_BOX.width + 'px',
-    h: PANEL_BOX.height + 'px'
-  }, 'it moved exactly as far as the hand, at the size it had in the grid');
+    h: PANEL_BOX.height + 'px',
+    s: CARRY
+  }, 'its own box keeps the size it had in the grid; only the drawing is shrunk');
   assert.equal(app.ghostHidden(), false, 'the middle takes no drop, so it stays in sight');
 
   grip.fire('pointermove', { pointerId: 30, clientX: BOX.x + 10, clientY: 350 });
@@ -519,10 +523,11 @@ test('the panel is carried by the hand and steps aside over a drop zone', () => 
   assert.deepEqual(app.hot(), ['left'], 'and the preview underneath takes over');
   assert.equal(app.els.castleDockPreview.hidden, false);
   assert.deepEqual(app.carried(), {
-    x: (PANEL_BOX.left + BOX.x + 10 - 800) + 'px',
-    y: (PANEL_BOX.top + 250) + 'px',
+    x: (BOX.x + 10 - 80 * CARRY) + 'px',
+    y: (350 - 50 * CARRY) + 'px',
     w: PANEL_BOX.width + 'px',
-    h: PANEL_BOX.height + 'px'
+    h: PANEL_BOX.height + 'px',
+    s: CARRY
   }, 'hidden, but still carried: leaving the band has to bring it back where the hand is');
 
   grip.fire('pointermove', { pointerId: 30, clientX: 600, clientY: 350 });
@@ -532,7 +537,7 @@ test('the panel is carried by the hand and steps aside over a drop zone', () => 
   grip.fire('pointerup', { pointerId: 30, clientX: 600, clientY: 350 });
   assert.equal(app.floating(), false, 'let go, it is back in the grid');
   assert.equal(app.ghostHidden(), false);
-  assert.deepEqual(app.carried(), { x: undefined, y: undefined, w: undefined, h: undefined },
+  assert.deepEqual(app.carried(), { x: undefined, y: undefined, w: undefined, h: undefined, s: undefined },
     'and nothing of the drag is left on it');
   assert.equal(app.dock(), 'right', 'a drop in the middle changes nothing');
 });
@@ -544,7 +549,7 @@ test('the panel is carried right out of the box, and the drop still tears off', 
   grip.fire('pointerdown', { button: 0, pointerId: 31, clientX: 800, clientY: 300 });
   grip.fire('pointermove', { pointerId: 31, clientX: 1500, clientY: 900 });
   assert.equal(app.ghostHidden(), false, 'outside the box nothing would be docked, so it is seen');
-  assert.equal(app.carried().x, (PANEL_BOX.left + 700) + 'px', 'it goes where the hand goes');
+  assert.equal(app.carried().x, (1500 - 80 * CARRY) + 'px', 'it goes where the hand goes');
   grip.fire('pointerup', { pointerId: 31, clientX: 1500, clientY: 900 });
   assert.equal(app.view.getState().mode, 'window', 'let go well outside it still becomes a window');
   assert.equal(app.floating(), false, 'and the panel is not left pinned to the screen');
@@ -572,7 +577,7 @@ test('Escape and a lost window put the carried panel back', () => {
   assert.equal(app.floating(), true);
   app.fireWindow('keydown', { key: 'Escape' });
   assert.equal(app.floating(), false, 'Escape puts it down');
-  assert.deepEqual(app.carried(), { x: undefined, y: undefined, w: undefined, h: undefined });
+  assert.deepEqual(app.carried(), { x: undefined, y: undefined, w: undefined, h: undefined, s: undefined });
 
   const lost = boot();
   lost.view.dockTo('right');
@@ -610,7 +615,7 @@ test('a panel with no size on screen is not carried, and still docks', () => {
   grip.fire('pointerdown', { button: 0, pointerId: 37, clientX: 800, clientY: 300 });
   grip.fire('pointermove', { pointerId: 37, clientX: BOX.x + 5, clientY: 350 });
   assert.equal(app.floating(), false, 'nothing is lifted');
-  assert.deepEqual(app.carried(), { x: undefined, y: undefined, w: undefined, h: undefined });
+  assert.deepEqual(app.carried(), { x: undefined, y: undefined, w: undefined, h: undefined, s: undefined });
   assert.deepEqual(app.hot(), ['left'], 'but the zones still answer');
   grip.fire('pointerup', { pointerId: 37, clientX: BOX.x + 5, clientY: 350 });
   assert.equal(app.dock(), 'left', 'and the drop lands');
@@ -913,7 +918,7 @@ test('every class the code switches on exists in the stylesheet', () => {
 test('every custom property the code writes is read by the stylesheet', () => {
   const written = new Set([...dockSource.matchAll(/setProperty\('(--[a-z-]+)'/g)].map(m => m[1]));
   assert.deepEqual([...written].sort(),
-    ['--band-x', '--band-y', '--dock-size', '--drag-h', '--drag-w', '--drag-x', '--drag-y']);
+    ['--band-x', '--band-y', '--dock-size', '--drag-h', '--drag-s', '--drag-w', '--drag-x', '--drag-y']);
   for (const name of written) {
     assert.ok(css.includes('var(' + name), `combined.css never reads var(${name})`);
   }

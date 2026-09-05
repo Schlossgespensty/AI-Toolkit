@@ -204,14 +204,17 @@
   // ------------------------------------------------- carrying the panel
 
   // The panel leaves the grid and is pinned to the screen instead, at the
-  // size and place it had a moment ago: the picture does not jump when the
-  // drag begins. The grid track it came from keeps its width, so the map
+  // size it had a moment ago and shrunk to a card the hand can carry across
+  // the map. The grid track it came from keeps its width, so the map
   // underneath is not resized once per drag - and neither are the three
-  // canvas buffers that hang off it.
-  function liftPanel(box) {
+  // canvas buffers that hang off it. The shrinking is drawing only, never
+  // the panel's own box: a box that really got smaller would send the
+  // ResizeObserver in iso-view.js to work at the start and the end of every
+  // drag.
+  function liftPanel(box, carried) {
     els.panel.style.setProperty('--drag-w', box.w + 'px');
     els.panel.style.setProperty('--drag-h', box.h + 'px');
-    carryPanel(box);
+    carryPanel(carried || box);
     els.panel.classList.add('dockFloating');
   }
 
@@ -223,6 +226,7 @@
     if (!box) return;
     els.panel.style.setProperty('--drag-x', box.x + 'px');
     els.panel.style.setProperty('--drag-y', box.y + 'px');
+    if (Number.isFinite(box.scale)) els.panel.style.setProperty('--drag-s', box.scale);
   }
 
   // Out of the way while a side would take the drop. Only the opacity: the
@@ -238,9 +242,16 @@
   function setPanelDown() {
     els.panel.classList.remove('dockFloating');
     els.panel.classList.remove('dockGhostHidden');
-    for (const name of ['--drag-x', '--drag-y', '--drag-w', '--drag-h']) {
+    for (const name of ['--drag-x', '--drag-y', '--drag-w', '--drag-h', '--drag-s']) {
       els.panel.style.removeProperty(name);
     }
+  }
+
+  // Where the card sits for this pointer position. Asked twice per move at
+  // most, and always with the same three arguments, so the lift and the
+  // carry can never put it in two different places.
+  function carriedRect(point) {
+    return G.dragGhostRect(drag.panel, { x: drag.x0, y: drag.y0 }, point, dragOptions());
   }
 
   // A second finger on the grip must not take the drag over: the first one's
@@ -271,7 +282,10 @@
       const box = panelRect();
       drag.panel = box.w > 0 && box.h > 0 ? box : null;
       showZones();
-      if (drag.panel) liftPanel(drag.panel);
+      // Lifted straight into the place and the size it is carried at: the
+      // class and the two properties are written in the same turn, so the
+      // panel is never painted full size at its old spot for one frame.
+      if (drag.panel) liftPanel(drag.panel, carriedRect(point));
     }
     const rect = hostRect();
     const view = G.dragVisibility(rect, point, drag.zone, dragOptions());
@@ -280,7 +294,7 @@
     // Only a panel that was really lifted is carried and stepped aside. A
     // panel that never left the grid must not be marked as out of the way.
     if (drag.panel) {
-      carryPanel(G.dragGhostRect(drag.panel, { x: drag.x0, y: drag.y0 }, point));
+      carryPanel(carriedRect(point));
       ghostPanel(view.ghost);
     }
     showTarget(rect, view);
