@@ -44,6 +44,7 @@
     buildSliderValue: document.getElementById('castleBuildSliderValue'),
     status: document.getElementById('castleStatus'),
     fileLabel: document.getElementById('castleFileLabel'),
+    showNames: document.getElementById('castleShowNames'),
     showUnitNumbers: document.getElementById('castleShowUnitNumbers'),
     showCompatibility: document.getElementById('castleShowCompatibility'),
     showBlueprint: document.getElementById('castleShowBlueprint'),
@@ -320,6 +321,10 @@
       item.number = number;
       nextNumber.set(type, number + 1);
     }
+  }
+
+  function unitDisplayNumber(number) {
+    return Number(number) + 1;
   }
 
   function normalizeUnitStorage(doc = state.document) {
@@ -804,7 +809,7 @@
       const mi = state.document.miscItems.length;
       state.document.miscItems.push({ positionOfset: off, itemType: type, number: countType(type) });
       state.selected = new Set([unitRefKey(mi)]);
-      changed(`Placed ${itemName(type)} rallypoint #${state.document.miscItems[mi].number} at ${off}`);
+      changed(`Placed ${itemName(type)} rallypoint #${unitDisplayNumber(state.document.miscItems[mi].number)} at ${off}`);
     } else {
       insertBuildFrames([{ itemType: type, tilePositionOfsets: [off], shouldPause: false }]);
       changed(`Placed ${itemName(type)} at ${off}`);
@@ -1732,7 +1737,7 @@
 
     ctx = staticCacheCtx;
     for (const placement of unitPlacements) {
-      drawPlacement(placement.type, placement.off, state.selected.has(placement.ref), null, 1, false, placement.number);
+      drawPlacement(placement.type, placement.off, state.selected.has(placement.ref));
     }
 
     ctx = displayCtx;
@@ -1755,9 +1760,7 @@
       const moveCheck = validateMove(proposed);
       for (const [ref, off] of proposed.entries()) {
         if (!refExists(ref)) continue;
-        const parsed = parseRef(ref);
-        const number = parsed.kind === 'unit' ? Number(state.document.miscItems[parsed.mi].number) : null;
-        drawPlacement(refType(ref), off, true, moveCheck.ok ? css('--selected', '#ffb24d') : css('--danger', '#d75f5f'), 0.82, false, number);
+        drawPlacement(refType(ref), off, true, moveCheck.ok ? css('--selected', '#ffb24d') : css('--danger', '#d75f5f'), 0.82);
       }
     }
 
@@ -1779,6 +1782,9 @@
         drawPlacementXY(entry.type, entry.x, entry.y, false, color, 0.55, true);
       }
     }
+
+    // Draw markers last so stacked sprites cannot cover their numbers or counts.
+    drawUnitMarkers(proposed);
 
     if ((state.gesture === 'select-marquee' || state.gesture === 'copy-marquee' || state.gesture === 'delete-marquee') && state.dragStartScreen && state.marqueeEnd) {
       const x = Math.min(state.dragStartScreen.x, state.marqueeEnd.x);
@@ -1864,9 +1870,9 @@
     ctx.restore();
   }
 
-  function drawPlacement(type, off, selected = false, outlineOverride = null, alpha = 1, preview = false, unitNumber = null) {
+  function drawPlacement(type, off, selected = false, outlineOverride = null, alpha = 1, preview = false) {
     const { x, y } = offsetToXY(off);
-    drawPlacementXY(type, x, y, selected, outlineOverride, alpha, preview, unitNumber);
+    drawPlacementXY(type, x, y, selected, outlineOverride, alpha, preview);
   }
 
   function drawPlacementOutline(type, off, color = css('--selected', '#ffb24d')) {
@@ -1890,6 +1896,96 @@
 
   function imageReady(image) {
     return image?.complete && image.naturalWidth;
+  }
+
+  function drawItemName(type, rect) {
+    if (!els.showNames.checked || isUnitType(type)) return;
+    const [width, height] = itemSize(type);
+    if (width < 2 || height < 2) return;
+    drawSkinLabel(itemName(type), rect, 10, 4);
+  }
+
+  function drawSkinLabel(label, rect, minReadableFontSize = 0, padding = 2) {
+    const maxWidth = Math.max(1, rect.w - padding * 2);
+    const maxHeight = Math.max(1, rect.h - padding * 2);
+    let fontSize = Math.max(6, Math.min(16, state.cell * 1.4));
+    let lines;
+    let widest;
+
+    ctx.save();
+    // Wrap full words, then shrink further for small tiles or long names.
+    while (true) {
+      ctx.font = `bold ${fontSize}px sans-serif`;
+      lines = [''];
+      for (const word of label.split(/\s+/)) {
+        const last = lines.length - 1;
+        const candidate = lines[last] ? `${lines[last]} ${word}` : word;
+        if (lines[last] && ctx.measureText(candidate).width > maxWidth) lines.push(word);
+        else lines[last] = candidate;
+      }
+      widest = Math.max(...lines.map(line => ctx.measureText(line).width));
+      if ((widest <= maxWidth && lines.length * fontSize * 1.15 <= maxHeight) || fontSize <= 6) break;
+      fontSize = Math.max(6, fontSize - 1);
+    }
+    fontSize *= Math.min(1, maxWidth / Math.max(1, widest), maxHeight / (lines.length * fontSize * 1.15));
+    if (fontSize < minReadableFontSize) {
+      ctx.restore();
+      return;
+    }
+    const lineHeight = fontSize * 1.15;
+    const centerX = rect.x + rect.w / 2;
+    const firstY = rect.y + rect.h / 2 - (lines.length - 1) * lineHeight / 2;
+    ctx.font = `bold ${fontSize}px sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.lineJoin = 'round';
+    ctx.lineWidth = Math.min(3, Math.max(0.5, fontSize / 4));
+    ctx.strokeStyle = 'rgba(0,0,0,.9)';
+    ctx.fillStyle = '#fff';
+    lines.forEach((line, index) => {
+      const y = firstY + index * lineHeight;
+      ctx.strokeText(line, centerX, y);
+      ctx.fillText(line, centerX, y);
+    });
+    ctx.restore();
+  }
+
+  function drawUnitMarkers(proposed = null) {
+    const stacks = new Map();
+    for (const placement of placementRefs()) {
+      if (placement.kind !== 'unit') continue;
+      const off = proposed?.get(placement.ref) ?? placement.off;
+      const stack = stacks.get(off) || { count: 0, top: null };
+      stack.count += 1;
+      // Moving sprites are drawn above stationary ones, even if stored earlier.
+      if (!stack.top || proposed?.has(placement.ref) || !proposed?.has(stack.top.ref)) stack.top = placement;
+      stacks.set(off, stack);
+    }
+    for (const [off, stack] of stacks) {
+      const { x, y } = offsetToXY(off);
+      const rect = screenRectForXY(stack.top.type, x, y);
+      if (rect.x + rect.w < 0 || rect.y + rect.h < 0 || rect.x > state.canvasWidth || rect.y > state.canvasHeight) continue;
+      if (els.showUnitNumbers.checked) drawSkinLabel(`#${unitDisplayNumber(stack.top.number)}`, rect);
+      if (stack.count < 2) continue;
+
+      ctx.save();
+      const fontSize = Math.max(8, Math.min(12, state.cell));
+      const label = `×${stack.count}`;
+      ctx.font = `bold ${fontSize}px sans-serif`;
+      const badgeWidth = ctx.measureText(label).width + 6;
+      const badgeHeight = fontSize + 4;
+      const left = Math.max(0, Math.min(state.canvasWidth - badgeWidth, rect.x + rect.w - badgeWidth));
+      const top = Math.max(0, rect.y - badgeHeight + 2);
+      ctx.fillStyle = '#e9b45f';
+      ctx.beginPath();
+      ctx.roundRect(left, top, badgeWidth, badgeHeight, 3);
+      ctx.fill();
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillStyle = '#171a1f';
+      ctx.fillText(label, left + badgeWidth / 2, top + badgeHeight / 2);
+      ctx.restore();
+    }
   }
 
   function drawKeepCompositeXY(x, y, selected, outlineOverride, alpha, preview) {
@@ -1931,16 +2027,21 @@
       ctx.globalAlpha = alpha;
     }
 
-    ctx.strokeStyle = outlineOverride || (selected ? css('--selected', '#ffb24d') : '#444a54');
-    ctx.lineWidth = selected || outlineOverride ? 3 : 1;
-    for (const part of screenParts) {
-      ctx.strokeRect(part.x + .5, part.y + .5, Math.max(0, part.w - 1), Math.max(0, part.h - 1));
+    if (selected) {
+      ctx.strokeStyle = outlineOverride || css('--selected', '#ffb24d');
+      ctx.lineWidth = 3;
+      for (const part of screenParts) {
+        ctx.strokeRect(part.x + .5, part.y + .5, Math.max(0, part.w - 1), Math.max(0, part.h - 1));
+      }
     }
+
+    drawItemName(geometry.KEEP_ITEM_TYPE, keepArtRect);
+    drawItemName(geometry.FORCED_STOCKPILE_ITEM_TYPE, stockpileRect);
 
     ctx.restore();
   }
 
-  function drawPlacementXY(type, x, y, selected = false, outlineOverride = null, alpha = 1, preview = false, unitNumber = null) {
+  function drawPlacementXY(type, x, y, selected = false, outlineOverride = null, alpha = 1, preview = false) {
     if (Number(type) === geometry.KEEP_ITEM_TYPE) {
       drawKeepCompositeXY(x, y, selected, outlineOverride, alpha, preview);
       return;
@@ -1962,26 +2063,13 @@
       ctx.fillRect(r.x, r.y, r.w, r.h);
     }
 
-    if (!isUnitType(type) || selected || outlineOverride) {
-      ctx.strokeStyle = outlineOverride || (selected ? css('--selected', '#ffb24d') : '#444a54');
-      ctx.lineWidth = selected || outlineOverride ? 3 : 1;
+    if (selected) {
+      ctx.strokeStyle = outlineOverride || css('--selected', '#ffb24d');
+      ctx.lineWidth = 3;
       ctx.strokeRect(r.x + .5, r.y + .5, Math.max(0, r.w - 1), Math.max(0, r.h - 1));
     }
 
-    if (unitNumber != null && els.showUnitNumbers.checked && !preview) {
-      const label = String(unitNumber);
-      const fontSize = Math.max(8, Math.min(12, state.cell));
-      ctx.font = `bold ${fontSize}px monospace`;
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.lineWidth = 3;
-      ctx.strokeStyle = 'rgba(0,0,0,.9)';
-      ctx.strokeText(label, r.x + r.w / 2, r.y + r.h / 2);
-      ctx.fillStyle = '#fff';
-      ctx.fillText(label, r.x + r.w / 2, r.y + r.h / 2);
-      ctx.textAlign = 'start';
-      ctx.textBaseline = 'alphabetic';
-    }
+    drawItemName(type, r);
 
     ctx.restore();
   }
@@ -2288,6 +2376,7 @@
   document.getElementById('castleOpenBtn').addEventListener('click', openFile);
   document.getElementById('castleSaveBtn').addEventListener('click', saveFile);
   document.getElementById('castleSaveAsBtn').addEventListener('click', saveAs);
+  els.showNames.addEventListener('change', scheduleDraw);
   els.showUnitNumbers.addEventListener('change', scheduleDraw);
   els.showCompatibility.addEventListener('change', scheduleDraw);
   els.showBlueprint.addEventListener('change', () => {

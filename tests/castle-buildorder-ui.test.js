@@ -112,6 +112,14 @@ test('Castle line tool routes around non-unit placements and ignores unit rallyp
   assert.match(pointerMove, /routedLineTiles\(state\.dragStartTile,\s*tile\)/);
 });
 
+test('Castle unit order labels are one-based while stored rallypoint indexes remain compatible', () => {
+  const script = fs.readFileSync(path.join(root, 'src', 'js', 'castle-editor.js'), 'utf8');
+  assert.match(functionBody(script, 'unitDisplayNumber'), /Number\(number\)\s*\+\s*1/);
+  assert.match(functionBody(script, 'drawUnitMarkers'), /unitDisplayNumber\(stack\.top\.number\)/);
+  assert.match(functionBody(script, 'placeSingle'), /unitDisplayNumber\(state\.document\.miscItems\[mi\]\.number\)/);
+  assert.match(functionBody(script, 'renumberUnits'), /nextNumber\.get\(type\)\s*\|\|\s*0/);
+});
+
 test('Move-tool selection makes the last selected physical placement the active build step', () => {
   const script = fs.readFileSync(path.join(root, 'src', 'js', 'castle-editor.js'), 'utf8');
   const functionBody = name => {
@@ -130,7 +138,7 @@ test('Castle-only menu actions replace obsolete hidden toolbar controls', () => 
   const html = fs.readFileSync(path.join(root, 'src', 'index.html'), 'utf8');
   const main = fs.readFileSync(path.join(root, 'main.js'), 'utf8');
   const preload = fs.readFileSync(path.join(root, 'preload.js'), 'utf8');
-  assert.doesNotMatch(html, /id="castleShowNames"|id="castleDeleteSelectedBtn"|id="ucpCastleMappingBtn"/);
+  assert.doesNotMatch(html, /id="castleDeleteSelectedBtn"|id="ucpCastleMappingBtn"/);
   assert.match(main, /function editMenuForWorkspace\(workspace\)/);
   assert.match(main, /workspace === 'character'/);
   assert.match(main, /workspace === 'castle'/);

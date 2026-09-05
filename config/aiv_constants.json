@@ -5,7 +5,7 @@
             1,
             1
         ],
-        "maxAmount": 10,
+        "maxAmount": 9,
         "overlap": "allow"
     },
     "2": {
@@ -294,7 +294,8 @@
         "size": [
             5,
             5
-        ]
+        ],
+        "maxAmount": 1
     },
     "78": {
         "name": "Hunter's Post",
@@ -350,28 +351,32 @@
         "size": [
             10,
             10
-        ]
+        ],
+        "maxAmount": 1
     },
     "87": {
         "name": "Barracks",
         "size": [
             10,
             10
-        ]
+        ],
+        "maxAmount": 1
     },
     "88": {
         "name": "Engineering Guild",
         "size": [
             5,
             10
-        ]
+        ],
+        "maxAmount": 1
     },
     "89": {
         "name": "Tunnelors Guild",
         "size": [
             5,
             10
-        ]
+        ],
+        "maxAmount": 1
     },
     "92": {
         "name": "Inn",
@@ -413,7 +418,8 @@
         "size": [
             1,
             1
-        ]
+        ],
+        "maxAmount": 100
     },
     "99": {
         "name": "Pitch",
@@ -644,7 +650,8 @@
         "size": [
             3,
             3
-        ]
+        ],
+        "maxAmount": 10
     },
     "313": {
         "name": "Statue",
