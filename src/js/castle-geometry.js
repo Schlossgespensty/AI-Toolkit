@@ -91,6 +91,90 @@
     return points;
   }
 
+  function routedLineTiles(a, b, isBlocked, gridSize = 100) {
+    if (typeof isBlocked !== 'function') throw new TypeError('Line routing requires an obstacle check.');
+    const start = { x: Number(a?.x), y: Number(a?.y) };
+    const end = { x: Number(b?.x), y: Number(b?.y) };
+    const size = Math.max(1, Math.floor(Number(gridSize) || 0));
+    const inBounds = point => (
+      Number.isInteger(point.x) && Number.isInteger(point.y) &&
+      point.x >= 0 && point.y >= 0 && point.x < size && point.y < size
+    );
+    if (!inBounds(start) || !inBounds(end) || isBlocked(start)) return [];
+
+    const direct = lineTiles(start, end);
+    if (direct.every(point => !isBlocked(point))) return direct;
+
+    const indexOf = point => point.y * size + point.x;
+    const pointAt = index => ({ x: index % size, y: Math.floor(index / size) });
+    const keyFor = point => `${point.x}:${point.y}`;
+    const goals = new Set();
+    if (!isBlocked(end)) {
+      goals.add(keyFor(end));
+    } else {
+      for (let dy = -1; dy <= 1; dy++) {
+        for (let dx = -1; dx <= 1; dx++) {
+          if (!dx && !dy) continue;
+          const point = { x: end.x + dx, y: end.y + dy };
+          if (inBounds(point) && !isBlocked(point)) goals.add(keyFor(point));
+        }
+      }
+    }
+    if (!goals.size) return [];
+
+    const previous = new Int32Array(size * size);
+    previous.fill(-1);
+    const startIndex = indexOf(start);
+    previous[startIndex] = startIndex;
+    const queue = [startIndex];
+    let queueIndex = 0;
+    let goalIndex = -1;
+    const directions = [
+      { x: -1, y: -1 }, { x: 0, y: -1 }, { x: 1, y: -1 },
+      { x: -1, y: 0 },                       { x: 1, y: 0 },
+      { x: -1, y: 1 },  { x: 0, y: 1 },  { x: 1, y: 1 }
+    ];
+    const lineDx = end.x - start.x;
+    const lineDy = end.y - start.y;
+    const rank = point => ({
+      distance: Math.max(Math.abs(end.x - point.x), Math.abs(end.y - point.y)),
+      deviation: Math.abs(lineDy * (point.x - start.x) - lineDx * (point.y - start.y))
+    });
+
+    while (queueIndex < queue.length) {
+      const currentIndex = queue[queueIndex++];
+      const current = pointAt(currentIndex);
+      if (goals.has(keyFor(current))) {
+        goalIndex = currentIndex;
+        break;
+      }
+
+      const neighbors = directions
+        .map(direction => ({ x: current.x + direction.x, y: current.y + direction.y }))
+        .filter(inBounds)
+        .sort((one, two) => {
+          const first = rank(one);
+          const second = rank(two);
+          return first.distance - second.distance || first.deviation - second.deviation;
+        });
+      for (const neighbor of neighbors) {
+        const neighborIndex = indexOf(neighbor);
+        if (previous[neighborIndex] !== -1 || isBlocked(neighbor)) continue;
+        previous[neighborIndex] = currentIndex;
+        queue.push(neighborIndex);
+      }
+    }
+
+    if (goalIndex < 0) return [];
+    const route = [];
+    for (let index = goalIndex; ; index = previous[index]) {
+      route.push(pointAt(index));
+      if (index === startIndex) break;
+    }
+    route.reverse();
+    return route;
+  }
+
   function insertBuildSteps(frames, newFrames, afterIndex = null) {
     if (!Array.isArray(frames) || !Array.isArray(newFrames)) {
       throw new TypeError('Build steps must be arrays.');
@@ -144,6 +228,7 @@
     footprintBounds,
     footprintIsInBounds,
     lineTiles,
+    routedLineTiles,
     insertBuildSteps,
     moveBuildSteps
   };

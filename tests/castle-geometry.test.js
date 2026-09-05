@@ -69,6 +69,46 @@ test('lineTiles includes both endpoints for shallow and reversed lines', () => {
   assert.deepEqual(reversed, [...shallow].reverse());
 });
 
+test('routedLineTiles preserves a straight line when it is unobstructed', () => {
+  const start = { x: 1, y: 2 };
+  const end = { x: 7, y: 5 };
+  assert.deepEqual(
+    geometry.routedLineTiles(start, end, () => false, 10),
+    geometry.lineTiles(start, end)
+  );
+});
+
+test('routedLineTiles flows around occupied tiles without creating gaps', () => {
+  const occupied = new Set(['3:3', '3:4', '3:5']);
+  const route = geometry.routedLineTiles(
+    { x: 1, y: 4 },
+    { x: 6, y: 4 },
+    point => occupied.has(`${point.x}:${point.y}`),
+    10
+  );
+
+  assert.deepEqual(route[0], { x: 1, y: 4 });
+  assert.deepEqual(route.at(-1), { x: 6, y: 4 });
+  assert.equal(route.some(point => occupied.has(`${point.x}:${point.y}`)), false);
+  for (let index = 1; index < route.length; index++) {
+    assert.ok(Math.abs(route[index].x - route[index - 1].x) <= 1);
+    assert.ok(Math.abs(route[index].y - route[index - 1].y) <= 1);
+  }
+});
+
+test('routedLineTiles stops next to a blocked destination', () => {
+  const target = { x: 5, y: 5 };
+  const route = geometry.routedLineTiles(
+    { x: 1, y: 1 },
+    target,
+    point => point.x === target.x && point.y === target.y,
+    10
+  );
+  const last = route.at(-1);
+  assert.ok(last);
+  assert.equal(Math.max(Math.abs(last.x - target.x), Math.abs(last.y - target.y)), 1);
+});
+
 test('new build steps insert after the selected step and advance the anchor', () => {
   const frames = [{ itemType: 1 }, { itemType: 2 }, { itemType: 3 }];
   const first = geometry.insertBuildSteps(frames, [{ itemType: 10 }], 0);

@@ -494,6 +494,41 @@
     return { ok: true, reason: '', replacements };
   }
 
+  function lineObstacleMap() {
+    const occupied = new Uint8Array(GRID * GRID);
+    for (const placement of placementRefs()) {
+      if (placement.kind === 'unit') continue;
+      for (const rect of footprintRects(placement.type, placement.off)) {
+        const left = Math.max(0, rect.left);
+        const right = Math.min(GRID - 1, rect.right);
+        const bottom = Math.max(0, rect.bottom);
+        const top = Math.min(GRID - 1, rect.top);
+        for (let y = bottom; y <= top; y++) {
+          for (let x = left; x <= right; x++) occupied[y * GRID + x] = 1;
+        }
+      }
+    }
+    return occupied;
+  }
+
+  function routedLineTiles(start, end) {
+    const type = state.currentItemType;
+    const occupied = lineObstacleMap();
+    const isBlocked = tile => {
+      const footprint = footprintRectsAtXY(type, tile.x, tile.y);
+      if (!geometry.footprintIsInBounds(footprint, GRID)) return true;
+      return footprint.some(rect => {
+        for (let y = rect.bottom; y <= rect.top; y++) {
+          for (let x = rect.left; x <= rect.right; x++) {
+            if (occupied[y * GRID + x]) return true;
+          }
+        }
+        return false;
+      });
+    };
+    return geometry.routedLineTiles(start, end, isBlocked, GRID);
+  }
+
   function stableColor(type) {
     const hue = (Number(type) * 47) % 360;
     return `hsl(${hue} 45% 62%)`;
@@ -1621,8 +1656,7 @@
     if (!state.blueprintVisible || !imageReady(state.blueprintImage)) return;
     ctx.save();
     ctx.globalAlpha = state.blueprintOpacity;
-    ctx.imageSmoothingEnabled = true;
-    ctx.imageSmoothingQuality = 'high';
+    ctx.imageSmoothingEnabled = false;
     ctx.drawImage(state.blueprintImage, state.panX, state.panY, mapSize, mapSize);
     ctx.restore();
   }
@@ -1644,7 +1678,10 @@
     ctx.fillRect(0, 0, state.canvasWidth, state.canvasHeight);
     const mapSize = GRID * state.cell;
     if (mapBackground.complete && mapBackground.naturalWidth) {
+      ctx.save();
+      ctx.imageSmoothingEnabled = false;
       ctx.drawImage(mapBackground, state.panX, state.panY, mapSize, mapSize);
+      ctx.restore();
     } else {
       ctx.fillStyle = css('--map-bg', '#171a1f');
       ctx.fillRect(state.panX, state.panY, mapSize, mapSize);
@@ -2097,7 +2134,9 @@
       state.brushOffsets = [];
       state.brushSeen = new Set();
       state.brushReplacements = new Set();
-      for (const p of geometry.lineTiles(state.dragStartTile, tile)) brushAdd(p);
+      const route = routedLineTiles(state.dragStartTile, tile);
+      if (!route.length) setStatus('No unobstructed route to that tile.');
+      for (const p of route) brushAdd(p);
     } else if (state.gesture === 'select-marquee' || state.gesture === 'copy-marquee' || state.gesture === 'delete-marquee') {
       state.marqueeEnd = pos;
       scheduleDraw(false);

@@ -4,6 +4,11 @@ const path = require('node:path');
 const test = require('node:test');
 
 const root = path.resolve(__dirname, '..');
+const functionBody = (script, name) => {
+  const start = script.indexOf(`function ${name}`);
+  const next = script.indexOf('\n  function ', start + 10);
+  return script.slice(start, next < 0 ? script.length : next);
+};
 
 test('Castle docks place build order left and item palette right', () => {
   const html = fs.readFileSync(path.join(root, 'src', 'index.html'), 'utf8');
@@ -91,10 +96,20 @@ test('Temporary blueprint controls render an in-memory image beneath castle obje
   assert.match(script, /if \(blueprintDialogOpen\) return false;/);
   assert.doesNotMatch(script, /URL\.createObjectURL|blueprintInput\.click/);
   assert.match(script, /function drawBlueprint\(mapSize\)/);
+  assert.match(functionBody(script, 'drawBlueprint'), /imageSmoothingEnabled\s*=\s*false/);
   assert.match(script, /drawBlueprint\(mapSize\);\s*if \(els\.showCompatibility\.checked\) drawCompatibilityGuide\(mapSize\);\s*drawGrid\(mapSize\);/);
   const outputStart = script.indexOf('function outputDocument()');
   const outputEnd = script.indexOf('\n  function outputContent()', outputStart);
   assert.doesNotMatch(script.slice(outputStart, outputEnd), /blueprint/i);
+});
+
+test('Castle line tool routes around non-unit placements and ignores unit rallypoints', () => {
+  const script = fs.readFileSync(path.join(root, 'src', 'js', 'castle-editor.js'), 'utf8');
+  const obstacleMap = functionBody(script, 'lineObstacleMap');
+  const pointerMove = functionBody(script, 'onPointerMove');
+  assert.match(obstacleMap, /placement\.kind\s*===\s*'unit'/);
+  assert.match(obstacleMap, /continue/);
+  assert.match(pointerMove, /routedLineTiles\(state\.dragStartTile,\s*tile\)/);
 });
 
 test('Move-tool selection makes the last selected physical placement the active build step', () => {
