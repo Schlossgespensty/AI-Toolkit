@@ -14,6 +14,7 @@
     <button id="tabUcp" class="workspaceTab active" type="button" data-workspace="ucp">UCP AI Library</button>
     <button id="tabCharacter" class="workspaceTab" type="button" data-workspace="character">Character</button>
     <button id="tabCastle" class="workspaceTab" type="button" data-workspace="castle">Castle</button>
+    <button id="tabIso" class="workspaceTab" type="button" data-workspace="iso">2.5D</button>
     <button id="tabAiContent" class="workspaceTab" type="button" data-workspace="content">AI Content</button>
     <div class="workspaceSpacer"></div>
     <span id="workspaceStatus" class="workspaceStatus">UCP AI Library</span>
@@ -215,6 +216,24 @@
       </div>
     </div>
   </section>
+<section id="isoWorkspace" class="workspace" aria-hidden="true">
+  <div class="isoLayout">
+    <header class="isoBar">
+      <strong>2.5D</strong>
+      <span class="isoHint">The castle from the Castle tab, drawn with the game's own sprites.</span>
+      <span class="isoSpacer"></span>
+      <button id="isoRefresh" type="button">Refresh</button>
+      <button id="isoFit" type="button">Fit</button>
+      <span id="isoZoomValue">100 %</span>
+      <button id="isoDetach" type="button">Detach window</button>
+    </header>
+    <div id="isoCanvasHost" class="isoCanvasHost">
+      <canvas id="isoCanvas" aria-label="Slanted view of the castle"></canvas>
+    </div>
+    <div class="isoStatusBar"><span id="isoStatus">Open a castle in the Castle tab.</span></div>
+  </div>
+</section>
+
   <section id="aiContentWorkspace" class="workspace" aria-hidden="true">
     <div class="aiContentApp">
       <header class="workspaceHeader aiContentHeader">
@@ -457,6 +476,7 @@
   </form>
 </dialog>
 
+
 <script src="js/app-shell.js"></script>
 <script src="js/castle-geometry.js"></script>
 <script src="js/castle-editor.js"></script>
@@ -464,5 +484,7 @@
 <script src="js/character-editor.js"></script>
 <script src="js/ai-content-editor.js"></script>
 <script src="js/ucp-library.js"></script>
+<script src="js/iso-geometry.js"></script>
+<script src="js/iso-view.js"></script>
 </body>
 </html>
