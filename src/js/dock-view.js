@@ -42,12 +42,38 @@
 
   // ------------------------------------------------------------ measuring
 
-  function hostRect() {
-    const r = els.overlay.getBoundingClientRect();
+  // The one place a box is read off the screen. Two of them are needed - the
+  // overlay to decide against, the panel to carry - and they go through the
+  // same three lines so a client rectangle can never be turned into geometry
+  // coordinates twice, in two ways.
+  function rectOf(el) {
+    const r = el.getBoundingClientRect();
     return { x: r.left, y: r.top, w: r.width, h: r.height };
   }
 
-  function dropOptions() { return { sizes: current.size }; }
+  function hostRect() {
+    // #castleDockOverlay: it ends above the status bar, so the bands the user
+    // sees and the zone the drop lands in come from the very same box.
+    return rectOf(els.overlay);
+  }
+
+  // The panel as it stands in the grid, measured before it is lifted out of
+  // it. Afterwards it is fixed to the screen and this would only measure the
+  // answer we gave ourselves.
+  function panelRect() { return rectOf(els.panel); }
+
+  // The remembered widths, plus whatever the running drag has to add: where
+  // it was grabbed and whether it has been aimed yet. Everything the
+  // geometry is asked goes through here, so no caller can quietly ask with
+  // half the picture.
+  function dropOptions(extra) { return Object.assign({ sizes: current.size }, extra); }
+
+  // What the geometry needs to know about the gesture in progress: where the
+  // panel was taken hold of, and whether the hand has been anywhere else
+  // since.
+  function dragOptions() {
+    return dropOptions({ from: { x: drag.x0, y: drag.y0 }, armed: drag.armed });
+  }
 
   function isVertical(side) { return side === 'left' || side === 'right'; }
 
@@ -144,10 +170,21 @@
     giveStatusBack();
   }
 
-  function showTarget(rect, zone) {
-    for (const el of els.zones) el.classList.toggle('hot', el.dataset.zone === zone);
-    const size = M.sizeOf(current, G.DOCK_SIDES.includes(zone) ? zone : current.side);
-    const box = G.dockPreviewRect(rect, zone, size, dropOptions());
+  // `view` is one answer from G.dragVisibility: the zone, the box the preview
+  // draws, what a release would do, and whether the carried panel is in the
+  // way. Nothing is worked out again here - two answers to the same question
+  // would be two chances to disagree.
+  //
+  // Every one of the three things the user is told - the lit band, the
+  // preview box, the words - comes from view.drop, the very value the
+  // release will act on. Lighting a band by the raw zone instead would
+  // promise a dock in the moment before the drag is armed, and reading the
+  // words off "there is no zone" would promise a window in the 48 px ring
+  // beside the box, where letting go in fact changes nothing.
+  function showTarget(rect, view) {
+    const side = view.drop.kind === 'dock' ? view.drop.side : null;
+    for (const el of els.zones) el.classList.toggle('hot', el.dataset.zone === side);
+    const box = view.preview;
     if (box) {
       els.preview.style.left = (box.x - rect.x) + 'px';
       els.preview.style.top = (box.y - rect.y) + 'px';
@@ -157,41 +194,109 @@
     } else {
       els.preview.hidden = true;
     }
-    const words = box ? 'Dock: ' + zone : zone === 'center' ? 'Stay where it is' : 'Let go outside for a window';
+    const words = view.drop.kind === 'dock' ? 'Dock: ' + view.drop.side
+                : view.drop.kind === 'window' ? 'Let go for a window of its own'
+                : 'Stay where it is';
     els.hint.textContent = words + ' · Esc cancels';
     say(words + ' · Esc cancels');
   }
 
+  // ------------------------------------------------- carrying the panel
+
+  // The panel leaves the grid and is pinned to the screen instead, at the
+  // size and place it had a moment ago: the picture does not jump when the
+  // drag begins. The grid track it came from keeps its width, so the map
+  // underneath is not resized once per drag - and neither are the three
+  // canvas buffers that hang off it.
+  function liftPanel(box) {
+    els.panel.style.setProperty('--drag-w', box.w + 'px');
+    els.panel.style.setProperty('--drag-h', box.h + 'px');
+    carryPanel(box);
+    els.panel.classList.add('dockFloating');
+  }
+
+  // Per move, and on purpose not once per frame like the splitter: this
+  // writes two custom properties that only a transform reads, so there is no
+  // layout to batch away - and a panel that lags a frame behind the hand is
+  // exactly what "it follows the pointer" must not look like.
+  function carryPanel(box) {
+    if (!box) return;
+    els.panel.style.setProperty('--drag-x', box.x + 'px');
+    els.panel.style.setProperty('--drag-y', box.y + 'px');
+  }
+
+  // Out of the way while a side would take the drop. Only the opacity: the
+  // panel keeps its size and its place, so nothing is measured or laid out
+  // again when it comes back, and the pointer capture on the grip goes on
+  // delivering the rest of the stroke either way.
+  function ghostPanel(ghost) {
+    els.panel.classList.toggle('dockGhostHidden', ghost === 'hidden');
+  }
+
+  // Back into the grid. Safe to call when nothing was ever lifted, so every
+  // way out of a drag - drop, Escape, lost window - can simply say it.
+  function setPanelDown() {
+    els.panel.classList.remove('dockFloating');
+    els.panel.classList.remove('dockGhostHidden');
+    for (const name of ['--drag-x', '--drag-y', '--drag-w', '--drag-h']) {
+      els.panel.style.removeProperty(name);
+    }
+  }
+
+  // A second finger on the grip must not take the drag over: the first one's
+  // moves and its release would be thrown away, and the panel would hang in
+  // the air until the second gesture ended.
   function beginDrag(event) {
-    if (current.mode !== 'dock' || event.button !== 0) return;
+    if (drag || current.mode !== 'dock' || event.button !== 0) return;
     event.preventDefault();
     try { els.grip.setPointerCapture(event.pointerId); } catch { /* no real pointer */ }
     // Nothing about the state is touched while dragging, so cancelling has
     // nothing to undo - that is why there is no copy of it here.
-    drag = { pointerId: event.pointerId, x0: event.clientX, y0: event.clientY, active: false, zone: null };
+    drag = { pointerId: event.pointerId, x0: event.clientX, y0: event.clientY,
+             active: false, zone: null, panel: null, armed: false };
   }
 
   function moveDrag(event) {
     if (!drag || event.pointerId !== drag.pointerId) return;
+    const point = { x: event.clientX, y: event.clientY };
     if (!drag.active) {
-      if (Math.hypot(event.clientX - drag.x0, event.clientY - drag.y0) < DRAG_THRESHOLD) return;
+      if (Math.hypot(point.x - drag.x0, point.y - drag.y0) < DRAG_THRESHOLD) return;
       drag.active = true;
+      // Measured here, not on pointerdown: a plain click on the grip never
+      // reads the screen at all. The panel has not moved since the press, so
+      // the press is still the honest grab point.
+      // A box of no size means the panel is not really on screen. Then it is
+      // not carried at all - docking goes on working, and nothing is pinned
+      // to the screen at zero by zero, where it could never be found again.
+      const box = panelRect();
+      drag.panel = box.w > 0 && box.h > 0 ? box : null;
       showZones();
+      if (drag.panel) liftPanel(drag.panel);
     }
     const rect = hostRect();
-    drag.zone = G.stableZone(rect, { x: event.clientX, y: event.clientY }, drag.zone, dropOptions());
-    showTarget(rect, drag.zone);
+    const view = G.dragVisibility(rect, point, drag.zone, dragOptions());
+    drag.zone = view.zone;
+    drag.armed = view.armed;
+    // Only a panel that was really lifted is carried and stepped aside. A
+    // panel that never left the grid must not be marked as out of the way.
+    if (drag.panel) {
+      carryPanel(G.dragGhostRect(drag.panel, { x: drag.x0, y: drag.y0 }, point));
+      ghostPanel(view.ghost);
+    }
+    showTarget(rect, view);
   }
 
   function endDrag(event) {
     if (!drag || event.pointerId !== drag.pointerId) return;
     const wasDragging = drag.active;
     const zone = drag.zone;
+    const opts = dragOptions();               // read while the drag is still there
     const rect = hostRect();                  // measured before anything is put away
     drag = null;
+    setPanelDown();
     hideZones();
     if (!wasDragging) return;                 // a click on the grip, not a drag
-    const action = G.dropAction(rect, { x: event.clientX, y: event.clientY }, zone, dropOptions());
+    const action = G.dropAction(rect, { x: event.clientX, y: event.clientY }, zone, opts);
     if (action.kind === 'dock') setState(M.withSize(M.withDock(current, action.side), action.side, action.size));
     else if (action.kind === 'window') popOut();
   }
@@ -199,13 +304,16 @@
   function cancelDrag() {
     if (!drag) return;
     drag = null;
+    setPanelDown();
     hideZones();
   }
 
   // ------------------------------------------------------- resizing it
 
+  // Same as beginDrag: a second pointer must not replace a resize that is
+  // already under way and lose the first one's release with it.
   function beginResize(event) {
-    if (current.mode !== 'dock' || event.button !== 0) return;
+    if (resize || current.mode !== 'dock' || event.button !== 0) return;
     event.preventDefault();
     try { els.splitter.setPointerCapture(event.pointerId); } catch { /* no real pointer */ }
     resize = {
@@ -317,6 +425,7 @@
     if (!G || !M) return;
     els.column = document.getElementById('castleCanvasColumn');
     els.overlay = document.getElementById('castleDockOverlay');
+    els.panel = document.getElementById('isoDockPanel');
     els.preview = document.getElementById('castleDockPreview');
     els.hint = document.getElementById('castleDockHint');
     els.splitter = document.getElementById('isoDockSplitter');
@@ -326,7 +435,10 @@
     els.fit = document.getElementById('isoFitBtn');
     els.popOut = document.getElementById('isoPopOutBtn');
     els.close = document.getElementById('isoDockCloseBtn');
-    if (!els.column || !els.overlay || !els.splitter || !els.grip || !els.button) return;
+    // The panel is in the list: without it there is nothing to carry and
+    // nothing to dock, so half-wiring it would only fail later and further
+    // away from the cause.
+    if (!els.column || !els.overlay || !els.panel || !els.splitter || !els.grip || !els.button) return;
     els.zones = Array.from(els.overlay.querySelectorAll('.dockZone'));
 
     current = M.bootState(load());

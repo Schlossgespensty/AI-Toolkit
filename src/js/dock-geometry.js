@@ -49,6 +49,17 @@
            rect.w > 0 && rect.h > 0;
   }
 
+  // A point counts only when both of its numbers are real. NaN is the one
+  // value that walks through every comparison unnoticed: `NaN > band` is
+  // false, so an unreadable pointer would look like a hit on every band and
+  // be handed to whichever side is checked first. dragGhostRect already
+  // turns such a point down, so without this one guard the same move would
+  // leave the carried panel standing still and light up a drop zone at the
+  // same time - and letting go would dock.
+  function readable(point) {
+    return Boolean(point) && Number.isFinite(point.x) && Number.isFinite(point.y);
+  }
+
   function clamp(value, low, high) { return Math.min(Math.max(value, low), high); }
 
   const isVertical = side => side === 'left' || side === 'right';
@@ -81,10 +92,20 @@
   // against side). With the reach alone a pointer in a corner would sit
   // inside two bands and be handed to whichever raw edge is a hair closer -
   // that is, it would flicker on the least movement of the hand.
-  function zoneFromBands(rect, point, bands, pull) {
-    if (!usable(rect) || !point) return null;
+  // `slack` is the third of the trio: how far past the outer edge of the box
+  // a side may still be held. Without it the outside of the box is the one
+  // border of the whole gesture with no hysteresis at all - a hand shaking
+  // two pixels across it switches between "docks left" and "nothing", and
+  // the carried panel blinks on and off with the answer. Only the side that
+  // is already chosen gets any, and it gets exactly as much as its band
+  // reaches further in, so the panel cannot be held by a side the pointer
+  // has left the box beside.
+  function zoneFromBands(rect, point, bands, pull, slack) {
+    if (!usable(rect) || !readable(point)) return null;
     const d = edgeDistances(rect, point);
-    if (d.left < 0 || d.right < 0 || d.top < 0 || d.bottom < 0) return null;
+    for (const side of DOCK_SIDES) {
+      if (d[side] < -(slack ? slack(side) : 0)) return null;
+    }
     const reachOf = side => d[side] - (pull ? pull(side) : 0);
     let best = null;
     for (const side of DOCK_SIDES) {
@@ -105,18 +126,35 @@
     return zoneFromBands(rect, point, bandsPerSide(rect, opt));
   }
 
+  // Every band the given point already lies in - not the one that would win,
+  // all of them. Used for the spot the panel was grabbed by: the grip sits a
+  // dozen pixels from the panel's own corner, and a corner belongs to two
+  // bands at once. Asking for the winning zone alone would arm the drag on
+  // the four pixels between those two, which is exactly the movement that
+  // must not count as aiming.
+  function homeSides(rect, from, opt) {
+    if (!usable(rect) || !readable(from)) return [];
+    const bands = bandsPerSide(rect, options(opt));
+    const d = edgeDistances(rect, from);
+    return DOCK_SIDES.filter(side => bands[side] > 0 && d[side] >= 0 && d[side] <= bands[side]);
+  }
+
   // Same decision, but the zone the pointer already sits in reaches further
   // than the others and counts as nearer than it is. Without this a pointer
   // resting on a border flips between two answers on every jitter of the
-  // hand - on the border of a band between that side and the middle, and in
-  // a corner between two sides.
+  // hand - on the border of a band between that side and the middle, in a
+  // corner between two sides, and on the outer edge of the box between one
+  // side and nothing at all. One number, three borders: the chosen side's
+  // band grows by it, its distance shrinks by it, and the box itself gives
+  // way by it - but only for that side.
   function stableZone(rect, point, previous, opt) {
     const o = options(opt);
     const bias = side => {
       if (!previous) return 0;
       return previous === side ? o.hysteresis : -o.hysteresis;
     };
-    return zoneFromBands(rect, point, bandsPerSide(rect, o, bias), bias);
+    const slack = side => Math.max(bias(side), 0);
+    return zoneFromBands(rect, point, bandsPerSide(rect, o, bias), bias, slack);
   }
 
   // The panel never grows past maxShare even when the remembered size is
@@ -145,7 +183,7 @@
   }
 
   function outsideDistance(rect, point) {
-    if (!usable(rect) || !point) return 0;
+    if (!usable(rect) || !readable(point)) return 0;
     const dx = Math.max(rect.x - point.x, 0, point.x - (rect.x + rect.w));
     const dy = Math.max(rect.y - point.y, 0, point.y - (rect.y + rect.h));
     return Math.hypot(dx, dy);
@@ -171,7 +209,7 @@
   // the allowed range cannot drag the panel past its bounds, and clamped
   // again after the snap so `snapped` never lies about where the edge ended.
   function splitterSize(side, rect, point, opt) {
-    if (!usable(rect) || !DOCK_SIDES.includes(side) || !point) return { size: 0, snapped: false };
+    if (!usable(rect) || !DOCK_SIDES.includes(side) || !readable(point)) return { size: 0, snapped: false };
     const o = options(opt);
     const vertical = isVertical(side);
     const extent = vertical ? rect.w : rect.h;
@@ -187,22 +225,66 @@
     return { size, snapped: hit !== null && size === hit };
   }
 
-  // What a release of the dragged panel means. The only place that turns a
-  // gesture into an outcome, so the view never has to decide anything.
-  function dropAction(rect, point, previous, opt) {
+  // Where the floating panel sits while it is being carried: the box it
+  // started in, moved by exactly as far as the pointer has travelled. That
+  // keeps the spot the user grabbed under the pointer for the whole drag.
+  // Nothing here clamps it - the panel is allowed off the box and off the
+  // map, because "let go outside" is a gesture of its own (see dropAction).
+  function dragGhostRect(start, from, point) {
+    if (!usable(start) || !from || !point) return null;
+    const dx = point.x - from.x;
+    const dy = point.y - from.y;
+    if (!Number.isFinite(dx) || !Number.isFinite(dy)) return null;
+    return { x: start.x + dx, y: start.y + dy, w: start.w, h: start.h };
+  }
+
+  // The whole picture of one moment of the drag: which side is being aimed
+  // at, the box the preview should draw, what a release would do, and
+  // whether the carried panel is in the way. It hides itself exactly when a
+  // side would take the drop - that is the moment the user needs to see the
+  // map and the preview under it, and the moment the panel is a lid over
+  // both.
+  //
+  // The visibility rides on stableZone rather than on a rule of its own, so
+  // a hand shaking on a band edge cannot make the panel blink: the zone that
+  // is already chosen keeps its extra reach, and the panel follows the zone.
+  // A second, differently sized rule here would be a second border to wobble
+  // across, which is precisely the flicker this avoids.
+  //
+  // `from` and `armed` are the drag's memory of where it started. The grip
+  // sits a dozen pixels from the panel's own corner, so on a docked panel
+  // the grab point is already inside a band - two of them, in a corner -
+  // before the hand has gone anywhere. Without this the panel would vanish
+  // and a side would light up on the very first pixel of every drag, and a
+  // wiggle and a release would dock it where nobody aimed. So the bands the
+  // panel was grabbed in count for nothing until the pointer has left them
+  // once; after that the drag stays armed, or the side it was grabbed in
+  // could never be aimed at at all.
+  function dragVisibility(rect, point, previous, opt) {
     const o = options(opt);
     const zone = stableZone(rect, point, previous, o);
-    if (zone && zone !== 'center') {
-      const remembered = o.sizes && Number.isFinite(o.sizes[zone]) ? o.sizes[zone] : o.panelMin;
-      return { kind: 'dock', side: zone, size: panelSize(rect, zone, remembered, o) };
-    }
-    if (outsideDistance(rect, point) > o.tearOff) return { kind: 'window' };
-    return { kind: 'keep' };
+    const armed = o.armed === true || !homeSides(rect, o.from, o).includes(zone);
+    const remembered = o.sizes && Number.isFinite(o.sizes[zone]) ? o.sizes[zone] : o.panelMin;
+    // Same call as the preview the view draws and the size the drop uses, so
+    // "the panel got out of the way", "a side is being aimed at" and "this
+    // is what letting go does" can never come apart.
+    const preview = armed ? dockPreviewRect(rect, zone, remembered, o) : null;
+    const drop = preview ? { kind: 'dock', side: zone, size: panelSize(rect, zone, remembered, o) }
+               : armed && outsideDistance(rect, point) > o.tearOff ? { kind: 'window' }
+               : { kind: 'keep' };
+    return { ghost: preview ? 'hidden' : 'visible', zone, preview, drop, armed };
+  }
+
+  // What a release of the dragged panel means. One question, one answer:
+  // this is the same value the moment before the release already carried, so
+  // the words on screen and the outcome cannot promise different things.
+  function dropAction(rect, point, previous, opt) {
+    return dragVisibility(rect, point, previous, opt).drop;
   }
 
   return {
-    DOCK_SIDES, DEFAULTS, dockBands, dockZoneAt, stableZone,
+    DOCK_SIDES, DEFAULTS, dockBands, dockZoneAt, stableZone, homeSides,
     panelSize, panelRectFor, dockPreviewRect, outsideDistance,
-    snapTo, splitterSize, dropAction
+    snapTo, splitterSize, dragGhostRect, dragVisibility, dropAction
   };
 });

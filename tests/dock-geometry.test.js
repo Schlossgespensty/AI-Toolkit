@@ -142,6 +142,80 @@ test('snapTo leaves a value alone when nothing is near', () => {
   assert.equal(G.snapTo(300, [], 12), 300);
 });
 
+// ------------------------------------------------------ carrying it about
+
+test('the carried panel keeps the spot it was grabbed by under the pointer', () => {
+  const start = { x: 900, y: 200, w: 380, h: 500 };
+  const grabbed = { x: 1000, y: 250 };                 // 100 in, 50 down
+  const carried = G.dragGhostRect(start, grabbed, { x: 300, y: 700 });
+  assert.deepEqual(carried, { x: 200, y: 650, w: 380, h: 500 });
+  // said the other way round, because that is the promise: wherever the
+  // pointer goes, it stays over the same spot of the panel
+  assert.equal(300 - carried.x, grabbed.x - start.x);
+  assert.equal(700 - carried.y, grabbed.y - start.y);
+});
+
+test('nothing keeps the carried panel inside anything', () => {
+  // Far above and to the left of every box there is: a drag that may end in
+  // a window of its own has to be able to leave.
+  const start = { x: 0, y: 0, w: 200, h: 100 };
+  assert.deepEqual(G.dragGhostRect(start, { x: 10, y: 10 }, { x: -900, y: -900 }),
+    { x: -910, y: -910, w: 200, h: 100 });
+  assert.equal(G.dragGhostRect({ x: 0, y: 0, w: 0, h: 100 }, { x: 0, y: 0 }, { x: 5, y: 5 }), null);
+  assert.equal(G.dragGhostRect(start, { x: 0, y: 0 }, null), null);
+  assert.equal(G.dragGhostRect(start, { x: NaN, y: 0 }, { x: 5, y: 5 }), null);
+});
+
+test('the carried panel steps aside exactly where a side would take the drop', () => {
+  const opt = { sizes: { right: 380, left: 260, top: 300, bottom: 300 } };
+  const inTheBand = G.dragVisibility(BOX, { x: BOX.x + 10, y: 350 }, null, opt);
+  assert.equal(inTheBand.zone, 'left');
+  assert.equal(inTheBand.ghost, 'hidden', 'the preview is what the user has to see now');
+  assert.deepEqual(inTheBand.preview, G.dockPreviewRect(BOX, 'left', 260, opt));
+
+  const middle = G.dragVisibility(BOX, { x: 850, y: 350 }, 'left', opt);
+  assert.equal(middle.zone, 'center');
+  assert.equal(middle.ghost, 'visible', 'nothing would be docked here, so it is in nobody’s way');
+  assert.equal(middle.preview, null);
+
+  const outside = G.dragVisibility(BOX, { x: BOX.x - 60, y: 350 }, null, opt);
+  assert.equal(outside.zone, null);
+  assert.equal(outside.ghost, 'visible', 'on the way to a window of its own it has to be seen');
+  assert.equal(outside.preview, null);
+});
+
+test('what is drawn while carrying is the panel the drop would build', () => {
+  const opt = { sizes: { right: 380, left: 260, top: 300, bottom: 300 } };
+  for (const side of G.DOCK_SIDES) {
+    const point = side === 'left' ? { x: BOX.x + 5, y: 350 }
+                : side === 'right' ? { x: BOX.x + BOX.w - 5, y: 350 }
+                : side === 'top' ? { x: 850, y: BOX.y + 5 }
+                : { x: 850, y: BOX.y + BOX.h - 5 };
+    const carried = G.dragVisibility(BOX, point, null, opt);
+    const drop = G.dropAction(BOX, point, null, opt);
+    assert.equal(carried.zone, drop.side, side + ': aiming and dropping disagree');
+    assert.deepEqual(carried.preview, G.panelRectFor(BOX, drop.side, drop.size, opt),
+      side + ': the box shown is not the panel that would be built');
+  }
+});
+
+test('a forgotten size falls back to the minimum, never to NaN', () => {
+  const carried = G.dragVisibility(BOX, { x: 850, y: BOX.y + 5 }, null, {});
+  assert.equal(carried.zone, 'top');
+  assert.deepEqual(carried.preview, G.dockPreviewRect(BOX, 'top', G.DEFAULTS.panelMin));
+});
+
+test('the carried panel does not blink when the hand shakes on a band edge', () => {
+  // The band is 220 deep. Six pixels past it is the case that used to flicker:
+  // one answer without a history, another one coming from inside the band.
+  const edge = { x: BOX.x + 226, y: 350 };
+  assert.equal(G.dragVisibility(BOX, edge, null).ghost, 'visible', 'arriving from nowhere it is outside');
+  assert.equal(G.dragVisibility(BOX, edge, 'left').ghost, 'hidden', 'but coming from left it stays out of the way');
+  assert.equal(G.dragVisibility(BOX, edge, 'left').zone, 'left', 'and it is the same 12 px that hold the zone');
+  // ... and it does let go: 13 past the band is more than the hysteresis
+  assert.equal(G.dragVisibility(BOX, { x: BOX.x + 233, y: 350 }, 'left').ghost, 'visible');
+});
+
 test('the drop decides: dock, keep, or tear off into a window', () => {
   const opt = { sizes: { right: 380, left: 260, top: 300, bottom: 300 } };
   const onEdge = G.dropAction(BOX, { x: BOX.x + BOX.w - 5, y: 300 }, null, opt);

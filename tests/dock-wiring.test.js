@@ -95,6 +95,36 @@ test('the overlay is hidden by visibility, never by display', () => {
   }
 });
 
+test('every stylesheet can carry the panel across the screen', () => {
+  // The panel is dragged as itself, not as a copy, so the rules that lift it
+  // out of the grid have to be in every theme - in one of them only, the same
+  // drag would move nothing at all.
+  for (const { name, text } of stylesheets) {
+    const rule = text.match(/\.dockPanel\.dockFloating\s*\{([^}]*)\}/);
+    assert.ok(rule, `${name}: nothing lifts the panel out of the grid`);
+    assert.match(rule[1], /position:\s*fixed/, `${name}: a carried panel has to leave the grid`);
+    assert.match(rule[1], /transform:\s*translate\(var\(--drag-x/,
+      `${name}: it is moved by a transform, or every step of the hand costs a layout`);
+    assert.ok(!/transition/.test(rule[1]),
+      `${name}: an animated panel lags behind the hand instead of following it`);
+
+    // Above the four zones, or the thing being carried would slide underneath
+    // the very preview it is meant to be showing off.
+    const carried = Number((rule[1].match(/z-index:\s*(\d+)/) || [])[1]);
+    const overlay = Number((text.match(/\.dockOverlay\s*\{[^}]*z-index:\s*(\d+)/) || [])[1]);
+    assert.ok(carried > overlay, `${name}: carried at ${carried}, zones at ${overlay}`);
+
+    // Out of the way by opacity: display or visibility would take the panel
+    // out of the layout, the ResizeObserver in iso-view.js would fire, and
+    // the canvas would be resized twice per band the pointer crosses.
+    const hidden = text.match(/\.dockPanel\.dockFloating\.dockGhostHidden\s*\{([^}]*)\}/);
+    assert.ok(hidden, `${name}: nothing takes the panel out of the way over a drop zone`);
+    assert.match(hidden[1], /opacity:\s*0/, `${name}: it has to become invisible`);
+    assert.ok(!/display|visibility/.test(hidden[1]),
+      `${name}: hiding it that way resizes the canvas on every band edge`);
+  }
+});
+
 test('the toolbar button says what it does and shows whether it is on', () => {
   const tag = html.slice(html.indexOf('<button id="castleIsoBtn"'));
   const opening = tag.slice(0, tag.indexOf('>'));

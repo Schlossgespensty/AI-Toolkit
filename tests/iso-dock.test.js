@@ -171,6 +171,7 @@ function element(id) {
     style: {
       props: {},
       setProperty(name, value) { this.props[name] = value; },
+      removeProperty(name) { delete this.props[name]; },
       getPropertyValue(name) { return this.props[name]; }
     },
     classList: {
@@ -205,8 +206,14 @@ function element(id) {
 }
 
 const PANEL_IDS = ['castleCanvasColumn', 'castleDockOverlay', 'castleDockPreview', 'castleDockHint',
-                   'isoDockSplitter', 'isoDockGrip', 'castleIsoBtn', 'castleStatus',
+                   'isoDockPanel', 'isoDockSplitter', 'isoDockGrip', 'castleIsoBtn', 'castleStatus',
                    'isoFitBtn', 'isoPopOutBtn', 'isoDockCloseBtn'];
+
+// Where the panel stands while it is docked on the right: 380 wide, the full
+// height of the box, flush with its right edge. A real number, because the
+// carried panel is measured from it and a box of no size would be carried
+// nowhere at all.
+const PANEL_BOX = { left: BOX.x + BOX.w - 380, top: BOX.y, width: 380, height: BOX.h };
 
 function boot(saved) {
   const els = {};
@@ -220,6 +227,7 @@ function boot(saved) {
   els.castleDockPreview.classList.add('dockPreview');
   els.castleDockOverlay.children.push(els.castleDockPreview, els.castleDockHint);
   els.castleDockOverlay.rect = { left: BOX.x, top: BOX.y, width: BOX.w, height: BOX.h };
+  els.isoDockPanel.rect = Object.assign({}, PANEL_BOX);
 
   const calls = [];
   const frames = [];
@@ -271,6 +279,12 @@ function boot(saved) {
     dragging: () => documentElement.classList.contains('dockDragging'),
     resizing: () => documentElement.classList.contains('dockResizing'),
     zonesShown: () => els.castleDockOverlay.classList.contains('showing'),
+    floating: () => els.isoDockPanel.classList.contains('dockFloating'),
+    ghostHidden: () => els.isoDockPanel.classList.contains('dockGhostHidden'),
+    carried: () => {
+      const p = els.isoDockPanel.style.props;
+      return { x: p['--drag-x'], y: p['--drag-y'], w: p['--drag-w'], h: p['--drag-h'] };
+    },
     hot: () => els.castleDockOverlay.children.filter(c => c.classList.contains('hot')).map(c => c.dataset.zone),
     saved: () => JSON.parse(store.get('castle.isoDock.v1')),
     fireWindow(type, event) {
@@ -478,6 +492,286 @@ test('a stray pointer from another finger is ignored', () => {
   assert.equal(app.dock(), 'right');
 });
 
+// ------------------------------------------------- carrying the panel
+
+test('the panel is carried by the hand and steps aside over a drop zone', () => {
+  const app = boot();
+  app.view.dockTo('right');
+  const grip = app.els.isoDockGrip;
+  assert.equal(app.floating(), false, 'it stands in the grid until it is dragged');
+
+  grip.fire('pointerdown', { button: 0, pointerId: 30, clientX: 800, clientY: 100 });
+  assert.equal(app.floating(), false, 'a press alone lifts nothing');
+
+  // 100 to the left and 200 down, into the middle of the map
+  grip.fire('pointermove', { pointerId: 30, clientX: 700, clientY: 300 });
+  assert.equal(app.floating(), true, 'moving far enough picks it up');
+  assert.deepEqual(app.carried(), {
+    x: (PANEL_BOX.left - 100) + 'px',
+    y: (PANEL_BOX.top + 200) + 'px',
+    w: PANEL_BOX.width + 'px',
+    h: PANEL_BOX.height + 'px'
+  }, 'it moved exactly as far as the hand, at the size it had in the grid');
+  assert.equal(app.ghostHidden(), false, 'the middle takes no drop, so it stays in sight');
+
+  grip.fire('pointermove', { pointerId: 30, clientX: BOX.x + 10, clientY: 350 });
+  assert.equal(app.ghostHidden(), true, 'over the left band it gets out of the way');
+  assert.deepEqual(app.hot(), ['left'], 'and the preview underneath takes over');
+  assert.equal(app.els.castleDockPreview.hidden, false);
+  assert.deepEqual(app.carried(), {
+    x: (PANEL_BOX.left + BOX.x + 10 - 800) + 'px',
+    y: (PANEL_BOX.top + 250) + 'px',
+    w: PANEL_BOX.width + 'px',
+    h: PANEL_BOX.height + 'px'
+  }, 'hidden, but still carried: leaving the band has to bring it back where the hand is');
+
+  grip.fire('pointermove', { pointerId: 30, clientX: 600, clientY: 350 });
+  assert.equal(app.ghostHidden(), false, 'back out of the band, back in sight');
+  assert.deepEqual(app.hot(), [], 'and no band is lit any more');
+
+  grip.fire('pointerup', { pointerId: 30, clientX: 600, clientY: 350 });
+  assert.equal(app.floating(), false, 'let go, it is back in the grid');
+  assert.equal(app.ghostHidden(), false);
+  assert.deepEqual(app.carried(), { x: undefined, y: undefined, w: undefined, h: undefined },
+    'and nothing of the drag is left on it');
+  assert.equal(app.dock(), 'right', 'a drop in the middle changes nothing');
+});
+
+test('the panel is carried right out of the box, and the drop still tears off', () => {
+  const app = boot();
+  app.view.dockTo('right');
+  const grip = app.els.isoDockGrip;
+  grip.fire('pointerdown', { button: 0, pointerId: 31, clientX: 800, clientY: 300 });
+  grip.fire('pointermove', { pointerId: 31, clientX: 1500, clientY: 900 });
+  assert.equal(app.ghostHidden(), false, 'outside the box nothing would be docked, so it is seen');
+  assert.equal(app.carried().x, (PANEL_BOX.left + 700) + 'px', 'it goes where the hand goes');
+  grip.fire('pointerup', { pointerId: 31, clientX: 1500, clientY: 900 });
+  assert.equal(app.view.getState().mode, 'window', 'let go well outside it still becomes a window');
+  assert.equal(app.floating(), false, 'and the panel is not left pinned to the screen');
+});
+
+test('a hand shaking on the edge of a band does not make the panel blink', () => {
+  const app = boot();
+  app.view.dockTo('right');
+  const grip = app.els.isoDockGrip;
+  grip.fire('pointerdown', { button: 0, pointerId: 32, clientX: 800, clientY: 300 });
+  grip.fire('pointermove', { pointerId: 32, clientX: BOX.x + 100, clientY: 350 });
+  assert.equal(app.ghostHidden(), true, 'well inside the left band');
+  // BAND_X is 220: six pixels past it, which without a history is the middle
+  grip.fire('pointermove', { pointerId: 32, clientX: BOX.x + BAND_X + 6, clientY: 350 });
+  assert.equal(app.ghostHidden(), true, 'six px past the band the zone is held, and so is the panel');
+  grip.fire('pointermove', { pointerId: 32, clientX: BOX.x + BAND_X + 13, clientY: 350 });
+  assert.equal(app.ghostHidden(), false, 'thirteen px past it lets go - hysteresis, not glue');
+});
+
+test('Escape and a lost window put the carried panel back', () => {
+  const app = boot();
+  app.view.dockTo('right');
+  app.els.isoDockGrip.fire('pointerdown', { button: 0, pointerId: 33, clientX: 800, clientY: 300 });
+  app.els.isoDockGrip.fire('pointermove', { pointerId: 33, clientX: BOX.x + 5, clientY: 350 });
+  assert.equal(app.floating(), true);
+  app.fireWindow('keydown', { key: 'Escape' });
+  assert.equal(app.floating(), false, 'Escape puts it down');
+  assert.deepEqual(app.carried(), { x: undefined, y: undefined, w: undefined, h: undefined });
+
+  const lost = boot();
+  lost.view.dockTo('right');
+  lost.els.isoDockGrip.fire('pointerdown', { button: 0, pointerId: 34, clientX: 800, clientY: 300 });
+  lost.els.isoDockGrip.fire('pointermove', { pointerId: 34, clientX: BOX.x + 5, clientY: 350 });
+  lost.fireWindow('blur', {});
+  assert.equal(lost.floating(), false, 'Alt+Tab must not leave it stuck to the screen');
+});
+
+test('dragging twice in a row leaves nothing behind', () => {
+  const app = boot();
+  app.view.dockTo('right');
+  const grip = app.els.isoDockGrip;
+  for (const [id, target] of [[35, 'left'], [36, 'top']]) {
+    grip.fire('pointerdown', { button: 0, pointerId: id, clientX: 800, clientY: 300 });
+    grip.fire('pointermove', { pointerId: id, clientX: 600, clientY: 300 });
+    const point = target === 'left' ? { clientX: BOX.x + 5, clientY: 350 } : { clientX: 600, clientY: BOX.y + 5 };
+    grip.fire('pointermove', Object.assign({ pointerId: id }, point));
+    assert.equal(app.ghostHidden(), true, target + ': out of the way over the band');
+    grip.fire('pointerup', Object.assign({ pointerId: id }, point));
+    assert.equal(app.dock(), target, 'the drop landed on ' + target);
+    assert.equal(app.floating(), false, target + ': and the panel went back into the grid');
+    assert.equal(app.zonesShown(), false);
+  }
+});
+
+test('a panel with no size on screen is not carried, and still docks', () => {
+  // Nothing to carry is not the same as nothing to do: the drop still has to
+  // work, and a panel pinned to the screen at zero by zero would be gone for
+  // good.
+  const app = boot();
+  app.view.dockTo('right');
+  app.els.isoDockPanel.rect = { left: 0, top: 0, width: 0, height: 0 };
+  const grip = app.els.isoDockGrip;
+  grip.fire('pointerdown', { button: 0, pointerId: 37, clientX: 800, clientY: 300 });
+  grip.fire('pointermove', { pointerId: 37, clientX: BOX.x + 5, clientY: 350 });
+  assert.equal(app.floating(), false, 'nothing is lifted');
+  assert.deepEqual(app.carried(), { x: undefined, y: undefined, w: undefined, h: undefined });
+  assert.deepEqual(app.hot(), ['left'], 'but the zones still answer');
+  grip.fire('pointerup', { pointerId: 37, clientX: BOX.x + 5, clientY: 350 });
+  assert.equal(app.dock(), 'left', 'and the drop lands');
+});
+
+test('a drag binds no listener and builds no second panel', () => {
+  // Nothing may be added per gesture: a listener bound on pointerdown is a
+  // listener that piles up on every drag, and a cloned panel is a second
+  // canvas that has to be drawn and thrown away again.
+  const from = dockSource.indexOf('function liftPanel');
+  const to = dockSource.indexOf('resizing it');
+  assert.ok(from > 0 && to > from, 'found the drag section of dock-view.js');
+  const region = dockSource.slice(from, to);
+  assert.ok(!region.includes('addEventListener'), 'the drag binds nothing of its own');
+  assert.ok(!region.includes('createElement') && !region.includes('appendChild'),
+    'the real panel is carried, not copied');
+});
+
+// ------------------------------------------- the drag has to be aimed first
+
+// Where the panel stands when it is docked on `side`, in client coordinates.
+// The grip sits about twelve pixels in from its top left corner - that is
+// what the header's padding puts it at, and it is the whole reason the grab
+// point of a docked panel is already inside a band.
+function panelBoxFor(side) {
+  const r = G.panelRectFor(BOX, side, M.DEFAULT_SIZE[side]);
+  return { left: r.x, top: r.y, width: r.w, height: r.h };
+}
+
+test('the first pixel of a drag throws nothing away and aims at nothing', () => {
+  // Docked left, right or top, the grip is a dozen pixels below the top edge
+  // of the map, and that is inside the top band; docked at the bottom it is
+  // a dozen pixels in from the left, and that is inside the left band. So on
+  // every one of the four sides the panel used to vanish and a band nobody
+  // aimed at lit up after six pixels of movement - and a release right there
+  // really docked it.
+  for (const side of G.DOCK_SIDES) {
+    const app = boot();
+    app.view.dockTo(side);
+    const box = panelBoxFor(side);
+    app.els.isoDockPanel.rect = box;
+    const grip = app.els.isoDockGrip;
+    const from = { clientX: box.left + 12, clientY: box.top + 12 };
+    const to = { clientX: from.clientX + 6, clientY: from.clientY + 4 };
+
+    grip.fire('pointerdown', Object.assign({ button: 0, pointerId: 40 }, from));
+    grip.fire('pointermove', Object.assign({ pointerId: 40 }, to));
+    assert.equal(app.floating(), true, side + ': it is picked up');
+    assert.equal(app.ghostHidden(), false,
+      side + ': and stays in sight - it is the thing being dragged');
+    assert.deepEqual(app.hot(), [], side + ': nothing has been aimed at yet');
+    assert.equal(app.els.castleDockPreview.hidden, true, side + ': and nothing is offered');
+
+    grip.fire('pointerup', Object.assign({ pointerId: 40 }, to));
+    assert.equal(app.dock(), side, side + ': a wiggle and a release changes nothing');
+  }
+});
+
+test('the zone it was grabbed in still works once the hand has left it', () => {
+  // The other half of that rule: holding the grab zone back must not put it
+  // out of reach. Grabbed in the top band, out into the middle of the map,
+  // back up to the top - and now it docks there.
+  const app = boot();
+  app.view.dockTo('right');
+  const box = panelBoxFor('right');
+  app.els.isoDockPanel.rect = box;
+  const grip = app.els.isoDockGrip;
+
+  grip.fire('pointerdown', { button: 0, pointerId: 41, clientX: box.left + 12, clientY: box.top + 12 });
+  grip.fire('pointermove', { pointerId: 41, clientX: box.left + 12, clientY: BOX.y + BOX.h / 2 });
+  assert.deepEqual(app.hot(), [], 'the middle of the map takes no drop');
+  grip.fire('pointermove', { pointerId: 41, clientX: BOX.x + BOX.w / 2, clientY: BOX.y + 5 });
+  assert.deepEqual(app.hot(), ['top'], 'now the top band answers');
+  assert.equal(app.ghostHidden(), true, 'and the panel gets out of the way of its preview');
+  grip.fire('pointerup', { pointerId: 41, clientX: BOX.x + BOX.w / 2, clientY: BOX.y + 5 });
+  assert.equal(app.dock(), 'top');
+});
+
+test('a hand shaking on the outer edge of the map does not make the panel blink', () => {
+  // The band edge has hysteresis; the edge of the map itself had none. A
+  // wobble of three pixels across it used to switch between "docks left" and
+  // "nothing at all" - and with the free drag that blinks the whole panel on
+  // and off under the pointer.
+  const app = boot();
+  app.view.dockTo('right');
+  const grip = app.els.isoDockGrip;
+  grip.fire('pointerdown', { button: 0, pointerId: 42, clientX: 800, clientY: 300 });
+  grip.fire('pointermove', { pointerId: 42, clientX: BOX.x + 40, clientY: 350 });
+  assert.equal(app.ghostHidden(), true, 'well inside the left band');
+
+  for (const x of [BOX.x + 2, BOX.x - 1, BOX.x + 1, BOX.x - 2, BOX.x + 2]) {
+    grip.fire('pointermove', { pointerId: 42, clientX: x, clientY: 350 });
+    assert.equal(app.ghostHidden(), true, 'at ' + x + ' the panel blinked back into view');
+    assert.deepEqual(app.hot(), ['left'], 'at ' + x + ' the band let go');
+  }
+
+  // and it does let go - hysteresis, not glue
+  grip.fire('pointermove', { pointerId: 42, clientX: BOX.x - 13, clientY: 350 });
+  assert.equal(app.ghostHidden(), false, 'thirteen px outside is outside');
+  assert.deepEqual(app.hot(), []);
+});
+
+test('the words under the pointer promise exactly what letting go does', () => {
+  // The middle case is the one that was wrong: ten pixels beside the map is
+  // outside every zone, so the hint said "let go for a window" - while the
+  // drop, which wants 48 px, quietly kept the panel where it was.
+  const cases = [
+    ['the middle of the map', { clientX: BOX.x + 600, clientY: 350 }, /stay/i, 'dock'],
+    ['just beside the map', { clientX: BOX.x - 10, clientY: 350 }, /stay/i, 'dock'],
+    ['well outside it', { clientX: BOX.x - 300, clientY: 350 }, /window/i, 'window'],
+    ['in the left band', { clientX: BOX.x + 10, clientY: 350 }, /dock: left/i, 'dock']
+  ];
+  for (const [what, point, words, mode] of cases) {
+    const app = boot();
+    app.view.dockTo('right');
+    const grip = app.els.isoDockGrip;
+    grip.fire('pointerdown', { button: 0, pointerId: 43, clientX: 800, clientY: 300 });
+    grip.fire('pointermove', Object.assign({ pointerId: 43 }, point));
+    assert.match(app.els.castleDockHint.textContent, words, what + ': the wrong promise');
+    grip.fire('pointerup', Object.assign({ pointerId: 43 }, point));
+    assert.equal(app.view.getState().mode, mode, what + ': and the release did something else');
+  }
+});
+
+test('a panel that was never lifted is never marked as stepped aside', () => {
+  // A panel with no size on screen is not carried at all, so saying it got
+  // out of the way is a lie in the markup. Today only the two classes
+  // together hide anything, so nothing shows - but the next rule written for
+  // .dockGhostHidden on its own would hide a panel standing in the grid.
+  const app = boot();
+  app.view.dockTo('right');
+  app.els.isoDockPanel.rect = { left: 0, top: 0, width: 0, height: 0 };
+  const grip = app.els.isoDockGrip;
+  grip.fire('pointerdown', { button: 0, pointerId: 45, clientX: 800, clientY: 300 });
+  grip.fire('pointermove', { pointerId: 45, clientX: BOX.x + 5, clientY: 350 });
+  assert.equal(app.floating(), false, 'nothing was lifted');
+  assert.equal(app.ghostHidden(), false, 'so nothing may claim to have stepped aside');
+  assert.deepEqual(app.hot(), ['left'], 'and the zones still answer');
+});
+
+test('a second finger cannot take over a drag that is already running', () => {
+  // The second press used to replace the whole drag: the first finger's
+  // moves and its release were then thrown away, and the panel hung in the
+  // air until the second gesture ended.
+  const app = boot();
+  app.view.dockTo('right');
+  const grip = app.els.isoDockGrip;
+  grip.fire('pointerdown', { button: 0, pointerId: 46, clientX: 800, clientY: 300 });
+  grip.fire('pointermove', { pointerId: 46, clientX: BOX.x + 5, clientY: 350 });
+  assert.equal(app.floating(), true, 'the first finger is carrying it');
+
+  grip.fire('pointerdown', { button: 0, pointerId: 47, clientX: 900, clientY: 400 });
+  grip.fire('pointermove', { pointerId: 46, clientX: BOX.x + 5, clientY: 360 });
+  assert.deepEqual(app.hot(), ['left'], 'the first drag still answers');
+
+  grip.fire('pointerup', { pointerId: 46, clientX: BOX.x + 5, clientY: 360 });
+  assert.equal(app.dock(), 'left', 'the first finger let go, and that is what counted');
+  assert.equal(app.floating(), false, 'nothing is left pinned to the screen');
+  assert.equal(app.zonesShown(), false);
+});
+
 // ----------------------------------------------------------- the splitter
 
 test('the splitter writes while it is dragged and stores when it is let go', () => {
@@ -618,7 +912,8 @@ test('every class the code switches on exists in the stylesheet', () => {
 
 test('every custom property the code writes is read by the stylesheet', () => {
   const written = new Set([...dockSource.matchAll(/setProperty\('(--[a-z-]+)'/g)].map(m => m[1]));
-  assert.deepEqual([...written].sort(), ['--band-x', '--band-y', '--dock-size']);
+  assert.deepEqual([...written].sort(),
+    ['--band-x', '--band-y', '--dock-size', '--drag-h', '--drag-w', '--drag-x', '--drag-y']);
   for (const name of written) {
     assert.ok(css.includes('var(' + name), `combined.css never reads var(${name})`);
   }

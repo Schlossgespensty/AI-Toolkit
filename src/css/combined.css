@@ -1622,6 +1622,35 @@ button:disabled { cursor: default; }
 .dockZone[data-zone="top"] { left: 0; right: 0; top: 0; height: var(--band-y, 0px); }
 .dockZone[data-zone="bottom"] { left: 0; right: 0; bottom: 0; height: var(--band-y, 0px); }
 .dockZone.hot { border-style: solid; border-color: var(--accent); background: var(--accent-soft); }
+
+/* Dragged by its grip, the panel leaves the grid and is carried on the screen
+   itself. left/top stay at 0 and a transform does the moving: following the
+   hand then costs no layout, and the grid track it came from keeps its width,
+   so neither the map nor the three canvas buffers are resized until the panel
+   is really dropped. The width and height are the ones it had a moment before
+   it was picked up, written once by dock-view.js.
+   It rides above the overlay (z-index 15) while it is visible. Over a drop
+   zone it gets out of the way by opacity alone - same box, same size, so
+   nothing has to be measured again when it comes back, and the pointer
+   capture on the grip keeps delivering the rest of the stroke. No transition
+   on that: what keeps it from blinking on a band edge is the hysteresis in
+   dock-geometry.js, not a delay. */
+.dockPanel.dockFloating {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: var(--drag-w, 0px);
+  height: var(--drag-h, 0px);
+  transform: translate(var(--drag-x, 0px), var(--drag-y, 0px));
+  z-index: 40;
+  border-radius: var(--radius-sm);
+  /* The ring is drawn by the shadow, never by a border: a border would take
+     its two pixels out of the panel, the body inside would shrink, and the
+     ResizeObserver in iso-view.js would rebuild the canvas at the start and
+     the end of every drag. */
+  box-shadow: 0 0 0 1px var(--accent-strong), 0 12px 30px rgba(0, 0, 0, .55);
+}
+.dockPanel.dockFloating.dockGhostHidden { opacity: 0; }
 .dockPreview {
   position: absolute;
   border: 2px solid var(--accent);
