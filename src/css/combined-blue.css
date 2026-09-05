@@ -149,7 +149,6 @@ button:disabled { cursor: default; }
 #castleWorkspace.active { height: 100%; }
 #aiContentWorkspace.active { height: 100%; }
 #ucpWorkspace.active { height: 100%; }
-#isoWorkspace.active { height: 100%; }
 
 /* Shared workspace language */
 .workspaceHeader {
@@ -962,7 +961,58 @@ button:disabled { cursor: default; }
 .selectedItemInfo { min-height: 34px; margin-bottom: 7px; color: var(--text-soft); }
 .skinButtons { display: flex; gap: 5px; flex-wrap: wrap; }
 
-.castleCanvasColumn { min-width: 0; min-height: 0; display: grid; grid-template-rows: minmax(0, 1fr) 28px; }
+/* The castle column is itself the docking box: the 2.5D panel, its splitter
+   and the drop overlay are children of it, and data-dock picks one of five
+   layouts. Deliberately no transition on the grid tracks - every in-between
+   step would resize three canvas buffers. */
+.castleCanvasColumn {
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+  display: grid;
+  grid-template:
+    "map" minmax(0, 1fr)
+    "bar" 28px
+    / minmax(0, 1fr);
+}
+.castleCanvasColumn > .castleCanvasHost { grid-area: map; }
+.castleCanvasColumn > .castleStatusBar { grid-area: bar; }
+.castleCanvasColumn > .dockPanel { grid-area: dock; }
+.castleCanvasColumn > .dockSplitter { grid-area: split; }
+
+.castleCanvasColumn[data-dock="right"] {
+  grid-template:
+    "map split dock" minmax(0, 1fr)
+    "bar bar bar" 28px
+    / minmax(0, 1fr) 6px var(--dock-size, 380px);
+}
+.castleCanvasColumn[data-dock="left"] {
+  grid-template:
+    "dock split map" minmax(0, 1fr)
+    "bar bar bar" 28px
+    / var(--dock-size, 380px) 6px minmax(0, 1fr);
+}
+.castleCanvasColumn[data-dock="top"] {
+  grid-template:
+    "dock" var(--dock-size, 300px)
+    "split" 6px
+    "map" minmax(0, 1fr)
+    "bar" 28px
+    / minmax(0, 1fr);
+}
+.castleCanvasColumn[data-dock="bottom"] {
+  grid-template:
+    "map" minmax(0, 1fr)
+    "split" 6px
+    "dock" var(--dock-size, 300px)
+    "bar" 28px
+    / minmax(0, 1fr);
+}
+/* Whether the panel is there is said here and nowhere else. A hidden
+   attribute on the panel would need a second rule to beat this one, so the
+   panel never carries one. */
+.castleCanvasColumn[data-dock="off"] > .dockPanel,
+.castleCanvasColumn[data-dock="off"] > .dockSplitter { display: none; }
 .castleCanvasHost { position: relative; min-width: 0; min-height: 0; overflow: hidden; background: var(--app-bg-deep); }
 #castleCanvas { display: block; width: 100%; height: 100%; outline: none; cursor: crosshair; touch-action: none; }
 #castleCanvas.tool-select { cursor: default; }
@@ -1494,15 +1544,110 @@ button:disabled { cursor: default; }
 }
 
 
-/* ---------- 2.5D view ---------- */
-.isoLayout { display: flex; flex-direction: column; height: 100%; min-height: 0; }
-.isoBar { display: flex; align-items: center; gap: 10px; padding: 8px 12px;
-          border-bottom: 1px solid var(--line, #2a2f38); flex: none; }
-.isoBar .isoSpacer { flex: 1; }
-.isoHint { opacity: .7; font-size: 12px; }
-.isoCanvasHost { position: relative; flex: 1; min-height: 0; overflow: hidden;
-                 background: #171a14; cursor: grab; }
-.isoCanvasHost:active { cursor: grabbing; }
-#isoCanvas { display: block; width: 100%; height: 100%; }
-.isoStatusBar { display: flex; gap: 12px; padding: 6px 12px; font-size: 12px; opacity: .8;
-                border-top: 1px solid var(--line, #2a2f38); flex: none; }
+/* ---------- 2.5D view, docked into the castle column ---------- */
+.dockPanel {
+  min-width: 0;
+  min-height: 0;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  overflow: hidden;
+  background: var(--surface-1);
+}
+.dockHeader {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 5px;
+  border-bottom: 1px solid var(--line);
+  background: var(--surface-2);
+  font: 11px var(--font-data);
+}
+.dockHeader button { padding: 1px 7px; border-radius: var(--radius-sm); }
+.dockSpacer { flex: 1; }
+/* touch-action off, or a touch drag scrolls the page instead of moving the panel */
+.dockGrip {
+  padding: 2px 7px;
+  border-radius: var(--radius-sm);
+  color: var(--text-soft);
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+.dockGrip:hover { background: var(--surface-3); color: var(--text-main); }
+.dockBody { position: relative; min-width: 0; min-height: 0; overflow: hidden; background: #171a14; }
+#isoDockCanvas { display: block; width: 100%; height: 100%; cursor: crosshair; touch-action: none; }
+.dockStatus {
+  padding: 3px 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text-muted);
+  border-top: 1px solid var(--line);
+  font: 11px var(--font-data);
+}
+
+/* 6 px of colour, 12 px to hit: the ::after box reaches past both edges. */
+.dockSplitter { position: relative; background: var(--line); }
+.dockSplitter::after { content: ""; position: absolute; inset: -3px; }
+.dockSplitter:hover,
+.dockSplitter:focus-visible { background: var(--accent); outline: none; }
+.castleCanvasColumn[data-dock="left"] > .dockSplitter,
+.castleCanvasColumn[data-dock="right"] > .dockSplitter { cursor: col-resize; }
+.castleCanvasColumn[data-dock="top"] > .dockSplitter,
+.castleCanvasColumn[data-dock="bottom"] > .dockSplitter { cursor: row-resize; }
+
+/* The overlay stops above the status bar, and that same rectangle is what
+   dock-geometry measures: what is shown and what is decided cannot drift
+   apart. It never takes a click - the drag runs on the grip. */
+.dockOverlay {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 28px;
+  z-index: 15;
+  pointer-events: none;
+  /* visibility, not display: the overlay is the rectangle dock-geometry
+     measures, and a display:none box measures zero. */
+  visibility: hidden;
+}
+.dockOverlay.showing { visibility: visible; }
+.dockZone {
+  position: absolute;
+  border: 1px dashed rgba(237, 241, 239, .28);
+  background: rgba(237, 241, 239, .05);
+  border-radius: var(--radius-sm);
+}
+.dockZone[data-zone="left"] { left: 0; top: 0; bottom: 0; width: var(--band-x, 0px); }
+.dockZone[data-zone="right"] { right: 0; top: 0; bottom: 0; width: var(--band-x, 0px); }
+.dockZone[data-zone="top"] { left: 0; right: 0; top: 0; height: var(--band-y, 0px); }
+.dockZone[data-zone="bottom"] { left: 0; right: 0; bottom: 0; height: var(--band-y, 0px); }
+.dockZone.hot { border-style: solid; border-color: var(--accent); background: var(--accent-soft); }
+.dockPreview {
+  position: absolute;
+  border: 2px solid var(--accent);
+  background: var(--accent-glow);
+  border-radius: var(--radius-sm);
+  transition: left 90ms ease, top 90ms ease, width 90ms ease, height 90ms ease;
+}
+.dockHint {
+  position: absolute;
+  left: 50%;
+  bottom: 12px;
+  transform: translateX(-50%);
+  padding: 4px 11px;
+  border-radius: var(--radius-sm);
+  background: rgba(0, 0, 0, .72);
+  color: var(--text-main);
+  font: 11px var(--font-data);
+}
+@media (prefers-reduced-motion: reduce) { .dockPreview { transition: none; } }
+html.dockDragging, html.dockDragging * { cursor: grabbing !important; }
+html.dockResizing * { user-select: none !important; }
+
+/* The one toolbar button that stays pressed while the view is on screen. */
+#castleIsoBtn[aria-pressed="true"] {
+  border-color: var(--accent-strong);
+  background: var(--accent-soft);
+  color: var(--text-main);
+}

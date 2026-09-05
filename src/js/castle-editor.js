@@ -1592,6 +1592,15 @@
     state.staticCacheDirty = true;
   }
 
+  // Anyone who wants to know when the map changed subscribes here. This way
+  // the editor never learns a foreign name - without it every second view
+  // would need its own line in this file.
+  const changeListeners = new Set();
+  function addChangeListener(listener) {
+    if (typeof listener === 'function') changeListeners.add(listener);
+    return () => changeListeners.delete(listener);
+  }
+
   function scheduleDraw(staticChanged = true) {
     if (staticChanged) state.staticCacheDirty = true;
     if (state.renderPending) return;
@@ -1599,6 +1608,9 @@
     requestAnimationFrame(() => {
       state.renderPending = false;
       draw();
+      for (const listener of changeListeners) {
+        try { listener(staticChanged); } catch { /* a watcher must not stop the map */ }
+      }
     });
   }
 
@@ -2104,23 +2116,35 @@
     return { x, y };
   }
 
+  // A pointer that belongs to another canvas - the 2.5D view, docked into the
+  // same page - must stay there. Capturing it here would take the rest of the
+  // gesture away from it: every further move and the release would land on
+  // this canvas, be measured against this canvas's rectangle instead of the
+  // tile that was clicked, and the 2.5D view would never see its own
+  // pointerup, so its stroke would stay switched on for good. While the view
+  // was a window of its own the id did not exist here and the call simply
+  // threw; docked it succeeds, which is why this guard is needed now.
+  function fromOutside(event) { return Boolean(event && event.tileFromOutside); }
+
   function onPointerDown(event) {
+    const outside = fromOutside(event);
     if (event.button === 1) {
       event.preventDefault();
       state.panning = true;
       state.pointerId = event.pointerId;
       state.panStart = { ...pointerPosition(event), panX: state.panX, panY: state.panY };
       els.canvas.classList.add('panning');
-      try { els.canvas.setPointerCapture(event.pointerId); } catch (_) {}
+      if (!outside) { try { els.canvas.setPointerCapture(event.pointerId); } catch (_) {} }
       return;
     }
     if (event.button !== 0) return;
     const pos = pointerPosition(event);
     const tile = screenToTile(pos);
     if (!tile) return;
-    els.canvas.focus();
+    // ... and the keyboard stays where the click was, too.
+    if (!outside) els.canvas.focus();
     state.pointerId = event.pointerId;
-    try { els.canvas.setPointerCapture(event.pointerId); } catch (_) {}
+    if (!outside) { try { els.canvas.setPointerCapture(event.pointerId); } catch (_) {} }
     state.dragStartTile = tile;
     state.dragStartScreen = pos;
     state.marqueeEnd = pos;
@@ -2260,7 +2284,7 @@
       state.panning = false;
       state.panStart = null;
       els.canvas.classList.remove('panning');
-      try { els.canvas.releasePointerCapture(event.pointerId); } catch (_) {}
+      if (!fromOutside(event)) { try { els.canvas.releasePointerCapture(event.pointerId); } catch (_) {} }
       return;
     }
     if (event.button !== 0) return;
@@ -2315,7 +2339,7 @@
     state.brushSeen = new Set();
     state.brushReplacements = new Set();
     state.brushLastTile = null;
-    try { els.canvas.releasePointerCapture(event.pointerId); } catch (_) {}
+    if (!fromOutside(event)) { try { els.canvas.releasePointerCapture(event.pointerId); } catch (_) {} }
     scheduleDraw();
   }
 
@@ -2445,7 +2469,10 @@
     if (hadPreview) scheduleDraw(false);
   });
 
-  window.addEventListener('keydown', event => {
+  // Aus dem window-Hoerer herausgeloest, damit ein eigenes Fenster (die
+  // 2.5D-Ansicht) dieselben Tasten schicken kann: dessen keydown erreicht
+  // den Hoerer hier nie, weil es ein anderes window ist.
+  function handleCastleKey(event) {
     if (window.appWorkspace?.getActive() !== 'castle') return;
     const editing = ['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName);
     if (editing) return;
@@ -2464,7 +2491,9 @@
     } else if (event.key === 'Escape') {
       event.preventDefault(); clearSelectionAndItem();
     }
-  });
+  }
+
+  window.addEventListener('keydown', handleCastleKey);
 
   window.electronAPI.onTriggerUndo(() => {
     if (window.appWorkspace?.getActive() === 'castle') undo();
@@ -2521,6 +2550,8 @@
       if (phase === 'move') return onPointerMove(event);
       if (phase === 'up') return onPointerUp(event);
     },
+    handleKey: handleCastleKey,
+    addChangeListener,
     getTool: () => state.tool,
     getCurrentItemType: () => state.currentItemType,
     getContent: outputContent,

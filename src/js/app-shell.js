@@ -23,7 +23,12 @@
       ? 'Castle editor'
       : name === 'content' ? 'AI Content'
       : name === 'ucp' ? 'UCP AI Library' : 'Character editor';
-    if (name === 'castle') requestAnimationFrame(() => window.castleEditor?.onWorkspaceShown());
+    // Order matters: the saved dock has to change the grid track first, so
+    // the editor measures the width the map really ends up with.
+    if (name === 'castle') requestAnimationFrame(() => {
+      window.dockView?.onWorkspaceShown();
+      window.castleEditor?.onWorkspaceShown();
+    });
     if (name === 'content') window.aiContentEditor?.onWorkspaceShown?.();
     if (name === 'ucp') window.ucpLibrary?.onWorkspaceShown?.();
   }

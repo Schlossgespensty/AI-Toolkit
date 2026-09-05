@@ -127,7 +127,7 @@
           <button id="castleOpenBtn" type="button">Open castle</button>
           <button id="castleSaveBtn" class="primaryAction" type="button">Save castle</button>
           <button id="castleSaveAsBtn" type="button">Save as</button>
-          <button id="castleIsoBtn" type="button" title="Open the castle in a slanted view, in its own window">2.5D view</button>
+          <button id="castleIsoBtn" type="button" aria-pressed="false" title="Show the slanted view — drag its header onto the map to dock it">2.5D view</button>
         </div>
         <div class="toolbarGroup castleProjectGroup">
           <label class="castleProjectChoice" for="ucpCastleSelect">
@@ -189,9 +189,37 @@
           </section>
         </aside>
 
-        <main class="castleCanvasColumn">
+        <!-- The order of these children never changes; where the panel and
+             the splitter appear is decided by grid-area and data-dock. -->
+        <main class="castleCanvasColumn" id="castleCanvasColumn" data-dock="off">
           <div id="castleCanvasHost" class="castleCanvasHost">
             <canvas id="castleCanvas" tabindex="0" aria-label="100 by 100 tile castle map"></canvas>
+          </div>
+          <div id="isoDockSplitter" class="dockSplitter" role="separator" tabindex="0"
+               aria-orientation="vertical" aria-label="Resize the 2.5D view"></div>
+          <aside id="isoDockPanel" class="dockPanel" aria-label="2.5D view">
+            <header class="dockHeader">
+              <span id="isoDockGrip" class="dockGrip" title="Drag onto the map to dock this view on another side">&#10247; 2.5D</span>
+              <span class="dockSpacer"></span>
+              <button id="isoFitBtn" type="button" title="Fit the castle into the view">&#10530;</button>
+              <button id="isoPopOutBtn" type="button" title="Show in its own window">&#9001;&#9002;</button>
+              <button id="isoDockCloseBtn" type="button" title="Close the 2.5D view">&#10005;</button>
+            </header>
+            <div id="isoDockBody" class="dockBody">
+              <canvas id="isoDockCanvas" aria-label="The castle seen from an angle"></canvas>
+            </div>
+            <div id="isoDockStatus" class="dockStatus"></div>
+          </aside>
+          <!-- No hidden attribute: this box is what dock-geometry measures,
+               and display:none would make it zero wide. It is hidden with
+               visibility instead, which keeps its size. -->
+          <div id="castleDockOverlay" class="dockOverlay" aria-hidden="true">
+            <div class="dockZone" data-zone="top"></div>
+            <div class="dockZone" data-zone="right"></div>
+            <div class="dockZone" data-zone="bottom"></div>
+            <div class="dockZone" data-zone="left"></div>
+            <div id="castleDockPreview" class="dockPreview" hidden></div>
+            <div id="castleDockHint" class="dockHint"></div>
           </div>
           <div class="castleStatusBar">
             <span id="castleFileLabel">No castle loaded</span>
@@ -469,5 +497,8 @@
 <script src="js/ucp-library.js"></script>
 <script src="js/iso-geometry.js"></script>
 <script src="js/iso-view.js"></script>
+<script src="js/dock-geometry.js"></script>
+<script src="js/dock-model.js"></script>
+<script src="js/dock-view.js"></script>
 </body>
 </html>
