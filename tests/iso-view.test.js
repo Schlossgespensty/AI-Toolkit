@@ -633,12 +633,21 @@ test('eine echte .map gibt ihr Bild und ihre Startplaetze her', (t) => {
   assert.equal(karte.edge, 200);
   assert.match(karte.dataUrl, /^data:image\/png;base64,/);
   // Sechs Bergfriede - nachgezaehlt: 294 Felder mit Bautyp 41 in Abschnitt
-  // 1049, das sind 6 mal 7 mal 7.
+  // 1049, das sind 6 mal 7 mal 7. Die Reihenfolge ist die des SPIELS, nicht
+  // die des Suchens: die Nummer steht im Gebaeudefeld (1013, Besitzer bei
+  // +214). Von Norden nach Sueden gefunden hiessen sie 3, 4, 2, 1, 6, 5.
   assert.deepEqual(karte.keeps, [
-    { x: 246, y: 93 }, { x: 278, y: 148 }, { x: 94, y: 156 },
-    { x: 84, y: 223 }, { x: 222, y: 319 }, { x: 169, y: 328 }
+    { x: 84, y: 223, player: 1, orientation: 6 },
+    { x: 94, y: 156, player: 2, orientation: 6 },
+    { x: 246, y: 93, player: 3, orientation: 4 },
+    { x: 278, y: 148, player: 4, orientation: 4 },
+    { x: 169, y: 328, player: 5, orientation: 0 },
+    { x: 222, y: 319, player: 6, orientation: 0 }
   ]);
-  // Dorffeld (43,43) trifft jeden dieser Startplaetze.
+  // Dorffeld (43,43) trifft jeden dieser Startplaetze - der Ansatzpunkt liegt
+  // auf der ECKE des 7x7-Blocks, nicht auf seiner Mitte. Belegt an der Datei
+  // selbst: das Gebaeudefeld der Karte merkt sich bei +238/+240 genau diese
+  // Ecke, bei allen 486 Bergfrieden der 96 Karten mit Startplatz.
   for (const keep of karte.keeps) {
     assert.deepEqual(geometry.mapTileForGrid(43, 43, keep), { mx: keep.x, my: keep.y });
   }
@@ -655,9 +664,17 @@ test('jede Karte des Spiels laesst sich lesen', (t) => {
   for (const entry of maps) {
     const karte = readGameMap(entry.path, null);
     assert.match(karte.dataUrl, /^data:image\/png;base64,/, entry.name + ' hat kein Bild');
+    const nummern = [];
     for (const keep of karte.keeps) {
       assert.ok(keep.x >= 0 && keep.x <= 399 && keep.y >= 0 && keep.y <= 399,
                 entry.name + ': Startplatz ausserhalb der Karte');
+      assert.ok([0, 2, 4, 6].includes(keep.orientation),
+                entry.name + ': Drehung ' + keep.orientation + ' kennt rotateAIV nicht');
+      if (keep.player !== null) {
+        assert.ok(keep.player >= 1 && keep.player <= 8, entry.name + ': Spielernummer ausserhalb 1..8');
+        assert.ok(!nummern.includes(keep.player), entry.name + ': Spielernummer doppelt vergeben');
+        nummern.push(keep.player);
+      }
     }
     if (karte.keeps.length) mitStartplatz++;
   }
@@ -675,4 +692,146 @@ test('die Werkzeugleiste holt sich den gemerkten Grund nach, wenn die Ansicht da
   const editor = fs.readFileSync(path.join(root, 'src', 'js', 'castle-editor.js'), 'utf8');
   const nachholen = editor.slice(editor.indexOf("window.addEventListener('DOMContentLoaded'"));
   assert.match(nachholen.slice(0, 200), /updateGroundControls\(\);\s*updateMapControls\(\);/);
+});
+
+// --------------------------------------------------------------- die Drehung
+
+// Nachbau von rotateAIV (0x004ed0b0) aus seinen drei Kopierschleifen - NICHT
+// aus der Formel, die geprueft werden soll. Innen laeuft die Quelle flach
+// durch (Zeile k, Spalte j), aussen wandert der Zielzeiger.
+function rotateAIVNachbau(quelle, orientation) {
+  if (!orientation) return quelle.slice();
+  const ziel = new Array(10000).fill(0);
+  for (let k = 0; k < 100; k += 1) {
+    for (let j = 0; j < 100; j += 1) {
+      let zeile, spalte;
+      if (orientation === 6) { zeile = j; spalte = 99 - k; }
+      else if (orientation === 4) { zeile = 99 - k; spalte = 99 - j; }
+      else if (orientation === 2) { zeile = 99 - j; spalte = k; }
+      else return quelle.slice();
+      ziel[zeile * 100 + spalte] = quelle[k * 100 + j];
+    }
+  }
+  return ziel;
+}
+
+test('die Drehung kommt aus der Lage zur Kartenmitte - mit dem Tausch 2/6', () => {
+  // Weit im Osten, weit im Westen, weit im Sueden, weit im Norden.
+  assert.equal(geometry.keepOrientation(350, 200), 2);
+  assert.equal(geometry.keepOrientation(50, 200), 6);
+  assert.equal(geometry.keepOrientation(200, 350), 0);
+  assert.equal(geometry.keepOrientation(200, 50), 4);
+  // Genau auf der Diagonalen - dort greifen die vier Sonderfaelle.
+  assert.equal(geometry.keepOrientation(150, 250), 0);
+  assert.equal(geometry.keepOrientation(250, 250), 2);
+  assert.equal(geometry.keepOrientation(250, 150), 4);
+  assert.equal(geometry.keepOrientation(150, 150), 6);
+  // Der Tausch ist der leicht zu ueberlesende Teil: ohne ihn kaeme im Osten
+  // 6 und im Westen 2 heraus, und die halbe Karte staende quer.
+  assert.notEqual(geometry.keepOrientation(350, 200), 6);
+  // Ein Platz genau in der Mitte hat keine Vorzugsrichtung.
+  assert.equal(geometry.keepOrientation(200, 200), 0);
+});
+
+test('gedreht und zurueck ist wieder dasselbe Feld', () => {
+  for (const orientation of [0, 2, 4, 6]) {
+    for (let gx = 0; gx < 100; gx += 1) {
+      for (let gy = 0; gy < 100; gy += 1) {
+        const hin = geometry.rotateGrid(gx, gy, 1, orientation);
+        assert.ok(hin.gx >= 0 && hin.gx < 100 && hin.gy >= 0 && hin.gy < 100);
+        assert.deepEqual(geometry.unrotateGrid(hin.gx, hin.gy, orientation), { gx, gy });
+      }
+    }
+  }
+});
+
+test('ein grosses Gebaeude wird an seiner Ecke gedreht, nicht an seinem Feld', () => {
+  // Der Bergfried belegt (43,43) bis (49,49). Nach einer halben Drehung liegt
+  // er auf (50,50) bis (56,56) - der Ansatz ist 50, nicht 56. Wer die
+  // Kachelzahl vergisst, verschiebt ihn um seine eigenen sieben Felder.
+  assert.deepEqual(geometry.rotateGrid(43, 43, 7, 4), { gx: 50, gy: 50 });
+  assert.deepEqual(geometry.rotateGrid(43, 43, 7, 2), { gx: 43, gy: 50 });
+  assert.deepEqual(geometry.rotateGrid(43, 43, 7, 6), { gx: 50, gy: 43 });
+  assert.deepEqual(geometry.rotateGrid(43, 43, 7, 0), { gx: 43, gy: 43 });
+});
+
+test('jedes Dorffeld landet dort, wo das Spiel es hinlegt', (t) => {
+  const { listGameMaps, readGameMap } = require(path.join(root, 'src', 'node', 'game-map.js'));
+  const { maps } = listGameMaps(null);
+  if (maps.length < 20) { t.skip('kein vollstaendiger Kartenordner gefunden'); return; }
+
+  // Jedes Feld traegt seine eigene Nummer, dann sagt der Nachbau eindeutig,
+  // wohin es gewandert ist.
+  const dorf = new Array(10000);
+  for (let i = 0; i < 10000; i += 1) dorf[i] = i + 1;
+  const wohin = new Map();
+  for (const orientation of [0, 2, 4, 6]) {
+    const gedreht = rotateAIVNachbau(dorf, orientation);
+    const tafel = new Array(10001);
+    for (let y = 0; y < 100; y += 1)
+      for (let x = 0; x < 100; x += 1) tafel[gedreht[y * 100 + x]] = { x, y };
+    wohin.set(orientation, tafel);
+  }
+  // Und der Bergfried als 7x7-Block: applyAIV nimmt den ERSTEN seiner Felder
+  // im gedrehten Raster, zeilenweise gesucht, und gibt ihn an placeBuilding.
+  const block = new Array(10000).fill(0);
+  for (let vy = 43; vy <= 49; vy += 1) for (let vx = 43; vx <= 49; vx += 1) block[vy * 100 + vx] = 1;
+  const ersterKeep = new Map();
+  for (const orientation of [0, 2, 4, 6]) {
+    const gedreht = rotateAIVNachbau(block, orientation);
+    let erste = null;
+    for (let y = 0; y < 100 && !erste; y += 1)
+      for (let x = 0; x < 100; x += 1) if (gedreht[y * 100 + x]) { erste = { x, y }; break; }
+    ersterKeep.set(orientation, erste);
+  }
+
+  let plaetze = 0;
+  // Extremwerte statt mittlerer Werte: die vier Ecken des Dorfes, der
+  // Bergfried und die Mitte.
+  const proben = [[0, 0], [99, 0], [0, 99], [99, 99], [43, 43], [50, 50], [1, 98], [98, 1]];
+  for (const entry of maps) {
+    const karte = readGameMap(entry.path, null);
+    for (const keep of karte.keeps) {
+      plaetze += 1;
+      const tafel = wohin.get(keep.orientation);
+      for (const [vx, vy] of proben) {
+        const gedreht = geometry.rotateGrid(vx, vy, 1, keep.orientation);
+        const unser = geometry.mapTileForGrid(gedreht.gx, gedreht.gy, keep);
+        const spiel = tafel[vy * 100 + vx + 1];
+        assert.deepEqual(unser,
+          { mx: keep.x - 43 + spiel.x, my: keep.y - 43 + spiel.y },
+          `${entry.name}: Feld (${vx},${vy}) bei Drehung ${keep.orientation}`);
+      }
+      const keepEcke = geometry.rotateGrid(43, 43, 7, keep.orientation);
+      const unserKeep = geometry.mapTileForGrid(keepEcke.gx, keepEcke.gy, keep);
+      const spielKeep = ersterKeep.get(keep.orientation);
+      assert.deepEqual(unserKeep,
+        { mx: keep.x - 43 + spielKeep.x, my: keep.y - 43 + spielKeep.y },
+        `${entry.name}: der Bergfried liegt nicht dort, wo placeBuilding ihn hinstellt`);
+      // Ungedreht MUSS er genau auf dem 7x7-Block der Karte sitzen.
+      if (keep.orientation === 0) {
+        assert.deepEqual(unserKeep, { mx: keep.x, my: keep.y },
+          `${entry.name}: ungedreht gehoert der Bergfried auf den Block der Karte`);
+      }
+    }
+  }
+  assert.ok(plaetze > 400, 'es wurden genug Startplaetze geprueft');
+});
+
+test('die Ansicht dreht die Burg und rechnet die Maus zurueck', () => {
+  const iso = fs.readFileSync(path.join(root, 'src', 'js', 'iso-view.js'), 'utf8');
+  // Erst einsammeln, dann drehen - sonst landen die Bodenplatten neben ihrem
+  // Gebaeude, weil sie aus dessen Ecke gerechnet werden.
+  assert.match(iso, /const gerade = geo\.collectItems\(currentDocument\(\), state\.catalogue\);/);
+  assert.match(iso, /const items = turnedTiles\(gerade\);/);
+  assert.match(iso, /turnedTiles\(geo\.collectPlates\(gerade\)/);
+  // Ein Klick trifft das Feld, das man sieht - also zurueckgedreht.
+  assert.match(iso, /geo\.unrotateGrid\(grid\.gx, grid\.gy, currentRotation\(\)\)/);
+  assert.match(iso, /const tile = editorTileAt\(p\.x, p\.y\)/);
+  // Und der Auswahlkasten dreht mit.
+  assert.match(iso, /geo\.marqueeOutline\(box, state\.view, currentRotation\(\)\)/);
+  // Die Drehung steht in der Statuszeile, sonst sieht man nur, DASS etwas
+  // anders liegt.
+  assert.match(iso, /turned '/);
+  assert.match(iso, /game value/);
 });

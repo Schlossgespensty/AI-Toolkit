@@ -239,12 +239,27 @@
   // Editor-Koordinaten, wo y nach OBEN zaehlt; hier wird es in das
   // Bildschirmsystem gedreht (gy = 99 - y) und um eine Kachel erweitert, weil
   // der Kasten die Felder umschliesst und nicht ihre Mittelpunkte.
-  function marqueeOutline(box, view) {
+  // Die Ecken sind Gitterpunkte, keine Felder: Feld (gx,gy) belegt das Quadrat
+  // von (gx,gy) bis (gx+1,gy+1). Ein Gitterpunkt dreht sich darum mit GRID-p
+  // und nicht mit GRID-1-p - eine Eins Unterschied, aber sie verschoebe den
+  // Kasten um ein ganzes Feld.
+  function rotateCorner(gx, gy, orientation) {
+    switch (Number(orientation) || 0) {
+      case 2: return [gy, GRID - gx];
+      case 4: return [GRID - gx, GRID - gy];
+      case 6: return [GRID - gy, gx];
+      default: return [gx, gy];
+    }
+  }
+
+  function marqueeOutline(box, view, orientation) {
     if (!box) return null;
     const x0 = Math.min(box.x0, box.x1), x1 = Math.max(box.x0, box.x1) + 1;
     const yLow = Math.min(box.y0, box.y1), yHigh = Math.max(box.y0, box.y1);
     const gy0 = GRID - 1 - yHigh, gy1 = GRID - 1 - yLow + 1;
-    return [[x0, gy0], [x1, gy0], [x1, gy1], [x0, gy1]].map(([gx, gy]) => isoPoint(gx, gy, view));
+    return [[x0, gy0], [x1, gy0], [x1, gy1], [x0, gy1]]
+      .map(([gx, gy]) => rotateCorner(gx, gy, orientation))
+      .map(([gx, gy]) => isoPoint(gx, gy, view));
   }
 
   function collectItems(document_, catalogue) {
@@ -318,6 +333,83 @@
   const MAP_PREVIEW_EDGE = 200;   // Kantenlaenge des Vorschaubildes
   const KEEP_TILE = 43;           // Dorffeld (43,43) sitzt auf dem Startplatz
 
+  // ------------------------------------------------------------ die Drehung
+  //
+  // WELCHE Drehung eine Burg bekommt, entscheidet das Spiel allein aus der
+  // Lage des Startplatzes zur Kartenmitte (200,200). Zwei Funktionen:
+  //
+  //   calculatePreferredRelativeOrientation (0x0046c9e0) liefert 0 bis 7,
+  //   setKeepOffsetAndOrientation (0x004ecf70) nimmt davon das unterste Bit
+  //   weg UND VERTAUSCHT DANN 2 MIT 6. Der Tausch steht woertlich dort und ist
+  //   leicht zu ueberlesen - ohne ihn stehen zwei von vier Burgen quer.
+  //
+  // Heraus kommt 0, 2, 4 oder 6. Nur ein Startplatz genau auf (200,200) gaebe
+  // 14, was rotateAIV gar nicht kennt; auf keiner der 113 Karten des Spiels
+  // kommt das vor (nachgezaehlt), hier wird es wie 0 behandelt.
+  const MAP_CENTRE = 200;
+
+  function keepOrientation(x, y) {
+    const dx = Math.abs(x - MAP_CENTRE);
+    const dy = Math.abs(y - MAP_CENTRE);
+    let orientation;
+    if (dy * 2 < dx) orientation = x > MAP_CENTRE ? 6 : 2;
+    else if (dx * 2 < dy) orientation = y > MAP_CENTRE ? 0 : 4;
+    else if (y > MAP_CENTRE) orientation = x <= MAP_CENTRE ? 1 : 7;
+    else if (y < MAP_CENTRE) orientation = x > MAP_CENTRE ? 5 : 3;
+    else return 0;
+    const even = orientation & 0xfffe;
+    if (even === 2) return 6;
+    if (even === 6) return 2;
+    return even;
+  }
+
+  //
+  // Das Spiel stellt eine Burg nicht so hin, wie sie in der Datei steht: als
+  // ERSTES ruft applyAIV (0x004ef0d0) rotateAIV (0x004ed0b0) und dreht das
+  // ganze 100x100-Raster. Erst danach wird jedes Feld auf die Karte gelegt.
+  // Der Ansatzpunkt bleibt dabei unveraendert - Dorffeld (43,43) sitzt immer
+  // auf dem Startplatz, gedreht oder nicht.
+  //
+  // Die drei Kopierschleifen in rotateAIV, zurueckgelesen als Abbildung
+  // "wohin wandert ein Feld" (vorwaerts, nicht rueckwaerts):
+  //
+  //   0: (x, y)          2: (y, 99-x)      4: (99-x, 99-y)     6: (99-y, x)
+  //
+  // Gegenprobe im selben Programm: applyAIV rechnet die Truppenplaetze mit
+  // genau diesen vier Faellen um (99-y/99-x fuer 4, y/99-x fuer 2, ...).
+  //
+  // gx und gy sind hier dieselben Zahlen wie im Dorfraster: der Editor legt
+  // seine Versaetze mit umgedrehter Zeile ab (Bergfried (43,43) -> 5643), und
+  // gridFromOffset dreht sie wieder um. Zweimal gedreht ist gerade.
+  //
+  // WARUM DIE KACHELZAHL MITMUSS: ein Gebaeude von n Feldern haengt an seiner
+  // Ecke mit dem kleinsten gx und gy. Nach einer Vierteldrehung ist das eine
+  // ANDERE Ecke des Bauwerks, also muss der Ansatz um n-1 zurueckgesetzt
+  // werden. Wer das vergisst, verschiebt jedes grosse Gebaeude um seine eigene
+  // Groesse - beim Bergfried um sieben Felder.
+  function rotateGrid(gx, gy, tiles, orientation) {
+    const n = Math.max(1, Number(tiles) || 1);
+    const last = GRID - n;            // groesster Ansatz, den ein n-Feld-Bau hat
+    switch (Number(orientation) || 0) {
+      case 2: return { gx: gy, gy: last - gx };
+      case 4: return { gx: last - gx, gy: last - gy };
+      case 6: return { gx: last - gy, gy: gx };
+      default: return { gx, gy };
+    }
+  }
+
+  // Und zurueck - fuer die Maus. Was auf dem Bildschirm angeklickt wird, ist
+  // ein gedrehtes Feld; der Editor kennt aber nur das ungedrehte.
+  function unrotateGrid(gx, gy, orientation) {
+    const last = GRID - 1;
+    switch (Number(orientation) || 0) {
+      case 2: return { gx: last - gy, gy: gx };
+      case 4: return { gx: last - gx, gy: last - gy };
+      case 6: return { gx: gy, gy: last - gx };
+      default: return { gx, gy };
+    }
+  }
+
   // Welches Kartenfeld unter einem Dorffeld liegt.
   function mapTileForGrid(gx, gy, keep) {
     return { mx: keep.x - KEEP_TILE + gx, my: keep.y - KEEP_TILE + gy };
@@ -333,9 +425,13 @@
   // Hat eine Karte keinen Startplatz, wird das Dorf in die Kartenmitte
   // gestellt: Dorffeld (50,50) auf den mittleren Vorschaupunkt (100,100),
   // also auf das Kartenfeld (200,199).
+  // Ohne Startplatz gibt es auch keine Drehung: die Drehung kommt aus der Lage
+  // des Startplatzes, und einen erfundenen Platz zu drehen hiesse, eine Zahl
+  // zu erfinden.
   function centreKeep() {
     return { x: MAP_PREVIEW_EDGE - GRID / 2 + KEEP_TILE,
-             y: (MAP_PREVIEW_EDGE - 1) - GRID / 2 + KEEP_TILE };
+             y: (MAP_PREVIEW_EDGE - 1) - GRID / 2 + KEEP_TILE,
+             player: null, orientation: 0 };
   }
 
   // Wohin das Vorschaubild gehoert, damit ein Kartenfeld auf einem Editorfeld
@@ -364,5 +460,6 @@
            tileFromPoint, editorTileFromPoint,
            depth, byDepth, spriteRect, variantFor, wallLookup, hoehenLookup,
            collectItems, collectPlates, marqueeOutline, fitView,
+           rotateGrid, unrotateGrid, keepOrientation,
            mapTileForGrid, previewPointForMapTile, centreKeep, mapPreviewRect };
 });

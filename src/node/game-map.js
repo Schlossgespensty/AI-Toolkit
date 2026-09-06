@@ -1,4 +1,5 @@
-// Eine .map des Spiels lesen: das Vorschaubild und die Startplaetze.
+// Eine .map des Spiels lesen: das Vorschaubild, die Startplaetze, wem sie
+// gehoeren und wie die Burg darauf gedreht wird.
 //
 // Warum im Hauptprozess und nicht im Fenster: die Oberflaeche hat keinen
 // Zugriff auf Dateien (contextIsolation), das Entpacken braucht node-pkware,
@@ -32,6 +33,9 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { explode } = require('node-pkware/simple');
 const { encodeRgbaPng } = require('./pixel-image');
+// Die Drehregel steht in iso-geometry.js, weil die Ansicht sie auch braucht.
+// Zwei Kopien derselben Regel waeren zwei Regeln, und eine davon veraltet.
+const { keepOrientation } = require('../js/iso-geometry.js');
 
 const PREVIEW_EDGE = 200;          // Kantenlaenge des Vorschaubildes
 const MAP_TILES = 80400;           // Felder der Raute
@@ -41,6 +45,17 @@ const BUILDING_SECTION = 1049;     // Bautypen, ein Byte je Feld
 const STONE_KEEP = 41;             // BT_STONEKEEP
 const KEEP_EDGE = 7;               // ein Bergfried ist 7x7
 const MAX_MAP_BYTES = 32 * 1024 * 1024;
+
+// Abschnitt 1013 ist das Gebaeudefeld des Spiels, unveraendert auf die Platte
+// geschrieben: 812 Byte je Eintrag, die Feldversaetze stehen so in der
+// Building-Struktur des Programms (Ghidra, OpenSHC-ref). Nachgemessen an 486
+// Bergfrieden auf 96 Karten - jeder trug an +238/+240 genau die linke obere
+// Ecke seines 7x7-Blocks, Bautyp 41, Besitzer 1 bis 8, keine Nummer doppelt.
+const BUILDINGS_SECTION = 1013;
+const BUILDING_STRIDE = 812;
+const BUILDING_TYPE_AT = 210;
+const BUILDING_OWNER_AT = 214;
+const BUILDING_X_AT = 238;
 
 // Der uebliche Ort, wenn niemand eine Installation gewaehlt hat.
 const DEFAULT_GAME_ROOT = 'C:\\Program Files (x86)\\Steam\\steamapps\\common\\Stronghold Crusader Extreme';
@@ -179,6 +194,41 @@ function findKeeps(buildings) {
   return keeps;
 }
 
+// Welchem Spieler ein Startplatz gehoert. Die Reihenfolge, in der die Bloecke
+// gefunden werden, ist NICHT die Spielernummer - auf "Crete Peninsula" heissen
+// die acht Bloecke von Norden nach Sueden 1, 7, 5, 3, 6, 4, 8, 2. Wer sie
+// durchzaehlt, vergleicht die falsche Burg mit dem Bildschirmfoto.
+//
+// Die Nummer steht im Gebaeudefeld: der Eintrag, dessen x/y auf der Ecke des
+// Blocks liegt, traegt bei +214 den Besitzer. Genau diesen Wert nimmt auch das
+// Spiel - LaunchSkirmishGame holt keepX/keepY aus buildings[playerData.keep.id]
+// und gibt sie an setKeepOffsetAndOrientation weiter.
+function nameKeeps(blocks, buildingsSection) {
+  const found = blocks.map(block => ({ ...block, player: null, orientation: keepOrientation(block.x, block.y) }));
+  const section = buildingsSection;
+  if (section) {
+    const count = Math.floor(section.length / BUILDING_STRIDE);
+    for (let index = 0; index < count; index += 1) {
+      const at = index * BUILDING_STRIDE;
+      if (at + BUILDING_X_AT + 4 > section.length) break;
+      if (section.readInt16LE(at + BUILDING_TYPE_AT) !== STONE_KEEP) continue;
+      const x = section.readUInt16LE(at + BUILDING_X_AT);
+      const y = section.readUInt16LE(at + BUILDING_X_AT + 2);
+      const owner = section.readInt16LE(at + BUILDING_OWNER_AT);
+      if (owner < 1 || owner > 8) continue;
+      const keep = found.find(entry => entry.x === x && entry.y === y && entry.player === null);
+      if (keep) keep.player = owner;
+    }
+  }
+  // Nur umsortieren, wenn wirklich jeder Platz eine eigene Nummer hat -
+  // sonst bliebe eine halb geratene Reihenfolge stehen, und die waere
+  // schlimmer als die ehrliche Fundreihenfolge.
+  const numbers = found.map(entry => entry.player);
+  const complete = numbers.every(value => value !== null) && new Set(numbers).size === numbers.length;
+  if (complete) found.sort((a, b) => a.player - b.player);
+  return found;
+}
+
 // ------------------------------------------------------------------- aussen
 
 function gameRootOrDefault(gameRoot) {
@@ -233,7 +283,12 @@ function readGameMap(filePath, gameRoot) {
   const directory = findDirectory(buffer, preview.end);
   let keeps = [];
   if (directory) {
-    try { keeps = findKeeps(readSection(buffer, directory, BUILDING_SECTION)); } catch { keeps = []; }
+    try {
+      const blocks = findKeeps(readSection(buffer, directory, BUILDING_SECTION));
+      let buildings = null;
+      try { buildings = readSection(buffer, directory, BUILDINGS_SECTION); } catch { buildings = null; }
+      keeps = nameKeeps(blocks, buildings);
+    } catch { keeps = []; }
   }
   return {
     name: known.name,
@@ -249,6 +304,7 @@ module.exports = {
   listGameMaps,
   readGameMap,
   // fuer die Tests und fuer Werkzeuge, die eine Karte ohne Electron lesen
-  internals: { readPreview, previewPng, findDirectory, readSection, findKeeps, rowBase, rowRange, tileIndex,
-               PREVIEW_EDGE, MAP_TILES, BUILDING_SECTION, STONE_KEEP, KEEP_EDGE }
+  internals: { readPreview, previewPng, findDirectory, readSection, findKeeps, nameKeeps, keepOrientation,
+               rowBase, rowRange, tileIndex,
+               PREVIEW_EDGE, MAP_TILES, BUILDING_SECTION, BUILDINGS_SECTION, STONE_KEEP, KEEP_EDGE }
 };

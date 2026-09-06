@@ -218,7 +218,48 @@
   function currentKeep() {
     const map = gameMap();
     if (!map) return null;
-    return map.keeps[map.keepIndex] || geo.centreKeep();
+    const keep = map.keeps[map.keepIndex] || geo.centreKeep();
+    // Eine Karte, die noch aus einer aelteren Sitzung im Speicher liegt, kennt
+    // die Drehung nicht. Sie haengt aber nur an x und y, also wird sie hier
+    // nachgerechnet statt die Karte kommentarlos ungedreht zu zeigen.
+    if (keep.orientation === undefined) {
+      return { ...keep, orientation: geo.keepOrientation(keep.x, keep.y) };
+    }
+    return keep;
+  }
+
+  // Wie stark die Burg auf DIESEM Startplatz gedreht wird. Ohne Karte gar
+  // nicht - dann ist die Ansicht der reine Bauplan.
+  function currentRotation() {
+    const keep = currentKeep();
+    return keep ? (Number(keep.orientation) || 0) : 0;
+  }
+
+  // Ein Feld des Bauplans an seinen gedrehten Platz - und zurueck, wenn die
+  // Maus fragt, welches Feld sie gerade trifft.
+  function turnedTiles(list) {
+    const rotation = currentRotation();
+    if (!rotation) return list;
+    return list.map(item => {
+      const turned = geo.rotateGrid(item.gx, item.gy, item.tiles, rotation);
+      return { ...item, gx: turned.gx, gy: turned.gy };
+    });
+  }
+
+  function editorTileAt(px, py) {
+    const grid = geo.tileFromPoint(px, py, state.view);
+    if (!grid) return null;
+    const back = geo.unrotateGrid(grid.gx, grid.gy, currentRotation());
+    return { x: back.gx, y: geo.GRID - 1 - back.gy };
+  }
+
+  // Wo der Zeiger zuletzt war - fuer das Loslassen ausserhalb der Karte.
+  // state.hover steht im BILD, nicht im Bauplan, muss also zurueckgedreht
+  // werden wie ein frischer Klick.
+  function lastHoverTile() {
+    if (!state.hover) return null;
+    const back = geo.unrotateGrid(state.hover.gx, state.hover.gy, currentRotation());
+    return { x: back.gx, y: geo.GRID - 1 - back.gy };
   }
 
   function paintGameMap(ctx) {
@@ -355,8 +396,13 @@
     ctx.closePath();
     paintGround(ctx, width, height);
 
-    const items = geo.collectItems(currentDocument(), state.catalogue);
-    for (const plate of geo.collectPlates(items).sort(geo.byDepth))
+    // Erst einsammeln, dann drehen: die Bodenplatten haengen an ihrem Gebaeude
+    // und muessen aus dessen UNGEDREHTER Ecke gerechnet werden. Wer zuerst
+    // dreht, legt den Burghof neben die Burg.
+    const gerade = geo.collectItems(currentDocument(), state.catalogue);
+    const items = turnedTiles(gerade);
+    const plates = turnedTiles(geo.collectPlates(gerade));
+    for (const plate of plates.sort(geo.byDepth))
       drawSprite(ctx, plate.sprite, plate.gx, plate.gy, plate.tiles);
 
     // Welche Felder Mauer tragen. Ein Mauerfeld waehlt sein Bild nach seinen
@@ -387,7 +433,26 @@
     const editor = window.castleEditor;
     const tool = editor && editor.getTool ? editor.getTool() : '—';
     setStatus(items.length + ' items' + (missing ? ', ' + missing + ' without a sprite' : '') +
-              ' · tool: ' + tool + ' · middle mouse pans, wheel zooms');
+              ' · tool: ' + tool + mapStatus() + ' · middle mouse pans, wheel zooms');
+  }
+
+  // Was in der Statuszeile ueber die Karte steht. Die Drehung gehoert dorthin,
+  // weil man ihr sonst nur ansieht, DASS etwas anders liegt, aber nicht warum.
+  function mapStatus() {
+    const map = gameMap();
+    if (!map) return '';
+    const keep = currentKeep();
+    const platz = map.keeps.length
+      ? (keep.player ? ' · start ' + keep.player : ' · start place ' + (map.keepIndex + 1)) +
+        ' (' + keep.x + ', ' + keep.y + ')'
+      : ' · no starting place, village in the middle of the map';
+    // Die Zahl des Spiels wird mitgenannt: 0/2/4/6 ist das, was in
+    // keepOrientation steht, und nur damit laesst sich nachrechnen.
+    const drehung = keep.orientation
+      ? ' · turned ' + (keep.orientation / 2) + ' quarter turn' + (keep.orientation === 2 ? '' : 's') +
+        ' (game value ' + keep.orientation + ')'
+      : (map.keeps.length ? ' · not turned (game value 0)' : '');
+    return ' · map: ' + map.name + platz + drehung;
   }
 
   // Was ein Klick setzen wuerde - mit dem richtigen Bild, halb durchsichtig.
@@ -406,9 +471,11 @@
     // Die Felder der Vorschau zaehlen fuer die Mauerregel schon mit: sonst
     // sieht eine gezogene Mauerlinie wie eine Reihe Pfeiler aus und springt
     // beim Loslassen zur durchgehenden Flaeche um.
-    const kuenftig = vorschau.tiles.map(feld => ({
-      gx: feld.x, gy: geo.GRID - 1 - feld.y,
-      entry: nachschlagen(feld.itemType != null ? feld.itemType : vorschau.itemType),
+    // Auch die Vorschau wird gedreht - sonst haengt am Zeiger ein Bauwerk,
+    // das nach dem Loslassen woanders steht.
+    const kuenftig = turnedTiles(vorschau.tiles.map(feld => {
+      const entry = nachschlagen(feld.itemType != null ? feld.itemType : vorschau.itemType);
+      return { gx: feld.x, gy: geo.GRID - 1 - feld.y, entry, tiles: entry ? entry.kacheln : 1 };
     }));
     const neueMauern = geo.wallLookup(kuenftig);
     const mauerAn = (gx, gy) =>
@@ -426,7 +493,7 @@
     ctx.globalAlpha = 0.5;
     for (const feld of kuenftig) {
       const eintrag = feld.entry;
-      const kacheln = eintrag ? eintrag.kacheln : 1;
+      const kacheln = feld.tiles;
       if (!eintrag || !drawSprite(ctx, eintrag, feld.gx, feld.gy, kacheln, mauerAn, hoeheAn))
         drawDiamond(ctx, feld.gx, feld.gy, kacheln, 'rgba(120,220,140,.45)', 'rgba(150,240,170,.9)');
     }
@@ -454,7 +521,7 @@
     const editor = window.castleEditor;
     if (!editor || !editor.getMarquee) return;
     const box = editor.getMarquee();
-    const ecken = box && geo.marqueeOutline(box, state.view);
+    const ecken = box && geo.marqueeOutline(box, state.view, currentRotation());
     if (!ecken) return;
     ctx.save();
     ctx.beginPath();
@@ -534,7 +601,7 @@
         return;
       }
       const p = pointOf(canvas, event);
-      const tile = geo.editorTileFromPoint(p.x, p.y, state.view);
+      const tile = editorTileAt(p.x, p.y);
       if (!tile) return;
       state.drawing = true;
       toEditor('down', event, tile);
@@ -548,7 +615,7 @@
         refresh();
         return;
       }
-      const tile = geo.editorTileFromPoint(p.x, p.y, state.view);
+      const tile = editorTileAt(p.x, p.y);
       const grid = geo.tileFromPoint(p.x, p.y, state.view);
       const moved = !state.hover || !grid || state.hover.gx !== grid.gx || state.hover.gy !== grid.gy;
       state.hover = grid;
@@ -562,8 +629,7 @@
       if (!state.drawing) return;
       state.drawing = false;
       const p = pointOf(canvas, event);
-      const tile = geo.editorTileFromPoint(p.x, p.y, state.view) ||
-                   (state.hover ? { x: state.hover.gx, y: geo.GRID - 1 - state.hover.gy } : null);
+      const tile = editorTileAt(p.x, p.y) || lastHoverTile();
       if (tile) toEditor('up', event, tile);
     };
     canvas.addEventListener('pointerup', ende);

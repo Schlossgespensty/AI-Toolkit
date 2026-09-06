@@ -3023,10 +3023,16 @@
     // einzigen Startplatz gäbe es nichts zu tun.
     karteBergfried.hidden = !info || info.keeps.length < 2;
     if (karteBergfried.hidden) { karteBergfried.replaceChildren(); return; }
+    // Die Nummer kommt aus der Karte, nicht aus der Fundreihenfolge: die
+    // Bloecke werden von Norden nach Sueden gefunden, das Spiel nummeriert
+    // sie ganz anders (auf "Crete Peninsula" 1, 7, 5, 3, 6, 4, 8, 2). Wer
+    // durchzaehlt, vergleicht die falsche Burg mit dem Bildschirmfoto.
     karteBergfried.replaceChildren(...info.keeps.map((keep, index) => {
       const option = document.createElement('option');
       option.value = String(index);
-      option.textContent = `Start ${index + 1} (${keep.x}, ${keep.y})`;
+      const name = keep.player ? `Start ${keep.player}` : `Start place ${index + 1}`;
+      const dreh = keep.orientation ? `, turned ${keep.orientation / 2}/4` : '';
+      option.textContent = `${name} (${keep.x}, ${keep.y})${dreh}`;
       return option;
     }));
     karteBergfried.value = String(info.keepIndex);
@@ -3100,7 +3106,10 @@
     window.isoView.setGameMapKeep(Number(karteBergfried.value));
     const info = window.isoView.gameMapInfo();
     const keep = info && info.keeps[info.keepIndex];
-    setStatus(keep ? `Castle built on the starting place at (${keep.x}, ${keep.y})` : 'Starting place changed');
+    setStatus(keep
+      ? `Castle built on ${keep.player ? `start ${keep.player}` : 'the starting place'} at (${keep.x}, ${keep.y})` +
+        (keep.orientation ? ` · the game turns it by ${keep.orientation / 2} quarter turn${keep.orientation === 2 ? '' : 's'}` : ' · not turned')
+      : 'Starting place changed');
   });
   if (karteZurueck) karteZurueck.addEventListener('click', () => {
     if (!window.isoView) return;
