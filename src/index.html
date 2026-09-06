@@ -142,6 +142,12 @@
           <button type="button" class="castleTool active" data-tool="single" title="Shortcut: 1 or S">Single <kbd>1</kbd></button>          
           <button type="button" class="castleTool" data-tool="line" title="Shortcut: 6 or L">Line <kbd>2</kbd></button>
           <button type="button" class="castleTool" data-tool="brush" title="Shortcut: 2 or B">Brush <kbd>3</kbd></button>
+          <span class="brushSize" title="How wide the brush paints. [ and ] make it smaller and bigger.">
+            <button id="castleBrushMinus" type="button" aria-label="Smaller brush">&#8722;</button>
+            <output id="castleBrushSize" for="castleBrushMinus castleBrushPlus">1</output>
+            <button id="castleBrushPlus" type="button" aria-label="Bigger brush">+</button>
+          </span>
+          <button type="button" class="castleTool" data-tool="bucket" title="Fills everything up to a wall &#8212; the edge of the map counts as one. Shortcut: 7 or F">Fill <kbd>7</kbd></button>
           <button type="button" class="castleTool" data-tool="select" title="Shortcut: 3 or V">Select / Move <kbd>4</kbd></button>
           <button type="button" class="castleTool" data-tool="copy" title="Shortcut: 5 or C &#8212; Ctrl+C copies what is selected, Ctrl+V places it at the cursor">Copy<kbd>5</kbd></button>
           <button type="button" class="castleTool" data-tool="delete" title="Shortcut: 4 or D">Delete<kbd>4</kbd></button>

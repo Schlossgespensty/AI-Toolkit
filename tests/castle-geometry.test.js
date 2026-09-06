@@ -161,3 +161,64 @@ test('selected build steps can move upward as one ordered block', () => {
   assert.deepEqual(frames.map(frame => frame.itemType), [3, 5, 1, 2, 4]);
   assert.deepEqual(moved, { moved: true, startIndex: 0, endIndex: 1 });
 });
+
+// ------------------------------------------- Pinselgroesse und Farbeimer
+
+test('a brush of size 1 is one tile, size 3 a square of nine', () => {
+  assert.deepEqual(geometry.brushTiles({ x: 5, y: 5 }, 1), [{ x: 5, y: 5 }]);
+  const drei = geometry.brushTiles({ x: 5, y: 5 }, 3);
+  assert.equal(drei.length, 9);
+  assert.ok(drei.some(t => t.x === 4 && t.y === 4), 'die linke untere Ecke gehoert dazu');
+  assert.ok(drei.some(t => t.x === 6 && t.y === 6), 'die rechte obere auch');
+});
+
+test('the brush is cut off at the edge of the map, never wrapped', () => {
+  const ecke = geometry.brushTiles({ x: 0, y: 0 }, 3);
+  assert.equal(ecke.length, 4, 'in der Ecke bleibt ein Viertel uebrig');
+  assert.ok(ecke.every(t => t.x >= 0 && t.y >= 0));
+  const gegenueber = geometry.brushTiles({ x: 99, y: 99 }, 5);
+  assert.ok(gegenueber.every(t => t.x < 100 && t.y < 100));
+});
+
+test('the brush never grows past the map and never shrinks below one tile', () => {
+  assert.equal(geometry.brushTiles({ x: 50, y: 50 }, 0).length, 1);
+  assert.equal(geometry.brushTiles({ x: 50, y: 50 }, -7).length, 1);
+  assert.equal(geometry.brushTiles({ x: 50, y: 50 }, 1000).length,
+               geometry.brushTiles({ x: 50, y: 50 }, 100).length,
+               'groesser als die Karte gibt es nicht');
+});
+
+test('the bucket fills up to a wall and stops there', () => {
+  // Eine Kammer 3x3, umschlossen von belegten Feldern.
+  const wand = new Set(['1,1','2,1','3,1','1,2','3,2','1,3','2,3','3,3','1,4','2,4','3,4','4,4']);
+  const blockiert = (x, y) => wand.has(x + ',' + y);
+  const gefuellt = geometry.floodTiles({ x: 2, y: 2 }, blockiert, 100);
+  assert.deepEqual(gefuellt, [{ x: 2, y: 2 }], 'die Kammer ist genau ein Feld gross');
+});
+
+test('the edge of the map counts as a wall', () => {
+  // Eine Ecke, abgeriegelt durch zwei Felder: der Rand schliesst den Rest.
+  const blockiert = (x, y) => (x === 2 && y <= 1) || (y === 2 && x <= 1);
+  const ecke = geometry.floodTiles({ x: 0, y: 0 }, blockiert, 100);
+  assert.equal(ecke.length, 4, 'nur die vier Felder in der Ecke');
+  assert.ok(ecke.every(t => t.x <= 1 && t.y <= 1));
+});
+
+test('the bucket does not leak through a diagonal gap', () => {
+  // Zwei Kammern, die sich nur an einer Ecke beruehren.
+  const blockiert = (x, y) => (x === 1 && y === 0) || (x === 0 && y === 1)
+                           || (x === 2 && y === 1) || (x === 1 && y === 2);
+  const links = geometry.floodTiles({ x: 0, y: 0 }, blockiert, 100);
+  assert.deepEqual(links, [{ x: 0, y: 0 }], 'diagonal ist kein Durchgang');
+});
+
+test('a click on something solid fills nothing', () => {
+  assert.deepEqual(geometry.floodTiles({ x: 5, y: 5 }, () => true, 100), []);
+});
+
+test('the bucket has a brake, so a slip does not build half the map', () => {
+  const frei = geometry.floodTiles({ x: 50, y: 50 }, () => false, 100, 250);
+  assert.equal(frei.length, 250, 'bei der Grenze ist Schluss');
+  const ganz = geometry.floodTiles({ x: 50, y: 50 }, () => false, 100, 100000);
+  assert.equal(ganz.length, 10000, 'ohne Hindernis ist die ganze Karte erreichbar');
+});

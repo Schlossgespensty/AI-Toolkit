@@ -689,6 +689,34 @@ button:disabled { cursor: default; }
   display: none;
 }
 
+/* Wie breit der Pinsel malt. Steht bei den Werkzeugen, weil es zu ihnen
+   gehoert, und ist ausgegraut, solange nicht gemalt werden kann. */
+.brushSize {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 1px 3px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+}
+.brushSize button {
+  min-width: 22px;
+  padding: 1px 5px;
+  border: none;
+  background: transparent;
+  color: var(--text-soft);
+}
+.brushSize button:hover:not(:disabled) { color: var(--text-main); background: var(--surface-3); }
+.brushSize button:disabled { opacity: .4; }
+.brushSize output {
+  min-width: 26px;
+  text-align: center;
+  color: var(--text-main);
+  font: 11px var(--font-data);
+}
+.brushSize.off { opacity: .45; }
+
 .castleToolbar {
   min-height: 50px;
   display: flex;

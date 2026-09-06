@@ -17,7 +17,8 @@
     select: ['3', 'v'],
     delete: ['4', 'd'],
     copy: ['5', 'c'],
-    line: ['6', 'l']
+    line: ['6', 'l'],
+    bucket: ['7', 'f']
   };
   const deepClone = value => JSON.parse(JSON.stringify(value));
   const retainSourceBytes = value => {
@@ -35,6 +36,9 @@
 
   const els = {
     canvas: document.getElementById('castleCanvas'),
+    brushMinus: document.getElementById('castleBrushMinus'),
+    brushPlus: document.getElementById('castleBrushPlus'),
+    brushSizeOut: document.getElementById('castleBrushSize'),
     host: document.getElementById('castleCanvasHost'),
     palette: document.getElementById('castlePalette'),
     itemInfo: document.getElementById('castleSelectedItemInfo'),
@@ -123,6 +127,7 @@
     brushSeen: new Set(),
     brushReplacements: new Set(),
     brushLastTile: null,
+    brushSize: 1,
     panning: false,
     panStart: null,
     skins: {},
@@ -830,7 +835,19 @@
     }
   }
 
+  // Ein Pinselzug auf ein Feld. Ist der Pinsel groesser als eins, sind es
+  // entsprechend viele Felder - jedes geht durch dieselbe Pruefung wie ein
+  // einzelnes, damit ein breiter Pinsel nichts darf, was ein schmaler nicht
+  // duerfte.
   function brushAdd(tile) {
+    if (state.brushSize > 1) {
+      for (const feld of geometry.brushTiles(tile, state.brushSize)) brushAddOne(feld);
+      return;
+    }
+    brushAddOne(tile);
+  }
+
+  function brushAddOne(tile) {
     if (state.currentItemType == null) return;
     const type = state.currentItemType;
     if (isLineSequence(type)) return;
@@ -1176,6 +1193,30 @@
     placeCopy(state.hoverTile);
   }
 
+  // Der Farbeimer: fuellt den zusammenhaengenden freien Bereich um ein Feld
+  // herum mit dem gewaehlten Gebaeude. Was besetzt ist, begrenzt ihn - und
+  // der Kartenrand ebenso. Gefuellt wird ueber denselben Weg wie ein
+  // Pinselzug, also mit denselben Pruefungen und als EIN Bauschritt.
+  function bucketFill(tile) {
+    if (state.currentItemType == null) return setStatus('Choose an item first.');
+    const type = state.currentItemType;
+    if (isLineSequence(type)) return setStatus('This item is drawn as a line, not poured.');
+    const besetzt = (x, y) => Boolean(topmostRefAtTile({ x, y }));
+    const felder = geometry.floodTiles(tile, besetzt);
+    if (!felder.length) return setStatus('Nothing to fill here - that tile is taken.');
+
+    state.brushOffsets = [];
+    state.brushTypes = [];
+    state.brushError = '';
+    state.brushSeen = new Set();
+    state.brushReplacements = new Set();
+    for (const feld of felder) brushAddOne(feld);
+    if (!state.brushOffsets.length) return setStatus('Nothing could be placed there.');
+    const gesetzt = state.brushOffsets.length;
+    commitBrush();
+    setStatus('Filled ' + gesetzt + ' tile' + (gesetzt === 1 ? '' : 's') + ' with ' + itemName(type));
+  }
+
   function validateMove(proposed) {
     const selectedRefs = new Set(proposed.keys());
     const replacements = new Set();
@@ -1264,7 +1305,7 @@
   }
 
   function isPlacementTool(tool) {
-    return tool === 'single' || tool === 'brush' || tool === 'line';
+    return tool === 'single' || tool === 'brush' || tool === 'line' || tool === 'bucket';
   }
 
   // Was man ohne gewaehltes Gebaeude nicht tun kann, soll auch nicht
@@ -1285,6 +1326,27 @@
   // Ein gesperrtes Werkzeug darf nicht aktiv stehen bleiben. Wer das Gebaeude
   // abwaehlt - mit Esc oder durch Anklicken eines Bauwerks - landet deshalb
   // beim Auswaehlen, dem einzigen Werkzeug, das ohne Gebaeude etwas tut.
+  // Die Pinselgroesse: eine Zahl zwischen 1 und der Kartenbreite. Sie steht
+  // nur beim Pinsel zur Verfuegung - die anderen Werkzeuge setzen genau ein
+  // Bauwerk, da waere sie eine Zahl ohne Wirkung.
+  function setBrushSize(size) {
+    const grenze = geometry.GRID_SIZE || 100;
+    state.brushSize = Math.max(1, Math.min(Math.round(size) || 1, grenze));
+    updateBrushSizeUI();
+    scheduleDraw();
+  }
+
+  function updateBrushSizeUI() {
+    if (!els.brushSizeOut) return;
+    const grenze = geometry.GRID_SIZE || 100;
+    els.brushSizeOut.textContent = String(state.brushSize);
+    const nutzbar = state.tool === 'brush';
+    if (els.brushMinus) els.brushMinus.disabled = !nutzbar || state.brushSize <= 1;
+    if (els.brushPlus) els.brushPlus.disabled = !nutzbar || state.brushSize >= grenze;
+    const kasten = els.brushSizeOut.parentElement;
+    if (kasten) kasten.classList.toggle('off', !nutzbar);
+  }
+
   function leavePlacementToolIfDisabled() {
     if (state.currentItemType == null && isPlacementTool(state.tool)) setTool('select');
   }
@@ -1299,6 +1361,7 @@
     document.querySelectorAll('.castleTool').forEach(btn => btn.classList.toggle('active', btn.dataset.tool === tool));
     els.canvas.classList.toggle('tool-select', tool === 'select' || tool === 'copy');
     updateToolAvailability();
+    updateBrushSizeUI();
     updateSelectedItemInfo();
     renderPalette();
     setStatus(`${toolLabel(tool)} tool`);
@@ -1928,11 +1991,18 @@
     }
 
     if (state.hoverTile && state.currentItemType != null && (state.tool === 'single' || state.tool === 'brush' || state.tool === 'line') && state.gesture !== 'brush' && state.gesture !== 'line') {
-      const off = xyToOffset(state.hoverTile.x, state.hoverTile.y);
       const previewType = lineSequence(state.currentItemType)[0] ?? state.currentItemType;
-      const result = validatePlacement(previewType, off);
-      const color = !result.ok ? css('--danger', '#d75f5f') : result.replacements.size ? css('--replace', '#dda94b') : css('--valid', '#55c271');
-      drawPlacement(previewType, off, false, color, 0.48, true);
+      // Beim Pinsel zeigt die Vorschau die ganze Breite - sonst sieht man die
+      // eingestellte Groesse erst, wenn schon gemalt ist.
+      const felder = state.tool === 'brush' && state.brushSize > 1
+        ? geometry.brushTiles(state.hoverTile, state.brushSize)
+        : [state.hoverTile];
+      for (const feld of felder) {
+        const off = xyToOffset(feld.x, feld.y);
+        const result = validatePlacement(previewType, off);
+        const color = !result.ok ? css('--danger', '#d75f5f') : result.replacements.size ? css('--replace', '#dda94b') : css('--valid', '#55c271');
+        drawPlacement(previewType, off, false, color, 0.48, true);
+      }
     }
 
     if (state.tool === 'copy' && state.copyBuffer && state.hoverTile && state.gesture !== 'copy-marquee') {
@@ -2343,6 +2413,11 @@
       }
       return;
     }
+    if (state.tool === 'bucket') {
+      bucketFill(tile);
+      state.gesture = null;
+      return;
+    }
     if (state.tool === 'copy') {
       if (state.copyBuffer) {
         placeCopy(tile);
@@ -2635,6 +2710,8 @@
   els.shortcutDefaults.addEventListener('click', () => populateShortcutDialog(DEFAULT_TOOL_SHORTCUTS));
   els.shortcutCancel.addEventListener('click', () => els.shortcutDialog.close());
   els.shortcutForm.addEventListener('submit', saveShortcutDialog);
+  if (els.brushMinus) els.brushMinus.addEventListener('click', () => setBrushSize(state.brushSize - 1));
+  if (els.brushPlus) els.brushPlus.addEventListener('click', () => setBrushSize(state.brushSize + 1));
   els.setSkin.addEventListener('click', setSkin);
   els.removeSkin.addEventListener('click', removeSkin);
   els.openSkins.addEventListener('click', () => window.electronAPI.openAivSkinsFolder());
@@ -2673,6 +2750,9 @@
       event.shiftKey ? redo() : undo();
     } else if ((event.ctrlKey || event.metaKey) && key === 'y') {
       event.preventDefault(); redo();
+    } else if (!event.ctrlKey && !event.metaKey && (key === '[' || key === ']')) {
+      event.preventDefault();
+      setBrushSize(state.brushSize + (key === ']' ? 1 : -1));
     } else if ((event.ctrlKey || event.metaKey) && key === 'c') {
       event.preventDefault(); copySelection();
     } else if ((event.ctrlKey || event.metaKey) && key === 'v') {

@@ -301,3 +301,45 @@ test('a copy hangs from the middle of what was picked up, not from a corner', ()
   assert.doesNotMatch(nehmen, /anchorX = Math\.min/,
     'die alte Ecke als Ankerpunkt ist weg - sonst haengt die Kopie wieder rechts unten');
 });
+
+// ------------------------------------------ Pinselgroesse und Farbeimer
+
+test('the brush size is a state of its own, and one tile to begin with', () => {
+  const script = fs.readFileSync(path.join(root, 'src', 'js', 'castle-editor.js'), 'utf8');
+  assert.match(script, /brushSize: 1,/, 'ein Feld ist die Vorgabe');
+  const setzen = functionBody(script, 'setBrushSize');
+  assert.match(setzen, /Math\.max\(1, Math\.min\(Math\.round\(size\) \|\| 1, grenze\)\)/,
+    'zwischen einem Feld und der Kartenbreite, nichts dazwischen faellt durch');
+  assert.match(setzen, /geometry\.GRID_SIZE \|\| 100/, 'die Grenze kommt aus der Geometrie');
+});
+
+test('a wide brush goes through the same check as a single tile', () => {
+  const script = fs.readFileSync(path.join(root, 'src', 'js', 'castle-editor.js'), 'utf8');
+  const pinsel = functionBody(script, 'brushAdd');
+  assert.match(pinsel, /geometry\.brushTiles\(tile, state\.brushSize\)/);
+  assert.match(pinsel, /brushAddOne\(feld\)/,
+    'jedes Feld laeuft durch dieselbe Pruefung wie ein einzelnes');
+  const eines = functionBody(script, 'brushAddOne');
+  assert.match(eines, /validatePlacement\(type, off/, 'und die steht unveraendert dort');
+});
+
+test('the bucket fills through the brush, so it obeys the same rules', () => {
+  const script = fs.readFileSync(path.join(root, 'src', 'js', 'castle-editor.js'), 'utf8');
+  const eimer = functionBody(script, 'bucketFill');
+  assert.match(eimer, /geometry\.floodTiles\(tile, besetzt\)/);
+  assert.match(eimer, /brushAddOne\(feld\)/, 'gefuellt wird ueber denselben Weg wie ein Pinselzug');
+  assert.match(eimer, /commitBrush\(\)/, 'und alles landet als EIN Bauschritt');
+  assert.match(eimer, /topmostRefAtTile/, 'begrenzt von dem, was schon steht');
+  assert.doesNotMatch(eimer, /state\.document\.frames\.push/,
+    'der Eimer schreibt nicht selbst in die Burg');
+});
+
+test('the fill tool needs an item like the other placement tools', () => {
+  const script = fs.readFileSync(path.join(root, 'src', 'js', 'castle-editor.js'), 'utf8');
+  assert.match(functionBody(script, 'isPlacementTool'), /tool === 'bucket'/);
+  const html = fs.readFileSync(path.join(root, 'src', 'index.html'), 'utf8');
+  assert.match(html, /data-tool="bucket"/, 'der Knopf steht in der Werkzeugleiste');
+  assert.match(html, /id="castleBrushMinus"/);
+  assert.match(html, /id="castleBrushPlus"/);
+  assert.match(script, /bucket: \['7', 'f'\]/, 'und hat ein Kuerzel wie die anderen');
+});

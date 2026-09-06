@@ -224,8 +224,61 @@
     };
   }
 
+  // Die Felder eines Pinsels. Groesse 1 ist ein Feld, 3 ein Quadrat von drei
+  // mal drei um die Mitte herum. Gerade Groessen legen die Mitte nach links
+  // unten - anders geht es nicht, ohne den Zeiger zwischen zwei Felder zu
+  // setzen. Was ueber den Kartenrand ragt, faellt weg.
+  function brushTiles(center, size, gridSize = 100) {
+    if (!center) return [];
+    const n = Math.max(1, Math.min(Math.round(size) || 1, gridSize));
+    const von = Math.floor((n - 1) / 2);
+    const out = [];
+    for (let dy = -von; dy < n - von; dy++) {
+      for (let dx = -von; dx < n - von; dx++) {
+        const x = center.x + dx, y = center.y + dy;
+        if (x < 0 || y < 0 || x >= gridSize || y >= gridSize) continue;
+        out.push({ x, y });
+      }
+    }
+    return out;
+  }
+
+  // Der zusammenhaengende freie Bereich um ein Feld herum - was der Farbeimer
+  // fuellt. Begrenzt wird er von allem, was `isBlocked` als besetzt meldet,
+  // und vom Kartenrand: wer am Rand steht, ist eingeschlossen wie vor einer
+  // Mauer. Vier Richtungen, nicht acht - sonst laeuft die Fuellung durch
+  // diagonale Luecken hindurch, die im Spiel keine sind.
+  //
+  // `limit` ist eine Notbremse, keine Regel: eine Karte hat 10000 Felder, und
+  // ein Fehlgriff auf freies Gelaende soll nicht die halbe Karte zubauen.
+  function floodTiles(start, isBlocked, gridSize = 100, limit = 4000) {
+    if (!start || isBlocked(start.x, start.y)) return [];
+    const gesehen = new Set([start.y * gridSize + start.x]);
+    const out = [];
+    const rand = [start];
+    while (rand.length) {
+      const feld = rand.pop();
+      out.push(feld);
+      if (out.length >= limit) break;
+      for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
+        const x = feld.x + dx, y = feld.y + dy;
+        if (x < 0 || y < 0 || x >= gridSize || y >= gridSize) continue;
+        const key = y * gridSize + x;
+        if (gesehen.has(key) || isBlocked(x, y)) continue;
+        gesehen.add(key);
+        rand.push({ x, y });
+      }
+    }
+    return out;
+  }
+
   return {
     KEEP_ITEM_TYPE,
+    // Die Kantenlaenge der Karte. Stand bisher als 100 in jeder
+    // Vorgabe; wer sie braucht, soll sie hier holen.
+    GRID_SIZE: 100,
+    brushTiles,
+    floodTiles,
     FORCED_STOCKPILE_ITEM_TYPE,
     footprintRectsAtXY,
     rectsIntersect,
