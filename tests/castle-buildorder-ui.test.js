@@ -444,3 +444,25 @@ test('locks survive saving, in a file next to the castle', () => {
   assert.match(anwenden, /else delete frame\.locked/,
     'eine Burg ohne Begleitdatei kommt ohne Sperren - nicht mit denen der vorigen');
 });
+
+test('the selection panel lists what is selected and can swap it', () => {
+  const script = fs.readFileSync(path.join(root, 'src', 'js', 'castle-editor.js'), 'utf8');
+  const nach = functionBody(script, 'selectionByType');
+  assert.match(nach, /Number\(refType\(ref\)\)/, 'gebuendelt nach Bauwerk');
+
+  const tausch = functionBody(script, 'replaceSelectedWith');
+  assert.match(tausch, /alt\[0\] !== neu\[0\] \|\| alt\[1\] !== neu\[1\]/,
+    'nur gleiche Groesse - sonst waere es ein Neubau mit anderem Platzbedarf');
+  assert.match(tausch, /!refIsLocked\(ref\)/, 'gesperrte bleiben, wie sie sind');
+  assert.match(tausch, /pushUndo\(\)/, 'ein Strg+Z holt alles zurueck');
+  assert.match(tausch, /sort\(\(a, b\) => b - a\)/,
+    'von hinten nach vorn, sonst verschieben sich die Nummern beim Teilen');
+  assert.match(tausch, /if \(!rest\.length\) \{ frame\.itemType = Number\(newType\); continue; \}/,
+    'ist der ganze Bauschritt gemeint, wird er umgestellt statt geteilt');
+  assert.match(tausch, /insertBuildFrames\(neueSchritte\)/,
+    'und ein teilweise gewaehlter Schritt wird geteilt');
+
+  const html = fs.readFileSync(path.join(root, 'src', 'index.html'), 'utf8');
+  assert.match(html, /id="castleSelectionList"/);
+  assert.match(html, /id="castleReplaceBtn"/);
+});

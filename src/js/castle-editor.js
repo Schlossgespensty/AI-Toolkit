@@ -36,6 +36,10 @@
 
   const els = {
     canvas: document.getElementById('castleCanvas'),
+    selectionPanel: document.getElementById('castleSelectionPanel'),
+    selectionList: document.getElementById('castleSelectionList'),
+    selectionCount: document.getElementById('castleSelectionCount'),
+    replaceBtn: document.getElementById('castleReplaceBtn'),
     brushMinus: document.getElementById('castleBrushMinus'),
     brushPlus: document.getElementById('castleBrushPlus'),
     brushSizeOut: document.getElementById('castleBrushSize'),
@@ -791,6 +795,120 @@
   // nicht - das Format kennt kein solches Feld.
   // Welche Bauschritte gesperrt sind, als Liste ihrer Nummern - so wandert
   // die Sperre in die Begleitdatei neben der Burg und von dort zurueck.
+  // Die Liste dessen, was gerade ausgewaehlt ist - nach Bauwerk gebuendelt.
+  // Ein Klick auf eine Zeile laesst nur dieses Bauwerk in der Auswahl; der
+  // Knopf darunter tauscht alles Ausgewaehlte gegen das Bauwerk aus, das in
+  // der Liste der Gegenstaende gewaehlt ist.
+  function selectionByType() {
+    const nach = new Map();
+    for (const ref of state.selected) {
+      if (!refExists(ref)) continue;
+      const type = Number(refType(ref));
+      if (!nach.has(type)) nach.set(type, []);
+      nach.get(type).push(ref);
+    }
+    return nach;
+  }
+
+  function renderSelectionList() {
+    if (!els.selectionPanel) return;
+    const nach = selectionByType();
+    els.selectionPanel.hidden = nach.size === 0;
+    els.selectionCount.textContent = state.selected.size ? state.selected.size + ' placement' + (state.selected.size === 1 ? '' : 's') : '';
+    els.selectionList.textContent = '';
+    const nurEiner = nach.size === 1;
+    for (const [type, refs] of Array.from(nach).sort((a, b) => b[1].length - a[1].length)) {
+      const zeile = document.createElement('button');
+      zeile.type = 'button';
+      zeile.className = 'selectionRow' + (nurEiner ? ' only' : '');
+      const name = document.createElement('span');
+      name.textContent = itemName(type);
+      name.title = itemName(type) + ' [' + type + ']';
+      const anzahl = document.createElement('span');
+      anzahl.className = 'count';
+      anzahl.textContent = String(refs.length);
+      zeile.append(name, anzahl);
+      zeile.addEventListener('click', () => {
+        state.selected = new Set(refs);
+        activateBuildStepForRefs(state.selected);
+        renderSelectionList();
+        renderBuildList();
+        scheduleDraw();
+        setStatus('Narrowed the selection to ' + refs.length + ' × ' + itemName(type));
+      });
+      els.selectionList.appendChild(zeile);
+    }
+    updateReplaceButton();
+  }
+
+  function updateReplaceButton() {
+    if (!els.replaceBtn) return;
+    const ziel = state.currentItemType;
+    const moeglich = state.selected.size > 0 && ziel != null;
+    els.replaceBtn.disabled = !moeglich;
+    els.replaceBtn.textContent = ziel == null
+      ? 'Choose an item below to replace with'
+      : 'Replace with ' + itemName(ziel);
+  }
+
+  // Ersetzen heisst: dieselben Felder, anderes Bauwerk. Nur Bauwerke gleicher
+  // Groesse - ein 1x1 gegen ein 7x7 zu tauschen waere kein Ersetzen, sondern
+  // ein Neubau mit anderem Platzbedarf, und der braucht die Pruefung, die das
+  // Setzen ohnehin hat.
+  //
+  // Ist von einem Bauschritt nur ein Teil ausgewaehlt, wird er geteilt: die
+  // ausgewaehlten Felder wandern in einen neuen Schritt mit dem neuen
+  // Bauwerk, der Rest bleibt unberuehrt stehen.
+  function replaceSelectedWith(newType) {
+    if (newType == null || !state.selected.size) return;
+    const refs = Array.from(state.selected).filter(ref => refExists(ref) && !refIsLocked(ref));
+    const gesperrt = state.selected.size - refs.length;
+    if (!refs.length) return setStatus('Locked - unlock the build step first.');
+
+    const neu = itemSize(Number(newType));
+    for (const ref of refs) {
+      const alt = itemSize(Number(refType(ref)));
+      if (alt[0] !== neu[0] || alt[1] !== neu[1]) {
+        return setStatus('Only items of the same size can be swapped - ' +
+                         itemName(Number(refType(ref))) + ' is ' + alt[0] + '×' + alt[1] +
+                         ', ' + itemName(Number(newType)) + ' is ' + neu[0] + '×' + neu[1] + '.');
+      }
+    }
+
+    pushUndo();
+    const proFrame = new Map();
+    const einheiten = [];
+    for (const ref of refs) {
+      const parsed = parseRef(ref);
+      if (parsed.kind === 'unit') { einheiten.push(parsed.mi); continue; }
+      if (!proFrame.has(parsed.fi)) proFrame.set(parsed.fi, new Set());
+      proFrame.get(parsed.fi).add(parsed.oi);
+    }
+    for (const mi of einheiten) state.document.miscItems[mi].itemType = Number(newType);
+
+    const neueSchritte = [];
+    // Von hinten nach vorn, damit die Nummern der noch offenen Schritte
+    // gueltig bleiben, waehrend vordere geteilt werden.
+    for (const fi of Array.from(proFrame.keys()).sort((a, b) => b - a)) {
+      const frame = frames()[fi];
+      if (!frame) continue;
+      const gewaehlt = proFrame.get(fi);
+      const alleFelder = frame.tilePositionOfsets || [];
+      const genommen = alleFelder.filter((_off, oi) => gewaehlt.has(oi));
+      const rest = alleFelder.filter((_off, oi) => !gewaehlt.has(oi));
+      if (!rest.length) { frame.itemType = Number(newType); continue; }
+      frame.tilePositionOfsets = rest;
+      neueSchritte.push({ itemType: Number(newType), tilePositionOfsets: genommen, shouldPause: false });
+    }
+    if (neueSchritte.length) insertBuildFrames(neueSchritte);
+
+    state.selected.clear();
+    renderSelectionList();
+    changed('Replaced ' + refs.length + ' placement' + (refs.length === 1 ? '' : 's') +
+            ' with ' + itemName(Number(newType)) +
+            (gesperrt ? ' (' + gesperrt + ' locked and left alone)' : ''));
+  }
+
   function lockedFrameIndexes() {
     const out = [];
     frames().forEach((frame, fi) => { if (frame && frame.locked) out.push(fi); });
@@ -1579,6 +1697,7 @@
   }
 
   function renderPalette() {
+    updateReplaceButton();
     const groups = getPaletteGroups();
     if (!groups.length) {
       els.palette.innerHTML = '<div class="paletteEmpty">No item categories configured.</div>';
@@ -1660,6 +1779,7 @@
   }
 
   function renderBuildList() {
+    renderSelectionList();
     updatePopulationPanel();
     els.buildList.innerHTML = '';
     const activeStep = Number.isInteger(state.insertionFrameIndex) && state.insertionFrameIndex >= 0 && state.insertionFrameIndex < frames().length
@@ -2815,6 +2935,7 @@
   els.shortcutDefaults.addEventListener('click', () => populateShortcutDialog(DEFAULT_TOOL_SHORTCUTS));
   els.shortcutCancel.addEventListener('click', () => els.shortcutDialog.close());
   els.shortcutForm.addEventListener('submit', saveShortcutDialog);
+  if (els.replaceBtn) els.replaceBtn.addEventListener('click', () => replaceSelectedWith(state.currentItemType));
   if (els.brushMinus) els.brushMinus.addEventListener('click', () => setBrushSize(state.brushSize - 1));
   if (els.brushPlus) els.brushPlus.addEventListener('click', () => setBrushSize(state.brushSize + 1));
   els.setSkin.addEventListener('click', setSkin);
