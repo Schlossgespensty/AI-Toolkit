@@ -451,8 +451,10 @@ test('the selection panel lists what is selected and can swap it', () => {
   assert.match(nach, /Number\(refType\(ref\)\)/, 'gebuendelt nach Bauwerk');
 
   const tausch = functionBody(script, 'replaceSelectedWith');
-  assert.match(tausch, /alt\[0\] !== neu\[0\] \|\| alt\[1\] !== neu\[1\]/,
-    'nur gleiche Groesse - sonst waere es ein Neubau mit anderem Platzbedarf');
+  assert.match(tausch, /validatePlacement\(Number\(newType\), refOffset\(ref\)/,
+    'geprueft wird mit derselben Pruefung wie beim Setzen');
+  assert.match(tausch, /ignoreRefs: zuErsetzen/,
+    'und was ersetzt wird, zaehlt dabei als frei - es verschwindet ja');
   assert.match(tausch, /!refIsLocked\(ref\)/, 'gesperrte bleiben, wie sie sind');
   assert.match(tausch, /pushUndo\(\)/, 'ein Strg+Z holt alles zurueck');
   assert.match(tausch, /sort\(\(a, b\) => b - a\)/,
@@ -465,4 +467,16 @@ test('the selection panel lists what is selected and can swap it', () => {
   const html = fs.readFileSync(path.join(root, 'src', 'index.html'), 'utf8');
   assert.match(html, /id="castleSelectionList"/);
   assert.match(html, /id="castleReplaceBtn"/);
+});
+
+
+test('choosing an item keeps the selection, so it can be replaced', () => {
+  const script = fs.readFileSync(path.join(root, 'src', 'js', 'castle-editor.js'), 'utf8');
+  const waehlen = functionBody(script, 'selectItem');
+  // Der Fehler: selectItem warf die Auswahl weg. Wer etwas auswaehlte und
+  // dann den Ersatz aus der Liste holte, stand ohne Auswahl da - der Knopf
+  // war grau, waehrend daneben noch dreissig Mauern aufgezaehlt waren.
+  assert.doesNotMatch(waehlen, /state\.selected\.clear\(\)/);
+  assert.match(waehlen, /renderBuildList\(\)/,
+    'und die Liste daneben wird neu gezeichnet, statt alt stehen zu bleiben');
 });

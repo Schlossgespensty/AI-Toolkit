@@ -865,13 +865,17 @@
     const gesperrt = state.selected.size - refs.length;
     if (!refs.length) return setStatus('Locked - unlock the build step first.');
 
-    const neu = itemSize(Number(newType));
+    // Ein groesseres Bauwerk darf an die Stelle eines kleineren - wenn der
+    // Platz reicht. Geprueft wird mit derselben Pruefung wie beim Setzen, und
+    // die zu ersetzenden Felder zaehlen dabei als frei: sie verschwinden ja.
+    const zuErsetzen = new Set(refs);
     for (const ref of refs) {
-      const alt = itemSize(Number(refType(ref)));
-      if (alt[0] !== neu[0] || alt[1] !== neu[1]) {
-        return setStatus('Only items of the same size can be swapped - ' +
-                         itemName(Number(refType(ref))) + ' is ' + alt[0] + '×' + alt[1] +
-                         ', ' + itemName(Number(newType)) + ' is ' + neu[0] + '×' + neu[1] + '.');
+      const pruefung = validatePlacement(Number(newType), refOffset(ref), {
+        ignoreRefs: zuErsetzen,
+        checkMax: false
+      });
+      if (!pruefung.ok) {
+        return setStatus('No room for ' + itemName(Number(newType)) + ' there: ' + pruefung.reason);
       }
     }
 
@@ -1652,11 +1656,17 @@
 
   function selectItem(type) {
     state.currentItemType = Number(type);
-    state.selected.clear();
+    // Die Auswahl bleibt stehen. Sie wegzuwerfen hiess: wer etwas auswaehlt
+    // und dann den Ersatz aus der Liste holt, steht ohne Auswahl da - und der
+    // Ersetzen-Knopf war grau, waehrend daneben noch dreissig Mauern
+    // aufgezaehlt waren.
     setTool(state.lastPlacementTool);
     renderPalette();
+    renderBuildList();
     updateSelectedItemInfo();
-    setStatus(`Selected ${itemName(type)} — click the map to place`);
+    setStatus(state.selected.size
+      ? `Selected ${itemName(type)} — click the map to place, or replace the ${state.selected.size} selected`
+      : `Selected ${itemName(type)} — click the map to place`);
   }
 
   function updateSelectedItemInfo() {
