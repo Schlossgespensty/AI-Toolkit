@@ -802,13 +802,25 @@
     return n;
   }
 
+  // Ein Klick aufs Schloss schaltet den angeklickten Schritt - und, wenn er
+  // Teil einer groesseren Auswahl ist, gleich die ganze Auswahl mit. Alle
+  // bekommen denselben Zustand wie der angeklickte, damit ein zweiter Klick
+  // sie wieder gemeinsam oeffnet.
   function toggleFrameLock(fi) {
     const frame = frames()[fi];
     if (!frame) return;
-    frame.locked = !frame.locked;
+    const wert = !frame.locked;
+    const ausgewaehlt = selectedBuildFrameIndexes();
+    const betroffen = ausgewaehlt.includes(fi) && ausgewaehlt.length > 1 ? ausgewaehlt : [fi];
+    for (const index of betroffen) {
+      const f = frames()[index];
+      if (f) f.locked = wert;
+    }
     renderBuildList();
     scheduleDraw();
-    setStatus('Build step ' + (fi + 1) + (frame.locked ? ' is locked' : ' is open again'));
+    setStatus(betroffen.length === 1
+      ? 'Build step ' + (fi + 1) + (wert ? ' is locked' : ' is open again')
+      : betroffen.length + ' build steps ' + (wert ? 'locked' : 'open again'));
   }
 
   function deleteRefs(refs) {
@@ -2510,16 +2522,23 @@
       activateBuildStepForRefs(state.selected);
       state.currentItemType = null;
       updateToolAvailability();
-      if (lockedAmong(state.selected) === state.selected.size) {
+      // Gesperrte Bauwerke bleiben liegen, auch wenn sie mit ausgewaehlt
+      // sind: bewegt wird nur, was offen ist. Vorher hing die Pruefung an
+      // "sind ALLE gesperrt" - bei gemischter Auswahl wanderte damit auch
+      // das Gesperrte mit.
+      const beweglich = Array.from(state.selected).filter(ref => refExists(ref) && !refIsLocked(ref));
+      const festgehalten = state.selected.size - beweglich.length;
+      if (!beweglich.length) {
         setStatus('Locked - unlock the build step first.');
         state.gesture = null;
         renderBuildList();
         scheduleDraw();
         return;
       }
+      if (festgehalten) setStatus(festgehalten + ' locked placement' + (festgehalten === 1 ? '' : 's') + ' stay where they are');
       state.gesture = 'move';
       state.moveStartOffsets = new Map();
-      for (const ref of state.selected) if (refExists(ref)) state.moveStartOffsets.set(ref, refOffset(ref));
+      for (const ref of beweglich) state.moveStartOffsets.set(ref, refOffset(ref));
       state.moveDelta = { x: 0, y: 0 };
       renderPalette();
       updateSelectedItemInfo();

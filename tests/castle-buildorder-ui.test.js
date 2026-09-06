@@ -360,8 +360,8 @@ test('a locked build step cannot be deleted, moved, reordered or built over', ()
     'und sagt, wenn alles gesperrt war');
   assert.match(functionBody(script, 'moveBuildSelection'), /selectedFrames\.some\(frameIsLocked\)/,
     'umsortieren geht nicht');
-  assert.match(functionBody(script, 'beginSelectGesture'), /lockedAmong\(state\.selected\)/,
-    'verschieben auch nicht');
+  assert.match(functionBody(script, 'beginSelectGesture'), /!refIsLocked\(ref\)/,
+    'verschieben auch nicht - gesperrte bleiben liegen, siehe den Test zur gemischten Auswahl');
   // Steht in der Pruefung, die eine Ersetzung vorschlaegt - dort, wo
   // 'replace' entschieden wird.
   // An allen drei Stellen, an denen eine Ersetzung entsteht: beim Setzen,
@@ -376,7 +376,8 @@ test('a locked build step cannot be deleted, moved, reordered or built over', ()
 test('the lock can be opened again, and the row shows which it is', () => {
   const script = fs.readFileSync(path.join(root, 'src', 'js', 'castle-editor.js'), 'utf8');
   const um = functionBody(script, 'toggleFrameLock');
-  assert.match(um, /frame\.locked = !frame\.locked/, 'derselbe Knopf sperrt und oeffnet');
+  assert.match(um, /const wert = !frame\.locked/, 'derselbe Knopf sperrt und oeffnet');
+  assert.match(um, /if \(f\) f\.locked = wert/, 'und schreibt den Zustand an den Bauschritt');
   const liste = functionBody(script, 'renderBuildList');
   assert.match(liste, /row\.draggable = !frame\.locked/, 'gesperrt heisst auch: nicht ziehbar');
   assert.match(liste, /classList\.add\('locked'\)/);
@@ -399,4 +400,27 @@ test('the slanted view previews what a click would place, at half opacity', () =
   assert.match(malen, /ctx\.globalAlpha = 0\.5/, 'halb durchsichtig, wie gewuenscht');
   assert.match(malen, /drawSprite\(ctx, eintrag/, 'mit dem echten Bild, nicht nur einer Raute');
   assert.match(malen, /geo\.GRID - 1 - feld\.y/, 'y zaehlt im Editor nach oben, hier nach unten');
+});
+
+
+test('a mixed selection moves only what is open', () => {
+  const script = fs.readFileSync(path.join(root, 'src', 'js', 'castle-editor.js'), 'utf8');
+  const geste = functionBody(script, 'beginSelectGesture');
+  // Der Fehler war, an "sind ALLE gesperrt" zu haengen: bei gemischter
+  // Auswahl wanderte das Gesperrte mit.
+  assert.doesNotMatch(geste, /lockedAmong\(state\.selected\) === state\.selected\.size/);
+  assert.match(geste, /filter\(ref => refExists\(ref\) && !refIsLocked\(ref\)\)/,
+    'bewegt wird nur, was offen ist');
+  assert.match(geste, /for \(const ref of beweglich\) state\.moveStartOffsets\.set/,
+    'und nur davon wird die Ausgangslage gemerkt');
+  assert.match(geste, /if \(!beweglich\.length\)/, 'ist gar nichts offen, passiert nichts');
+});
+
+test('the lock button takes the whole selection along', () => {
+  const script = fs.readFileSync(path.join(root, 'src', 'js', 'castle-editor.js'), 'utf8');
+  const um = functionBody(script, 'toggleFrameLock');
+  assert.match(um, /ausgewaehlt\.includes\(fi\) && ausgewaehlt\.length > 1 \? ausgewaehlt : \[fi\]/,
+    'mehrere ausgewaehlt: alle; sonst nur der angeklickte');
+  assert.match(um, /const wert = !frame\.locked/,
+    'alle bekommen denselben Zustand, sonst oeffnet der zweite Klick nur die Haelfte');
 });
