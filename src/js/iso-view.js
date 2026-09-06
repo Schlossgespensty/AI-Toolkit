@@ -77,10 +77,41 @@
     return (editor && editor.hasDocument && editor.hasDocument()) ? editor.getDocument() : null;
   }
 
+  // The ground under the castle: a terrain picture from the game, repeated
+  // rather than stretched and scaled with the zoom, so that one tile in the
+  // picture is one tile in the editor. The game's tile is 30 points wide and
+  // ours is HALF_W*2 = 32, hence the factor. Asked for by Monsterfish; Daniel
+  // added the condition that the scale has to match.
+  //
+  // The path handed in is the map diamond, so the ground stops at the map edge
+  // and everything outside stays dark. If the picture is not there or the
+  // browser will not make a pattern from it, the old flat colour is used - the
+  // view must never depend on a decoration.
+  const GAME_TILE_WIDTH = 30;
+
+  function paintGround(ctx, width, height) {
+    const img = image('grund.png');
+    let pattern = null;
+    if (img && img.complete && img.naturalWidth) {
+      try { pattern = ctx.createPattern(img, 'repeat'); } catch { pattern = null; }
+    }
+    if (!pattern) { ctx.fillStyle = '#232a1c'; ctx.fill(); return; }
+    const scale = ((geo.HALF_W * 2) / GAME_TILE_WIDTH) * state.view.zoom;
+    ctx.save();
+    ctx.clip();
+    ctx.translate(state.view.panX, state.view.panY);
+    ctx.scale(scale, scale);
+    ctx.fillStyle = pattern;
+    ctx.fillRect(-state.view.panX / scale, -state.view.panY / scale,
+                 width / scale, height / scale);
+    ctx.restore();
+  }
+
   function drawSprite(ctx, sprite, gx, gy, tiles) {
-    const img = image(sprite.bild);
+    const variant = geo.variantFor(sprite, gx, gy);
+    const img = image(variant.bild);
     if (!img || !img.complete || !img.naturalWidth) return false;
-    const rect = geo.spriteRect(sprite, gx, gy, tiles, state.view);
+    const rect = geo.spriteRect(variant, gx, gy, tiles, state.view);
     ctx.drawImage(img, rect.x, rect.y, rect.w, rect.h);
     return true;
   }
@@ -141,14 +172,13 @@
     ctx.clearRect(0, 0, width, height);
     ctx.imageSmoothingEnabled = state.view.zoom < 1;
 
-    ctx.fillStyle = '#232a1c';
     ctx.beginPath();
     [[0, 0], [geo.GRID, 0], [geo.GRID, geo.GRID], [0, geo.GRID]].forEach(([cx, cy], index) => {
       const [px, py] = geo.isoPoint(cx, cy, state.view);
       if (index === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
     });
     ctx.closePath();
-    ctx.fill();
+    paintGround(ctx, width, height);
 
     const items = geo.collectItems(currentDocument(), state.catalogue);
     for (const plate of geo.collectPlates(items).sort(geo.byDepth))
@@ -182,12 +212,16 @@
     if (!editor || !editor.getPlacementPreview) return;
     const vorschau = editor.getPlacementPreview();
     if (!vorschau || !vorschau.tiles.length) return;
-    const eintrag = state.catalogue && state.catalogue.gegenstaende
-      ? state.catalogue.gegenstaende[String(vorschau.itemType)] : null;
+    const katalog = state.catalogue && state.catalogue.gegenstaende;
+    const nachschlagen = type => (katalog ? katalog[String(type)] : null) || null;
+    // A dragged line can lay down several different items - a stair does. Each
+    // tile therefore names its own, and only falls back to the one for the
+    // whole preview.
     ctx.save();
     ctx.globalAlpha = 0.5;
     for (const feld of vorschau.tiles) {
       const gx = feld.x, gy = geo.GRID - 1 - feld.y;
+      const eintrag = nachschlagen(feld.itemType != null ? feld.itemType : vorschau.itemType);
       const kacheln = eintrag ? eintrag.kacheln : 1;
       if (!eintrag || !drawSprite(ctx, eintrag, gx, gy, kacheln))
         drawDiamond(ctx, gx, gy, kacheln, 'rgba(120,220,140,.45)', 'rgba(150,240,170,.9)');

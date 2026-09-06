@@ -236,3 +236,83 @@ test('every drawn item carries the key the editor uses for its selection', () =>
   assert.deepEqual(items.map(i => i.ref), ['f:0:0', 'f:0:1', 'f:1:0'],
     'derselbe Aufbau wie frameRefKey in castle-editor.js: f:<Bauschritt>:<Feld>');
 });
+
+test('a crenellated wall alternates merlon and embrasure, tile by tile', () => {
+  const zinne = { bild: 'klotz.png', breite: 30, hoehe: 118, kacheln: 1,
+                  wechselBild: 'scharte.png', wechselBreite: 30, wechselHoehe: 103 };
+  // gy zaehlt den Bildschirm hinunter: Editor-y = 99 - gy. Die Zinne steht,
+  // wo x + y ungerade ist - dieselbe Regel wie im Spiel.
+  const feld = (gx, gy) => geometry.variantFor(zinne, gx, gy).bild;
+  assert.equal(feld(0, 98), 'klotz.png', 'x 0, y 1 -> ungerade -> Zinne');
+  assert.equal(feld(1, 98), 'scharte.png', 'x 1, y 1 -> gerade -> Scharte');
+  assert.equal(feld(1, 99), 'klotz.png', 'x 1, y 0 -> ungerade -> Zinne');
+  assert.equal(feld(0, 99), 'scharte.png', 'x 0, y 0 -> gerade -> Scharte');
+
+  // Nebeneinander wechselt es Feld fuer Feld, und eine Zeile weiter versetzt.
+  const zeile = gy => [0,1,2,3,4,5].map(gx => feld(gx, gy) === 'klotz.png' ? 'Z' : '.').join('');
+  assert.equal(zeile(99), '.Z.Z.Z');
+  assert.equal(zeile(98), 'Z.Z.Z.', 'die naechste Reihe ist versetzt - ein Schachbrett');
+
+  // Jeder andere Bau bleibt unberuehrt.
+  const haus = { bild: 'haus.png', breite: 126, hoehe: 138, kacheln: 4 };
+  assert.equal(geometry.variantFor(haus, 3, 7), haus, 'ohne zweite Fassung derselbe Eintrag');
+  assert.equal(geometry.variantFor(null, 0, 0), null);
+
+  // Und das Zeichnen benutzt die gewaehlte Fassung, nicht mehr den Eintrag.
+  const script = fs.readFileSync(path.join(root, 'src', 'js', 'iso-view.js'), 'utf8');
+  const malen = script.slice(script.indexOf('function drawSprite'), script.indexOf('function drawDiamond'));
+  assert.match(malen, /const variant = geo\.variantFor\(sprite, gx, gy\)/);
+  assert.match(malen, /image\(variant\.bild\)/);
+  assert.match(malen, /geo\.spriteRect\(variant, gx, gy/);
+});
+
+test('dragging a wall shows the whole run at half opacity, not just one tile', () => {
+  const editor = fs.readFileSync(path.join(root, 'src', 'js', 'castle-editor.js'), 'utf8');
+  const vorschau = editor.slice(editor.indexOf('getPlacementPreview()'),
+                                editor.indexOf('getContent: outputContent'));
+  // Laeuft ein Zug, ist er selbst die Vorschau - nicht das Feld unter dem Zeiger.
+  assert.match(vorschau, /if \(state\.brushOffsets && state\.brushOffsets\.length\)/);
+  assert.match(vorschau, /itemType: state\.brushTypes\[i\] \?\? erster/,
+    'jedes Feld nennt sein eigenes Bauwerk - eine Treppe legt mehrere');
+
+  const iso = fs.readFileSync(path.join(root, 'src', 'js', 'iso-view.js'), 'utf8');
+  const malen = iso.slice(iso.indexOf('function drawPreview'), iso.indexOf('function drawSelection'));
+  assert.match(malen, /ctx\.globalAlpha = 0\.5/, 'halbdurchsichtig wie bei den Gebaeuden');
+  assert.match(malen, /feld\.itemType != null \? feld\.itemType : vorschau\.itemType/,
+    'und die Ansicht schlaegt je Feld nach');
+});
+
+test('picking a wall opens the line tool, without overwriting the remembered one', () => {
+  const script = fs.readFileSync(path.join(root, 'src', 'js', 'castle-editor.js'), 'utf8');
+  const waehlen = script.slice(script.indexOf('function selectItem('), script.indexOf('function updateSelectedItemInfo'));
+  assert.match(waehlen, /if \(isWallType\(type\)\) setTool\('line', false\)/,
+    'Mauern werden gezogen, nicht getupft');
+  assert.match(waehlen, /else setTool\(state\.lastPlacementTool\)/,
+    'alles andere kommt zurueck zu dem, was der Nutzer gewaehlt hatte');
+  // Welche Bauten Mauern sind, steht in der Konfiguration - nicht hier.
+  const wall = script.slice(script.indexOf('function isWallType('), script.indexOf("function setTool(tool"));
+  assert.match(wall, /state\.categories && state\.categories\.Walls/);
+  const kategorien = JSON.parse(fs.readFileSync(path.join(root, 'config', 'aiv_categories.json'), 'utf8'));
+  assert.deepEqual(kategorien.categories.Walls.sort(), ['25', '26', '35', '46'],
+    'die vier Mauern - aendert sich das, aendert sich das Verhalten mit');
+  // Das Merken haengt am Schalter, nicht am Zufall.
+  const setzen = script.slice(script.indexOf('function setTool(tool'), script.indexOf('function selectItem('));
+  assert.match(setzen, /function setTool\(tool, remember = true\)/);
+  assert.match(setzen, /if \(remember && isPlacementTool\(tool\) && !lineOnly\)/);
+});
+
+test('the ground is tiled at the same scale as the map, not stretched', () => {
+  const iso = fs.readFileSync(path.join(root, 'src', 'js', 'iso-view.js'), 'utf8');
+  const grund = iso.slice(iso.indexOf('function paintGround'), iso.indexOf('function drawSprite'));
+  assert.match(grund, /createPattern\(img, 'repeat'\)/, 'wiederholt, nicht gestreckt');
+  // Ein Feld im Bild muss ein Feld im Editor sein: Spielkachel 30, unsere 32.
+  assert.match(grund, /\(\(geo\.HALF_W \* 2\) \/ GAME_TILE_WIDTH\) \* state\.view\.zoom/);
+  assert.equal(geometry.HALF_W * 2, 32, 'unsere Kachel ist 32 Punkte breit');
+  assert.match(iso, /const GAME_TILE_WIDTH = 30/, 'die des Spiels 30');
+  // Mitwandern beim Schieben, und am Kartenrand ist Schluss.
+  assert.match(grund, /ctx\.translate\(state\.view\.panX, state\.view\.panY\)/);
+  assert.match(grund, /ctx\.clip\(\)/, 'die Karten-Raute schneidet den Grund ab');
+  // Faellt das Bild aus, bleibt die Ansicht heil.
+  assert.match(grund, /if \(!pattern\) \{ ctx\.fillStyle = '#232a1c'; ctx\.fill\(\); return; \}/);
+  assert.ok(fs.existsSync(path.join(root, 'assets', 'aiv', 'iso', 'grund.png')));
+});
