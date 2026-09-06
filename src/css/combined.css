@@ -1139,6 +1139,10 @@ button:disabled { cursor: default; }
 .buildStep.future:hover { color: #777e88; background: #1b1e23; }
 .buildStep.future.selected { color: #81786c; background: #24211e; }
 .buildStep.dragging { opacity: .45; }
+/* Ein gesperrter Bauschritt: sichtbar, aber nicht anzufassen. */
+.buildStep.locked { cursor: default; box-shadow: inset 3px 0 0 var(--text-muted); }
+.buildLock { padding: 1px 4px; filter: grayscale(1) opacity(.55); }
+.buildLock.on { filter: none; }
 .buildIndex { color: var(--text-muted); text-align: right; font-size: 11px; }
 .buildName { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .buildMeta { color: var(--text-muted); font-size: 11px; }

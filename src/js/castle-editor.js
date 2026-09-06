@@ -501,6 +501,8 @@
       const existingMode = overlapMode(p.type);
       if (existingMode === 'allow') continue;
       if (existingMode === 'replace') {
+        // Ein gesperrter Bauschritt wird auch nicht ueberbaut.
+        if (refIsLocked(p.ref)) return { ok: false, reason: 'That build step is locked.', replacements: new Set() };
         replacements.add(p.ref);
         continue;
       }
@@ -775,11 +777,46 @@
     }
   }
 
+  // Ein gesperrter Bauschritt laesst sich nicht mehr anfassen: nicht loeschen,
+  // nicht verschieben, nicht umsortieren und nicht ueberbauen. Angesehen und
+  // ausgewaehlt werden darf er - gesperrt heisst unveraenderlich, nicht
+  // unsichtbar.
+  //
+  // Die Sperre haengt am Bauschritt selbst, nicht an seiner Nummer: beim
+  // Umsortieren wandert sie mit, und eine Nummer, die auf den falschen
+  // Schritt zeigt, kann es gar nicht geben. In die AIV-Datei wandert sie
+  // nicht - das Format kennt kein solches Feld.
+  function frameIsLocked(fi) {
+    const frame = frames()[fi];
+    return Boolean(frame && frame.locked);
+  }
+
+  function refIsLocked(ref) {
+    const parsed = parseRef(ref);
+    return parsed.kind === 'frame' && frameIsLocked(parsed.fi);
+  }
+
+  function lockedAmong(refs) {
+    let n = 0;
+    for (const ref of refs) if (refIsLocked(ref)) n++;
+    return n;
+  }
+
+  function toggleFrameLock(fi) {
+    const frame = frames()[fi];
+    if (!frame) return;
+    frame.locked = !frame.locked;
+    renderBuildList();
+    scheduleDraw();
+    setStatus('Build step ' + (fi + 1) + (frame.locked ? ' is locked' : ' is open again'));
+  }
+
   function deleteRefs(refs) {
     const groupedFrames = new Map();
     const unitIndexes = [];
     for (const ref of refs) {
       if (!refExists(ref)) continue;
+      if (refIsLocked(ref)) continue;          // gesperrt: bleibt stehen
       const parsed = parseRef(ref);
       if (parsed.kind === 'unit') {
         unitIndexes.push(parsed.mi);
@@ -809,10 +846,14 @@
   function deleteSelected() {
     const refs = new Set(Array.from(state.selected).filter(refExists));
     if (!refs.size) return;
+    const gesperrt = lockedAmong(refs);
+    if (gesperrt === refs.size) return setStatus('Locked - unlock the build step first.');
     pushUndo();
     deleteRefs(refs);
     state.selected.clear();
-    changed(`Deleted ${refs.size} placement${refs.size === 1 ? '' : 's'}`);
+    const geloescht = refs.size - gesperrt;
+    changed(`Deleted ${geloescht} placement${geloescht === 1 ? '' : 's'}` +
+            (gesperrt ? ` (${gesperrt} locked and left alone)` : ''));
   }
 
   function placeSingle(tile) {
@@ -1105,6 +1146,7 @@
         const mode = overlapMode(other.type);
         if (mode === 'allow') continue;
         if (mode === 'replace') {
+          if (refIsLocked(other.ref)) return { ok: false, reason: 'That build step is locked.', replacements: new Set(), proposal: null };
           replacements.add(other.ref);
           continue;
         }
@@ -1237,7 +1279,12 @@
         if (!geometry.footprintsIntersect(movedFootprint, footprintRects(other.type, other.off))) continue;
         const mode = overlapMode(other.type);
         if (mode === 'allow') continue;
-        if (mode === 'replace') { replacements.add(other.ref); continue; }
+        if (mode === 'replace') {
+          // Ueber einen gesperrten Bauschritt wird nicht gebaut.
+          if (refIsLocked(other.ref)) return { ok: false, reason: 'That build step is locked.', replacements: new Set() };
+          replacements.add(other.ref);
+          continue;
+        }
         return { ok: false, reason: `Move blocked by ${itemName(other.type)}.`, replacements: new Set() };
       }
     }
@@ -1626,7 +1673,15 @@
       down.type = 'button'; down.textContent = '↓'; down.title = 'Move selected step(s) down';
       up.addEventListener('click', e => { e.stopPropagation(); moveBuildSelection(fi, -1); });
       down.addEventListener('click', e => { e.stopPropagation(); moveBuildSelection(fi, 1); });
-      right.append(meta, up, down);
+      const lock = document.createElement('button');
+      lock.type = 'button';
+      lock.className = 'buildLock' + (frame.locked ? ' on' : '');
+      lock.textContent = frame.locked ? '🔒' : '🔓';
+      lock.title = frame.locked ? 'Locked - click to open' : 'Lock this step against changes';
+      lock.addEventListener('click', e => { e.stopPropagation(); toggleFrameLock(fi); });
+      if (frame.locked) row.classList.add('locked');
+      row.draggable = !frame.locked;
+      right.append(meta, lock, up, down);
       row.append(index, name, right);
 
       row.addEventListener('click', event => {
@@ -1699,6 +1754,10 @@
     if (!selectedFrames.includes(clickedIndex)) {
       selectBuildFrame(clickedIndex);
       selectedFrames = [clickedIndex];
+    }
+    if (selectedFrames.some(frameIsLocked)) {
+      setStatus('Locked - unlock the build step first.');
+      return false;
     }
     const selected = new Set(selectedFrames);
     let target = direction < 0 ? Math.min(...selectedFrames) - 1 : Math.max(...selectedFrames) + 1;
@@ -2451,6 +2510,13 @@
       activateBuildStepForRefs(state.selected);
       state.currentItemType = null;
       updateToolAvailability();
+      if (lockedAmong(state.selected) === state.selected.size) {
+        setStatus('Locked - unlock the build step first.');
+        state.gesture = null;
+        renderBuildList();
+        scheduleDraw();
+        return;
+      }
       state.gesture = 'move';
       state.moveStartOffsets = new Map();
       for (const ref of state.selected) if (refExists(ref)) state.moveStartOffsets.set(ref, refOffset(ref));
@@ -2833,6 +2899,18 @@
     // ihrem eigenen Bildschirmsystem und darf mit den Bildschirmpunkten der
     // Karte nichts zu tun haben.
     getSelection: () => new Set(state.selected),
+    // Was ein Klick jetzt setzen wuerde: die Felder des Pinsels und der Typ.
+    // Die 2.5D-Ansicht malt daraus ihre eigene Vorschau - sie hat keinen
+    // Zeiger auf der Karte und koennte sie sonst nicht zeigen.
+    getPlacementPreview() {
+      if (state.currentItemType == null || !isPlacementTool(state.tool)) return null;
+      if (!state.hoverTile) return null;
+      const type = lineSequence(state.currentItemType)[0] ?? state.currentItemType;
+      const felder = state.tool === 'brush' && state.brushSize > 1
+        ? geometry.brushTiles(state.hoverTile, state.brushSize)
+        : [state.hoverTile];
+      return { itemType: type, tiles: felder };
+    },
     getMarquee() {
       const zieht = state.gesture === 'select-marquee' || state.gesture === 'copy-marquee'
                  || state.gesture === 'delete-marquee';

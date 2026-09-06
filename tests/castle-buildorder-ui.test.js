@@ -343,3 +343,60 @@ test('the fill tool needs an item like the other placement tools', () => {
   assert.match(html, /id="castleBrushPlus"/);
   assert.match(script, /bucket: \['7', 'f'\]/, 'und hat ein Kuerzel wie die anderen');
 });
+
+// -------------------------------------------- gesperrte Bauschritte
+
+test('a locked build step cannot be deleted, moved, reordered or built over', () => {
+  const script = fs.readFileSync(path.join(root, 'src', 'js', 'castle-editor.js'), 'utf8');
+
+  // Die Sperre haengt am Bauschritt, nicht an seiner Nummer.
+  assert.match(functionBody(script, 'frameIsLocked'), /frames\(\)\[fi\]/);
+  assert.match(functionBody(script, 'frameIsLocked'), /Boolean\(frame && frame\.locked\)/);
+
+  // Alle vier Tore.
+  assert.match(functionBody(script, 'deleteRefs'), /if \(refIsLocked\(ref\)\) continue;/,
+    'loeschen laesst gesperrte Felder stehen');
+  assert.match(functionBody(script, 'deleteSelected'), /lockedAmong\(refs\)/,
+    'und sagt, wenn alles gesperrt war');
+  assert.match(functionBody(script, 'moveBuildSelection'), /selectedFrames\.some\(frameIsLocked\)/,
+    'umsortieren geht nicht');
+  assert.match(functionBody(script, 'beginSelectGesture'), /lockedAmong\(state\.selected\)/,
+    'verschieben auch nicht');
+  // Steht in der Pruefung, die eine Ersetzung vorschlaegt - dort, wo
+  // 'replace' entschieden wird.
+  // An allen drei Stellen, an denen eine Ersetzung entsteht: beim Setzen,
+  // beim Einfuegen einer Kopie und beim Verschieben.
+  const ersetzungen = script.split('replacements.add(').length - 1;
+  const geschuetzt = script.split('refIsLocked(').length - 1;
+  assert.ok(ersetzungen >= 3, 'drei Stellen legen Ersetzungen an: ' + ersetzungen);
+  assert.ok(geschuetzt >= ersetzungen,
+    'jede davon fragt vorher nach der Sperre (' + geschuetzt + ' Abfragen fuer ' + ersetzungen + ' Stellen)');
+});
+
+test('the lock can be opened again, and the row shows which it is', () => {
+  const script = fs.readFileSync(path.join(root, 'src', 'js', 'castle-editor.js'), 'utf8');
+  const um = functionBody(script, 'toggleFrameLock');
+  assert.match(um, /frame\.locked = !frame\.locked/, 'derselbe Knopf sperrt und oeffnet');
+  const liste = functionBody(script, 'renderBuildList');
+  assert.match(liste, /row\.draggable = !frame\.locked/, 'gesperrt heisst auch: nicht ziehbar');
+  assert.match(liste, /classList\.add\('locked'\)/);
+  const css = fs.readFileSync(path.join(root, 'src', 'css', 'combined.css'), 'utf8');
+  assert.match(css, /\.buildStep\.locked/);
+  assert.match(css, /\.buildLock/);
+});
+
+test('the slanted view previews what a click would place, at half opacity', () => {
+  const editor = fs.readFileSync(path.join(root, 'src', 'js', 'castle-editor.js'), 'utf8');
+  // Kurzschreibweise im Rueckgabeobjekt, also direkt im Quelltext gesucht.
+  const vorschau = editor.slice(editor.indexOf('getPlacementPreview()'),
+                               editor.indexOf('getContent: outputContent'));
+  assert.match(vorschau, /geometry\.brushTiles\(state\.hoverTile, state\.brushSize\)/,
+    'ein breiter Pinsel zeigt alle seine Felder, nicht nur eines');
+  assert.match(vorschau, /isPlacementTool\(state\.tool\)/);
+
+  const iso = fs.readFileSync(path.join(root, 'src', 'js', 'iso-view.js'), 'utf8');
+  const malen = iso.slice(iso.indexOf('function drawPreview'), iso.indexOf('function drawSelection'));
+  assert.match(malen, /ctx\.globalAlpha = 0\.5/, 'halb durchsichtig, wie gewuenscht');
+  assert.match(malen, /drawSprite\(ctx, eintrag/, 'mit dem echten Bild, nicht nur einer Raute');
+  assert.match(malen, /geo\.GRID - 1 - feld\.y/, 'y zaehlt im Editor nach oben, hier nach unten');
+});

@@ -165,12 +165,34 @@
     if (state.hover) drawDiamond(ctx, state.hover.gx, state.hover.gy, 1, null, 'rgba(255,255,255,.5)');
 
     drawSelection(ctx, items);
+    drawPreview(ctx);
     drawMarquee(ctx);
 
     const editor = window.castleEditor;
     const tool = editor && editor.getTool ? editor.getTool() : '—';
     setStatus(items.length + ' items' + (missing ? ', ' + missing + ' without a sprite' : '') +
               ' · tool: ' + tool + ' · middle mouse pans, wheel zooms');
+  }
+
+  // Was ein Klick setzen wuerde - mit dem richtigen Bild, halb durchsichtig.
+  // Vorher stand hier nur eine leere Raute, und die zeigte weder, WIE das
+  // Gebaeude aussieht, noch WIE VIELE Felder ein breiter Pinsel deckt.
+  function drawPreview(ctx) {
+    const editor = window.castleEditor;
+    if (!editor || !editor.getPlacementPreview) return;
+    const vorschau = editor.getPlacementPreview();
+    if (!vorschau || !vorschau.tiles.length) return;
+    const eintrag = state.catalogue && state.catalogue.gegenstaende
+      ? state.catalogue.gegenstaende[String(vorschau.itemType)] : null;
+    ctx.save();
+    ctx.globalAlpha = 0.5;
+    for (const feld of vorschau.tiles) {
+      const gx = feld.x, gy = geo.GRID - 1 - feld.y;
+      const kacheln = eintrag ? eintrag.kacheln : 1;
+      if (!eintrag || !drawSprite(ctx, eintrag, gx, gy, kacheln))
+        drawDiamond(ctx, gx, gy, kacheln, 'rgba(120,220,140,.45)', 'rgba(150,240,170,.9)');
+    }
+    ctx.restore();
   }
 
   // Was ausgewaehlt ist, bekommt einen Rahmen. Der Editor fuehrt die Auswahl,
