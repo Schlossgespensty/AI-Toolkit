@@ -880,6 +880,10 @@
     }
 
     pushUndo();
+    // Die Felder merken, nicht die Nummern: beim Teilen verschieben sich die
+    // Nummern der Bauschritte, die Felder bleiben, wo sie sind. Darueber
+    // findet die Auswahl hinterher zurueck.
+    const felder = new Set(refs.map(refOffset));
     const proFrame = new Map();
     const einheiten = [];
     for (const ref of refs) {
@@ -906,7 +910,16 @@
     }
     if (neueSchritte.length) insertBuildFrames(neueSchritte);
 
-    state.selected.clear();
+    // Die Auswahl bleibt auf denselben Feldern stehen, jetzt mit dem neuen
+    // Bauwerk darauf - so kann man gleich weiterarbeiten, statt neu zu ziehen.
+    state.selected = new Set();
+    frames().forEach((frame, fi) => {
+      if (Number(frame.itemType) !== Number(newType)) return;
+      (frame.tilePositionOfsets || []).forEach((off, oi) => {
+        if (felder.has(Number(off))) state.selected.add(frameRefKey(fi, oi));
+      });
+    });
+    activateBuildStepForRefs(state.selected);
     renderSelectionList();
     changed('Replaced ' + refs.length + ' placement' + (refs.length === 1 ? '' : 's') +
             ' with ' + itemName(Number(newType)) +
@@ -1894,10 +1907,23 @@
     setStatus(`Selected build step ${frameIndex + 1} — new buildings will be inserted after it`);
   }
 
+  function unlockedFrameIndexes(indexes) {
+    return indexes.filter(fi => !frameIsLocked(fi));
+  }
+
+  // Ein gesperrter Bauschritt wird nicht umgehaengt - aber er haelt die anderen
+  // auch nicht mehr auf. Wer fuenf waehlt und einen davon gesperrt hat, bewegt
+  // vier. Die eine Stelle fuer beide Wege, Pfeile wie Ziehen.
   function moveBuildSteps(indexes, targetIndex) {
     if (!indexes.length) return false;
+    const beweglich = unlockedFrameIndexes(indexes);
+    if (!beweglich.length) {
+      setStatus('Locked - unlock the build step first.');
+      return false;
+    }
+    const festgehalten = indexes.length - beweglich.length;
     pushUndo();
-    const result = geometry.moveBuildSteps(frames(), indexes, targetIndex);
+    const result = geometry.moveBuildSteps(frames(), beweglich, targetIndex);
     if (!result.moved) {
       state.undo.pop();
       return false;
@@ -1907,7 +1933,8 @@
       (_unused, index) => result.startIndex + index
     );
     selectBuildFrames(movedIndexes, result.endIndex);
-    changed(`${movedIndexes.length} build step${movedIndexes.length === 1 ? '' : 's'} moved together`);
+    changed(`${movedIndexes.length} build step${movedIndexes.length === 1 ? '' : 's'} moved together`
+      + (festgehalten ? ` (${festgehalten} locked and left alone)` : ''));
     return true;
   }
 
@@ -1917,12 +1944,16 @@
       selectBuildFrame(clickedIndex);
       selectedFrames = [clickedIndex];
     }
-    if (selectedFrames.some(frameIsLocked)) {
+    // Das Ziel richtet sich nach dem, was sich wirklich bewegt: ein gesperrter
+    // Schritt am Rand der Auswahl darf nicht mit uebersprungen werden, sonst
+    // huepft die Auswahl ueber ihn hinweg statt hinter ihn.
+    const beweglich = unlockedFrameIndexes(selectedFrames);
+    if (!beweglich.length) {
       setStatus('Locked - unlock the build step first.');
       return false;
     }
-    const selected = new Set(selectedFrames);
-    let target = direction < 0 ? Math.min(...selectedFrames) - 1 : Math.max(...selectedFrames) + 1;
+    const selected = new Set(beweglich);
+    let target = direction < 0 ? Math.min(...beweglich) - 1 : Math.max(...beweglich) + 1;
     while (target >= 0 && target < frames().length && selected.has(target)) target += direction;
     if (target < 0 || target >= frames().length) return false;
     return moveBuildSteps(selectedFrames, target);

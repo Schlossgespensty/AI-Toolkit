@@ -358,8 +358,8 @@ test('a locked build step cannot be deleted, moved, reordered or built over', ()
     'loeschen laesst gesperrte Felder stehen');
   assert.match(functionBody(script, 'deleteSelected'), /lockedAmong\(refs\)/,
     'und sagt, wenn alles gesperrt war');
-  assert.match(functionBody(script, 'moveBuildSelection'), /selectedFrames\.some\(frameIsLocked\)/,
-    'umsortieren geht nicht');
+  assert.match(functionBody(script, 'moveBuildSteps'), /unlockedFrameIndexes\(indexes\)/,
+    'umsortieren laesst gesperrte stehen - siehe den Test zur gemischten Auswahl');
   assert.match(functionBody(script, 'beginSelectGesture'), /!refIsLocked\(ref\)/,
     'verschieben auch nicht - gesperrte bleiben liegen, siehe den Test zur gemischten Auswahl');
   // Steht in der Pruefung, die eine Ersetzung vorschlaegt - dort, wo
@@ -416,6 +416,31 @@ test('a mixed selection moves only what is open', () => {
   assert.match(geste, /if \(!beweglich\.length\)/, 'ist gar nichts offen, passiert nichts');
 });
 
+test('reordering a mixed selection moves the open steps and leaves the locked ones', () => {
+  const script = fs.readFileSync(path.join(root, 'src', 'js', 'castle-editor.js'), 'utf8');
+  const umhaengen = functionBody(script, 'moveBuildSteps');
+  // Der Fehler war derselbe wie beim Verschieben auf der Karte: EIN gesperrter
+  // Schritt hat die ganze Auswahl festgenagelt.
+  assert.doesNotMatch(umhaengen, /some\(frameIsLocked\)/);
+  assert.match(umhaengen, /const beweglich = unlockedFrameIndexes\(indexes\)/,
+    'bewegt wird nur, was offen ist');
+  assert.match(umhaengen, /if \(!beweglich\.length\)/,
+    'ist gar nichts offen, passiert nichts und es sagt warum');
+  assert.match(umhaengen, /geometry\.moveBuildSteps\(frames\(\), beweglich, targetIndex\)/,
+    'und die Geometrie bekommt nur die offenen zu sehen');
+  assert.match(umhaengen, /locked and left alone/, 'die Meldung sagt, wie viele stehen blieben');
+
+  // Beide Wege, Pfeile und Ziehen, gehen durch dieselbe Stelle.
+  const liste = functionBody(script, 'renderBuildList');
+  assert.match(liste, /moveBuildSteps\(dragged, fi\)/, 'ziehen');
+  const pfeile = functionBody(script, 'moveBuildSelection');
+  assert.match(pfeile, /return moveBuildSteps\(selectedFrames, target\)/, 'pfeile');
+  // Das Ziel richtet sich nach den offenen: sonst huepft die Auswahl ueber den
+  // gesperrten Nachbarn hinweg statt hinter ihn.
+  assert.match(pfeile, /const beweglich = unlockedFrameIndexes\(selectedFrames\)/);
+  assert.match(pfeile, /Math\.min\(\.\.\.beweglich\) - 1 : Math\.max\(\.\.\.beweglich\) \+ 1/);
+});
+
 test('the lock button takes the whole selection along', () => {
   const script = fs.readFileSync(path.join(root, 'src', 'js', 'castle-editor.js'), 'utf8');
   const um = functionBody(script, 'toggleFrameLock');
@@ -463,6 +488,12 @@ test('the selection panel lists what is selected and can swap it', () => {
     'ist der ganze Bauschritt gemeint, wird er umgestellt statt geteilt');
   assert.match(tausch, /insertBuildFrames\(neueSchritte\)/,
     'und ein teilweise gewaehlter Schritt wird geteilt');
+  // Die Auswahl findet ueber die FELDER zurueck, nicht ueber die Nummern der
+  // Bauschritte - die verschieben sich beim Teilen.
+  assert.match(tausch, /const felder = new Set\(refs\.map\(refOffset\)\)/);
+  assert.match(tausch, /if \(felder\.has\(Number\(off\)\)\) state\.selected\.add\(frameRefKey\(fi, oi\)\)/,
+    'danach steht die Auswahl auf denselben Feldern, mit dem neuen Bauwerk darauf');
+  assert.doesNotMatch(tausch, /state\.selected\.clear\(\)/);
 
   const html = fs.readFileSync(path.join(root, 'src', 'index.html'), 'utf8');
   assert.match(html, /id="castleSelectionList"/);
