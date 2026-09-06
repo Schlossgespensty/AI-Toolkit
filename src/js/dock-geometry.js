@@ -294,6 +294,87 @@
     return { ghost: preview ? 'hidden' : 'visible', zone, preview, drop, armed };
   }
 
+  // A splitter drag, in shares. The model keeps shares so the layout
+  // survives a resized window; how few pixels a box may keep is a question
+  // about the screen, so it is answered here, where the screen is measured:
+  // both halves keep `least` pixels, and if the whole box is too small for
+  // that, it is halved rather than pushed past its own edges.
+  function shareFromPoint(rect, dir, point, least) {
+    if (!usable(rect) || !readable(point)) return null;
+    const vertical = dir === 'row';
+    const extent = vertical ? rect.w : rect.h;
+    if (!(extent > 0)) return null;
+    const raw = (vertical ? point.x - rect.x : point.y - rect.y) / extent;
+    const floor = Number.isFinite(least) && least > 0 ? least / extent : 0;
+    if (floor * 2 >= 1) return 0.5;
+    return clamp(raw, Math.max(floor, 0), Math.min(1 - floor, 1));
+  }
+
+  // ------------------------------------------------ dropping into an area
+  //
+  // With both views being windows, a drop has two parts: WHICH area it lands
+  // in and WHERE in that area. The bands inside one area mean what they
+  // always meant - cut this box in two and put the window on that side -
+  // and the middle now means something as well: lay it in beside the ones
+  // already there, as another tab.
+  //
+  // `boxes` is one entry per area, { id, rect, tabs }, measured off the
+  // screen by the view. `tabs` is the strip of tab buttons and is optional:
+  // where it is given, a drop on it is a tab whatever the bands would say,
+  // because a row of tabs is the one place on screen that already means
+  // "the windows of this area, side by side".
+
+  function areaAt(boxes, point) {
+    if (!readable(point)) return null;
+    for (const box of boxes || []) {
+      const r = box && box.rect;
+      if (!usable(r)) continue;
+      if (point.x >= r.x && point.x <= r.x + r.w && point.y >= r.y && point.y <= r.y + r.h) return box;
+    }
+    return null;
+  }
+
+  function inside(rect, point) {
+    return usable(rect) && readable(point) &&
+           point.x >= rect.x && point.x <= rect.x + rect.w &&
+           point.y >= rect.y && point.y <= rect.y + rect.h;
+  }
+
+  // The history is kept per area: carried across a border it would let an
+  // area that has been left hold on to the drop, which is the one kind of
+  // stickiness that costs the user a wrong drop rather than a flicker.
+  function dropTargetAt(boxes, point, previous, opt) {
+    const box = areaAt(boxes, point);
+    if (!box) return null;
+    if (inside(box.tabs, point)) return { areaId: box.id, where: 'tab' };
+    const before = previous && previous.areaId === box.id && previous.where !== 'tab'
+      ? previous.where : null;
+    const zone = stableZone(box.rect, point, before, opt);
+    return { areaId: box.id, where: zone === 'center' || zone === null ? 'tab' : zone };
+  }
+
+  // Where the outline is drawn for such a target: the half of the area the
+  // window would take, or the whole area when it would join as a tab. The
+  // same call the drop itself goes through, so the outline cannot promise
+  // one thing and the release do another.
+  function dropPreviewRect(boxes, target) {
+    if (!target) return null;
+    const box = (boxes || []).find(b => b && b.id === target.areaId);
+    if (!box || !usable(box.rect)) return null;
+    const r = box.rect;
+    if (target.where === 'tab') return { x: r.x, y: r.y, w: r.w, h: r.h };
+    // Four tenths of the box, the share the drop itself uses. Deliberately
+    // not panelRectFor: that one has a floor of 220 px meant for a panel at
+    // the edge of the whole map, and in a small area it would draw an
+    // outline bigger than the drop makes.
+    const share = 0.4;
+    if (target.where === 'left') return { x: r.x, y: r.y, w: r.w * share, h: r.h };
+    if (target.where === 'right') return { x: r.x + r.w * (1 - share), y: r.y, w: r.w * share, h: r.h };
+    if (target.where === 'top') return { x: r.x, y: r.y, w: r.w, h: r.h * share };
+    if (target.where === 'bottom') return { x: r.x, y: r.y + r.h * (1 - share), w: r.w, h: r.h * share };
+    return null;
+  }
+
   // What a release of the dragged panel means. One question, one answer:
   // this is the same value the moment before the release already carried, so
   // the words on screen and the outcome cannot promise different things.
@@ -304,6 +385,7 @@
   return {
     DOCK_SIDES, DEFAULTS, dockBands, dockZoneAt, stableZone, homeSides,
     panelSize, panelRectFor, dockPreviewRect, outsideDistance,
-    snapTo, splitterSize, carryScale, dragGhostRect, dragVisibility, dropAction
+    snapTo, splitterSize, carryScale, dragGhostRect, dragVisibility, dropAction,
+    areaAt, dropTargetAt, dropPreviewRect, shareFromPoint
   };
 });

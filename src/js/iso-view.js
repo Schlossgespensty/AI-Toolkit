@@ -7,7 +7,7 @@
 // and build steps - there is no second set of rules to keep in step.
 //
 // The view can live in one of two hosts: the panel inside the castle column
-// (#isoDockPanel) or a window of its own. Only ever one of them, and both
+// (#castleIsoWindow) or a window of its own. Only ever one of them, and both
 // share this one set of drawing routines - the surface changes, the picture
 // does not. Which host is in use is dock-view.js's decision, not this file's.
 //
@@ -305,7 +305,7 @@
       state.panStart = null;
       state.drawing = false;
       state.hover = null;
-      window.dockView?.onViewClosed?.();
+      window.castlePanels?.open?.('iso');
     });
     // The editor's own key handler listens on the main window and never
     // hears this one, so the window forwards. A docked panel must NOT do
@@ -391,7 +391,7 @@
     // gets no pointer position outside its own window - so the way back is
     // this button.
     const back = win.document.getElementById('isoWindowDockBtn');
-    if (back) back.addEventListener('click', () => window.dockView?.dockTo?.());
+    if (back) back.addEventListener('click', () => window.castlePanels?.open?.('iso'));
     bindSurface(state.host.canvas);
     bindHostChrome(state.host);
     refresh();
@@ -399,8 +399,8 @@
   }
 
   function init() {
-    // The toolbar button belongs to dock-view.js now: it decides between a
-    // panel and a window, this file only knows how to be one of them.
+    // The toolbar button belongs to panel-view.js: it decides where this
+    // view is shown, this file only knows how to be shown.
     bindSurface(document.getElementById('isoDockCanvas'));
     window.castleEditor?.addChangeListener?.(refresh);
     loadCatalogue();

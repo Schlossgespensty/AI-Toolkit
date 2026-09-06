@@ -23,10 +23,10 @@
       ? 'Castle editor'
       : name === 'content' ? 'AI Content'
       : name === 'ucp' ? 'UCP AI Library' : 'Character editor';
-    // Order matters: the saved dock has to change the grid track first, so
-    // the editor measures the width the map really ends up with.
+    // A frame later, so the boxes of the view tree have their size before
+    // the editor measures the one its map ended up with.
     if (name === 'castle') requestAnimationFrame(() => {
-      window.dockView?.onWorkspaceShown();
+      window.castlePanels?.onWorkspaceShown?.();
       window.castleEditor?.onWorkspaceShown();
     });
     if (name === 'content') window.aiContentEditor?.onWorkspaceShown?.();

@@ -127,7 +127,8 @@
           <button id="castleOpenBtn" type="button">Open castle</button>
           <button id="castleSaveBtn" class="primaryAction" type="button">Save castle</button>
           <button id="castleSaveAsBtn" type="button">Save as</button>
-          <button id="castleIsoBtn" type="button" aria-pressed="false" title="Show the slanted view — drag its header onto the map to dock it">2.5D view</button>
+          <button id="castleMapBtn" type="button" aria-pressed="true" title="Show or close the map seen from above">Map</button>
+          <button id="castleIsoBtn" type="button" aria-pressed="false" title="Show or close the slanted view - drag a tab to move a window">2.5D view</button>
         </div>
         <div class="toolbarGroup castleProjectGroup">
           <label class="castleProjectChoice" for="ucpCastleSelect">
@@ -189,38 +190,39 @@
           </section>
         </aside>
 
-        <!-- The order of these children never changes; where the panel and
-             the splitter appear is decided by grid-area and data-dock. -->
-        <main class="castleCanvasColumn" id="castleCanvasColumn" data-dock="off">
-          <div id="castleCanvasHost" class="castleCanvasHost">
-            <canvas id="castleCanvas" tabindex="0" aria-label="100 by 100 tile castle map"></canvas>
-          </div>
-          <div id="isoDockSplitter" class="dockSplitter" role="separator" tabindex="0"
-               aria-orientation="vertical" aria-label="Resize the 2.5D view"></div>
-          <aside id="isoDockPanel" class="dockPanel" aria-label="2.5D view">
-            <header class="dockHeader">
-              <span id="isoDockGrip" class="dockGrip" title="Drag onto the map to dock this view on another side">&#10247; 2.5D</span>
-              <span class="dockSpacer"></span>
-              <button id="isoFitBtn" type="button" title="Fit the castle into the view">&#10530;</button>
-              <button id="isoPopOutBtn" type="button" title="Show in its own window">&#9001;&#9002;</button>
-              <button id="isoDockCloseBtn" type="button" title="Close the 2.5D view">&#10005;</button>
-            </header>
-            <div id="isoDockBody" class="dockBody">
-              <canvas id="isoDockCanvas" aria-label="The castle seen from an angle"></canvas>
+        <main class="castleCanvasColumn" id="castleCanvasColumn">
+          <!-- The tree of areas. What stands in here is built by
+               panel-view.js from the layout the user arranged; nothing about
+               it is fixed in the page, because where the windows sit is the
+               user's business and not the document's. -->
+          <div id="castleViewRoot" class="viewRoot"></div>
+
+          <!-- The windows themselves. They live here while they are in no
+               area: out of the page they cost nothing, and no ResizeObserver
+               measures a canvas of no size. -->
+          <div id="castleWindowStore" class="windowStore" hidden>
+            <div id="castleMapWindow" class="viewWindow" data-window="map">
+              <div id="castleCanvasHost" class="castleCanvasHost">
+                <canvas id="castleCanvas" tabindex="0" aria-label="100 by 100 tile castle map"></canvas>
+              </div>
             </div>
-            <div id="isoDockStatus" class="dockStatus"></div>
-          </aside>
-          <!-- No hidden attribute: this box is what dock-geometry measures,
-               and display:none would make it zero wide. It is hidden with
-               visibility instead, which keeps its size. -->
-          <div id="castleDockOverlay" class="dockOverlay" aria-hidden="true">
-            <div class="dockZone" data-zone="top"></div>
-            <div class="dockZone" data-zone="right"></div>
-            <div class="dockZone" data-zone="bottom"></div>
-            <div class="dockZone" data-zone="left"></div>
-            <div id="castleDockPreview" class="dockPreview" hidden></div>
-            <div id="castleDockHint" class="dockHint"></div>
+            <div id="castleIsoWindow" class="viewWindow" data-window="iso">
+              <div id="isoDockBody" class="dockBody">
+                <canvas id="isoDockCanvas" aria-label="The castle seen from an angle"></canvas>
+              </div>
+              <div id="isoDockStatus" class="dockStatus"></div>
+            </div>
           </div>
+
+          <!-- The outline that shows where a dragged window would land. No
+               hidden attribute: this box is the one the geometry measures,
+               and display:none would make it zero wide. -->
+          <div id="castleDockOverlay" class="dockOverlay" aria-hidden="true">
+            <div id="castleDockPreview" class="dockPreview" hidden></div>
+            <div id="castleDockHint" class="dockHint" hidden></div>
+          </div>
+          <div id="castleDragGhost" class="dragGhost" hidden></div>
+
           <div class="castleStatusBar">
             <span id="castleFileLabel">No castle loaded</span>
             <span id="castleStatus">Ready</span>
@@ -498,7 +500,7 @@
 <script src="js/iso-geometry.js"></script>
 <script src="js/iso-view.js"></script>
 <script src="js/dock-geometry.js"></script>
-<script src="js/dock-model.js"></script>
-<script src="js/dock-view.js"></script>
+<script src="js/panel-model.js"></script>
+<script src="js/panel-view.js"></script>
 </body>
 </html>
