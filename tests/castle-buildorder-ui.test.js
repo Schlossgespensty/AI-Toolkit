@@ -141,13 +141,21 @@ test('Castle Brush and Line stay available and split single-step items into cons
   assert.match(selectItem, /setTool\(state\.lastPlacementTool\)/);
 });
 
-test('Castle multi-placement rules include only moat, walls, crenels, and pitch', () => {
+test('Castle multi-placement is for the things that are drawn in a line', () => {
+  // Moat, the two walls, crenels, pitch - and since the stairs became line
+  // recipes, the two of them as well: what they have in common is that the
+  // user draws a run of them in one gesture, not that they are walls.
   const constants = JSON.parse(fs.readFileSync(path.join(root, 'config', 'aiv_constants.json'), 'utf8'));
   const allowed = Object.entries(constants)
     .filter(([_id, info]) => info.multiPlacement === true)
     .map(([id]) => Number(id))
     .sort((one, two) => one - two);
-  assert.deepEqual(allowed, [25, 26, 35, 46, 99, 106]);
+  assert.deepEqual(allowed, [25, 26, 35, 46, 99, 106, 10001, 10002]);
+  // Every recipe is drawn in a line, or its own tools would not be offered.
+  for (const [id, info] of Object.entries(constants)) {
+    if (!Array.isArray(info.lineSequence) || !info.lineSequence.length) continue;
+    assert.equal(info.multiPlacement, true, `recipe ${id} is not multi-placement`);
+  }
 });
 
 test('Castle exposes capped High Stair and Low Stair line recipes as consecutive real steps', () => {
