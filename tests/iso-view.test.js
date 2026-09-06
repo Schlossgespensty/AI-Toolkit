@@ -306,7 +306,14 @@ test('eine gezogene Treppe steigt - jede Stufe hat ihre eigene Hoehe', (t) => {
     const e = katalog[mapper];
     assert.ok(e && e.treppe, 'Mapper ' + mapper + ' braucht einen Treppeneintrag');
     assert.equal(e.treppe.hoehe, hoehe, 'Mapper ' + mapper);
-    for (const richtung of ['r0', 'r2', 'r4', 'r6', 'allein']) {
+    // Stufe 6 ist keine Treppe: Mapper 186 setzt kein L_STAIRS-Bit, und genau
+    // daran haengt der Treppenzweig in updateGfxLayer. Das Spiel zeichnet dort
+    // eine Bodenkachel - sie bekommt darum genau eine flache Fassung und keine
+    // Richtungen, sonst zeigt der Editor eine Treppe, die es nie gibt.
+    const noetig = Number(mapper) === 186 ? ['allein'] : ['r0', 'r2', 'r4', 'r6', 'allein'];
+    assert.deepEqual(Object.keys(e.treppe.richtungen).sort(), [...noetig].sort(),
+      'Mapper ' + mapper + ' hat die falschen Ansichten');
+    for (const richtung of noetig) {
       const f = e.treppe.richtungen[richtung];
       assert.ok(f, mapper + ' fehlt die Ansicht ' + richtung);
       assert.ok(fs.existsSync(path.join(dir, f.bild)), 'Bilddatei fehlt: ' + f.bild);
