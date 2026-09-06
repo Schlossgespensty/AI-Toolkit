@@ -261,7 +261,7 @@ test('a crenellated wall alternates merlon and embrasure, tile by tile', () => {
   // Und das Zeichnen benutzt die gewaehlte Fassung, nicht mehr den Eintrag.
   const script = fs.readFileSync(path.join(root, 'src', 'js', 'iso-view.js'), 'utf8');
   const malen = script.slice(script.indexOf('function drawSprite'), script.indexOf('function drawDiamond'));
-  assert.match(malen, /const variant = geo\.variantFor\(sprite, gx, gy\)/);
+  assert.match(malen, /const variant = geo\.variantFor\(sprite, gx, gy, mauerAn\)/);
   assert.match(malen, /image\(variant\.bild\)/);
   assert.match(malen, /geo\.spriteRect\(variant, gx, gy/);
 });
@@ -315,4 +315,50 @@ test('the ground is tiled at the same scale as the map, not stretched', () => {
   // Faellt das Bild aus, bleibt die Ansicht heil.
   assert.match(grund, /if \(!pattern\) \{ ctx\.fillStyle = '#232a1c'; ctx\.fill\(\); return; \}/);
   assert.ok(fs.existsSync(path.join(root, 'assets', 'aiv', 'iso', 'grund.png')));
+});
+
+test('the ground can be swapped for one of your own, and swapped back', () => {
+  const iso = fs.readFileSync(path.join(root, 'src', 'js', 'iso-view.js'), 'utf8');
+  const quelle = iso.slice(iso.indexOf('function groundSource'), iso.indexOf('function paintGround'));
+  assert.match(quelle, /window\.localStorage\.getItem\(GROUND_KEY\)/, 'die Wahl ueberlebt das Schliessen');
+  assert.match(quelle, /return state\.ground \|\| 'grund\.png'/, 'ohne eigene Wahl der mitgelieferte Grund');
+  assert.match(quelle, /state\.images\.delete\(groundSource\(\)\)/, 'das alte Bild wird vergessen');
+  assert.match(quelle, /catch \{ \/\* a view must not fall over because storage is off \*\/ \}/);
+  assert.match(iso, /setGround, hasOwnGround/, 'und beides ist von aussen erreichbar');
+
+  const editor = fs.readFileSync(path.join(root, 'src', 'js', 'castle-editor.js'), 'utf8');
+  assert.match(editor, /window\.electronAPI\.chooseCastleBackground\(\)/);
+  assert.match(editor, /window\.isoView\.setGround\(selection\.dataUrl\)/);
+  assert.match(editor, /window\.isoView\.setGround\(null\)/, 'und zurueck zum Standard');
+  const html = fs.readFileSync(path.join(root, 'src', 'index.html'), 'utf8');
+  assert.match(html, /id="castleIsoGroundBtn"/);
+  assert.match(html, /id="castleIsoGroundReset"[^>]*hidden/, 'der Zurueck-Knopf zeigt sich erst, wenn er etwas tut');
+});
+
+test('an own ground can be tiled or spread once over the map', () => {
+  const iso = fs.readFileSync(path.join(root, 'src', 'js', 'iso-view.js'), 'utf8');
+  const art = iso.slice(iso.indexOf('function groundFit'), iso.indexOf('function setGround'));
+  // Der mitgelieferte Grund ist eine Textur und wird IMMER gekachelt.
+  assert.match(art, /return state\.ground \? state\.groundFit : 'tile'/);
+  const malen = iso.slice(iso.indexOf('function paintGround'), iso.indexOf('function drawSprite'));
+  // Gespannt heisst: die Ecken des Bildes auf die Ecken der Karte.
+  assert.match(malen, /if \(groundFit\(\) === 'stretch'\)/);
+  assert.match(malen, /geo\.isoPoint\(0, geo\.GRID, state\.view\)\[0\]/, 'linke Kartenecke');
+  assert.match(malen, /geo\.isoPoint\(geo\.GRID, 0, state\.view\)\[0\]/, 'rechte');
+  assert.match(malen, /ctx\.drawImage\(img, links, oben, rechts - links, unten - oben\)/);
+  assert.match(malen, /ctx\.clip\(\)/, 'auch gespannt endet es am Kartenrand');
+
+  const editor = fs.readFileSync(path.join(root, 'src', 'js', 'castle-editor.js'), 'utf8');
+  assert.match(editor, /window\.isoView\.setGroundFit\(window\.isoView\.groundIsStretched\(\) \? 'tile' : 'stretch'\)/);
+  const html = fs.readFileSync(path.join(root, 'src', 'index.html'), 'utf8');
+  assert.match(html, /id="castleIsoGroundFit"[^>]*hidden/, 'der Umschalter zeigt sich erst mit eigenem Grund');
+});
+
+test('a ground the user picked is loaded as it is, not as a file name', () => {
+  const iso = fs.readFileSync(path.join(root, 'src', 'js', 'iso-view.js'), 'utf8');
+  const laden = iso.slice(iso.indexOf('function image('), iso.indexOf('function drawDiamond'));
+  // Eine data:-Adresse ist schon vollstaendig. Wer ihr den Sprite-Pfad
+  // voranstellt, baut eine Adresse ins Nichts - und es erscheint nichts.
+  assert.match(laden, /\^\(data:\|blob:\|https\?:\|file:\)/);
+  assert.match(laden, /\? filename : SPRITE_PATH \+ filename/);
 });

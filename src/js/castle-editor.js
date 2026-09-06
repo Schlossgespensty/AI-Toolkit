@@ -2952,6 +2952,52 @@
     }
   }
 
+  // Der Grund der 2.5D-Ansicht. Der Dateidialog ist derselbe, den auch der
+  // Bauplan benutzt - ein Kanal, nicht zwei. Das gewaehlte Bild wird Kachel
+  // fuer Kachel gelegt, nicht gestreckt; sehr grosse Bilder passen unter
+  // Umstaenden nicht in den Speicher der Sitzung und sind dann nur bis zum
+  // Schliessen da. Die Ansicht faengt das ab.
+  const grundKnopf = document.getElementById('castleIsoGroundBtn');
+  const grundZurueck = document.getElementById('castleIsoGroundReset');
+  const grundArt = document.getElementById('castleIsoGroundFit');
+  function updateGroundControls() {
+    const eigener = Boolean(window.isoView && window.isoView.hasOwnGround());
+    if (grundZurueck) grundZurueck.hidden = !eigener;
+    if (grundArt) {
+      grundArt.hidden = !eigener;
+      const gespannt = Boolean(window.isoView && window.isoView.groundIsStretched());
+      grundArt.textContent = gespannt ? 'Stretched' : 'Tiled';
+      grundArt.setAttribute('aria-pressed', String(gespannt));
+    }
+  }
+  if (grundArt) grundArt.addEventListener('click', () => {
+    if (!window.isoView) return;
+    window.isoView.setGroundFit(window.isoView.groundIsStretched() ? 'tile' : 'stretch');
+    updateGroundControls();
+    setStatus(window.isoView.groundIsStretched()
+      ? 'Ground spread once over the whole map'
+      : 'Ground laid out tile by tile');
+  });
+  if (grundKnopf) grundKnopf.addEventListener('click', async () => {
+    if (!window.isoView) return;
+    try {
+      const selection = await window.electronAPI.chooseCastleBackground();
+      if (!selection?.dataUrl) return;
+      window.isoView.setGround(selection.dataUrl);
+      updateGroundControls();
+      setStatus(`Ground of the slanted view: ${selection.fileName || 'chosen picture'}`);
+    } catch (error) {
+      setStatus(`Could not load ground: ${error.message}`);
+    }
+  });
+  if (grundZurueck) grundZurueck.addEventListener('click', () => {
+    if (!window.isoView) return;
+    window.isoView.setGround(null);
+    updateGroundControls();
+    setStatus('Ground back to the one that comes with the app');
+  });
+  updateGroundControls();
+
   document.querySelectorAll('.castleTool').forEach(btn => btn.addEventListener('click', () => setTool(btn.dataset.tool)));
   document.getElementById('castleNewBtn').addEventListener('click', newFile);
   document.getElementById('castleOpenBtn').addEventListener('click', openFile);

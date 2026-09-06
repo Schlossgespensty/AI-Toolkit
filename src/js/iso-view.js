@@ -65,7 +65,10 @@
     if (img) return img;
     img = new Image();
     img.onload = () => refresh();
-    img.src = SPRITE_PATH + filename;
+    // A ground the user picked arrives as a whole data: URL, not as the name
+    // of a file next to the sprites. Prefixing the sprite path to it would
+    // make an address that leads nowhere - and nothing would appear.
+    img.src = /^(data:|blob:|https?:|file:)/.test(filename) ? filename : SPRITE_PATH + filename;
     state.images.set(filename, img);
     return img;
   }
@@ -88,14 +91,73 @@
   // browser will not make a pattern from it, the old flat colour is used - the
   // view must never depend on a decoration.
   const GAME_TILE_WIDTH = 30;
+  const GROUND_KEY = 'castleIsoGround';        // remembered between sessions
+  const GROUND_FIT_KEY = 'castleIsoGroundFit'; // 'tile' or 'stretch'
+
+  // Which picture the ground is made of. Empty means the one that ships with
+  // the app; anything else is a file the user picked.
+  function groundSource() {
+    if (state.ground === undefined) {
+      let stored = null;
+      try { stored = window.localStorage.getItem(GROUND_KEY); } catch { stored = null; }
+      state.ground = stored || null;
+    }
+    return state.ground || 'grund.png';
+  }
+
+  // Laid out tile by tile, or spread once over the whole map? A texture wants
+  // the first, a picture of a finished map the second. The app's own ground is
+  // a texture and is always tiled.
+  function groundFit() {
+    if (state.groundFit === undefined) {
+      let stored = null;
+      try { stored = window.localStorage.getItem(GROUND_FIT_KEY); } catch { stored = null; }
+      state.groundFit = stored === 'stretch' ? 'stretch' : 'tile';
+    }
+    return state.ground ? state.groundFit : 'tile';
+  }
+
+  function setGround(url) {
+    state.ground = url || null;
+    try {
+      if (url) window.localStorage.setItem(GROUND_KEY, url);
+      else window.localStorage.removeItem(GROUND_KEY);
+    } catch { /* a view must not fall over because storage is off */ }
+    state.images.delete(groundSource());
+    paint();
+  }
+
+  function setGroundFit(fit) {
+    state.groundFit = fit === 'stretch' ? 'stretch' : 'tile';
+    try { window.localStorage.setItem(GROUND_FIT_KEY, state.groundFit); } catch { /* egal */ }
+    paint();
+  }
+
+  function hasOwnGround() { return Boolean(state.ground); }
+  function groundIsStretched() { return groundFit() === 'stretch'; }
 
   function paintGround(ctx, width, height) {
-    const img = image('grund.png');
+    const img = image(groundSource());
     let pattern = null;
     if (img && img.complete && img.naturalWidth) {
       try { pattern = ctx.createPattern(img, 'repeat'); } catch { pattern = null; }
     }
     if (!pattern) { ctx.fillStyle = '#232a1c'; ctx.fill(); return; }
+
+    // Spread once: the picture covers exactly the box around the map diamond,
+    // so its corners land on the map's corners.
+    if (groundFit() === 'stretch') {
+      const links = geo.isoPoint(0, geo.GRID, state.view)[0];
+      const rechts = geo.isoPoint(geo.GRID, 0, state.view)[0];
+      const oben = geo.isoPoint(0, 0, state.view)[1];
+      const unten = geo.isoPoint(geo.GRID, geo.GRID, state.view)[1];
+      ctx.save();
+      ctx.clip();
+      ctx.drawImage(img, links, oben, rechts - links, unten - oben);
+      ctx.restore();
+      return;
+    }
+
     const scale = ((geo.HALF_W * 2) / GAME_TILE_WIDTH) * state.view.zoom;
     ctx.save();
     ctx.clip();
@@ -107,8 +169,8 @@
     ctx.restore();
   }
 
-  function drawSprite(ctx, sprite, gx, gy, tiles) {
-    const variant = geo.variantFor(sprite, gx, gy);
+  function drawSprite(ctx, sprite, gx, gy, tiles, mauerAn) {
+    const variant = geo.variantFor(sprite, gx, gy, mauerAn);
     const img = image(variant.bild);
     if (!img || !img.complete || !img.naturalWidth) return false;
     const rect = geo.spriteRect(variant, gx, gy, tiles, state.view);
@@ -184,9 +246,15 @@
     for (const plate of geo.collectPlates(items).sort(geo.byDepth))
       drawSprite(ctx, plate.sprite, plate.gx, plate.gy, plate.tiles);
 
+    // Welche Felder Mauer tragen. Ein Mauerfeld waehlt sein Bild nach seinen
+    // Nachbarn - laeuft die Mauer durch, wird sie eine durchgehende Flaeche
+    // statt einer Reihe von Pfeilern (siehe geo.variantFor).
+    const mauerAn = geo.wallLookup(items);
+    state.mauerAn = mauerAn;
+
     let missing = 0;
     for (const item of items.sort(geo.byDepth)) {
-      if (item.entry && drawSprite(ctx, item.entry, item.gx, item.gy, item.tiles)) continue;
+      if (item.entry && drawSprite(ctx, item.entry, item.gx, item.gy, item.tiles, mauerAn)) continue;
       drawDiamond(ctx, item.gx, item.gy, item.tiles, 'rgba(210,170,90,.55)');
       missing++;
     }
@@ -217,14 +285,24 @@
     // A dragged line can lay down several different items - a stair does. Each
     // tile therefore names its own, and only falls back to the one for the
     // whole preview.
+    // Die Felder der Vorschau zaehlen fuer die Mauerregel schon mit: sonst
+    // sieht eine gezogene Mauerlinie wie eine Reihe Pfeiler aus und springt
+    // beim Loslassen zur durchgehenden Flaeche um.
+    const kuenftig = vorschau.tiles.map(feld => ({
+      gx: feld.x, gy: geo.GRID - 1 - feld.y,
+      entry: nachschlagen(feld.itemType != null ? feld.itemType : vorschau.itemType),
+    }));
+    const neueMauern = geo.wallLookup(kuenftig);
+    const mauerAn = (gx, gy) =>
+      neueMauern(gx, gy) || (state.mauerAn ? state.mauerAn(gx, gy) : null);
+
     ctx.save();
     ctx.globalAlpha = 0.5;
-    for (const feld of vorschau.tiles) {
-      const gx = feld.x, gy = geo.GRID - 1 - feld.y;
-      const eintrag = nachschlagen(feld.itemType != null ? feld.itemType : vorschau.itemType);
+    for (const feld of kuenftig) {
+      const eintrag = feld.entry;
       const kacheln = eintrag ? eintrag.kacheln : 1;
-      if (!eintrag || !drawSprite(ctx, eintrag, gx, gy, kacheln))
-        drawDiamond(ctx, gx, gy, kacheln, 'rgba(120,220,140,.45)', 'rgba(150,240,170,.9)');
+      if (!eintrag || !drawSprite(ctx, eintrag, feld.gx, feld.gy, kacheln, mauerAn))
+        drawDiamond(ctx, feld.gx, feld.gy, kacheln, 'rgba(120,220,140,.45)', 'rgba(150,240,170,.9)');
     }
     ctx.restore();
   }
@@ -501,7 +579,8 @@
     loadCatalogue();
   }
 
-  window.isoView = { init, openWindow, closeWindow, mountDock, unmount, refresh, paint, fit, isMounted };
+  window.isoView = { init, openWindow, closeWindow, mountDock, unmount, refresh, paint, fit, isMounted,
+                     setGround, hasOwnGround, setGroundFit, groundIsStretched };
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();

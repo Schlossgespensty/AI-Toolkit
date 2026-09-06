@@ -67,24 +67,75 @@
     return item.gx + item.gy + 2 * ((item.tiles || 1) - 1);
   }
 
+  // Eine Mauer hat kein festes Bild. Das Spiel rechnet jedes Feld neu, und
+  // zwei Fragen entscheiden - beide beantwortet computeWallCornerRenderRotation
+  // (0x004fc650):
+  //
+  //  1. LAEUFT die Mauer durch dieses Feld? Sie tut es, wenn BEIDE Nachbarn
+  //     derselben Achse Mauer sind und keiner mehr als 16 Punkte niedriger
+  //     ist (isWallConnectionHeightValid 0x004f8840). Laeuft sie in x, liegt
+  //     das naechste Feld 16 Punkte rechts und verdeckt die rechte Haelfte -
+  //     sichtbar bleibt die besonnte Seite. Laeuft sie in y, liegt es 16
+  //     Punkte links, sichtbar bleibt die beschattete. Dafuer traegt der
+  //     Katalog zwei Saetze Bilder: laengs und quer. Laeuft sie nicht durch,
+  //     entscheidet allein, wer das Feld verdeckt: ein Nachbar in x nimmt
+  //     die rechte Haelfte weg (rand.laengs), einer in y die linke
+  //     (rand.quer), gar keiner nichts (rand.allein, der freistehende
+  //     Pfeiler mit beiden Seiten). Im Spiel sind das 0x30, 0x3f und 0x21.
+  //  2. WELCHES der sechzehn Bilder eines Satzes? Das sagt x & 15 bzw.
+  //     y & 15, damit sich das Mauerwerk nicht alle paar Felder wiederholt.
+  //
+  // Die Krone wechselt unabhaengig davon: Klotz bei x + y ungerade, sonst die
+  // flache Scharte - placeDefensiveStructureTile (0x005034a0) setzt dafuer
+  // LogicLayer 0x400000. gy zaehlt den Bildschirm hinunter, darum wird die
+  // Editor-Koordinate y zuerst zurueckgerechnet.
+  //
+  // mauerAn(gx, gy) liefert den Mauereintrag eines Nachbarfeldes oder null.
+  // Fehlt er, bleibt es beim Einzelbild - die Ansicht sieht dann aus wie
+  // vorher, statt zu bruchlanden.
+  function variantFor(sprite, gx, gy, mauerAn) {
+    if (!sprite) return sprite;
+    const y = (GRID - 1) - gy;
+    const klotz = (((gx + y) % 2) + 2) % 2 === 1;
+    const mauer = sprite.mauer;
+    if (!mauer) {
+      if (!sprite.wechselBild || klotz) return sprite;
+      return { bild: sprite.wechselBild, breite: sprite.wechselBreite,
+               hoehe: sprite.wechselHoehe, kacheln: sprite.kacheln };
+    }
+    const welche = (klotz || !mauer.rand.allein.scharte) ? 'klotz' : 'scharte';
+    let gewaehlt = mauer.rand.allein[welche];
+    if (typeof mauerAn === 'function') {
+      const traegt = (nx, ny) => {
+        const nachbar = mauerAn(nx, ny);
+        return !!nachbar && nachbar.hoehe >= mauer.hoehe - 16;
+      };
+      // Was VOR diesem Feld liegt, wird spaeter gemalt und verdeckt es zur
+      // Haelfte: (gx+1, gy) nimmt die rechte, (gx, gy+1) die linke.
+      if (traegt(gx - 1, gy) && traegt(gx + 1, gy)) gewaehlt = mauer.laengs[welche][gx & 15];
+      else if (traegt(gx, gy - 1) && traegt(gx, gy + 1)) gewaehlt = mauer.quer[welche][y & 15];
+      else if (traegt(gx + 1, gy)) gewaehlt = mauer.rand.laengs[welche];
+      else if (traegt(gx, gy + 1)) gewaehlt = mauer.rand.quer[welche];
+    }
+    if (!gewaehlt) gewaehlt = mauer.rand.allein[welche];
+    return { bild: gewaehlt.bild, breite: gewaehlt.breite,
+             hoehe: gewaehlt.hoehe, kacheln: sprite.kacheln };
+  }
+
+  // Nachschlagewerk fuer die Regel oben: welches Feld traegt eine Mauer.
+  // Aus den Gegenstaenden, die ohnehin schon eingesammelt sind.
+  function wallLookup(items, extra) {
+    const felder = new Map();
+    const eintragen = (gx, gy, entry) => {
+      if (entry && entry.mauer) felder.set(gx + ':' + gy, entry.mauer);
+    };
+    for (const item of items || []) eintragen(item.gx, item.gy, item.entry);
+    for (const item of extra || []) eintragen(item.gx, item.gy, item.entry);
+    return (gx, gy) => felder.get(gx + ':' + gy) || null;
+  }
+
   // Where a sprite goes: centred on the lowest tile, its bottom edge one
   // half tile below that tile's centre - the same rule the .gm1 files use.
-  // A crenellated wall has no picture of its own: it is the plain wall with a
-  // merlon on top, and the merlon only sits on every other tile. The catalogue
-  // therefore carries two pictures for it, and this picks the one for a tile.
-  //
-  // The game decides by the parity of x + y - placeDefensiveStructureTile
-  // (0x005034a0) sets LogicLayer 0x400000 when x + y is odd, and that bit
-  // chooses the merlon over the flat embrasure. gy counts down the screen, so
-  // the editor's y has to be recovered before the sum is taken.
-  function variantFor(sprite, gx, gy) {
-    if (!sprite || !sprite.wechselBild) return sprite;
-    const y = (GRID - 1) - gy;
-    const odd = (((gx + y) % 2) + 2) % 2 === 1;
-    if (odd) return sprite;
-    return { bild: sprite.wechselBild, breite: sprite.wechselBreite,
-             hoehe: sprite.wechselHoehe, kacheln: sprite.kacheln };
-  }
 
   function spriteRect(sprite, gx, gy, tiles, view) {
     const [sx, sy] = isoPoint(gx + tiles - 1, gy + tiles - 1, view);
@@ -163,5 +214,6 @@
 
   return { GRID, HALF_W, HALF_H, gridFromOffset, offsetFromGrid, isoPoint,
            tileFromPoint, editorTileFromPoint,
-           depth, byDepth, spriteRect, variantFor, collectItems, collectPlates, marqueeOutline, fitView };
+           depth, byDepth, spriteRect, variantFor, wallLookup,
+           collectItems, collectPlates, marqueeOutline, fitView };
 });

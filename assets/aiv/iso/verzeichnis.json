@@ -1,46 +1,1208 @@
 {
- "erzeugt": "2026-09-06T17:11:34.741Z",
+ "erzeugt": "2026-09-06T18:08:37.105Z",
  "feld": 32,
  "gegenstaende": {
   "25": {
    "name": "Steinmauer",
    "aiv": 10,
    "kacheln": 1,
-   "bild": "mauer_25_klotz.png",
+   "bild": "mauer_25_ra_klotz.png",
    "breite": 30,
-   "hoehe": 95
+   "hoehe": 108,
+   "mauer": {
+    "hoehe": 90,
+    "laengs": {
+     "klotz": [
+      {
+       "bild": "mauer_25_l00_klotz.png",
+       "breite": 30,
+       "hoehe": 108
+      },
+      {
+       "bild": "mauer_25_l01_klotz.png",
+       "breite": 30,
+       "hoehe": 108
+      },
+      {
+       "bild": "mauer_25_l02_klotz.png",
+       "breite": 30,
+       "hoehe": 108
+      },
+      {
+       "bild": "mauer_25_l03_klotz.png",
+       "breite": 30,
+       "hoehe": 108
+      },
+      {
+       "bild": "mauer_25_l04_klotz.png",
+       "breite": 30,
+       "hoehe": 108
+      },
+      {
+       "bild": "mauer_25_l05_klotz.png",
+       "breite": 30,
+       "hoehe": 108
+      },
+      {
+       "bild": "mauer_25_l06_klotz.png",
+       "breite": 30,
+       "hoehe": 108
+      },
+      {
+       "bild": "mauer_25_l07_klotz.png",
+       "breite": 30,
+       "hoehe": 108
+      },
+      {
+       "bild": "mauer_25_l08_klotz.png",
+       "breite": 30,
+       "hoehe": 108
+      },
+      {
+       "bild": "mauer_25_l09_klotz.png",
+       "breite": 30,
+       "hoehe": 108
+      },
+      {
+       "bild": "mauer_25_l10_klotz.png",
+       "breite": 30,
+       "hoehe": 108
+      },
+      {
+       "bild": "mauer_25_l11_klotz.png",
+       "breite": 30,
+       "hoehe": 108
+      },
+      {
+       "bild": "mauer_25_l12_klotz.png",
+       "breite": 30,
+       "hoehe": 108
+      },
+      {
+       "bild": "mauer_25_l13_klotz.png",
+       "breite": 30,
+       "hoehe": 108
+      },
+      {
+       "bild": "mauer_25_l14_klotz.png",
+       "breite": 30,
+       "hoehe": 108
+      },
+      {
+       "bild": "mauer_25_l15_klotz.png",
+       "breite": 30,
+       "hoehe": 108
+      }
+     ]
+    },
+    "quer": {
+     "klotz": [
+      {
+       "bild": "mauer_25_q00_klotz.png",
+       "breite": 30,
+       "hoehe": 108
+      },
+      {
+       "bild": "mauer_25_q01_klotz.png",
+       "breite": 30,
+       "hoehe": 108
+      },
+      {
+       "bild": "mauer_25_q02_klotz.png",
+       "breite": 30,
+       "hoehe": 108
+      },
+      {
+       "bild": "mauer_25_q03_klotz.png",
+       "breite": 30,
+       "hoehe": 108
+      },
+      {
+       "bild": "mauer_25_q04_klotz.png",
+       "breite": 30,
+       "hoehe": 108
+      },
+      {
+       "bild": "mauer_25_q05_klotz.png",
+       "breite": 30,
+       "hoehe": 108
+      },
+      {
+       "bild": "mauer_25_q06_klotz.png",
+       "breite": 30,
+       "hoehe": 108
+      },
+      {
+       "bild": "mauer_25_q07_klotz.png",
+       "breite": 30,
+       "hoehe": 108
+      },
+      {
+       "bild": "mauer_25_q08_klotz.png",
+       "breite": 30,
+       "hoehe": 108
+      },
+      {
+       "bild": "mauer_25_q09_klotz.png",
+       "breite": 30,
+       "hoehe": 108
+      },
+      {
+       "bild": "mauer_25_q10_klotz.png",
+       "breite": 30,
+       "hoehe": 108
+      },
+      {
+       "bild": "mauer_25_q11_klotz.png",
+       "breite": 30,
+       "hoehe": 108
+      },
+      {
+       "bild": "mauer_25_q12_klotz.png",
+       "breite": 30,
+       "hoehe": 108
+      },
+      {
+       "bild": "mauer_25_q13_klotz.png",
+       "breite": 30,
+       "hoehe": 108
+      },
+      {
+       "bild": "mauer_25_q14_klotz.png",
+       "breite": 30,
+       "hoehe": 108
+      },
+      {
+       "bild": "mauer_25_q15_klotz.png",
+       "breite": 30,
+       "hoehe": 108
+      }
+     ]
+    },
+    "rand": {
+     "laengs": {
+      "klotz": {
+       "bild": "mauer_25_rl_klotz.png",
+       "breite": 30,
+       "hoehe": 108
+      }
+     },
+     "quer": {
+      "klotz": {
+       "bild": "mauer_25_rq_klotz.png",
+       "breite": 30,
+       "hoehe": 108
+      }
+     },
+     "allein": {
+      "klotz": {
+       "bild": "mauer_25_ra_klotz.png",
+       "breite": 30,
+       "hoehe": 108
+      }
+     }
+    },
+    "regel": {
+     "lauf": "beide Nachbarn einer Achse sind Mauer (isWallConnectionHeightValid)",
+     "laengs": "Platz = x & 15",
+     "quer": "Platz = y & 15",
+     "rand": "ein Nachbar in x -> rand.laengs, einer in y -> rand.quer, keiner -> rand.allein",
+     "krone": "immer flach"
+    }
+   }
   },
   "26": {
    "name": "Zinnenmauer hoch",
    "aiv": 12,
    "kacheln": 1,
-   "bild": "mauer_26_klotz.png",
+   "bild": "mauer_26_ra_klotz.png",
    "breite": 30,
-   "hoehe": 114,
-   "wechselBild": "mauer_26_scharte.png",
+   "hoehe": 135,
+   "mauer": {
+    "hoehe": 98,
+    "laengs": {
+     "klotz": [
+      {
+       "bild": "mauer_26_l00_klotz.png",
+       "breite": 30,
+       "hoehe": 135
+      },
+      {
+       "bild": "mauer_26_l01_klotz.png",
+       "breite": 30,
+       "hoehe": 135
+      },
+      {
+       "bild": "mauer_26_l02_klotz.png",
+       "breite": 30,
+       "hoehe": 135
+      },
+      {
+       "bild": "mauer_26_l03_klotz.png",
+       "breite": 30,
+       "hoehe": 135
+      },
+      {
+       "bild": "mauer_26_l04_klotz.png",
+       "breite": 30,
+       "hoehe": 135
+      },
+      {
+       "bild": "mauer_26_l05_klotz.png",
+       "breite": 30,
+       "hoehe": 135
+      },
+      {
+       "bild": "mauer_26_l06_klotz.png",
+       "breite": 30,
+       "hoehe": 135
+      },
+      {
+       "bild": "mauer_26_l07_klotz.png",
+       "breite": 30,
+       "hoehe": 135
+      },
+      {
+       "bild": "mauer_26_l08_klotz.png",
+       "breite": 30,
+       "hoehe": 135
+      },
+      {
+       "bild": "mauer_26_l09_klotz.png",
+       "breite": 30,
+       "hoehe": 135
+      },
+      {
+       "bild": "mauer_26_l10_klotz.png",
+       "breite": 30,
+       "hoehe": 135
+      },
+      {
+       "bild": "mauer_26_l11_klotz.png",
+       "breite": 30,
+       "hoehe": 135
+      },
+      {
+       "bild": "mauer_26_l12_klotz.png",
+       "breite": 30,
+       "hoehe": 135
+      },
+      {
+       "bild": "mauer_26_l13_klotz.png",
+       "breite": 30,
+       "hoehe": 135
+      },
+      {
+       "bild": "mauer_26_l14_klotz.png",
+       "breite": 30,
+       "hoehe": 135
+      },
+      {
+       "bild": "mauer_26_l15_klotz.png",
+       "breite": 30,
+       "hoehe": 135
+      }
+     ],
+     "scharte": [
+      {
+       "bild": "mauer_26_l00_scharte.png",
+       "breite": 30,
+       "hoehe": 120
+      },
+      {
+       "bild": "mauer_26_l01_scharte.png",
+       "breite": 30,
+       "hoehe": 120
+      },
+      {
+       "bild": "mauer_26_l02_scharte.png",
+       "breite": 30,
+       "hoehe": 120
+      },
+      {
+       "bild": "mauer_26_l03_scharte.png",
+       "breite": 30,
+       "hoehe": 120
+      },
+      {
+       "bild": "mauer_26_l04_scharte.png",
+       "breite": 30,
+       "hoehe": 120
+      },
+      {
+       "bild": "mauer_26_l05_scharte.png",
+       "breite": 30,
+       "hoehe": 120
+      },
+      {
+       "bild": "mauer_26_l06_scharte.png",
+       "breite": 30,
+       "hoehe": 120
+      },
+      {
+       "bild": "mauer_26_l07_scharte.png",
+       "breite": 30,
+       "hoehe": 120
+      },
+      {
+       "bild": "mauer_26_l08_scharte.png",
+       "breite": 30,
+       "hoehe": 120
+      },
+      {
+       "bild": "mauer_26_l09_scharte.png",
+       "breite": 30,
+       "hoehe": 120
+      },
+      {
+       "bild": "mauer_26_l10_scharte.png",
+       "breite": 30,
+       "hoehe": 120
+      },
+      {
+       "bild": "mauer_26_l11_scharte.png",
+       "breite": 30,
+       "hoehe": 120
+      },
+      {
+       "bild": "mauer_26_l12_scharte.png",
+       "breite": 30,
+       "hoehe": 120
+      },
+      {
+       "bild": "mauer_26_l13_scharte.png",
+       "breite": 30,
+       "hoehe": 120
+      },
+      {
+       "bild": "mauer_26_l14_scharte.png",
+       "breite": 30,
+       "hoehe": 120
+      },
+      {
+       "bild": "mauer_26_l15_scharte.png",
+       "breite": 30,
+       "hoehe": 120
+      }
+     ]
+    },
+    "quer": {
+     "klotz": [
+      {
+       "bild": "mauer_26_q00_klotz.png",
+       "breite": 30,
+       "hoehe": 135
+      },
+      {
+       "bild": "mauer_26_q01_klotz.png",
+       "breite": 30,
+       "hoehe": 135
+      },
+      {
+       "bild": "mauer_26_q02_klotz.png",
+       "breite": 30,
+       "hoehe": 135
+      },
+      {
+       "bild": "mauer_26_q03_klotz.png",
+       "breite": 30,
+       "hoehe": 135
+      },
+      {
+       "bild": "mauer_26_q04_klotz.png",
+       "breite": 30,
+       "hoehe": 135
+      },
+      {
+       "bild": "mauer_26_q05_klotz.png",
+       "breite": 30,
+       "hoehe": 135
+      },
+      {
+       "bild": "mauer_26_q06_klotz.png",
+       "breite": 30,
+       "hoehe": 135
+      },
+      {
+       "bild": "mauer_26_q07_klotz.png",
+       "breite": 30,
+       "hoehe": 135
+      },
+      {
+       "bild": "mauer_26_q08_klotz.png",
+       "breite": 30,
+       "hoehe": 135
+      },
+      {
+       "bild": "mauer_26_q09_klotz.png",
+       "breite": 30,
+       "hoehe": 135
+      },
+      {
+       "bild": "mauer_26_q10_klotz.png",
+       "breite": 30,
+       "hoehe": 135
+      },
+      {
+       "bild": "mauer_26_q11_klotz.png",
+       "breite": 30,
+       "hoehe": 135
+      },
+      {
+       "bild": "mauer_26_q12_klotz.png",
+       "breite": 30,
+       "hoehe": 135
+      },
+      {
+       "bild": "mauer_26_q13_klotz.png",
+       "breite": 30,
+       "hoehe": 135
+      },
+      {
+       "bild": "mauer_26_q14_klotz.png",
+       "breite": 30,
+       "hoehe": 135
+      },
+      {
+       "bild": "mauer_26_q15_klotz.png",
+       "breite": 30,
+       "hoehe": 135
+      }
+     ],
+     "scharte": [
+      {
+       "bild": "mauer_26_q00_scharte.png",
+       "breite": 30,
+       "hoehe": 120
+      },
+      {
+       "bild": "mauer_26_q01_scharte.png",
+       "breite": 30,
+       "hoehe": 120
+      },
+      {
+       "bild": "mauer_26_q02_scharte.png",
+       "breite": 30,
+       "hoehe": 120
+      },
+      {
+       "bild": "mauer_26_q03_scharte.png",
+       "breite": 30,
+       "hoehe": 120
+      },
+      {
+       "bild": "mauer_26_q04_scharte.png",
+       "breite": 30,
+       "hoehe": 120
+      },
+      {
+       "bild": "mauer_26_q05_scharte.png",
+       "breite": 30,
+       "hoehe": 120
+      },
+      {
+       "bild": "mauer_26_q06_scharte.png",
+       "breite": 30,
+       "hoehe": 120
+      },
+      {
+       "bild": "mauer_26_q07_scharte.png",
+       "breite": 30,
+       "hoehe": 120
+      },
+      {
+       "bild": "mauer_26_q08_scharte.png",
+       "breite": 30,
+       "hoehe": 120
+      },
+      {
+       "bild": "mauer_26_q09_scharte.png",
+       "breite": 30,
+       "hoehe": 120
+      },
+      {
+       "bild": "mauer_26_q10_scharte.png",
+       "breite": 30,
+       "hoehe": 120
+      },
+      {
+       "bild": "mauer_26_q11_scharte.png",
+       "breite": 30,
+       "hoehe": 120
+      },
+      {
+       "bild": "mauer_26_q12_scharte.png",
+       "breite": 30,
+       "hoehe": 120
+      },
+      {
+       "bild": "mauer_26_q13_scharte.png",
+       "breite": 30,
+       "hoehe": 120
+      },
+      {
+       "bild": "mauer_26_q14_scharte.png",
+       "breite": 30,
+       "hoehe": 120
+      },
+      {
+       "bild": "mauer_26_q15_scharte.png",
+       "breite": 30,
+       "hoehe": 120
+      }
+     ]
+    },
+    "rand": {
+     "laengs": {
+      "klotz": {
+       "bild": "mauer_26_rl_klotz.png",
+       "breite": 30,
+       "hoehe": 135
+      },
+      "scharte": {
+       "bild": "mauer_26_rl_scharte.png",
+       "breite": 30,
+       "hoehe": 120
+      }
+     },
+     "quer": {
+      "klotz": {
+       "bild": "mauer_26_rq_klotz.png",
+       "breite": 30,
+       "hoehe": 135
+      },
+      "scharte": {
+       "bild": "mauer_26_rq_scharte.png",
+       "breite": 30,
+       "hoehe": 120
+      }
+     },
+     "allein": {
+      "klotz": {
+       "bild": "mauer_26_ra_klotz.png",
+       "breite": 30,
+       "hoehe": 135
+      },
+      "scharte": {
+       "bild": "mauer_26_ra_scharte.png",
+       "breite": 30,
+       "hoehe": 120
+      }
+     }
+    },
+    "regel": {
+     "lauf": "beide Nachbarn einer Achse sind Mauer (isWallConnectionHeightValid)",
+     "laengs": "Platz = x & 15",
+     "quer": "Platz = y & 15",
+     "rand": "ein Nachbar in x -> rand.laengs, einer in y -> rand.quer, keiner -> rand.allein",
+     "krone": "Klotz bei x+y ungerade, sonst Scharte"
+    }
+   },
+   "wechselBild": "mauer_26_ra_scharte.png",
    "wechselBreite": 30,
-   "wechselHoehe": 99,
+   "wechselHoehe": 120,
    "wechsel": "x+y ungerade"
   },
   "35": {
    "name": "Zinnenmauer niedrig",
    "aiv": 13,
    "kacheln": 1,
-   "bild": "mauer_35_klotz.png",
+   "bild": "mauer_35_ra_klotz.png",
    "breite": 30,
-   "hoehe": 87,
-   "wechselBild": "mauer_35_scharte.png",
+   "hoehe": 105,
+   "mauer": {
+    "hoehe": 68,
+    "laengs": {
+     "klotz": [
+      {
+       "bild": "mauer_35_l00_klotz.png",
+       "breite": 30,
+       "hoehe": 105
+      },
+      {
+       "bild": "mauer_35_l01_klotz.png",
+       "breite": 30,
+       "hoehe": 105
+      },
+      {
+       "bild": "mauer_35_l02_klotz.png",
+       "breite": 30,
+       "hoehe": 105
+      },
+      {
+       "bild": "mauer_35_l03_klotz.png",
+       "breite": 30,
+       "hoehe": 105
+      },
+      {
+       "bild": "mauer_35_l04_klotz.png",
+       "breite": 30,
+       "hoehe": 105
+      },
+      {
+       "bild": "mauer_35_l05_klotz.png",
+       "breite": 30,
+       "hoehe": 105
+      },
+      {
+       "bild": "mauer_35_l06_klotz.png",
+       "breite": 30,
+       "hoehe": 105
+      },
+      {
+       "bild": "mauer_35_l07_klotz.png",
+       "breite": 30,
+       "hoehe": 105
+      },
+      {
+       "bild": "mauer_35_l08_klotz.png",
+       "breite": 30,
+       "hoehe": 105
+      },
+      {
+       "bild": "mauer_35_l09_klotz.png",
+       "breite": 30,
+       "hoehe": 105
+      },
+      {
+       "bild": "mauer_35_l10_klotz.png",
+       "breite": 30,
+       "hoehe": 105
+      },
+      {
+       "bild": "mauer_35_l11_klotz.png",
+       "breite": 30,
+       "hoehe": 105
+      },
+      {
+       "bild": "mauer_35_l12_klotz.png",
+       "breite": 30,
+       "hoehe": 105
+      },
+      {
+       "bild": "mauer_35_l13_klotz.png",
+       "breite": 30,
+       "hoehe": 105
+      },
+      {
+       "bild": "mauer_35_l14_klotz.png",
+       "breite": 30,
+       "hoehe": 105
+      },
+      {
+       "bild": "mauer_35_l15_klotz.png",
+       "breite": 30,
+       "hoehe": 105
+      }
+     ],
+     "scharte": [
+      {
+       "bild": "mauer_35_l00_scharte.png",
+       "breite": 30,
+       "hoehe": 90
+      },
+      {
+       "bild": "mauer_35_l01_scharte.png",
+       "breite": 30,
+       "hoehe": 90
+      },
+      {
+       "bild": "mauer_35_l02_scharte.png",
+       "breite": 30,
+       "hoehe": 90
+      },
+      {
+       "bild": "mauer_35_l03_scharte.png",
+       "breite": 30,
+       "hoehe": 90
+      },
+      {
+       "bild": "mauer_35_l04_scharte.png",
+       "breite": 30,
+       "hoehe": 90
+      },
+      {
+       "bild": "mauer_35_l05_scharte.png",
+       "breite": 30,
+       "hoehe": 90
+      },
+      {
+       "bild": "mauer_35_l06_scharte.png",
+       "breite": 30,
+       "hoehe": 90
+      },
+      {
+       "bild": "mauer_35_l07_scharte.png",
+       "breite": 30,
+       "hoehe": 90
+      },
+      {
+       "bild": "mauer_35_l08_scharte.png",
+       "breite": 30,
+       "hoehe": 90
+      },
+      {
+       "bild": "mauer_35_l09_scharte.png",
+       "breite": 30,
+       "hoehe": 90
+      },
+      {
+       "bild": "mauer_35_l10_scharte.png",
+       "breite": 30,
+       "hoehe": 90
+      },
+      {
+       "bild": "mauer_35_l11_scharte.png",
+       "breite": 30,
+       "hoehe": 90
+      },
+      {
+       "bild": "mauer_35_l12_scharte.png",
+       "breite": 30,
+       "hoehe": 90
+      },
+      {
+       "bild": "mauer_35_l13_scharte.png",
+       "breite": 30,
+       "hoehe": 90
+      },
+      {
+       "bild": "mauer_35_l14_scharte.png",
+       "breite": 30,
+       "hoehe": 90
+      },
+      {
+       "bild": "mauer_35_l15_scharte.png",
+       "breite": 30,
+       "hoehe": 90
+      }
+     ]
+    },
+    "quer": {
+     "klotz": [
+      {
+       "bild": "mauer_35_q00_klotz.png",
+       "breite": 30,
+       "hoehe": 105
+      },
+      {
+       "bild": "mauer_35_q01_klotz.png",
+       "breite": 30,
+       "hoehe": 105
+      },
+      {
+       "bild": "mauer_35_q02_klotz.png",
+       "breite": 30,
+       "hoehe": 105
+      },
+      {
+       "bild": "mauer_35_q03_klotz.png",
+       "breite": 30,
+       "hoehe": 105
+      },
+      {
+       "bild": "mauer_35_q04_klotz.png",
+       "breite": 30,
+       "hoehe": 105
+      },
+      {
+       "bild": "mauer_35_q05_klotz.png",
+       "breite": 30,
+       "hoehe": 105
+      },
+      {
+       "bild": "mauer_35_q06_klotz.png",
+       "breite": 30,
+       "hoehe": 105
+      },
+      {
+       "bild": "mauer_35_q07_klotz.png",
+       "breite": 30,
+       "hoehe": 105
+      },
+      {
+       "bild": "mauer_35_q08_klotz.png",
+       "breite": 30,
+       "hoehe": 105
+      },
+      {
+       "bild": "mauer_35_q09_klotz.png",
+       "breite": 30,
+       "hoehe": 105
+      },
+      {
+       "bild": "mauer_35_q10_klotz.png",
+       "breite": 30,
+       "hoehe": 105
+      },
+      {
+       "bild": "mauer_35_q11_klotz.png",
+       "breite": 30,
+       "hoehe": 105
+      },
+      {
+       "bild": "mauer_35_q12_klotz.png",
+       "breite": 30,
+       "hoehe": 105
+      },
+      {
+       "bild": "mauer_35_q13_klotz.png",
+       "breite": 30,
+       "hoehe": 105
+      },
+      {
+       "bild": "mauer_35_q14_klotz.png",
+       "breite": 30,
+       "hoehe": 105
+      },
+      {
+       "bild": "mauer_35_q15_klotz.png",
+       "breite": 30,
+       "hoehe": 105
+      }
+     ],
+     "scharte": [
+      {
+       "bild": "mauer_35_q00_scharte.png",
+       "breite": 30,
+       "hoehe": 90
+      },
+      {
+       "bild": "mauer_35_q01_scharte.png",
+       "breite": 30,
+       "hoehe": 90
+      },
+      {
+       "bild": "mauer_35_q02_scharte.png",
+       "breite": 30,
+       "hoehe": 90
+      },
+      {
+       "bild": "mauer_35_q03_scharte.png",
+       "breite": 30,
+       "hoehe": 90
+      },
+      {
+       "bild": "mauer_35_q04_scharte.png",
+       "breite": 30,
+       "hoehe": 90
+      },
+      {
+       "bild": "mauer_35_q05_scharte.png",
+       "breite": 30,
+       "hoehe": 90
+      },
+      {
+       "bild": "mauer_35_q06_scharte.png",
+       "breite": 30,
+       "hoehe": 90
+      },
+      {
+       "bild": "mauer_35_q07_scharte.png",
+       "breite": 30,
+       "hoehe": 90
+      },
+      {
+       "bild": "mauer_35_q08_scharte.png",
+       "breite": 30,
+       "hoehe": 90
+      },
+      {
+       "bild": "mauer_35_q09_scharte.png",
+       "breite": 30,
+       "hoehe": 90
+      },
+      {
+       "bild": "mauer_35_q10_scharte.png",
+       "breite": 30,
+       "hoehe": 90
+      },
+      {
+       "bild": "mauer_35_q11_scharte.png",
+       "breite": 30,
+       "hoehe": 90
+      },
+      {
+       "bild": "mauer_35_q12_scharte.png",
+       "breite": 30,
+       "hoehe": 90
+      },
+      {
+       "bild": "mauer_35_q13_scharte.png",
+       "breite": 30,
+       "hoehe": 90
+      },
+      {
+       "bild": "mauer_35_q14_scharte.png",
+       "breite": 30,
+       "hoehe": 90
+      },
+      {
+       "bild": "mauer_35_q15_scharte.png",
+       "breite": 30,
+       "hoehe": 90
+      }
+     ]
+    },
+    "rand": {
+     "laengs": {
+      "klotz": {
+       "bild": "mauer_35_rl_klotz.png",
+       "breite": 30,
+       "hoehe": 105
+      },
+      "scharte": {
+       "bild": "mauer_35_rl_scharte.png",
+       "breite": 30,
+       "hoehe": 90
+      }
+     },
+     "quer": {
+      "klotz": {
+       "bild": "mauer_35_rq_klotz.png",
+       "breite": 30,
+       "hoehe": 105
+      },
+      "scharte": {
+       "bild": "mauer_35_rq_scharte.png",
+       "breite": 30,
+       "hoehe": 90
+      }
+     },
+     "allein": {
+      "klotz": {
+       "bild": "mauer_35_ra_klotz.png",
+       "breite": 30,
+       "hoehe": 105
+      },
+      "scharte": {
+       "bild": "mauer_35_ra_scharte.png",
+       "breite": 30,
+       "hoehe": 90
+      }
+     }
+    },
+    "regel": {
+     "lauf": "beide Nachbarn einer Achse sind Mauer (isWallConnectionHeightValid)",
+     "laengs": "Platz = x & 15",
+     "quer": "Platz = y & 15",
+     "rand": "ein Nachbar in x -> rand.laengs, einer in y -> rand.quer, keiner -> rand.allein",
+     "krone": "Klotz bei x+y ungerade, sonst Scharte"
+    }
+   },
+   "wechselBild": "mauer_35_ra_scharte.png",
    "wechselBreite": 30,
-   "wechselHoehe": 72,
+   "wechselHoehe": 90,
    "wechsel": "x+y ungerade"
   },
   "46": {
    "name": "Niedrige Mauer",
    "aiv": 11,
    "kacheln": 1,
-   "bild": "mauer_46_klotz.png",
+   "bild": "mauer_46_ra_klotz.png",
    "breite": 30,
-   "hoehe": 68
+   "hoehe": 78,
+   "mauer": {
+    "hoehe": 60,
+    "laengs": {
+     "klotz": [
+      {
+       "bild": "mauer_46_l00_klotz.png",
+       "breite": 30,
+       "hoehe": 78
+      },
+      {
+       "bild": "mauer_46_l01_klotz.png",
+       "breite": 30,
+       "hoehe": 78
+      },
+      {
+       "bild": "mauer_46_l02_klotz.png",
+       "breite": 30,
+       "hoehe": 78
+      },
+      {
+       "bild": "mauer_46_l03_klotz.png",
+       "breite": 30,
+       "hoehe": 78
+      },
+      {
+       "bild": "mauer_46_l04_klotz.png",
+       "breite": 30,
+       "hoehe": 78
+      },
+      {
+       "bild": "mauer_46_l05_klotz.png",
+       "breite": 30,
+       "hoehe": 78
+      },
+      {
+       "bild": "mauer_46_l06_klotz.png",
+       "breite": 30,
+       "hoehe": 78
+      },
+      {
+       "bild": "mauer_46_l07_klotz.png",
+       "breite": 30,
+       "hoehe": 78
+      },
+      {
+       "bild": "mauer_46_l08_klotz.png",
+       "breite": 30,
+       "hoehe": 78
+      },
+      {
+       "bild": "mauer_46_l09_klotz.png",
+       "breite": 30,
+       "hoehe": 78
+      },
+      {
+       "bild": "mauer_46_l10_klotz.png",
+       "breite": 30,
+       "hoehe": 78
+      },
+      {
+       "bild": "mauer_46_l11_klotz.png",
+       "breite": 30,
+       "hoehe": 78
+      },
+      {
+       "bild": "mauer_46_l12_klotz.png",
+       "breite": 30,
+       "hoehe": 78
+      },
+      {
+       "bild": "mauer_46_l13_klotz.png",
+       "breite": 30,
+       "hoehe": 78
+      },
+      {
+       "bild": "mauer_46_l14_klotz.png",
+       "breite": 30,
+       "hoehe": 78
+      },
+      {
+       "bild": "mauer_46_l15_klotz.png",
+       "breite": 30,
+       "hoehe": 78
+      }
+     ]
+    },
+    "quer": {
+     "klotz": [
+      {
+       "bild": "mauer_46_q00_klotz.png",
+       "breite": 30,
+       "hoehe": 78
+      },
+      {
+       "bild": "mauer_46_q01_klotz.png",
+       "breite": 30,
+       "hoehe": 78
+      },
+      {
+       "bild": "mauer_46_q02_klotz.png",
+       "breite": 30,
+       "hoehe": 78
+      },
+      {
+       "bild": "mauer_46_q03_klotz.png",
+       "breite": 30,
+       "hoehe": 78
+      },
+      {
+       "bild": "mauer_46_q04_klotz.png",
+       "breite": 30,
+       "hoehe": 78
+      },
+      {
+       "bild": "mauer_46_q05_klotz.png",
+       "breite": 30,
+       "hoehe": 78
+      },
+      {
+       "bild": "mauer_46_q06_klotz.png",
+       "breite": 30,
+       "hoehe": 78
+      },
+      {
+       "bild": "mauer_46_q07_klotz.png",
+       "breite": 30,
+       "hoehe": 78
+      },
+      {
+       "bild": "mauer_46_q08_klotz.png",
+       "breite": 30,
+       "hoehe": 78
+      },
+      {
+       "bild": "mauer_46_q09_klotz.png",
+       "breite": 30,
+       "hoehe": 78
+      },
+      {
+       "bild": "mauer_46_q10_klotz.png",
+       "breite": 30,
+       "hoehe": 78
+      },
+      {
+       "bild": "mauer_46_q11_klotz.png",
+       "breite": 30,
+       "hoehe": 78
+      },
+      {
+       "bild": "mauer_46_q12_klotz.png",
+       "breite": 30,
+       "hoehe": 78
+      },
+      {
+       "bild": "mauer_46_q13_klotz.png",
+       "breite": 30,
+       "hoehe": 78
+      },
+      {
+       "bild": "mauer_46_q14_klotz.png",
+       "breite": 30,
+       "hoehe": 78
+      },
+      {
+       "bild": "mauer_46_q15_klotz.png",
+       "breite": 30,
+       "hoehe": 78
+      }
+     ]
+    },
+    "rand": {
+     "laengs": {
+      "klotz": {
+       "bild": "mauer_46_rl_klotz.png",
+       "breite": 30,
+       "hoehe": 78
+      }
+     },
+     "quer": {
+      "klotz": {
+       "bild": "mauer_46_rq_klotz.png",
+       "breite": 30,
+       "hoehe": 78
+      }
+     },
+     "allein": {
+      "klotz": {
+       "bild": "mauer_46_ra_klotz.png",
+       "breite": 30,
+       "hoehe": 78
+      }
+     }
+    },
+    "regel": {
+     "lauf": "beide Nachbarn einer Achse sind Mauer (isWallConnectionHeightValid)",
+     "laengs": "Platz = x & 15",
+     "quer": "Platz = y & 15",
+     "rand": "ein Nachbar in x -> rand.laengs, einer in y -> rand.quer, keiner -> rand.allein",
+     "krone": "immer flach"
+    }
+   }
   },
   "50": {
    "name": "Bogenmacher",
