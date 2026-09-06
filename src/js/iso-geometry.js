@@ -367,8 +367,33 @@
   // Das Spiel stellt eine Burg nicht so hin, wie sie in der Datei steht: als
   // ERSTES ruft applyAIV (0x004ef0d0) rotateAIV (0x004ed0b0) und dreht das
   // ganze 100x100-Raster. Erst danach wird jedes Feld auf die Karte gelegt.
-  // Der Ansatzpunkt bleibt dabei unveraendert - Dorffeld (43,43) sitzt immer
-  // auf dem Startplatz, gedreht oder nicht.
+  //
+  // Der VERSATZ bleibt dabei unveraendert: keepXOffset = keepX - 43 wird in
+  // setKeepOffsetAndOrientation (0x004ecf70) EINMAL gesetzt und danach von
+  // niemandem mehr angefasst - nachgesehen an allen Verweisen auf
+  // aivs[].keepXOffset/keepYOffset, geschrieben nur dort, gelesen nur in
+  // applyAIV und computeAIVPlacementFit (0x004ef8c0). Dorffeld (43,43) liegt
+  // also immer auf dem Startplatz der Karte.
+  //
+  // DER BERGFRIED LIEGT TROTZDEM NICHT IMMER DORT. Er belegt in der Datei die
+  // Felder (43,43) bis (49,49) - gemessen an allen 128 .aiv des Spiels, je 49
+  // Felder mit Bauwert 38 (AIVBT_KEEP2), Rahmen immer (43,43)-(49,49). Gedreht
+  // wird um die MITTE des 100x100-Rasters, und die Mitte des Bergfrieds liegt
+  // 3,5 Felder daneben. Nach einer Vierteldrehung sitzt er darum auf
+  //   Drehung 0: (43,43)   2: (43,50)   4: (50,50)   6: (50,43)
+  // und liegt damit bis zu 7 Felder neben dem 7x7-Block, den die Karte selbst
+  // traegt. Das ist kein Rechenfehler, sondern was das Spiel tut:
+  //   applyAIV baut den Bergfried NICHT als Bauschritt (Bauwert 38 faellt in
+  //   den eigenen Zweig, der nur DAT_AIVState.keepX/keepY setzt - der erste
+  //   38er im gedrehten Raster, zeilenweise gesucht, plus keepXOffset;
+  //   geschrieben nach 0x018a5b60/0x018a5b64 bei 0x004ef199 und 0x004ef1ae).
+  //   LaunchSkirmishGame (0x00441270) liest genau diese beiden Zellen bei
+  //   0x00441eb4/0x00441eb9 und ruft damit placeBuilding(..., M_MAPPER_KEEP2,
+  //   7, keepOrientation). Den Bergfried, den die Karte mitbringt, hat es
+  //   vorher zerstoert (destroyBuildingAndLinkedDuplicates, derselbe Ablauf,
+  //   nachdem es dessen x/y als Startplatz gemerkt hat).
+  // Der gezeichnete Bergfried gehoert also auf den GEDREHTEN Platz, nicht auf
+  // den Block der Karte. Wer ihn "zurechtrueckt", baut den Fehler erst ein.
   //
   // Die drei Kopierschleifen in rotateAIV, zurueckgelesen als Abbildung
   // "wohin wandert ein Feld" (vorwaerts, nicht rueckwaerts):

@@ -835,3 +835,100 @@ test('die Ansicht dreht die Burg und rechnet die Maus zurueck', () => {
   assert.match(iso, /turned '/);
   assert.match(iso, /game value/);
 });
+
+// ------------------------------------------- der Bergfried auf der Karte
+//
+// Dieser Test geht den ECHTEN Weg des Werkzeugs - parseAiv, verzeichnis.json,
+// collectItems, rotateGrid, mapTileForGrid - und nicht einen Nachbau davon.
+// Verglichen wird gegen die Regel des Spiels, aus dem Programm gelesen:
+//
+//   applyAIV (0x004ef0d0) baut den Bergfried NICHT als Bauschritt. Bauwert 38
+//   (AIVBT_KEEP2) hat einen eigenen Zweig, der nur zwei Zahlen setzt:
+//   DAT_AIVState.keepX/keepY = keepXOffset/keepYOffset + dem ERSTEN 38er im
+//   gedrehten Raster, zeilenweise gesucht (Schreibbefehle 0x004ef199 und
+//   0x004ef1ae nach 0x018a5b60 / 0x018a5b64).
+//   LaunchSkirmishGame (0x00441270) liest genau diese beiden Zellen bei
+//   0x00441eb4 / 0x00441eb9 und ruft damit
+//   placeBuilding(..., keepX, keepY, M_MAPPER_KEEP2, 7, keepOrientation).
+//   Den Bergfried der KARTE hat es vorher zerstoert, nachdem es dessen x/y
+//   als Startplatz gemerkt hat.
+//
+// Folge, und der Grund fuer diesen Test: der Bergfried liegt NUR bei Drehung 0
+// auf dem 7x7-Block der Karte. Bei 2, 4 und 6 liegt er 7 Felder daneben, weil
+// um die Mitte des 100x100-Rasters gedreht wird und der Bergfried mit seinen
+// Feldern (43,43) bis (49,49) 3,5 Felder neben dieser Mitte sitzt. Wer ihn
+// "aufs Feld zurueckrueckt", baut den Fehler erst ein.
+test('der Bergfried landet dort, wo LaunchSkirmishGame ihn hinsetzt', async (t) => {
+  const { listGameMaps, readGameMap } = require(path.join(root, 'src', 'node', 'game-map.js'));
+  const { maps, gameRoot } = listGameMaps(null);
+  if (maps.length < 20 || !gameRoot) { t.skip('kein vollstaendiger Kartenordner gefunden'); return; }
+  const aivOrdner = path.join(gameRoot, 'aiv');
+  let namen = [];
+  try { namen = fs.readdirSync(aivOrdner).filter(name => name.toLowerCase().endsWith('.aiv')); }
+  catch { namen = []; }
+  if (namen.length < 10) { t.skip('kein aiv-Ordner des Spiels gefunden'); return; }
+
+  const { parseAiv, internals } = await import('../src/node/aiv-codec.mjs');
+  const katalog = require(path.join(root, 'assets', 'aiv', 'iso', 'verzeichnis.json'));
+
+  // Wo das Spiel den Bergfried sucht: erster Bauwert 38 im gedrehten Raster.
+  // Gedreht wird mit dem Schleifen-Nachbau von rotateAIV, nicht mit rotateGrid
+  // - sonst prueft sich die Formel gegen sich selbst.
+  function spielFeld(constructions, orientation) {
+    const gedreht = rotateAIVNachbau(constructions, orientation);
+    for (let y = 0; y < 100; y += 1)
+      for (let x = 0; x < 100; x += 1)
+        if (gedreht[y * 100 + x] === 38) return { x, y };
+    return null;
+  }
+
+  const burgen = namen.map(name => {
+    const bytes = fs.readFileSync(path.join(aivOrdner, name));
+    const abschnitt = internals.readDirectory(bytes).sections.get(internals.SECTION_IDS.bmap_id);
+    const constructions = Array.from(new Uint16Array(abschnitt.buffer, abschnitt.byteOffset, 10000));
+    // genau der Weg der Ansicht: erst einsammeln, dann drehen
+    const bergfried = geometry.collectItems(parseAiv(bytes), katalog)
+      .find(item => Number(item.itemType) === 61);
+    assert.ok(bergfried, name + ': kein Bergfried im Bauplan');
+    assert.deepEqual({ gx: bergfried.gx, gy: bergfried.gy, tiles: bergfried.tiles },
+                     { gx: 43, gy: 43, tiles: 7 },
+                     name + ': der Bergfried sitzt nicht auf (43,43) mit 7 Feldern');
+    const spiel = new Map([0, 2, 4, 6].map(dreh => [dreh, spielFeld(constructions, dreh)]));
+    return { name, bergfried, spiel };
+  });
+
+  const SOLLVERSATZ = { 0: '0/0', 2: '0/7', 4: '7/7', 6: '7/0' };
+  const versatz = new Map();
+  let plaetze = 0;
+  let vergleiche = 0;
+  for (const eintrag of maps) {
+    const karte = readGameMap(eintrag.path, null);
+    for (const keep of karte.keeps) {
+      plaetze += 1;
+      const dreh = Number(keep.orientation) || 0;
+      for (const burg of burgen) {
+        const gedreht = geometry.rotateGrid(burg.bergfried.gx, burg.bergfried.gy,
+                                            burg.bergfried.tiles, dreh);
+        const unser = geometry.mapTileForGrid(gedreht.gx, gedreht.gy, keep);
+        const feld = burg.spiel.get(dreh);
+        vergleiche += 1;
+        assert.deepEqual(unser, { mx: keep.x - 43 + feld.x, my: keep.y - 43 + feld.y },
+          `${eintrag.name} / ${burg.name}: Bergfried nicht dort, wo placeBuilding ihn hinsetzt`);
+        if (burg === burgen[0]) {
+          const schluessel = (unser.mx - keep.x) + '/' + (unser.my - keep.y);
+          versatz.set(schluessel, (versatz.get(schluessel) || 0) + 1);
+          assert.equal(schluessel, SOLLVERSATZ[dreh],
+            `${eintrag.name}: Drehung ${dreh} gehoert Versatz ${SOLLVERSATZ[dreh]}`);
+        }
+      }
+    }
+  }
+  assert.ok(plaetze > 400, 'es wurden genug Startplaetze geprueft');
+  assert.ok(vergleiche > 50000, 'es wurden genug Burgen geprueft');
+  // Nur bei Drehung 0 deckt sich der Bergfried mit dem Block der Karte.
+  const treffer = versatz.get('0/0') || 0;
+  assert.ok(treffer > 0 && treffer < plaetze,
+            'auf dem Block liegt er nur bei Drehung 0 - hier ' + treffer + ' von ' + plaetze);
+  for (const schluessel of versatz.keys())
+    assert.ok(['0/0', '0/7', '7/0', '7/7'].includes(schluessel), 'unbekannter Versatz ' + schluessel);
+});

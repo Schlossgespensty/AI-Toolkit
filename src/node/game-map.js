@@ -170,6 +170,12 @@ function previewPng(preview) {
 // Ein Startplatz ist ein steinerner Bergfried: 7x7 Felder mit Bautyp 41 in der
 // Bauschicht. Gesucht wird die linke obere Ecke - genau die Ecke, auf der das
 // Dorffeld (43,43) sitzt (setKeepOffsetAndOrientation, 0x004ecf70).
+//
+// Dieser Block ist der Startplatz, aber NICHT der spaetere Standort des
+// Bergfrieds: LaunchSkirmishGame (0x00441270) merkt sich x/y, zerstoert das
+// Gebaeude und setzt den Bergfried des Spielers neu - bei einer KI an dem
+// Platz, auf den die Drehung ihn geschoben hat (bis zu 7 Felder daneben,
+// siehe iso-geometry.js, rotateGrid).
 function findKeeps(buildings) {
   if (!buildings || buildings.length < MAP_TILES) return [];
   const isKeep = (x, y) => {
