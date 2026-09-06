@@ -265,3 +265,38 @@ test('a crenellated wall alternates merlon and embrasure, tile by tile', () => {
   assert.match(malen, /image\(variant\.bild\)/);
   assert.match(malen, /geo\.spriteRect\(variant, gx, gy/);
 });
+
+test('dragging a wall shows the whole run at half opacity, not just one tile', () => {
+  const editor = fs.readFileSync(path.join(root, 'src', 'js', 'castle-editor.js'), 'utf8');
+  const vorschau = editor.slice(editor.indexOf('getPlacementPreview()'),
+                                editor.indexOf('getContent: outputContent'));
+  // Laeuft ein Zug, ist er selbst die Vorschau - nicht das Feld unter dem Zeiger.
+  assert.match(vorschau, /if \(state\.brushOffsets && state\.brushOffsets\.length\)/);
+  assert.match(vorschau, /itemType: state\.brushTypes\[i\] \?\? erster/,
+    'jedes Feld nennt sein eigenes Bauwerk - eine Treppe legt mehrere');
+
+  const iso = fs.readFileSync(path.join(root, 'src', 'js', 'iso-view.js'), 'utf8');
+  const malen = iso.slice(iso.indexOf('function drawPreview'), iso.indexOf('function drawSelection'));
+  assert.match(malen, /ctx\.globalAlpha = 0\.5/, 'halbdurchsichtig wie bei den Gebaeuden');
+  assert.match(malen, /feld\.itemType != null \? feld\.itemType : vorschau\.itemType/,
+    'und die Ansicht schlaegt je Feld nach');
+});
+
+test('picking a wall opens the line tool, without overwriting the remembered one', () => {
+  const script = fs.readFileSync(path.join(root, 'src', 'js', 'castle-editor.js'), 'utf8');
+  const waehlen = script.slice(script.indexOf('function selectItem('), script.indexOf('function updateSelectedItemInfo'));
+  assert.match(waehlen, /if \(isWallType\(type\)\) setTool\('line', false\)/,
+    'Mauern werden gezogen, nicht getupft');
+  assert.match(waehlen, /else setTool\(state\.lastPlacementTool\)/,
+    'alles andere kommt zurueck zu dem, was der Nutzer gewaehlt hatte');
+  // Welche Bauten Mauern sind, steht in der Konfiguration - nicht hier.
+  const wall = script.slice(script.indexOf('function isWallType('), script.indexOf("function setTool(tool"));
+  assert.match(wall, /state\.categories && state\.categories\.Walls/);
+  const kategorien = JSON.parse(fs.readFileSync(path.join(root, 'config', 'aiv_categories.json'), 'utf8'));
+  assert.deepEqual(kategorien.categories.Walls.sort(), ['25', '26', '35', '46'],
+    'die vier Mauern - aendert sich das, aendert sich das Verhalten mit');
+  // Das Merken haengt am Schalter, nicht am Zufall.
+  const setzen = script.slice(script.indexOf('function setTool(tool'), script.indexOf('function selectItem('));
+  assert.match(setzen, /function setTool\(tool, remember = true\)/);
+  assert.match(setzen, /if \(remember && isPlacementTool\(tool\) && !lineOnly\)/);
+});

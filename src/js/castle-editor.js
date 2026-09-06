@@ -1565,11 +1565,22 @@
     if (state.currentItemType == null && isPlacementTool(state.tool)) setTool('select');
   }
 
-  function setTool(tool) {
+  // A wall is dragged, not dabbed. Which items count as walls is not a list of
+  // our own: it is the "Walls" category from config/aiv_categories.json, so it
+  // stays right when that file changes.
+  function isWallType(type) {
+    const walls = state.categories && state.categories.Walls;
+    return Array.isArray(walls) && walls.includes(String(type));
+  }
+
+  // remember: false for a tool the user did not pick himself. Without it the
+  // line tool that a wall brings along would become the remembered choice and
+  // then greet him again on the next building.
+  function setTool(tool, remember = true) {
     const lineOnly = state.currentItemType != null && isLineSequence(state.currentItemType);
     if (lineOnly && isPlacementTool(tool)) tool = 'line';
     state.tool = tool;
-    if (isPlacementTool(tool) && !lineOnly) state.lastPlacementTool = tool;
+    if (remember && isPlacementTool(tool) && !lineOnly) state.lastPlacementTool = tool;
     if (tool !== 'copy') state.copyBuffer = null;
     if (tool === 'copy') state.currentItemType = null;
     document.querySelectorAll('.castleTool').forEach(btn => btn.classList.toggle('active', btn.dataset.tool === tool));
@@ -1673,7 +1684,11 @@
     // und dann den Ersatz aus der Liste holt, steht ohne Auswahl da - und der
     // Ersetzen-Knopf war grau, waehrend daneben noch dreissig Mauern
     // aufgezaehlt waren.
-    setTool(state.lastPlacementTool);
+    // Walls open with the line tool - that is how they are built. The choice is
+    // not remembered, so the next ordinary building comes back to what the user
+    // had picked before.
+    if (isWallType(type)) setTool('line', false);
+    else setTool(state.lastPlacementTool);
     renderPalette();
     renderBuildList();
     updateSelectedItemInfo();
@@ -3105,12 +3120,27 @@
     // Zeiger auf der Karte und koennte sie sonst nicht zeigen.
     getPlacementPreview() {
       if (state.currentItemType == null || !isPlacementTool(state.tool)) return null;
+      const erster = lineSequence(state.currentItemType)[0] ?? state.currentItemType;
+
+      // Zieht der Nutzer gerade, ist der Zug selbst die Vorschau - jedes Feld
+      // mit dem Bauwerk, das dort hinkaeme. Vorher zeigte die schraege Ansicht
+      // nur das Feld unter dem Zeiger, und man sah beim Ziehen einer Mauer
+      // nicht, was entsteht.
+      if (state.brushOffsets && state.brushOffsets.length) {
+        return {
+          itemType: erster,
+          tiles: state.brushOffsets.map((off, i) => {
+            const xy = offsetToXY(off);
+            return { x: xy.x, y: xy.y, itemType: state.brushTypes[i] ?? erster };
+          })
+        };
+      }
+
       if (!state.hoverTile) return null;
-      const type = lineSequence(state.currentItemType)[0] ?? state.currentItemType;
       const felder = state.tool === 'brush' && state.brushSize > 1
         ? geometry.brushTiles(state.hoverTile, state.brushSize)
         : [state.hoverTile];
-      return { itemType: type, tiles: felder };
+      return { itemType: erster, tiles: felder };
     },
     getMarquee() {
       const zieht = state.gesture === 'select-marquee' || state.gesture === 'copy-marquee'

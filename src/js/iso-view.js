@@ -183,12 +183,16 @@
     if (!editor || !editor.getPlacementPreview) return;
     const vorschau = editor.getPlacementPreview();
     if (!vorschau || !vorschau.tiles.length) return;
-    const eintrag = state.catalogue && state.catalogue.gegenstaende
-      ? state.catalogue.gegenstaende[String(vorschau.itemType)] : null;
+    const katalog = state.catalogue && state.catalogue.gegenstaende;
+    const nachschlagen = type => (katalog ? katalog[String(type)] : null) || null;
+    // A dragged line can lay down several different items - a stair does. Each
+    // tile therefore names its own, and only falls back to the one for the
+    // whole preview.
     ctx.save();
     ctx.globalAlpha = 0.5;
     for (const feld of vorschau.tiles) {
       const gx = feld.x, gy = geo.GRID - 1 - feld.y;
+      const eintrag = nachschlagen(feld.itemType != null ? feld.itemType : vorschau.itemType);
       const kacheln = eintrag ? eintrag.kacheln : 1;
       if (!eintrag || !drawSprite(ctx, eintrag, gx, gy, kacheln))
         drawDiamond(ctx, gx, gy, kacheln, 'rgba(120,220,140,.45)', 'rgba(150,240,170,.9)');
