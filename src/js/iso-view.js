@@ -77,6 +77,36 @@
     return (editor && editor.hasDocument && editor.hasDocument()) ? editor.getDocument() : null;
   }
 
+  // The ground under the castle: a terrain picture from the game, repeated
+  // rather than stretched and scaled with the zoom, so that one tile in the
+  // picture is one tile in the editor. The game's tile is 30 points wide and
+  // ours is HALF_W*2 = 32, hence the factor. Asked for by Monsterfish; Daniel
+  // added the condition that the scale has to match.
+  //
+  // The path handed in is the map diamond, so the ground stops at the map edge
+  // and everything outside stays dark. If the picture is not there or the
+  // browser will not make a pattern from it, the old flat colour is used - the
+  // view must never depend on a decoration.
+  const GAME_TILE_WIDTH = 30;
+
+  function paintGround(ctx, width, height) {
+    const img = image('grund.png');
+    let pattern = null;
+    if (img && img.complete && img.naturalWidth) {
+      try { pattern = ctx.createPattern(img, 'repeat'); } catch { pattern = null; }
+    }
+    if (!pattern) { ctx.fillStyle = '#232a1c'; ctx.fill(); return; }
+    const scale = ((geo.HALF_W * 2) / GAME_TILE_WIDTH) * state.view.zoom;
+    ctx.save();
+    ctx.clip();
+    ctx.translate(state.view.panX, state.view.panY);
+    ctx.scale(scale, scale);
+    ctx.fillStyle = pattern;
+    ctx.fillRect(-state.view.panX / scale, -state.view.panY / scale,
+                 width / scale, height / scale);
+    ctx.restore();
+  }
+
   function drawSprite(ctx, sprite, gx, gy, tiles) {
     const variant = geo.variantFor(sprite, gx, gy);
     const img = image(variant.bild);
@@ -142,14 +172,13 @@
     ctx.clearRect(0, 0, width, height);
     ctx.imageSmoothingEnabled = state.view.zoom < 1;
 
-    ctx.fillStyle = '#232a1c';
     ctx.beginPath();
     [[0, 0], [geo.GRID, 0], [geo.GRID, geo.GRID], [0, geo.GRID]].forEach(([cx, cy], index) => {
       const [px, py] = geo.isoPoint(cx, cy, state.view);
       if (index === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
     });
     ctx.closePath();
-    ctx.fill();
+    paintGround(ctx, width, height);
 
     const items = geo.collectItems(currentDocument(), state.catalogue);
     for (const plate of geo.collectPlates(items).sort(geo.byDepth))

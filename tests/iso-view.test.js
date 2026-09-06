@@ -300,3 +300,19 @@ test('picking a wall opens the line tool, without overwriting the remembered one
   assert.match(setzen, /function setTool\(tool, remember = true\)/);
   assert.match(setzen, /if \(remember && isPlacementTool\(tool\) && !lineOnly\)/);
 });
+
+test('the ground is tiled at the same scale as the map, not stretched', () => {
+  const iso = fs.readFileSync(path.join(root, 'src', 'js', 'iso-view.js'), 'utf8');
+  const grund = iso.slice(iso.indexOf('function paintGround'), iso.indexOf('function drawSprite'));
+  assert.match(grund, /createPattern\(img, 'repeat'\)/, 'wiederholt, nicht gestreckt');
+  // Ein Feld im Bild muss ein Feld im Editor sein: Spielkachel 30, unsere 32.
+  assert.match(grund, /\(\(geo\.HALF_W \* 2\) \/ GAME_TILE_WIDTH\) \* state\.view\.zoom/);
+  assert.equal(geometry.HALF_W * 2, 32, 'unsere Kachel ist 32 Punkte breit');
+  assert.match(iso, /const GAME_TILE_WIDTH = 30/, 'die des Spiels 30');
+  // Mitwandern beim Schieben, und am Kartenrand ist Schluss.
+  assert.match(grund, /ctx\.translate\(state\.view\.panX, state\.view\.panY\)/);
+  assert.match(grund, /ctx\.clip\(\)/, 'die Karten-Raute schneidet den Grund ab');
+  // Faellt das Bild aus, bleibt die Ansicht heil.
+  assert.match(grund, /if \(!pattern\) \{ ctx\.fillStyle = '#232a1c'; ctx\.fill\(\); return; \}/);
+  assert.ok(fs.existsSync(path.join(root, 'assets', 'aiv', 'iso', 'grund.png')));
+});
