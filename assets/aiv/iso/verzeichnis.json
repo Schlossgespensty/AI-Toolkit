@@ -1,0 +1,680 @@
+{
+ "erzeugt": "2026-09-05T20:25:44.092Z",
+ "feld": 32,
+ "gegenstaende": {
+  "25": {
+   "name": "Steinmauer",
+   "aiv": 10,
+   "kacheln": 1,
+   "bild": "tile_buildings1_0.png",
+   "breite": 30,
+   "hoehe": 97
+  },
+  "26": {
+   "name": "Zinnenmauer hoch",
+   "aiv": 12,
+   "kacheln": 1,
+   "bild": "tile_buildings1_2.png",
+   "breite": 30,
+   "hoehe": 97
+  },
+  "35": {
+   "name": "Zinnenmauer niedrig",
+   "aiv": 13,
+   "kacheln": 1,
+   "bild": "tile_buildings1_1.png",
+   "breite": 30,
+   "hoehe": 70
+  },
+  "46": {
+   "name": "Niedrige Mauer",
+   "aiv": 11,
+   "kacheln": 1,
+   "bild": "tile_buildings1_1.png",
+   "breite": 30,
+   "hoehe": 70
+  },
+  "50": {
+   "name": "Bogenmacher",
+   "aiv": 51,
+   "kacheln": 4,
+   "bild": "tile_workshops_128.png",
+   "breite": 126,
+   "hoehe": 122
+  },
+  "51": {
+   "name": "Holzfaellerhuette",
+   "aiv": 61,
+   "kacheln": 3,
+   "bild": "tile_buildings2_0.png",
+   "breite": 94,
+   "hoehe": 84
+  },
+  "52": {
+   "name": "Lagerplatz",
+   "aiv": 60,
+   "kacheln": 5,
+   "bild": "tile_buildings2_25.png",
+   "breite": 158,
+   "hoehe": 92
+  },
+  "54": {
+   "name": "Huette",
+   "aiv": 80,
+   "kacheln": 4,
+   "bild": "tile_buildings2_764.png",
+   "breite": 126,
+   "hoehe": 111
+  },
+  "55": {
+   "name": "Ochsenkarren",
+   "aiv": 63,
+   "kacheln": 2,
+   "bild": "tile_buildings2_354.png",
+   "breite": 62,
+   "hoehe": 59
+  },
+  "56": {
+   "name": "Steinbruch",
+   "aiv": 62,
+   "kacheln": 6,
+   "bild": "tile_buildings2_173.png",
+   "breite": 190,
+   "hoehe": 214
+  },
+  "61": {
+   "name": "Bergfried",
+   "aiv": 38,
+   "kacheln": 7,
+   "bild": "tile_castle_713.png",
+   "breite": 222,
+   "hoehe": 210,
+   "platten": [
+    {
+     "dx": 0,
+     "dy": 8,
+     "kacheln": 7,
+     "bild": "tile_buildings1_23.png",
+     "breite": 222,
+     "hoehe": 112
+    },
+    {
+     "dx": 7,
+     "dy": 2,
+     "kacheln": 5,
+     "bild": "tile_buildings2_25.png",
+     "breite": 158,
+     "hoehe": 92
+    }
+   ]
+  },
+  "65": {
+   "name": "Stall",
+   "aiv": 59,
+   "kacheln": 6,
+   "bild": "tile_buildings2_568.png",
+   "breite": 190,
+   "hoehe": 158
+  },
+  "74": {
+   "name": "Muehle",
+   "aiv": 76,
+   "kacheln": 3,
+   "bild": "tile_buildings2_218.png",
+   "breite": 94,
+   "hoehe": 243
+  },
+  "75": {
+   "name": "Baeckerei",
+   "aiv": 77,
+   "kacheln": 4,
+   "bild": "tile_workshops_416.png",
+   "breite": 126,
+   "hoehe": 143
+  },
+  "76": {
+   "name": "Brauerei",
+   "aiv": 78,
+   "kacheln": 4,
+   "bild": "tile_workshops_992.png",
+   "breite": 126,
+   "hoehe": 165
+  },
+  "77": {
+   "name": "Marktplatz",
+   "aiv": 66,
+   "kacheln": 5,
+   "bild": "tile_buildings2_509.png",
+   "breite": 158,
+   "hoehe": 149
+  },
+  "78": {
+   "name": "Jaegerhuette",
+   "aiv": 74,
+   "kacheln": 3,
+   "bild": "tile_buildings2_559.png",
+   "breite": 94,
+   "hoehe": 85
+  },
+  "80": {
+   "name": "Kornspeicher",
+   "aiv": 70,
+   "kacheln": 4,
+   "bild": "tile_buildings2_277.png",
+   "breite": 126,
+   "hoehe": 138
+  },
+  "81": {
+   "name": "Waffenlager",
+   "aiv": 56,
+   "kacheln": 4,
+   "bild": "tile_buildings2_293.png",
+   "breite": 126,
+   "hoehe": 150
+  },
+  "82": {
+   "name": "Lanzenmacher",
+   "aiv": 50,
+   "kacheln": 4,
+   "bild": "tile_workshops_704.png",
+   "breite": 126,
+   "hoehe": 120
+  },
+  "83": {
+   "name": "Schmiede",
+   "aiv": 52,
+   "kacheln": 4,
+   "bild": "tile_workshops_1280.png",
+   "breite": 126,
+   "hoehe": 128
+  },
+  "84": {
+   "name": "Ruestungsschmied",
+   "aiv": 54,
+   "kacheln": 4,
+   "bild": "tile_workshops_1568.png",
+   "breite": 126,
+   "hoehe": 119
+  },
+  "85": {
+   "name": "Gerberei",
+   "aiv": 53,
+   "kacheln": 4,
+   "bild": "tile_workshops_1856.png",
+   "breite": 126,
+   "hoehe": 125
+  },
+  "86": {
+   "name": "Soeldnerposten",
+   "aiv": 39,
+   "kacheln": 5,
+   "bild": "tile_buildings2_252.png",
+   "breite": 158,
+   "hoehe": 98,
+   "platten": [
+    {
+     "dx": 5,
+     "dy": 0,
+     "kacheln": 5,
+     "bild": "tile_buildings1_72.png",
+     "breite": 158,
+     "hoehe": 143
+    },
+    {
+     "dx": 0,
+     "dy": 5,
+     "kacheln": 5,
+     "bild": "tile_buildings1_122.png",
+     "breite": 158,
+     "hoehe": 80
+    },
+    {
+     "dx": 5,
+     "dy": 5,
+     "kacheln": 5,
+     "bild": "tile_buildings1_97.png",
+     "breite": 158,
+     "hoehe": 94
+    }
+   ]
+  },
+  "87": {
+   "name": "Kaserne",
+   "aiv": 55,
+   "kacheln": 5,
+   "bild": "tile_buildings2_325.png",
+   "breite": 158,
+   "hoehe": 159,
+   "platten": [
+    {
+     "dx": 5,
+     "dy": 0,
+     "kacheln": 5,
+     "bild": "tile_buildings1_72.png",
+     "breite": 158,
+     "hoehe": 143
+    },
+    {
+     "dx": 0,
+     "dy": 5,
+     "kacheln": 5,
+     "bild": "tile_buildings1_122.png",
+     "breite": 158,
+     "hoehe": 80
+    },
+    {
+     "dx": 5,
+     "dy": 5,
+     "kacheln": 5,
+     "bild": "tile_buildings1_97.png",
+     "breite": 158,
+     "hoehe": 94
+    }
+   ]
+  },
+  "88": {
+   "name": "Ingenieursgilde",
+   "aiv": 57,
+   "kacheln": 5,
+   "bild": "tile_buildings2_604.png",
+   "breite": 158,
+   "hoehe": 144,
+   "platten": [
+    {
+     "dx": 0,
+     "dy": 5,
+     "kacheln": 5,
+     "bild": "tile_buildings1_147.png",
+     "breite": 158,
+     "hoehe": 80
+    }
+   ]
+  },
+  "89": {
+   "name": "Tunnelgraebergilde",
+   "aiv": 58,
+   "kacheln": 5,
+   "bild": "tile_buildings2_629.png",
+   "breite": 158,
+   "hoehe": 144,
+   "platten": [
+    {
+     "dx": 0,
+     "dy": 5,
+     "kacheln": 5,
+     "bild": "tile_buildings1_147.png",
+     "breite": 158,
+     "hoehe": 80
+    }
+   ]
+  },
+  "90": {
+   "name": "Eisenmine",
+   "aiv": 64,
+   "kacheln": 4,
+   "bild": "tile_buildings2_476.png",
+   "breite": 126,
+   "hoehe": 108
+  },
+  "91": {
+   "name": "Pechgraeber",
+   "aiv": 65,
+   "kacheln": 4,
+   "bild": "tile_buildings2_493.png",
+   "breite": 126,
+   "hoehe": 75
+  },
+  "92": {
+   "name": "Wirtshaus",
+   "aiv": 79,
+   "kacheln": 5,
+   "bild": "tile_buildings2_426.png",
+   "breite": 158,
+   "hoehe": 186
+  },
+  "93": {
+   "name": "Apotheke",
+   "aiv": 84,
+   "kacheln": 6,
+   "bild": "tile_buildings2_663.png",
+   "breite": 190,
+   "hoehe": 184
+  },
+  "95": {
+   "name": "Kapelle",
+   "aiv": 81,
+   "kacheln": 6,
+   "bild": "tile_churches_250.png",
+   "breite": 190,
+   "hoehe": 208
+  },
+  "96": {
+   "name": "Kirche",
+   "aiv": 82,
+   "kacheln": 9,
+   "bild": "tile_churches_169.png",
+   "breite": 286,
+   "hoehe": 235
+  },
+  "97": {
+   "name": "Kathedrale",
+   "aiv": 83,
+   "kacheln": 13,
+   "bild": "tile_churches_0.png",
+   "breite": 414,
+   "hoehe": 390
+  },
+  "98": {
+   "name": "Fallgrube",
+   "aiv": 37,
+   "kacheln": 1,
+   "bild": "killing_pits_0.png",
+   "breite": 30,
+   "hoehe": 16
+  },
+  "99": {
+   "name": "Pechgraben",
+   "aiv": 24,
+   "kacheln": 1,
+   "bild": "pitch_ditches_3.png",
+   "breite": 30,
+   "hoehe": 16
+  },
+  "105": {
+   "name": "Zugbruecke",
+   "aiv": 44,
+   "kacheln": 5,
+   "bild": "tile_castle_1332.png",
+   "breite": 158,
+   "hoehe": 173
+  },
+  "106": {
+   "name": "Wassergraben d",
+   "aiv": 23,
+   "kacheln": 1,
+   "bild": "tile_sea8_235.png",
+   "breite": 30,
+   "hoehe": 16
+  },
+  "110": {
+   "name": "Wachturm",
+   "aiv": 30,
+   "kacheln": 3,
+   "bild": "tile_castle_1569.png",
+   "breite": 94,
+   "hoehe": 359
+  },
+  "111": {
+   "name": "Verteidigungsturm",
+   "aiv": 31,
+   "kacheln": 4,
+   "bild": "tile_castle_12.png",
+   "breite": 126,
+   "hoehe": 237
+  },
+  "112": {
+   "name": "Geschuetzturm",
+   "aiv": 32,
+   "kacheln": 5,
+   "bild": "tile_castle_60.png",
+   "breite": 158,
+   "hoehe": 275
+  },
+  "113": {
+   "name": "Eckiger Turm",
+   "aiv": 33,
+   "kacheln": 6,
+   "bild": "tile_castle_135.png",
+   "breite": 190,
+   "hoehe": 301
+  },
+  "114": {
+   "name": "Runder Turm",
+   "aiv": 34,
+   "kacheln": 6,
+   "bild": "tile_castle_243.png",
+   "breite": 190,
+   "hoehe": 309
+  },
+  "144": {
+   "name": "Kleines Torhaus (Durchfahrt N-S)",
+   "aiv": 40,
+   "kacheln": 5,
+   "bild": "tile_castle_394.png",
+   "breite": 158,
+   "hoehe": 208
+  },
+  "145": {
+   "name": "Kleines Torhaus (Durchfahrt O-W)",
+   "aiv": 41,
+   "kacheln": 5,
+   "bild": "tile_castle_369.png",
+   "breite": 158,
+   "hoehe": 207
+  },
+  "146": {
+   "name": "Grosses Torhaus (Durchfahrt N-S)",
+   "aiv": 42,
+   "kacheln": 7,
+   "bild": "tile_castle_468.png",
+   "breite": 222,
+   "hoehe": 263
+  },
+  "147": {
+   "name": "Grosses Torhaus (Durchfahrt O-W)",
+   "aiv": 43,
+   "kacheln": 7,
+   "bild": "tile_castle_419.png",
+   "breite": 222,
+   "hoehe": 262
+  },
+  "166": {
+   "name": "Garten",
+   "aiv": 95,
+   "kacheln": 3,
+   "bild": "tile_buildings1_221.png",
+   "breite": 94,
+   "hoehe": 70
+  },
+  "169": {
+   "name": "Stadtgarten",
+   "aiv": 94,
+   "kacheln": 4,
+   "bild": "tile_buildings1_248.png",
+   "breite": 126,
+   "hoehe": 82
+  },
+  "175": {
+   "name": "Maibaum",
+   "aiv": 90,
+   "kacheln": 3,
+   "bild": "tile_buildings2_654.png",
+   "breite": 94,
+   "hoehe": 93
+  },
+  "176": {
+   "name": "Galgen",
+   "aiv": 100,
+   "kacheln": 2,
+   "bild": "tile_buildings2_703.png",
+   "breite": 62,
+   "hoehe": 134
+  },
+  "177": {
+   "name": "Pranger",
+   "aiv": 102,
+   "kacheln": 3,
+   "bild": "tile_buildings2_755.png",
+   "breite": 94,
+   "hoehe": 54
+  },
+  "180": {
+   "name": "Oelbrennerei",
+   "aiv": 35,
+   "kacheln": 4,
+   "bild": "tile_buildings2_707.png",
+   "breite": 126,
+   "hoehe": 117
+  },
+  "181": {
+   "name": "Treppe 1",
+   "aiv": 14,
+   "kacheln": 1,
+   "bild": "tile_buildings1_1.png",
+   "breite": 30,
+   "hoehe": 70
+  },
+  "182": {
+   "name": "Treppe 2",
+   "aiv": 15,
+   "kacheln": 1,
+   "bild": "tile_buildings1_1.png",
+   "breite": 30,
+   "hoehe": 70
+  },
+  "183": {
+   "name": "Treppe 3",
+   "aiv": 16,
+   "kacheln": 1,
+   "bild": "tile_land3_132.png",
+   "breite": 30,
+   "hoehe": 45
+  },
+  "184": {
+   "name": "Treppe 4",
+   "aiv": 17,
+   "kacheln": 1,
+   "bild": "tile_land3_120.png",
+   "breite": 30,
+   "hoehe": 37
+  },
+  "185": {
+   "name": "Treppe 5",
+   "aiv": 18,
+   "kacheln": 1,
+   "bild": "tile_land3_119.png",
+   "breite": 30,
+   "hoehe": 22
+  },
+  "186": {
+   "name": "Treppe 6",
+   "aiv": 19,
+   "kacheln": 1,
+   "bild": "tile_land3_98.png",
+   "breite": 30,
+   "hoehe": 18
+  },
+  "301": {
+   "name": "Jauchegrube",
+   "aiv": 101,
+   "kacheln": 5,
+   "bild": "tile_buildings2_878.png",
+   "breite": 158,
+   "hoehe": 84
+  },
+  "305": {
+   "name": "Scheiterhaufen",
+   "aiv": 103,
+   "kacheln": 3,
+   "bild": "tile_buildings2_928.png",
+   "breite": 94,
+   "hoehe": 118
+  },
+  "306": {
+   "name": "Haengekaefig",
+   "aiv": 106,
+   "kacheln": 2,
+   "bild": "tile_buildings2_937.png",
+   "breite": 62,
+   "hoehe": 134
+  },
+  "307": {
+   "name": "Verlies",
+   "aiv": 104,
+   "kacheln": 5,
+   "bild": "tile_buildings2_941.png",
+   "breite": 158,
+   "hoehe": 105
+  },
+  "308": {
+   "name": "Streckbank",
+   "aiv": 105,
+   "kacheln": 3,
+   "bild": "tile_buildings2_991.png",
+   "breite": 94,
+   "hoehe": 71
+  },
+  "310": {
+   "name": "Richtblock",
+   "aiv": 107,
+   "kacheln": 3,
+   "bild": "tile_buildings2_1034.png",
+   "breite": 94,
+   "hoehe": 75
+  },
+  "311": {
+   "name": "Tauchstuhl",
+   "aiv": 108,
+   "kacheln": 5,
+   "bild": "tile_buildings2_1009.png",
+   "breite": 158,
+   "hoehe": 109
+  },
+  "312": {
+   "name": "Hundezwinger",
+   "aiv": 36,
+   "kacheln": 3,
+   "bild": "tile_buildings2_1043.png",
+   "breite": 94,
+   "hoehe": 72
+  },
+  "313": {
+   "name": "Statue",
+   "aiv": 92,
+   "kacheln": 2,
+   "bild": "tile_buildings2_1052.png",
+   "breite": 62,
+   "hoehe": 98
+  },
+  "318": {
+   "name": "Schrein",
+   "aiv": 93,
+   "kacheln": 2,
+   "bild": "tile_buildings2_1056.png",
+   "breite": 62,
+   "hoehe": 86
+  },
+  "324": {
+   "name": "Tanzbaer",
+   "aiv": 91,
+   "kacheln": 5,
+   "bild": "tile_buildings1_72.png",
+   "breite": 158,
+   "hoehe": 143
+  },
+  "327": {
+   "name": "Grosser Teich",
+   "aiv": 97,
+   "kacheln": 5,
+   "bild": "tile_buildings1_320.png",
+   "breite": 158,
+   "hoehe": 89
+  },
+  "330": {
+   "name": "Brunnen",
+   "aiv": 85,
+   "kacheln": 3,
+   "bild": "tile_buildings2_1000.png",
+   "breite": 94,
+   "hoehe": 80
+  },
+  "342": {
+   "name": "Wasserfass",
+   "aiv": 86,
+   "kacheln": 4,
+   "bild": "tile_buildings2_1175.png",
+   "breite": 126,
+   "hoehe": 133
+  }
+ }
+}

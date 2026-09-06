@@ -1130,6 +1130,45 @@
     changed(`Placed copy of ${state.copyBuffer.count} placement${state.copyBuffer.count === 1 ? '' : 's'} as ${details}`);
   }
 
+  // Ctrl+C and Ctrl+V - the two handles everybody already knows. They are a
+  // short way to the copy tool, never a second way of copying: same buffer,
+  // same check, same placing, so a copy made with the keys and one made with
+  // the mouse cannot behave differently.
+  //
+  // What Ctrl+C takes is whatever is selected, with whichever tool it was
+  // selected. Units and the Keep are left out here for the same reason the
+  // marquee leaves them out - they are not build steps and cannot be copied
+  // as such.
+  function copySelection() {
+    setTool('copy');
+    const refs = new Set(placementRefs()
+      .filter(p => state.selected.has(p.ref) && p.kind === 'frame' && p.type !== geometry.KEEP_ITEM_TYPE)
+      .map(p => p.ref));
+    if (!captureCopyBuffer(refs)) {
+      setStatus('Nothing to copy yet — drag a box over the placements first');
+      return false;
+    }
+    state.selected = refs;
+    renderBuildList();
+    scheduleDraw();
+    const many = state.copyBuffer.count === 1 ? '' : 's';
+    setStatus(`Copied ${state.copyBuffer.count} placement${many} — Ctrl+V puts it where the cursor is`);
+    return true;
+  }
+
+  // Where the cursor is, because that is where a paste is aimed in every
+  // other program. With the cursor off the map there is no honest place to
+  // put it, and guessing one would drop a copy somewhere nobody looked.
+  function pasteCopy() {
+    if (!state.copyBuffer && !copySelection()) return;
+    setTool('copy');
+    if (!state.hoverTile) {
+      setStatus('Move the cursor onto the map, then press Ctrl+V');
+      return;
+    }
+    placeCopy(state.hoverTile);
+  }
+
   function validateMove(proposed) {
     const selectedRefs = new Set(proposed.keys());
     const replacements = new Set();
@@ -1674,6 +1713,15 @@
     state.staticCacheDirty = true;
   }
 
+  // Anyone who wants to know when the map changed subscribes here. This way
+  // the editor never learns a foreign name - without it every second view
+  // would need its own line in this file.
+  const changeListeners = new Set();
+  function addChangeListener(listener) {
+    if (typeof listener === 'function') changeListeners.add(listener);
+    return () => changeListeners.delete(listener);
+  }
+
   function scheduleDraw(staticChanged = true) {
     if (staticChanged) state.staticCacheDirty = true;
     if (state.renderPending) return;
@@ -1681,6 +1729,9 @@
     requestAnimationFrame(() => {
       state.renderPending = false;
       draw();
+      for (const listener of changeListeners) {
+        try { listener(staticChanged); } catch { /* a watcher must not stop the map */ }
+      }
     });
   }
 
@@ -2165,8 +2216,19 @@
   }
 
   function pointerPosition(event) {
+    // Events coming from another view (2.5D) already know which tile they
+    // mean; this canvas is hidden then and its rectangle would be empty.
+    if (event && event.tileFromOutside) return tileToScreenPos(event.tileFromOutside);
     const rect = els.canvas.getBoundingClientRect();
     return { x: event.clientX - rect.left, y: event.clientY - rect.top };
+  }
+
+  // Centre of a tile, in this map's screen coordinates
+  function tileToScreenPos(tile) {
+    return {
+      x: state.panX + (tile.x + 0.5) * state.cell,
+      y: state.panY + (99 - tile.y + 0.5) * state.cell
+    };
   }
 
   function screenToTile(pos) {
@@ -2179,23 +2241,35 @@
     return { x, y };
   }
 
+  // A pointer that belongs to another canvas - the 2.5D view, docked into the
+  // same page - must stay there. Capturing it here would take the rest of the
+  // gesture away from it: every further move and the release would land on
+  // this canvas, be measured against this canvas's rectangle instead of the
+  // tile that was clicked, and the 2.5D view would never see its own
+  // pointerup, so its stroke would stay switched on for good. While the view
+  // was a window of its own the id did not exist here and the call simply
+  // threw; docked it succeeds, which is why this guard is needed now.
+  function fromOutside(event) { return Boolean(event && event.tileFromOutside); }
+
   function onPointerDown(event) {
+    const outside = fromOutside(event);
     if (event.button === 1) {
       event.preventDefault();
       state.panning = true;
       state.pointerId = event.pointerId;
       state.panStart = { ...pointerPosition(event), panX: state.panX, panY: state.panY };
       els.canvas.classList.add('panning');
-      els.canvas.setPointerCapture(event.pointerId);
+      if (!outside) { try { els.canvas.setPointerCapture(event.pointerId); } catch (_) {} }
       return;
     }
     if (event.button !== 0) return;
     const pos = pointerPosition(event);
     const tile = screenToTile(pos);
     if (!tile) return;
-    els.canvas.focus();
+    // ... and the keyboard stays where the click was, too.
+    if (!outside) els.canvas.focus();
     state.pointerId = event.pointerId;
-    els.canvas.setPointerCapture(event.pointerId);
+    if (!outside) { try { els.canvas.setPointerCapture(event.pointerId); } catch (_) {} }
     state.dragStartTile = tile;
     state.dragStartScreen = pos;
     state.marqueeEnd = pos;
@@ -2358,7 +2432,7 @@
       state.panning = false;
       state.panStart = null;
       els.canvas.classList.remove('panning');
-      try { els.canvas.releasePointerCapture(event.pointerId); } catch (_) {}
+      if (!fromOutside(event)) { try { els.canvas.releasePointerCapture(event.pointerId); } catch (_) {} }
       return;
     }
     if (event.button !== 0) return;
@@ -2415,7 +2489,7 @@
     state.brushSeen = new Set();
     state.brushReplacements = new Set();
     state.brushLastTile = null;
-    try { els.canvas.releasePointerCapture(event.pointerId); } catch (_) {}
+    if (!fromOutside(event)) { try { els.canvas.releasePointerCapture(event.pointerId); } catch (_) {} }
     scheduleDraw();
   }
 
@@ -2545,7 +2619,10 @@
     if (hadPreview) scheduleDraw(false);
   });
 
-  window.addEventListener('keydown', event => {
+  // Aus dem window-Hoerer herausgeloest, damit ein eigenes Fenster (die
+  // 2.5D-Ansicht) dieselben Tasten schicken kann: dessen keydown erreicht
+  // den Hoerer hier nie, weil es ein anderes window ist.
+  function handleCastleKey(event) {
     if (window.appWorkspace?.getActive() !== 'castle') return;
     const editing = ['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName);
     if (editing) return;
@@ -2556,6 +2633,10 @@
       event.shiftKey ? redo() : undo();
     } else if ((event.ctrlKey || event.metaKey) && key === 'y') {
       event.preventDefault(); redo();
+    } else if ((event.ctrlKey || event.metaKey) && key === 'c') {
+      event.preventDefault(); copySelection();
+    } else if ((event.ctrlKey || event.metaKey) && key === 'v') {
+      event.preventDefault(); pasteCopy();
     } else if (shortcutTool) {
       event.preventDefault();
       setTool(shortcutTool);
@@ -2564,7 +2645,9 @@
     } else if (event.key === 'Escape') {
       event.preventDefault(); clearSelectionAndItem();
     }
-  });
+  }
+
+  window.addEventListener('keydown', handleCastleKey);
 
   window.electronAPI.onTriggerUndo(() => {
     if (window.appWorkspace?.getActive() === 'castle') undo();
@@ -2613,6 +2696,18 @@
     },
     getSourceBytes: () => state.sourceBytes,
     getDocument: outputDocument,
+    // Fuer die 2.5D-Ansicht: ein Zeigerereignis mit { tileFromOutside: {x, y} }
+    // durchreichen. Alles andere - Werkzeugwahl, Vorschau, Rueckgaengig -
+    // bleibt genau wie beim Zeichnen auf der Karte.
+    pointerFromOutside(phase, event) {
+      if (phase === 'down') return onPointerDown(event);
+      if (phase === 'move') return onPointerMove(event);
+      if (phase === 'up') return onPointerUp(event);
+    },
+    handleKey: handleCastleKey,
+    addChangeListener,
+    getTool: () => state.tool,
+    getCurrentItemType: () => state.currentItemType,
     getContent: outputContent,
     hasDocument: () => Boolean(state.document),
     getPopulationSummary: calculatePopulationSummary,

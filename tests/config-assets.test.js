@@ -27,18 +27,35 @@ test('every AIV item has valid dimensions and exactly one category', () => {
   }
 });
 
-test('every visible AIV item has a valid bundled PNG skin', () => {
+test('every visible AIV item has a picture: its own, or the first piece of its recipe', () => {
   const constants = readJson('config/aiv_constants.json');
   const skinDir = path.join(root, 'assets', 'aiv', 'skins');
   const pngSignature = Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]);
 
   for (const [id, info] of Object.entries(constants)) {
     if (info.name === 'Dummy Step') continue;
-    const filePath = path.join(skinDir, `${id}.png`);
-    assert.ok(fs.existsSync(filePath), `missing skin for ${info.name} [${id}]`);
+    // An item with a lineSequence is a recipe: it is never placed itself,
+    // it is drawn as a run of the real pieces it names, and the palette
+    // shows the picture of the FIRST of them (see the check below). A file
+    // under the recipe's own number would never be looked at, so the file
+    // that has to be there is the piece's.
+    const shown = Array.isArray(info.lineSequence) && info.lineSequence.length
+      ? String(info.lineSequence[0])
+      : id;
+    const filePath = path.join(skinDir, `${shown}.png`);
+    assert.ok(fs.existsSync(filePath),
+      `missing skin for ${info.name} [${id}]` + (shown === id ? '' : ` - shown as ${shown}`));
     const signature = fs.readFileSync(filePath).subarray(0, 8);
     assert.deepEqual(signature, pngSignature, `invalid PNG for ${info.name} [${id}]`);
   }
+});
+
+test('and that exception is the rule the editor really follows', () => {
+  // The test above lets a recipe borrow a picture. That is only allowed
+  // because the palette does exactly this - if that line ever changes, the
+  // exception has to go with it, so it is pinned here.
+  const script = fs.readFileSync(path.join(root, 'src', 'js', 'castle-editor.js'), 'utf8');
+  assert.match(script, /const thumbnailType = String\(sequence\[0\] \?\? id\)/);
 });
 
 test('Character editor implementation is loaded from its external script', () => {

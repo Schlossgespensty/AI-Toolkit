@@ -23,7 +23,12 @@
       ? 'Castle editor'
       : name === 'content' ? 'AI Content'
       : name === 'ucp' ? 'UCP AI Library' : 'Character editor';
-    if (name === 'castle') requestAnimationFrame(() => window.castleEditor?.onWorkspaceShown());
+    // A frame later, so the boxes of the view tree have their size before
+    // the editor measures the one its map ended up with.
+    if (name === 'castle') requestAnimationFrame(() => {
+      window.castlePanels?.onWorkspaceShown?.();
+      window.castleEditor?.onWorkspaceShown();
+    });
     if (name === 'content') window.aiContentEditor?.onWorkspaceShown?.();
     if (name === 'ucp') window.ucpLibrary?.onWorkspaceShown?.();
   }

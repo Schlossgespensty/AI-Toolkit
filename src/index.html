@@ -127,6 +127,8 @@
           <button id="castleOpenBtn" type="button">Open castle</button>
           <button id="castleSaveBtn" class="primaryAction" type="button">Save castle</button>
           <button id="castleSaveAsBtn" type="button">Save as</button>
+          <button id="castleMapBtn" type="button" aria-pressed="true" title="Show or close the map seen from above">Map</button>
+          <button id="castleIsoBtn" type="button" aria-pressed="false" title="Show or close the slanted view - drag a tab to move a window">2.5D view</button>
         </div>
         <div class="toolbarGroup castleProjectGroup">
           <label class="castleProjectChoice" for="ucpCastleSelect">
@@ -141,7 +143,7 @@
           <button type="button" class="castleTool" data-tool="line" title="Shortcut: 6 or L">Line <kbd>2</kbd></button>
           <button type="button" class="castleTool" data-tool="brush" title="Shortcut: 2 or B">Brush <kbd>3</kbd></button>
           <button type="button" class="castleTool" data-tool="select" title="Shortcut: 3 or V">Select / Move <kbd>4</kbd></button>
-          <button type="button" class="castleTool" data-tool="copy" title="Shortcut: 5 or C">Copy<kbd>5</kbd></button>
+          <button type="button" class="castleTool" data-tool="copy" title="Shortcut: 5 or C &#8212; Ctrl+C copies what is selected, Ctrl+V places it at the cursor">Copy<kbd>5</kbd></button>
           <button type="button" class="castleTool" data-tool="delete" title="Shortcut: 4 or D">Delete<kbd>4</kbd></button>
         </div>
         <div id="castleBlueprintControls" class="toolbarGroup castleBlueprintControls" aria-label="Temporary castle blueprint" hidden>
@@ -188,10 +190,39 @@
           </section>
         </aside>
 
-        <main class="castleCanvasColumn">
-          <div id="castleCanvasHost" class="castleCanvasHost">
-            <canvas id="castleCanvas" tabindex="0" aria-label="100 by 100 tile castle map"></canvas>
+        <main class="castleCanvasColumn" id="castleCanvasColumn">
+          <!-- The tree of areas. What stands in here is built by
+               panel-view.js from the layout the user arranged; nothing about
+               it is fixed in the page, because where the windows sit is the
+               user's business and not the document's. -->
+          <div id="castleViewRoot" class="viewRoot"></div>
+
+          <!-- The windows themselves. They live here while they are in no
+               area: out of the page they cost nothing, and no ResizeObserver
+               measures a canvas of no size. -->
+          <div id="castleWindowStore" class="windowStore" hidden>
+            <div id="castleMapWindow" class="viewWindow" data-window="map">
+              <div id="castleCanvasHost" class="castleCanvasHost">
+                <canvas id="castleCanvas" tabindex="0" aria-label="100 by 100 tile castle map"></canvas>
+              </div>
+            </div>
+            <div id="castleIsoWindow" class="viewWindow" data-window="iso">
+              <div id="isoDockBody" class="dockBody">
+                <canvas id="isoDockCanvas" aria-label="The castle seen from an angle"></canvas>
+              </div>
+              <div id="isoDockStatus" class="dockStatus"></div>
+            </div>
           </div>
+
+          <!-- The outline that shows where a dragged window would land. No
+               hidden attribute: this box is the one the geometry measures,
+               and display:none would make it zero wide. -->
+          <div id="castleDockOverlay" class="dockOverlay" aria-hidden="true">
+            <div id="castleDockPreview" class="dockPreview" hidden></div>
+            <div id="castleDockHint" class="dockHint" hidden></div>
+          </div>
+          <div id="castleDragGhost" class="dragGhost" hidden></div>
+
           <div class="castleStatusBar">
             <span id="castleFileLabel">No castle loaded</span>
             <span id="castleStatus">Ready</span>
@@ -215,6 +246,7 @@
       </div>
     </div>
   </section>
+
   <section id="aiContentWorkspace" class="workspace" aria-hidden="true">
     <div class="aiContentApp">
       <header class="workspaceHeader aiContentHeader">
@@ -457,6 +489,7 @@
   </form>
 </dialog>
 
+
 <script src="js/app-shell.js"></script>
 <script src="js/castle-geometry.js"></script>
 <script src="js/castle-editor.js"></script>
@@ -464,5 +497,10 @@
 <script src="js/character-editor.js"></script>
 <script src="js/ai-content-editor.js"></script>
 <script src="js/ucp-library.js"></script>
+<script src="js/iso-geometry.js"></script>
+<script src="js/iso-view.js"></script>
+<script src="js/dock-geometry.js"></script>
+<script src="js/panel-model.js"></script>
+<script src="js/panel-view.js"></script>
 </body>
 </html>

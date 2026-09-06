@@ -960,7 +960,106 @@ button:disabled { cursor: default; }
 .selectedItemInfo { min-height: 34px; margin-bottom: 7px; color: var(--text-soft); }
 .skinButtons { display: flex; gap: 5px; flex-wrap: wrap; }
 
-.castleCanvasColumn { min-width: 0; min-height: 0; display: grid; grid-template-rows: minmax(0, 1fr) 28px; }
+/* The column is two rows: everything the user arranges, and the status bar.
+   What is inside the first row is not decided here any more - both views are
+   windows now, and where they sit is the user's business, so the tree of
+   areas sizes itself. */
+.castleCanvasColumn {
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) 28px;
+}
+.viewRoot {
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  overflow: hidden;
+  background: var(--app-bg-deep);
+}
+.viewRoot > * { flex: 1 1 auto; min-width: 0; min-height: 0; }
+/* Windows waiting to be shown. Out of the page, so nothing is measured,
+   drawn or observed for them while they are away. */
+.windowStore { display: none; }
+/* With every window closed the view is empty on purpose - the one box left
+   is there to be dropped into, and saying so is better than a blank area
+   that reads as a program which failed to draw. */
+.viewRoot.isEmpty { background: repeating-linear-gradient(45deg,
+    var(--app-bg-deep) 0 12px, var(--surface-1) 12px 24px); }
+
+.viewSplit { display: flex; min-width: 0; min-height: 0; }
+.viewSplit[data-dir="row"] { flex-direction: row; }
+.viewSplit[data-dir="col"] { flex-direction: column; }
+/* The two halves are given flex-grow by panel-view.js - the share the model
+   keeps, straight into the layout, with a basis of zero so the ratio is the
+   only thing that decides. */
+.viewSplit > .viewArea,
+.viewSplit > .viewSplit { min-width: 0; min-height: 0; }
+
+.viewSplitter { flex: 0 0 6px; position: relative; background: var(--line); }
+.viewSplitter::after { content: ""; position: absolute; inset: -3px; }
+.viewSplitter:hover,
+.viewSplitter:focus-visible { background: var(--accent); outline: none; }
+.viewSplit[data-dir="row"] > .viewSplitter { cursor: col-resize; }
+.viewSplit[data-dir="col"] > .viewSplitter { cursor: row-resize; }
+
+/* An area: a row of tabs and, below it, whichever window is shown. */
+.viewArea {
+  min-width: 0;
+  min-height: 0;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  overflow: hidden;
+  background: var(--surface-1);
+  border: 1px solid var(--line);
+}
+.areaTabs {
+  display: flex;
+  align-items: stretch;
+  gap: 2px;
+  padding: 2px 3px;
+  border-bottom: 1px solid var(--line);
+  background: var(--surface-2);
+}
+.areaFill { flex: 1; }
+.areaTab {
+  padding: 2px 10px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  color: var(--text-soft);
+  background: transparent;
+  cursor: grab;
+  touch-action: none;
+  white-space: nowrap;
+  font: 11px var(--font-data);
+}
+.areaTab:hover { color: var(--text-main); background: var(--surface-3); }
+.areaTab.active {
+  color: var(--text-main);
+  border-color: var(--accent-strong);
+  background: var(--accent-soft);
+}
+.areaAction {
+  padding: 1px 7px;
+  border-radius: var(--radius-sm);
+  color: var(--text-soft);
+  background: transparent;
+  border: 1px solid transparent;
+}
+.areaAction:hover { color: var(--text-main); background: var(--surface-3); }
+.areaEmptyHint {
+  align-self: center;
+  padding-inline: 7px;
+  color: var(--text-muted);
+  font: 11px var(--font-data);
+}
+.areaBody { position: relative; min-width: 0; min-height: 0; overflow: hidden; }
+/* A window fills the area it is hung into, whichever one that is. */
+.viewWindow { position: absolute; inset: 0; display: grid; grid-template-rows: minmax(0, 1fr); }
+#castleIsoWindow { grid-template-rows: minmax(0, 1fr) auto; }
+
 .castleCanvasHost { position: relative; min-width: 0; min-height: 0; overflow: hidden; background: var(--app-bg-deep); }
 #castleCanvas { display: block; width: 100%; height: 100%; outline: none; cursor: crosshair; touch-action: none; }
 #castleCanvas.tool-select { cursor: default; }
@@ -1489,4 +1588,96 @@ button:disabled { cursor: default; }
   .aiPortraitPanel { padding: 13px; }
   .ucpLibraryMain { grid-template-columns: 270px minmax(360px, 1fr); }
   .ucpLibraryDetails { padding: 18px; }
+}
+
+
+/* ---------- moving windows about ---------- */
+
+/* The body of the 2.5D window and its line of status text. */
+.dockBody { position: relative; min-width: 0; min-height: 0; overflow: hidden; background: #171a14; }
+#isoDockCanvas { display: block; width: 100%; height: 100%; cursor: crosshair; touch-action: none; }
+.dockStatus {
+  padding: 2px 7px;
+  border-top: 1px solid var(--line);
+  color: var(--text-muted);
+  background: var(--surface-1);
+  font: 11px var(--font-data);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* The outline that says where a dragged window would land. It stops above
+   the status bar, and that same rectangle is what the geometry measures:
+   what is shown and what is decided cannot drift apart. It never takes a
+   click - the drag runs on the tab. */
+.dockOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 15;
+  pointer-events: none;
+  /* visibility, not display: this box gets measured, and a display:none box
+     measures zero. */
+  visibility: hidden;
+}
+.dockOverlay.showing { visibility: visible; }
+.dockPreview {
+  position: absolute;
+  border: 2px solid var(--accent);
+  background: var(--accent-glow);
+  border-radius: var(--radius-sm);
+  transition: left 90ms ease, top 90ms ease, width 90ms ease, height 90ms ease;
+}
+/* Joining a row of tabs is a different thing from cutting a box in two, so
+   it does not look the same: the whole box is outlined, dashed. */
+.dockPreview.asTab { border-style: dashed; }
+.dockHint {
+  position: absolute;
+  left: 50%;
+  bottom: 12px;
+  transform: translateX(-50%);
+  padding: 4px 11px;
+  border-radius: var(--radius-sm);
+  background: rgba(0, 0, 0, .72);
+  color: var(--text-main);
+  font: 11px var(--font-data);
+}
+
+/* The card under the hand while a window is being carried. Deliberately a
+   small card and not the window itself: a window is as big as the box it
+   came from, and a full-size copy of that can never be seen over the view it
+   is being dragged across - it covers it instead. Fixed to the screen, so it
+   goes anywhere the hand goes, including over the other window and out of
+   the column altogether. */
+.dragGhost {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 60;
+  transform: translate(calc(var(--ghost-x, 0px) + 12px), calc(var(--ghost-y, 0px) + 10px));
+  padding: 4px 11px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--accent-strong);
+  background: var(--surface-2);
+  color: var(--text-main);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, .55);
+  font: 11px var(--font-data);
+  pointer-events: none;
+  white-space: nowrap;
+}
+/* Half out of the way over a target, so the outline underneath can be read.
+   Not gone: a card that disappears is a card whose position has to be
+   guessed. */
+.dragGhost.overTarget { opacity: .45; }
+
+@media (prefers-reduced-motion: reduce) { .dockPreview { transition: none; } }
+html.dockDragging, html.dockDragging * { cursor: grabbing !important; }
+html.dockResizing * { user-select: none !important; }
+
+/* The toolbar buttons stay pressed while their window is on screen. */
+#castleMapBtn[aria-pressed="true"],
+#castleIsoBtn[aria-pressed="true"] {
+  border-color: var(--accent-strong);
+  background: var(--accent-soft);
+  color: var(--text-main);
 }
