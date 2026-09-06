@@ -91,6 +91,12 @@
     return points;
   }
 
+  function limitedLineTiles(start, end, maxLength) {
+    const count = Math.max(0, Math.floor(Number(maxLength) || 0));
+    if (!count) return [];
+    return lineTiles(start, end).slice(0, count);
+  }
+
   function routedLineTiles(a, b, isBlocked, gridSize = 100) {
     if (typeof isBlocked !== 'function') throw new TypeError('Line routing requires an obstacle check.');
     const start = { x: Number(a?.x), y: Number(a?.y) };
@@ -228,6 +234,7 @@
     footprintBounds,
     footprintIsInBounds,
     lineTiles,
+    limitedLineTiles,
     routedLineTiles,
     insertBuildSteps,
     moveBuildSteps

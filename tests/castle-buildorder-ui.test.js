@@ -120,6 +120,50 @@ test('Castle unit order labels are one-based while stored rallypoint indexes rem
   assert.match(functionBody(script, 'renumberUnits'), /nextNumber\.get\(type\)\s*\|\|\s*0/);
 });
 
+test('Castle items default to one placement per build step unless multiple placement is explicit', () => {
+  const script = fs.readFileSync(path.join(root, 'src', 'js', 'castle-editor.js'), 'utf8');
+  const rule = functionBody(script, 'allowsMultiplePerStep');
+  const copy = functionBody(script, 'placeCopy');
+  assert.match(rule, /isUnitType\(type\)\s*\|\|\s*itemInfo\(type\)\.multiPlacement\s*===\s*true/);
+  assert.doesNotMatch(rule, /!==\s*false/);
+  assert.match(copy, /if \(allowsMultiplePerStep\(type\)\)/);
+  assert.match(copy, /tilePositionOfsets:\s*\[off\]/);
+});
+
+test('Castle Brush and Line stay available and split single-step items into consecutive steps', () => {
+  const script = fs.readFileSync(path.join(root, 'src', 'js', 'castle-editor.js'), 'utf8');
+  const brush = functionBody(script, 'commitBrush');
+  const setTool = functionBody(script, 'setTool');
+  const selectItem = functionBody(script, 'selectItem');
+  assert.match(brush, /state\.brushOffsets\.map\(off => \(\{ itemType: type, tilePositionOfsets: \[off\]/);
+  assert.match(brush, /insertBuildFrames\(newFrames\)/);
+  assert.doesNotMatch(setTool, /allowsMultiplePerStep/);
+  assert.match(selectItem, /setTool\(state\.lastPlacementTool\)/);
+});
+
+test('Castle multi-placement rules include only moat, walls, crenels, and pitch', () => {
+  const constants = JSON.parse(fs.readFileSync(path.join(root, 'config', 'aiv_constants.json'), 'utf8'));
+  const allowed = Object.entries(constants)
+    .filter(([_id, info]) => info.multiPlacement === true)
+    .map(([id]) => Number(id))
+    .sort((one, two) => one - two);
+  assert.deepEqual(allowed, [25, 26, 35, 46, 99, 106]);
+});
+
+test('Castle exposes capped High Stair and Low Stair line recipes as consecutive real steps', () => {
+  const constants = JSON.parse(fs.readFileSync(path.join(root, 'config', 'aiv_constants.json'), 'utf8'));
+  const categories = JSON.parse(fs.readFileSync(path.join(root, 'config', 'aiv_categories.json'), 'utf8'));
+  const script = fs.readFileSync(path.join(root, 'src', 'js', 'castle-editor.js'), 'utf8');
+  assert.deepEqual(constants['10001'].lineSequence, [181, 182, 183, 184, 185]);
+  assert.deepEqual(constants['10002'].lineSequence, [183, 184, 185]);
+  assert.deepEqual(categories.categories.Stairs.slice(0, 2), ['10001', '10002']);
+  assert.match(functionBody(script, 'updateToolAvailability'), /button\.dataset\.tool === 'single'.*button\.dataset\.tool === 'brush'/);
+  assert.match(functionBody(script, 'setTool'), /if \(lineOnly && isPlacementTool\(tool\)\) tool = 'line'/);
+  assert.match(functionBody(script, 'updateLineSequencePreview'), /geometry\.limitedLineTiles/);
+  assert.match(functionBody(script, 'commitBrush'), /itemType:\s*state\.brushTypes\[index\]/);
+  assert.doesNotMatch(functionBody(script, 'commitBrush'), /state\.brushOffsets\.length\s*!==\s*sequence\.length/);
+});
+
 test('Move-tool selection makes the last selected physical placement the active build step', () => {
   const script = fs.readFileSync(path.join(root, 'src', 'js', 'castle-editor.js'), 'utf8');
   const functionBody = name => {
