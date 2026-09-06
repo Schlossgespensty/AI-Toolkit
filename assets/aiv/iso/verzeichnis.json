@@ -1,46 +1,46 @@
 {
- "erzeugt": "2026-09-06T16:37:34.140Z",
+ "erzeugt": "2026-09-06T17:01:28.862Z",
  "feld": 32,
  "gegenstaende": {
   "25": {
    "name": "Steinmauer",
    "aiv": 10,
    "kacheln": 1,
-   "bild": "tile_buildings1_0.png",
+   "bild": "mauer_25_klotz.png",
    "breite": 30,
-   "hoehe": 97
+   "hoehe": 86
   },
   "26": {
    "name": "Zinnenmauer hoch",
    "aiv": 12,
    "kacheln": 1,
-   "bild": "zinne_26_klotz.png",
+   "bild": "mauer_26_klotz.png",
    "breite": 30,
-   "hoehe": 118,
-   "wechselBild": "zinne_26_scharte.png",
+   "hoehe": 105,
+   "wechselBild": "mauer_26_scharte.png",
    "wechselBreite": 30,
-   "wechselHoehe": 103,
+   "wechselHoehe": 90,
    "wechsel": "x+y ungerade"
   },
   "35": {
    "name": "Zinnenmauer niedrig",
    "aiv": 13,
    "kacheln": 1,
-   "bild": "zinne_35_klotz.png",
+   "bild": "mauer_35_klotz.png",
    "breite": 30,
-   "hoehe": 91,
-   "wechselBild": "zinne_35_scharte.png",
+   "hoehe": 78,
+   "wechselBild": "mauer_35_scharte.png",
    "wechselBreite": 30,
-   "wechselHoehe": 76,
+   "wechselHoehe": 63,
    "wechsel": "x+y ungerade"
   },
   "46": {
    "name": "Niedrige Mauer",
    "aiv": 11,
    "kacheln": 1,
-   "bild": "tile_buildings1_1.png",
+   "bild": "mauer_46_klotz.png",
    "breite": 30,
-   "hoehe": 70
+   "hoehe": 59
   },
   "50": {
    "name": "Bogenmacher",
