@@ -212,3 +212,42 @@ test('Castle tool shortcuts are editable, validated, and persisted locally', () 
   assert.match(script, /function toolForShortcut\(key\)/);
   assert.match(script, /setTool\(shortcutTool\)/);
 });
+
+// --------------------------------------------------- Ctrl+C and Ctrl+V
+
+test('Ctrl+C and Ctrl+V go through the copy tool, never around it', () => {
+  const script = fs.readFileSync(path.join(root, 'src', 'js', 'castle-editor.js'), 'utf8');
+  const keys = functionBody(script, 'handleCastleKey');
+  assert.match(keys, /\(event\.ctrlKey \|\| event\.metaKey\) && key === 'c'/);
+  assert.match(keys, /\(event\.ctrlKey \|\| event\.metaKey\) && key === 'v'/);
+  assert.match(keys, /key === 'c'\)\s*\{\s*\n?\s*event\.preventDefault\(\); copySelection\(\);/);
+  assert.match(keys, /key === 'v'\)\s*\{\s*\n?\s*event\.preventDefault\(\); pasteCopy\(\);/);
+
+  // One buffer, one check, one way of placing: the keys must reuse what the
+  // marquee already uses, or a copy made with the keyboard could behave
+  // differently from one made with the mouse.
+  const copy = functionBody(script, 'copySelection');
+  assert.match(copy, /captureCopyBuffer\(refs\)/, 'Ctrl+C fills the very same buffer');
+  assert.match(copy, /p\.type !== geometry\.KEEP_ITEM_TYPE/, 'and leaves out the Keep, as the marquee does');
+  const paste = functionBody(script, 'pasteCopy');
+  assert.match(paste, /placeCopy\(state\.hoverTile\)/, 'Ctrl+V places where the cursor is');
+  assert.match(paste, /if \(!state\.hoverTile\)/, 'and says so instead of guessing a spot');
+  assert.ok(!/state\.document\.miscItems\.push/.test(copy + paste),
+    'neither of them writes into the castle on its own');
+});
+
+test('typing in a field keeps its own Ctrl+C, and no menu steals the keys', () => {
+  const script = fs.readFileSync(path.join(root, 'src', 'js', 'castle-editor.js'), 'utf8');
+  const keys = functionBody(script, 'handleCastleKey');
+  const editing = keys.indexOf('const editing');
+  const ctrlC = keys.indexOf("key === 'c'");
+  assert.ok(editing > 0 && editing < ctrlC,
+    'the check for an input field comes first, or a name could not be copied any more');
+
+  // An accelerator in the application menu is caught by Electron BEFORE the
+  // page sees the key - the handler above would then never run at all. So
+  // the menu must not carry these two.
+  const main = fs.readFileSync(path.join(root, 'main.js'), 'utf8');
+  assert.doesNotMatch(main, /accelerator:\s*'CmdOrCtrl\+C'/);
+  assert.doesNotMatch(main, /accelerator:\s*'CmdOrCtrl\+V'/);
+});

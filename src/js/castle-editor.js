@@ -1130,6 +1130,45 @@
     changed(`Placed copy of ${state.copyBuffer.count} placement${state.copyBuffer.count === 1 ? '' : 's'} as ${details}`);
   }
 
+  // Ctrl+C and Ctrl+V - the two handles everybody already knows. They are a
+  // short way to the copy tool, never a second way of copying: same buffer,
+  // same check, same placing, so a copy made with the keys and one made with
+  // the mouse cannot behave differently.
+  //
+  // What Ctrl+C takes is whatever is selected, with whichever tool it was
+  // selected. Units and the Keep are left out here for the same reason the
+  // marquee leaves them out - they are not build steps and cannot be copied
+  // as such.
+  function copySelection() {
+    setTool('copy');
+    const refs = new Set(placementRefs()
+      .filter(p => state.selected.has(p.ref) && p.kind === 'frame' && p.type !== geometry.KEEP_ITEM_TYPE)
+      .map(p => p.ref));
+    if (!captureCopyBuffer(refs)) {
+      setStatus('Nothing to copy yet — drag a box over the placements first');
+      return false;
+    }
+    state.selected = refs;
+    renderBuildList();
+    scheduleDraw();
+    const many = state.copyBuffer.count === 1 ? '' : 's';
+    setStatus(`Copied ${state.copyBuffer.count} placement${many} — Ctrl+V puts it where the cursor is`);
+    return true;
+  }
+
+  // Where the cursor is, because that is where a paste is aimed in every
+  // other program. With the cursor off the map there is no honest place to
+  // put it, and guessing one would drop a copy somewhere nobody looked.
+  function pasteCopy() {
+    if (!state.copyBuffer && !copySelection()) return;
+    setTool('copy');
+    if (!state.hoverTile) {
+      setStatus('Move the cursor onto the map, then press Ctrl+V');
+      return;
+    }
+    placeCopy(state.hoverTile);
+  }
+
   function validateMove(proposed) {
     const selectedRefs = new Set(proposed.keys());
     const replacements = new Set();
@@ -2594,6 +2633,10 @@
       event.shiftKey ? redo() : undo();
     } else if ((event.ctrlKey || event.metaKey) && key === 'y') {
       event.preventDefault(); redo();
+    } else if ((event.ctrlKey || event.metaKey) && key === 'c') {
+      event.preventDefault(); copySelection();
+    } else if ((event.ctrlKey || event.metaKey) && key === 'v') {
+      event.preventDefault(); pasteCopy();
     } else if (shortcutTool) {
       event.preventDefault();
       setTool(shortcutTool);
