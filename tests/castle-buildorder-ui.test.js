@@ -165,7 +165,10 @@ test('Castle exposes capped High Stair and Low Stair line recipes as consecutive
   assert.deepEqual(constants['10001'].lineSequence, [181, 182, 183, 184, 185]);
   assert.deepEqual(constants['10002'].lineSequence, [183, 184, 185]);
   assert.deepEqual(categories.categories.Stairs.slice(0, 2), ['10001', '10002']);
-  assert.match(functionBody(script, 'updateToolAvailability'), /button\.dataset\.tool === 'single'.*button\.dataset\.tool === 'brush'/);
+  // Die Sperre steht weiter in updateToolAvailability, liest den Namen des
+  // Werkzeugs jetzt aber einmal in eine Variable - seit dort eine zweite
+  // Bedingung dazugekommen ist (kein Gebaeude gewaehlt).
+  assert.match(functionBody(script, 'updateToolAvailability'), /tool === 'single'.*tool === 'brush'/s);
   assert.match(functionBody(script, 'setTool'), /if \(lineOnly && isPlacementTool\(tool\)\) tool = 'line'/);
   assert.match(functionBody(script, 'updateLineSequencePreview'), /geometry\.limitedLineTiles/);
   assert.match(functionBody(script, 'commitBrush'), /itemType:\s*state\.brushTypes\[index\]/);
@@ -182,7 +185,10 @@ test('Move-tool selection makes the last selected physical placement the active 
   assert.match(functionBody('activateBuildStepForRefs'), /for \(const ref of refs\)/);
   assert.match(functionBody('activateBuildStepForRefs'), /parsed\.kind === 'frame'/);
   assert.match(functionBody('activateBuildStepForRefs'), /state\.insertionFrameIndex = frameIndex/);
-  assert.match(functionBody('onPointerDown'), /activateBuildStepForRefs\(state\.selected\)/);
+  // Umgezogen aus onPointerDown nach beginSelectGesture: dieselbe Geste wird
+  // jetzt auch von den anderen Werkzeugen benutzt, wenn kein Gebaeude
+  // gewaehlt ist. Die Zusicherung ist dieselbe.
+  assert.match(functionBody('beginSelectGesture'), /activateBuildStepForRefs\(state\.selected\)/);
   assert.match(functionBody('onPointerUp'), /activateBuildStepForRefs\(state\.selected\)/);
 });
 
@@ -250,4 +256,48 @@ test('typing in a field keeps its own Ctrl+C, and no menu steals the keys', () =
   const main = fs.readFileSync(path.join(root, 'main.js'), 'utf8');
   assert.doesNotMatch(main, /accelerator:\s*'CmdOrCtrl\+C'/);
   assert.doesNotMatch(main, /accelerator:\s*'CmdOrCtrl\+V'/);
+});
+
+
+// ------------------------------------------- auswaehlen geht immer
+
+test('without an item chosen, dragging is a selection box in every tool', () => {
+  const script = fs.readFileSync(path.join(root, 'src', 'js', 'castle-editor.js'), 'utf8');
+  const down = functionBody(script, 'onPointerDown');
+
+  // Die Weiche steht VOR den Werkzeug-Zweigen, sonst kaeme sie nie dran.
+  const weiche = down.indexOf('const boxInstead');
+  const ersterZweig = down.indexOf("state.tool === 'single'");
+  assert.ok(weiche > 0 && weiche < ersterZweig,
+    'die Weiche muss vor dem ersten Werkzeug-Zweig stehen');
+
+  assert.match(down, /state\.currentItemType == null \|\| event\.ctrlKey \|\| event\.metaKey/,
+    'ohne Gebaeude - oder mit Strg - wird ausgewaehlt');
+  assert.match(down, /state\.tool === 'delete' \|\| \(state\.tool === 'copy' && state\.copyBuffer\)/,
+    'ausgenommen sind die zwei Werkzeuge, die selbst eine Ziehgeste haben');
+  assert.match(down, /if \(boxInstead && !ownsTheDrag\) \{[\s\S]{0,40}beginSelectGesture/,
+    'und dann laeuft dieselbe Geste wie im Auswahl-Werkzeug');
+});
+
+test('placement tools are switched off while nothing is chosen', () => {
+  const script = fs.readFileSync(path.join(root, 'src', 'js', 'castle-editor.js'), 'utf8');
+  const verfuegbar = functionBody(script, 'updateToolAvailability');
+  assert.match(verfuegbar, /nothingChosen && isPlacementTool\(tool\)/,
+    'ohne Gebaeude sind Single, Line und Brush gesperrt');
+
+  // Ein gesperrtes Werkzeug darf nicht aktiv stehen bleiben.
+  const raus = functionBody(script, 'leavePlacementToolIfDisabled');
+  assert.match(raus, /state\.currentItemType == null && isPlacementTool\(state\.tool\)/);
+  assert.match(raus, /setTool\('select'\)/);
+  assert.match(functionBody(script, 'clearSelectionAndItem'), /leavePlacementToolIfDisabled\(\)/,
+    'Esc waehlt ab und fuehrt aus dem gesperrten Werkzeug heraus');
+});
+
+test('a copy hangs from the middle of what was picked up, not from a corner', () => {
+  const script = fs.readFileSync(path.join(root, 'src', 'js', 'castle-editor.js'), 'utf8');
+  const nehmen = functionBody(script, 'captureCopyBuffer');
+  assert.match(nehmen, /const anchorX = Math\.round\(\(left \+ right\) \/ 2\)/);
+  assert.match(nehmen, /const anchorY = Math\.round\(\(bottom \+ top\) \/ 2\)/);
+  assert.doesNotMatch(nehmen, /anchorX = Math\.min/,
+    'die alte Ecke als Ankerpunkt ist weg - sonst haengt die Kopie wieder rechts unten');
 });

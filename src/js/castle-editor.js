@@ -1007,13 +1007,20 @@
       return false;
     }
 
-    let anchorX = Infinity;
-    let anchorY = -Infinity;
+    // Der Punkt, an dem die Kopie am Zeiger haengt: die MITTE dessen, was
+    // aufgenommen wurde. Vorher war es die linke obere Ecke, und dann hing
+    // die ganze Auswahl rechts unter der Maus statt darum herum - man sah
+    // beim Einfuegen nicht, wo sie landet.
+    let left = Infinity, right = -Infinity, bottom = Infinity, top = -Infinity;
     for (const p of selected) {
-      const r = itemRect(p.type, p.off);
-      anchorX = Math.min(anchorX, r.left);
-      anchorY = Math.max(anchorY, r.top);
+      const xy = offsetToXY(p.off);
+      left = Math.min(left, xy.x);
+      right = Math.max(right, xy.x);
+      bottom = Math.min(bottom, xy.y);
+      top = Math.max(top, xy.y);
     }
+    const anchorX = Math.round((left + right) / 2);
+    const anchorY = Math.round((bottom + top) / 2);
 
     const groupMap = new Map();
     for (const p of selected) {
@@ -1244,6 +1251,7 @@
     state.brushSeen.clear();
     state.brushReplacements.clear();
     updateToolAvailability();
+    leavePlacementToolIfDisabled();
     renderPalette();
     updateSelectedItemInfo();
     renderBuildList();
@@ -1259,11 +1267,26 @@
     return tool === 'single' || tool === 'brush' || tool === 'line';
   }
 
+  // Was man ohne gewaehltes Gebaeude nicht tun kann, soll auch nicht
+  // anklickbar sein: Single, Line und Brush brauchen etwas zum Setzen und
+  // sagten sonst bei jedem Klick "Choose an item first". Das macht den
+  // Zustand "nichts gewaehlt" eindeutig - und genau dann ist Ziehen ein
+  // Auswahlkasten, ganz gleich welches Werkzeug oben steht (onPointerDown).
   function updateToolAvailability() {
     const lineOnly = state.currentItemType != null && isLineSequence(state.currentItemType);
+    const nothingChosen = state.currentItemType == null;
     document.querySelectorAll('.castleTool').forEach(button => {
-      button.disabled = lineOnly && (button.dataset.tool === 'single' || button.dataset.tool === 'brush');
+      const tool = button.dataset.tool;
+      button.disabled = (lineOnly && (tool === 'single' || tool === 'brush'))
+                     || (nothingChosen && isPlacementTool(tool));
     });
+  }
+
+  // Ein gesperrtes Werkzeug darf nicht aktiv stehen bleiben. Wer das Gebaeude
+  // abwaehlt - mit Esc oder durch Anklicken eines Bauwerks - landet deshalb
+  // beim Auswaehlen, dem einzigen Werkzeug, das ohne Gebaeude etwas tut.
+  function leavePlacementToolIfDisabled() {
+    if (state.currentItemType == null && isPlacementTool(state.tool)) setTool('select');
   }
 
   function setTool(tool) {
@@ -2274,6 +2297,19 @@
     state.dragStartScreen = pos;
     state.marqueeEnd = pos;
 
+    // Ein Kasten geht immer. Ohne gewaehltes Gebaeude kann ohnehin nichts
+    // gesetzt werden, und mit Strg soll man auswaehlen koennen, ohne vorher
+    // das Gebaeude abzuwaehlen. Ausgenommen bleiben die beiden Werkzeuge,
+    // die selbst einen Kasten ziehen (Delete) oder gerade eine Kopie in der
+    // Hand halten (Copy) - dort wuerde die Weiche ihre eigene Geste
+    // wegnehmen.
+    const boxInstead = state.currentItemType == null || event.ctrlKey || event.metaKey;
+    const ownsTheDrag = state.tool === 'delete' || (state.tool === 'copy' && state.copyBuffer);
+    if (boxInstead && !ownsTheDrag) {
+      beginSelectGesture(tile, event);
+      return;
+    }
+
     if (state.tool === 'single') {
       placeSingle(tile);
       state.gesture = null;
@@ -2323,33 +2359,37 @@
       scheduleDraw();
       return;
     }
-    if (state.tool === 'select') {
-      const hit = topmostRefAtTile(tile);
-      if (hit) {
-        if (!state.selected.has(hit)) {
-          if (!event.shiftKey) state.selected.clear();
-          state.selected.add(hit);
-        }
-        activateBuildStepForRefs(state.selected);
-        state.currentItemType = null;
-        updateToolAvailability();
-        state.gesture = 'move';
-        state.moveStartOffsets = new Map();
-        for (const ref of state.selected) if (refExists(ref)) state.moveStartOffsets.set(ref, refOffset(ref));
-        state.moveDelta = { x: 0, y: 0 };
-        renderPalette();
-        updateSelectedItemInfo();
-        renderBuildList();
-        scheduleDraw();
-      } else {
-        if (!event.shiftKey) {
-          state.selected.clear();
-        }
-        state.gesture = 'select-marquee';
-        renderBuildList();
-        scheduleDraw();
+    beginSelectGesture(tile, event);
+  }
+
+  // Auf ein Bauwerk gedrueckt heisst anfassen und verschieben, auf leeres
+  // Feld gedrueckt heisst Kasten ziehen. Frueher steckte das im Zweig des
+  // Auswahl-Werkzeugs; jetzt steht es fuer sich, weil die anderen Werkzeuge
+  // es genauso brauchen (siehe die Weiche oben in onPointerDown).
+  function beginSelectGesture(tile, event) {
+    const hit = topmostRefAtTile(tile);
+    if (hit) {
+      if (!state.selected.has(hit)) {
+        if (!event.shiftKey) state.selected.clear();
+        state.selected.add(hit);
       }
+      activateBuildStepForRefs(state.selected);
+      state.currentItemType = null;
+      updateToolAvailability();
+      state.gesture = 'move';
+      state.moveStartOffsets = new Map();
+      for (const ref of state.selected) if (refExists(ref)) state.moveStartOffsets.set(ref, refOffset(ref));
+      state.moveDelta = { x: 0, y: 0 };
+      renderPalette();
+      updateSelectedItemInfo();
+      renderBuildList();
+      scheduleDraw();
+      return;
     }
+    if (!event.shiftKey) state.selected.clear();
+    state.gesture = 'select-marquee';
+    renderBuildList();
+    scheduleDraw();
   }
 
   function onPointerMove(event) {
