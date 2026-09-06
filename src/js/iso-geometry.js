@@ -291,6 +291,67 @@
 
   function byDepth(a, b) { return depth(a) - depth(b); }
 
+  // ------------------------------------------------- eine Karte des Spiels
+  //
+  // Eine .map bringt ein Vorschaubild von 200x200 Punkten mit. Das ist die
+  // ganze Karte, senkrecht von oben - und zwar die um 45 Grad GEDREHTE Raute
+  // (VillageStudio/doku/Wissensstand.md, Abschnitt 1b5):
+  //
+  //   Kartenfeld -> Vorschaupunkt, nur fuer mx+my ungerade:
+  //     px = (mx - my + 199) / 2      py = (mx + my - 199) / 2
+  //
+  // Unsere 2.5D-Ansicht dreht ihr eigenes Raster um genau dieselben 45 Grad:
+  //     Sx = panX + (gx - gy) * 16z   Sy = panY + (gx + gy) * 8z
+  //
+  // ZWEIMAL DIESELBE DREHUNG HEBT SICH AUF. Wer die Vorschau fuer ein Quadrat
+  // haelt und sie schraeg stellt, dreht ein zweites Mal und liegt schief. Das
+  // Bild braucht KEINE Drehung, nur eine Verschiebung und eine Streckung 2:1 -
+  // ein Vorschaupunkt ist so breit wie eine Kachel (32) und so hoch wie eine
+  // Kachel (16). Nachgerechnet, nicht ausprobiert:
+  //
+  //   mx = keep.x - 43 + gx           my = keep.y - 43 + gy
+  //   => gx - gy = 2*px - (keep.x - keep.y + 199)
+  //      gx + gy = 2*py - (keep.x + keep.y - 285)
+  //
+  // Setzt man das in Sx/Sy ein, fallen px und py mit dem Faktor 32z bzw. 16z
+  // heraus, und uebrig bleibt eine feste Ecke. Genau die liefert mapPreviewRect.
+  const MAP_PREVIEW_EDGE = 200;   // Kantenlaenge des Vorschaubildes
+  const KEEP_TILE = 43;           // Dorffeld (43,43) sitzt auf dem Startplatz
+
+  // Welches Kartenfeld unter einem Dorffeld liegt.
+  function mapTileForGrid(gx, gy, keep) {
+    return { mx: keep.x - KEEP_TILE + gx, my: keep.y - KEEP_TILE + gy };
+  }
+
+  // Und welchen Punkt der Vorschau ein Kartenfeld belegt. Nur Felder mit
+  // ungeradem mx+my haben einen eigenen Punkt; die anderen liegen dazwischen.
+  function previewPointForMapTile(mx, my) {
+    return { px: (mx - my + MAP_PREVIEW_EDGE - 1) / 2,
+             py: (mx + my - (MAP_PREVIEW_EDGE - 1)) / 2 };
+  }
+
+  // Hat eine Karte keinen Startplatz, wird das Dorf in die Kartenmitte
+  // gestellt: Dorffeld (50,50) auf den mittleren Vorschaupunkt (100,100),
+  // also auf das Kartenfeld (200,199).
+  function centreKeep() {
+    return { x: MAP_PREVIEW_EDGE - GRID / 2 + KEEP_TILE,
+             y: (MAP_PREVIEW_EDGE - 1) - GRID / 2 + KEEP_TILE };
+  }
+
+  // Wohin das Vorschaubild gehoert, damit ein Kartenfeld auf einem Editorfeld
+  // liegt. Groesse und Ecke, fertig fuer ctx.drawImage.
+  function mapPreviewRect(keep, view) {
+    if (!keep) return null;
+    const hw = HALF_W * view.zoom;
+    const hh = HALF_H * view.zoom;
+    return {
+      x: view.panX - hw * (keep.x - keep.y + MAP_PREVIEW_EDGE),
+      y: view.panY - hh * (keep.x + keep.y - (MAP_PREVIEW_EDGE - 1 + 2 * KEEP_TILE)),
+      w: MAP_PREVIEW_EDGE * 2 * hw,
+      h: MAP_PREVIEW_EDGE * 2 * hh
+    };
+  }
+
   // Zoom and offset so that the whole 100x100 grid fits into a box
   function fitView(width, height) {
     const zoom = Math.max(0.15, Math.min(width / (GRID * HALF_W * 2),
@@ -298,8 +359,10 @@
     return { zoom, panX: width / 2, panY: height / 2 - GRID * HALF_H * zoom };
   }
 
-  return { GRID, HALF_W, HALF_H, gridFromOffset, offsetFromGrid, isoPoint,
+  return { GRID, HALF_W, HALF_H, MAP_PREVIEW_EDGE, KEEP_TILE,
+           gridFromOffset, offsetFromGrid, isoPoint,
            tileFromPoint, editorTileFromPoint,
            depth, byDepth, spriteRect, variantFor, wallLookup, hoehenLookup,
-           collectItems, collectPlates, marqueeOutline, fitView };
+           collectItems, collectPlates, marqueeOutline, fitView,
+           mapTileForGrid, previewPointForMapTile, centreKeep, mapPreviewRect };
 });

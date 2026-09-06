@@ -125,6 +125,8 @@
       else window.localStorage.removeItem(GROUND_KEY);
     } catch { /* a view must not fall over because storage is off */ }
     state.images.delete(groundSource());
+    // Only ever one ground: a picture of your own puts a map of the game away.
+    if (url && gameMap()) { state.gameMap = null; rememberGameMap(); }
     paint();
   }
 
@@ -143,13 +145,105 @@
       setGround(null);
       return;
     }
+    const map = state.gameMap;
+    if (map && filename === map.dataUrl) {
+      setGameMap(null);
+      return;
+    }
     refresh();
   }
 
   function hasOwnGround() { return Boolean(state.ground); }
   function groundIsStretched() { return groundFit() === 'stretch'; }
 
+  // ------------------------------------------------- a map of the game
+  //
+  // A .map brings its own 200x200 preview. Laid under the view it is not a
+  // decoration but a measure: one field of the map is one field of the editor.
+  // Where it goes is geo.mapPreviewRect's business - it needs the starting
+  // place, because that is the only thing that says WHERE on the map the
+  // village of 100x100 stands.
+  //
+  // Only ever one ground: choosing a map puts an own ground away and the other
+  // way round. Two pictures on the same floor would hide each other, and no
+  // one could tell which of them is to scale.
+  const MAP_KEY = 'castleIsoGameMap';
+
+  function gameMap() {
+    if (state.gameMap === undefined) {
+      let stored = null;
+      try { stored = window.localStorage.getItem(MAP_KEY); } catch { stored = null; }
+      try { state.gameMap = stored ? JSON.parse(stored) : null; } catch { state.gameMap = null; }
+    }
+    return state.gameMap;
+  }
+
+  function rememberGameMap() {
+    try {
+      if (state.gameMap) window.localStorage.setItem(MAP_KEY, JSON.stringify(state.gameMap));
+      else window.localStorage.removeItem(MAP_KEY);
+    } catch { /* a view must not fall over because storage is off */ }
+  }
+
+  function setGameMap(map) {
+    const previous = gameMap();
+    if (previous) state.images.delete(previous.dataUrl);
+    state.gameMap = map
+      ? { name: map.name, dataUrl: map.dataUrl,
+          keeps: Array.isArray(map.keeps) ? map.keeps : [], keepIndex: 0 }
+      : null;
+    rememberGameMap();
+    if (state.gameMap && state.ground) setGround(null);   // paints as well
+    else paint();
+  }
+
+  function setGameMapKeep(index) {
+    const map = gameMap();
+    if (!map || !map.keeps.length) return;
+    map.keepIndex = Math.max(0, Math.min(map.keeps.length - 1, Number(index) || 0));
+    rememberGameMap();
+    paint();
+  }
+
+  function hasGameMap() { return Boolean(gameMap()); }
+  function gameMapInfo() {
+    const map = gameMap();
+    if (!map) return null;
+    return { name: map.name, keeps: map.keeps, keepIndex: map.keepIndex };
+  }
+
+  // Which starting place the village is built on. Without one the village goes
+  // into the middle of the map - the picture still fits, only the place is a
+  // guess, and the toolbar says so.
+  function currentKeep() {
+    const map = gameMap();
+    if (!map) return null;
+    return map.keeps[map.keepIndex] || geo.centreKeep();
+  }
+
+  function paintGameMap(ctx) {
+    const map = gameMap();
+    const img = image(map.dataUrl);
+    if (!img || !img.complete || !img.naturalWidth) return;
+    const rect = geo.mapPreviewRect(currentKeep(), state.view);
+    ctx.save();
+    ctx.clip();
+    // Each preview point becomes one whole tile, so it must stay a hard square
+    // - smoothed, the edge of a field would smear over its neighbour.
+    ctx.imageSmoothingEnabled = false;
+    ctx.drawImage(img, rect.x, rect.y, rect.w, rect.h);
+    ctx.restore();
+  }
+
   function paintGround(ctx, width, height) {
+    if (gameMap()) {
+      ctx.save();
+      ctx.fillStyle = '#232a1c';
+      ctx.fill();
+      ctx.restore();
+      paintGameMap(ctx);
+      return;
+    }
     const img = image(groundSource());
     let pattern = null;
     if (img && img.complete && img.naturalWidth) {
@@ -612,7 +706,8 @@
   }
 
   window.isoView = { init, openWindow, closeWindow, mountDock, unmount, refresh, paint, fit, isMounted,
-                     setGround, hasOwnGround, setGroundFit, groundIsStretched };
+                     setGround, hasOwnGround, setGroundFit, groundIsStretched,
+                     setGameMap, setGameMapKeep, hasGameMap, gameMapInfo };
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();

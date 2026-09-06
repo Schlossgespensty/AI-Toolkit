@@ -132,6 +132,9 @@
           <button id="castleIsoGroundBtn" type="button" title="Pick your own ground for the slanted view - any picture, laid out tile by tile">Ground</button>
           <button id="castleIsoGroundFit" type="button" aria-pressed="false" title="Lay the picture out tile by tile, or spread it once over the whole map" hidden>Tiled</button>
           <button id="castleIsoGroundReset" type="button" title="Back to the ground that comes with the app" hidden>&times;</button>
+          <button id="castleIsoMapBtn" type="button" title="Lay a map of the game under the slanted view - to scale, one field of the map on one field of the editor">Game map</button>
+          <select id="castleIsoMapKeep" title="Which starting place of the map the castle is built on" hidden></select>
+          <button id="castleIsoMapReset" type="button" title="Take the map of the game away" hidden>&times;</button>
         </div>
         <div class="toolbarGroup castleProjectGroup">
           <label class="castleProjectChoice" for="ucpCastleSelect">
@@ -504,6 +507,22 @@
       <button type="submit">Save shortcuts</button>
     </div>
   </form>
+</dialog>
+
+<dialog id="castleIsoMapDialog" class="ucpCreateDialog castleMapDialog">
+  <div class="castleMapBody">
+    <div class="ucpCreateHeading">
+      <h2>Map of the game</h2>
+      <p>The chosen map is laid under the slanted view to scale: one field of the map is one field of the editor.</p>
+    </div>
+    <input id="castleIsoMapFilter" type="search" placeholder="Filter by name" autocomplete="off">
+    <div id="castleIsoMapList" class="castleMapList" role="listbox" tabindex="0"></div>
+    <div id="castleIsoMapError" class="castleShortcutError" role="alert"></div>
+    <div class="ucpCreateActions castleShortcutActions">
+      <span class="castleShortcutActionSpacer"></span>
+      <button id="castleIsoMapCancel" type="button">Cancel</button>
+    </div>
+  </div>
 </dialog>
 
 

@@ -2985,6 +2985,9 @@
       if (!selection?.dataUrl) return;
       window.isoView.setGround(selection.dataUrl);
       updateGroundControls();
+      // Es gibt nur einen Grund: die Ansicht legt eine Spielkarte dabei weg,
+      // also muessen deren Knoepfe mit verschwinden.
+      updateMapControls();
       setStatus(`Ground of the slanted view: ${selection.fileName || 'chosen picture'}`);
     } catch (error) {
       setStatus(`Could not load ground: ${error.message}`);
@@ -2996,7 +2999,129 @@
     updateGroundControls();
     setStatus('Ground back to the one that comes with the app');
   });
+
+  // Eine Karte des Spiels unter die 2.5D-Ansicht legen. Anders als ein
+  // beliebiges Bild hat sie einen Massstab: ein Feld der Karte ist ein Feld
+  // des Editors. Damit das gilt, muss der Startplatz bekannt sein - eine
+  // Karte hat mehrere (in "A Friend Indeed" sechs), und erst er sagt, WO auf
+  // der Karte das Dorf von 100x100 steht.
+  const karteKnopf = document.getElementById('castleIsoMapBtn');
+  const karteZurueck = document.getElementById('castleIsoMapReset');
+  const karteBergfried = document.getElementById('castleIsoMapKeep');
+  const karteDialog = document.getElementById('castleIsoMapDialog');
+  const karteListe = document.getElementById('castleIsoMapList');
+  const karteFilter = document.getElementById('castleIsoMapFilter');
+  const karteFehler = document.getElementById('castleIsoMapError');
+  const karteAbbruch = document.getElementById('castleIsoMapCancel');
+  let karteVorrat = null;   // einmal geholt, dann behalten
+
+  function updateMapControls() {
+    const info = window.isoView && window.isoView.gameMapInfo ? window.isoView.gameMapInfo() : null;
+    if (karteZurueck) karteZurueck.hidden = !info;
+    if (!karteBergfried) return;
+    // Der Wähler zeigt sich nur, wenn es etwas zu wählen gibt - bei einem
+    // einzigen Startplatz gäbe es nichts zu tun.
+    karteBergfried.hidden = !info || info.keeps.length < 2;
+    if (karteBergfried.hidden) { karteBergfried.replaceChildren(); return; }
+    karteBergfried.replaceChildren(...info.keeps.map((keep, index) => {
+      const option = document.createElement('option');
+      option.value = String(index);
+      option.textContent = `Start ${index + 1} (${keep.x}, ${keep.y})`;
+      return option;
+    }));
+    karteBergfried.value = String(info.keepIndex);
+  }
+
+  function renderMapList(filter) {
+    if (!karteListe) return;
+    const needle = String(filter || '').trim().toLowerCase();
+    const hits = (karteVorrat || []).filter(entry => entry.name.toLowerCase().includes(needle));
+    if (!hits.length) {
+      const empty = document.createElement('div');
+      empty.className = 'castleMapEmpty';
+      empty.textContent = karteVorrat && karteVorrat.length
+        ? 'No map of that name.'
+        : 'No maps found. Choose the game folder under UCP first.';
+      karteListe.replaceChildren(empty);
+      return;
+    }
+    karteListe.replaceChildren(...hits.map(entry => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      const name = document.createElement('span');
+      name.textContent = entry.name;
+      const source = document.createElement('span');
+      source.className = 'castleMapSource';
+      source.textContent = entry.source;
+      button.append(name, source);
+      button.addEventListener('click', () => chooseMap(entry));
+      return button;
+    }));
+  }
+
+  async function chooseMap(entry) {
+    if (!window.isoView || !karteFehler) return;
+    karteFehler.textContent = 'Reading the map…';
+    try {
+      const map = await window.electronAPI.loadGameMap(entry.path);
+      window.isoView.setGameMap(map);
+      updateMapControls();
+      updateGroundControls();
+      if (karteDialog && karteDialog.open) karteDialog.close();
+      setStatus(map.keeps.length
+        ? `Map "${map.name}" laid under the slanted view · ${map.keeps.length} starting place${map.keeps.length === 1 ? '' : 's'}`
+        : `Map "${map.name}" laid under the slanted view · no starting place found, the castle sits in the middle of the map`);
+    } catch (error) {
+      karteFehler.textContent = `Could not read that map: ${error.message}`;
+    }
+  }
+
+  if (karteKnopf) karteKnopf.addEventListener('click', async () => {
+    if (!karteDialog || !karteFehler) return;
+    karteFehler.textContent = '';
+    if (karteFilter) karteFilter.value = '';
+    if (!karteVorrat) {
+      try {
+        const answer = await window.electronAPI.listGameMaps();
+        karteVorrat = (answer && answer.maps) || [];
+      } catch (error) {
+        karteVorrat = [];
+        karteFehler.textContent = `Could not list the maps: ${error.message}`;
+      }
+    }
+    renderMapList('');
+    if (!karteDialog.open) karteDialog.showModal();
+    if (karteFilter) karteFilter.focus();
+  });
+  if (karteFilter) karteFilter.addEventListener('input', () => renderMapList(karteFilter.value));
+  if (karteAbbruch) karteAbbruch.addEventListener('click', () => karteDialog?.close());
+  if (karteBergfried) karteBergfried.addEventListener('change', () => {
+    if (!window.isoView) return;
+    window.isoView.setGameMapKeep(Number(karteBergfried.value));
+    const info = window.isoView.gameMapInfo();
+    const keep = info && info.keeps[info.keepIndex];
+    setStatus(keep ? `Castle built on the starting place at (${keep.x}, ${keep.y})` : 'Starting place changed');
+  });
+  if (karteZurueck) karteZurueck.addEventListener('click', () => {
+    if (!window.isoView) return;
+    window.isoView.setGameMap(null);
+    updateMapControls();
+    updateGroundControls();
+    setStatus('Map of the game taken away');
+  });
+
   updateGroundControls();
+  updateMapControls();
+  // Diese Datei wird VOR iso-view.js geladen (index.html), also gibt es
+  // window.isoView hier noch gar nicht - beide Abfragen oben liefern darum
+  // "nichts gewaehlt", auch wenn aus der letzten Sitzung ein eigener Grund
+  // oder eine Karte gemerkt ist. Dann stuenden die Knoepfe falsch: die Karte
+  // laege da, aber der Weg, sie wieder wegzunehmen, waere unsichtbar. Sobald
+  // die Seite fertig geladen ist, wird deshalb noch einmal nachgesehen.
+  window.addEventListener('DOMContentLoaded', () => {
+    updateGroundControls();
+    updateMapControls();
+  });
 
   document.querySelectorAll('.castleTool').forEach(btn => btn.addEventListener('click', () => setTool(btn.dataset.tool)));
   document.getElementById('castleNewBtn').addEventListener('click', newFile);

@@ -506,3 +506,173 @@ test('a ground the user picked is loaded as it is, not as a file name', () => {
   assert.match(laden, /\^\(data:\|blob:\|https\?:\|file:\)/);
   assert.match(laden, /\? filename : SPRITE_PATH \+ filename/);
 });
+
+// ------------------------------- eine Karte des Spiels unter der Ansicht
+//
+// Der Kern ist eine Behauptung, die leicht falsch zu machen ist: die Vorschau
+// einer .map ist die um 45 Grad GEDREHTE Karte, und die 2.5D-Ansicht dreht ihr
+// eigenes Raster um dieselben 45 Grad. Beides zusammen hebt sich auf - das Bild
+// braucht keine Drehung, nur eine Verschiebung und eine Streckung 2:1. Wer es
+// als Quadrat einpasst oder ein zweites Mal dreht, liegt zwangslaeufig schief.
+
+test('ein Dorffeld liegt auf dem Kartenfeld, das die Rechnung nennt', () => {
+  const keep = { x: 84, y: 223 };
+  // Dorffeld (43,43) sitzt auf dem Startplatz - das steht in
+  // setKeepOffsetAndOrientation und ist an 128 AIV-Dateien nachgemessen.
+  assert.deepEqual(geometry.mapTileForGrid(43, 43, keep), { mx: 84, my: 223 });
+  assert.deepEqual(geometry.mapTileForGrid(0, 0, keep), { mx: 41, my: 180 });
+  assert.deepEqual(geometry.mapTileForGrid(99, 99, keep), { mx: 140, my: 279 });
+  assert.equal(geometry.KEEP_TILE, 43);
+});
+
+test('die Vorschau ist die gedrehte Raute, Punkt fuer Punkt', () => {
+  // Hin und zurueck ueber alle 40.000 Punkte, mit der Regel aus dem
+  // Wissensstand (x = px+py, y = py-px+199) als Gegenrechnung.
+  let daneben = 0;
+  for (let px = 0; px < 200; px++) {
+    for (let py = 0; py < 200; py++) {
+      const punkt = geometry.previewPointForMapTile(px + py, py - px + 199);
+      if (punkt.px !== px || punkt.py !== py) daneben++;
+    }
+  }
+  assert.equal(daneben, 0, 'jeder Vorschaupunkt gehoert genau einem Kartenfeld');
+  assert.equal(geometry.MAP_PREVIEW_EDGE, 200);
+});
+
+test('das Kartenbild wird nur verschoben und 2:1 gestreckt, nie gedreht', () => {
+  const keep = { x: 84, y: 223 };
+  for (const view of [{ zoom: 1, panX: 0, panY: 0 },
+                      { zoom: 0.37, panX: 640, panY: -120 },
+                      { zoom: 2.5, panX: -333, panY: 777 }]) {
+    const rect = geometry.mapPreviewRect(keep, view);
+    // Ein Vorschaupunkt ist genau eine Kachel breit und eine Kachel hoch.
+    assert.equal(rect.w / geometry.MAP_PREVIEW_EDGE, 2 * geometry.HALF_W * view.zoom);
+    assert.equal(rect.h / geometry.MAP_PREVIEW_EDGE, 2 * geometry.HALF_H * view.zoom);
+    const punktBreite = rect.w / geometry.MAP_PREVIEW_EDGE;
+    const punktHoehe = rect.h / geometry.MAP_PREVIEW_EDGE;
+    // Und jede Feldmitte trifft die Mitte ihres Punktes - das ist der Beweis,
+    // dass keine Drehung fehlt: waere eine noetig, ginge das nur fuer eine
+    // einzige Richtung auf.
+    let geprueft = 0;
+    for (let gx = 0; gx < 100; gx += 7) {
+      for (let gy = 0; gy < 100; gy += 7) {
+        const { mx, my } = geometry.mapTileForGrid(gx, gy, keep);
+        if (((mx + my) % 2 + 2) % 2 === 0) continue;   // kein eigener Punkt
+        const { px, py } = geometry.previewPointForMapTile(mx, my);
+        const [sx, sy] = geometry.isoPoint(gx + 0.5, gy + 0.5, view);
+        assert.ok(Math.abs(rect.x + (px + 0.5) * punktBreite - sx) < 1e-9,
+                  `Punkt ${px},${py} liegt in x nicht unter Feld ${gx},${gy}`);
+        assert.ok(Math.abs(rect.y + (py + 0.5) * punktHoehe - sy) < 1e-9,
+                  `Punkt ${px},${py} liegt in y nicht unter Feld ${gx},${gy}`);
+        geprueft++;
+      }
+    }
+    assert.ok(geprueft > 50, 'es wurden genug Felder geprueft');
+  }
+  assert.equal(geometry.mapPreviewRect(null, { zoom: 1, panX: 0, panY: 0 }), null);
+});
+
+test('ohne Startplatz steht das Dorf in der Kartenmitte', () => {
+  const mitte = geometry.centreKeep();
+  // Dorffeld (50,50) muss auf dem mittleren Vorschaupunkt (100,100) landen.
+  const { mx, my } = geometry.mapTileForGrid(50, 50, mitte);
+  assert.deepEqual(geometry.previewPointForMapTile(mx, my), { px: 100, py: 100 });
+});
+
+test('die Ansicht legt die Karte mit der Rechnung hin, nicht nach Augenmass', () => {
+  const iso = fs.readFileSync(path.join(root, 'src', 'js', 'iso-view.js'), 'utf8');
+  const malen = iso.slice(iso.indexOf('function paintGameMap'), iso.indexOf('function paintGround'));
+  assert.match(malen, /geo\.mapPreviewRect\(currentKeep\(\), state\.view\)/);
+  assert.match(malen, /ctx\.drawImage\(img, rect\.x, rect\.y, rect\.w, rect\.h\)/);
+  assert.match(malen, /ctx\.clip\(\)/, 'die Karte endet an der Raute des Dorfes');
+  assert.match(malen, /ctx\.imageSmoothingEnabled = false/,
+               'ein Vorschaupunkt ist ein Feld und darf nicht ins Nachbarfeld verlaufen');
+  // Ohne Startplatz die Kartenmitte - und nicht etwa gar nichts.
+  const platz = iso.slice(iso.indexOf('function currentKeep'), iso.indexOf('function paintGameMap'));
+  assert.match(platz, /map\.keeps\[map\.keepIndex\] \|\| geo\.centreKeep\(\)/);
+  // Es gibt nur einen Grund: beide Wege raeumen den jeweils anderen weg.
+  const setzen = iso.slice(iso.indexOf('function setGameMap'), iso.indexOf('function setGameMapKeep'));
+  assert.match(setzen, /if \(state\.gameMap && state\.ground\) setGround\(null\)/);
+  const grund = iso.slice(iso.indexOf('function setGround'), iso.indexOf('function setGroundFit'));
+  assert.match(grund, /if \(url && gameMap\(\)\) \{ state\.gameMap = null; rememberGameMap\(\); \}/);
+  assert.match(iso, /setGameMap, setGameMapKeep, hasGameMap, gameMapInfo/, 'von aussen erreichbar');
+  assert.match(iso, /const MAP_KEY = 'castleIsoGameMap'/, 'die Wahl ueberlebt das Schliessen');
+});
+
+test('die Karte wird ueber einen eigenen Kanal geholt, nicht ueber den Dateidialog', () => {
+  const preload = fs.readFileSync(path.join(root, 'preload.js'), 'utf8');
+  assert.match(preload, /listGameMaps: \(\) => ipcRenderer\.invoke\('list-game-maps'\)/);
+  assert.match(preload, /loadGameMap: \(filePath\) => ipcRenderer\.invoke\('load-game-map', filePath\)/);
+  const main = fs.readFileSync(path.join(root, 'main.js'), 'utf8');
+  assert.match(main, /ipcMain\.handle\('list-game-maps'/);
+  assert.match(main, /ipcMain\.handle\('load-game-map'/);
+  assert.match(main, /require\('\.\/src\/node\/game-map'\)/);
+
+  const editor = fs.readFileSync(path.join(root, 'src', 'js', 'castle-editor.js'), 'utf8');
+  assert.match(editor, /window\.electronAPI\.listGameMaps\(\)/);
+  assert.match(editor, /window\.electronAPI\.loadGameMap\(entry\.path\)/);
+  assert.match(editor, /window\.isoView\.setGameMap\(map\)/);
+  assert.match(editor, /window\.isoView\.setGameMapKeep\(Number\(karteBergfried\.value\)\)/);
+
+  const html = fs.readFileSync(path.join(root, 'src', 'index.html'), 'utf8');
+  assert.match(html, /id="castleIsoMapBtn"/);
+  // Wie bei den Grund-Knoepfen: erscheinen, wenn sie etwas tun, sonst nicht.
+  assert.match(html, /id="castleIsoMapKeep"[^>]*hidden/, 'der Startplatz-Waehler zeigt sich erst mit einer Karte');
+  assert.match(html, /id="castleIsoMapReset"[^>]*hidden/, 'der Zurueck-Knopf ebenso');
+  assert.match(html, /id="castleIsoMapDialog"/);
+});
+
+test('eine echte .map gibt ihr Bild und ihre Startplaetze her', (t) => {
+  const { listGameMaps, readGameMap } = require(path.join(root, 'src', 'node', 'game-map.js'));
+  const { maps } = listGameMaps(null);
+  if (!maps.length) { t.skip('kein Stronghold Crusader gefunden'); return; }
+
+  const freund = maps.find(entry => entry.name === 'A Friend Indeed');
+  if (!freund) { t.skip('die Karte "A Friend Indeed" fehlt'); return; }
+  const karte = readGameMap(freund.path, null);
+  assert.equal(karte.edge, 200);
+  assert.match(karte.dataUrl, /^data:image\/png;base64,/);
+  // Sechs Bergfriede - nachgezaehlt: 294 Felder mit Bautyp 41 in Abschnitt
+  // 1049, das sind 6 mal 7 mal 7.
+  assert.deepEqual(karte.keeps, [
+    { x: 246, y: 93 }, { x: 278, y: 148 }, { x: 94, y: 156 },
+    { x: 84, y: 223 }, { x: 222, y: 319 }, { x: 169, y: 328 }
+  ]);
+  // Dorffeld (43,43) trifft jeden dieser Startplaetze.
+  for (const keep of karte.keeps) {
+    assert.deepEqual(geometry.mapTileForGrid(43, 43, keep), { mx: keep.x, my: keep.y });
+  }
+  // Und nichts ausserhalb der Liste wird gelesen.
+  assert.throws(() => readGameMap('C:\\Windows\\System32\\drivers\\etc\\hosts', null),
+                /not one of the game maps/);
+});
+
+test('jede Karte des Spiels laesst sich lesen', (t) => {
+  const { listGameMaps, readGameMap } = require(path.join(root, 'src', 'node', 'game-map.js'));
+  const { maps } = listGameMaps(null);
+  if (maps.length < 20) { t.skip('kein vollstaendiger Kartenordner gefunden'); return; }
+  let mitStartplatz = 0;
+  for (const entry of maps) {
+    const karte = readGameMap(entry.path, null);
+    assert.match(karte.dataUrl, /^data:image\/png;base64,/, entry.name + ' hat kein Bild');
+    for (const keep of karte.keeps) {
+      assert.ok(keep.x >= 0 && keep.x <= 399 && keep.y >= 0 && keep.y <= 399,
+                entry.name + ': Startplatz ausserhalb der Karte');
+    }
+    if (karte.keeps.length) mitStartplatz++;
+  }
+  assert.ok(mitStartplatz > maps.length / 2, 'die meisten Karten haben einen Startplatz');
+});
+
+test('die Werkzeugleiste holt sich den gemerkten Grund nach, wenn die Ansicht da ist', () => {
+  // castle-editor.js steht in index.html VOR iso-view.js. Beim Verdrahten gibt
+  // es window.isoView also noch nicht, und beide Abfragen liefern "nichts
+  // gewaehlt" - auch wenn aus der letzten Sitzung eine Karte gemerkt ist. Dann
+  // laege die Karte da, aber der Knopf, sie wegzunehmen, waere unsichtbar.
+  const html = fs.readFileSync(path.join(root, 'src', 'index.html'), 'utf8');
+  assert.ok(html.indexOf('js/castle-editor.js') < html.indexOf('js/iso-view.js'),
+            'die Reihenfolge ist der Grund fuer das Nachholen - aendert sie sich, gehoert der Test geprueft');
+  const editor = fs.readFileSync(path.join(root, 'src', 'js', 'castle-editor.js'), 'utf8');
+  const nachholen = editor.slice(editor.indexOf("window.addEventListener('DOMContentLoaded'"));
+  assert.match(nachholen.slice(0, 200), /updateGroundControls\(\);\s*updateMapControls\(\);/);
+});

@@ -15,6 +15,7 @@ const {
   isWithin
 } = require('./src/node/ucp-library');
 const { placeholderPortraitPng, resizeBgraBitmapToPng } = require('./src/node/pixel-image');
+const { listGameMaps, readGameMap } = require('./src/node/game-map');
 const { transferableBytes, writeNativeAiv } = require('./src/node/aiv-file');
 
 const aivCodecPromise = import('./src/node/aiv-codec.mjs');
@@ -427,6 +428,15 @@ ipcMain.handle('choose-castle-background', async event => {
     dataUrl: `data:${mimeType};base64,${fs.readFileSync(filePath).toString('base64')}`
   };
 });
+
+// Die Karten des Spiels. Zwei Kanaele, gebaut wie choose-castle-background:
+// erst die Liste (nur Namen und Pfade, das ist billig), dann auf Wunsch eine
+// einzelne Karte als fertige data:-Adresse samt ihren Startplaetzen. Gelesen
+// wird nur, was in der Liste steht - das Fenster kann darueber keine beliebige
+// Datei holen.
+ipcMain.handle('list-game-maps', () => listGameMaps(savedUcpInstallation()));
+
+ipcMain.handle('load-game-map', (_event, filePath) => readGameMap(filePath, savedUcpInstallation()));
 
 ipcMain.handle('scan-ucp-ai-library', (_event, gameRoot) => scanUcpInstallation(gameRoot));
 

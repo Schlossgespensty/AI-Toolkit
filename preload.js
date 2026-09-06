@@ -16,6 +16,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
   getUcpInstallation: () => ipcRenderer.invoke('get-ucp-installation'),
   chooseUcpInstallation: () => ipcRenderer.invoke('choose-ucp-installation'),
   chooseCastleBackground: () => ipcRenderer.invoke('choose-castle-background'),
+  listGameMaps: () => ipcRenderer.invoke('list-game-maps'),
+  loadGameMap: (filePath) => ipcRenderer.invoke('load-game-map', filePath),
   scanUcpAiLibrary: (gameRoot) => ipcRenderer.invoke('scan-ucp-ai-library', gameRoot),
   loadUcpAiProject: (request) => ipcRenderer.invoke('load-ucp-ai-project', request),
   updateAiCastleMapping: (request) => ipcRenderer.invoke('update-ai-castle-mapping', request),
