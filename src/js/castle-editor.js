@@ -880,6 +880,10 @@
     }
 
     pushUndo();
+    // Die Felder merken, nicht die Nummern: beim Teilen verschieben sich die
+    // Nummern der Bauschritte, die Felder bleiben, wo sie sind. Darueber
+    // findet die Auswahl hinterher zurueck.
+    const felder = new Set(refs.map(refOffset));
     const proFrame = new Map();
     const einheiten = [];
     for (const ref of refs) {
@@ -906,7 +910,16 @@
     }
     if (neueSchritte.length) insertBuildFrames(neueSchritte);
 
-    state.selected.clear();
+    // Die Auswahl bleibt auf denselben Feldern stehen, jetzt mit dem neuen
+    // Bauwerk darauf - so kann man gleich weiterarbeiten, statt neu zu ziehen.
+    state.selected = new Set();
+    frames().forEach((frame, fi) => {
+      if (Number(frame.itemType) !== Number(newType)) return;
+      (frame.tilePositionOfsets || []).forEach((off, oi) => {
+        if (felder.has(Number(off))) state.selected.add(frameRefKey(fi, oi));
+      });
+    });
+    activateBuildStepForRefs(state.selected);
     renderSelectionList();
     changed('Replaced ' + refs.length + ' placement' + (refs.length === 1 ? '' : 's') +
             ' with ' + itemName(Number(newType)) +

@@ -463,6 +463,12 @@ test('the selection panel lists what is selected and can swap it', () => {
     'ist der ganze Bauschritt gemeint, wird er umgestellt statt geteilt');
   assert.match(tausch, /insertBuildFrames\(neueSchritte\)/,
     'und ein teilweise gewaehlter Schritt wird geteilt');
+  // Die Auswahl findet ueber die FELDER zurueck, nicht ueber die Nummern der
+  // Bauschritte - die verschieben sich beim Teilen.
+  assert.match(tausch, /const felder = new Set\(refs\.map\(refOffset\)\)/);
+  assert.match(tausch, /if \(felder\.has\(Number\(off\)\)\) state\.selected\.add\(frameRefKey\(fi, oi\)\)/,
+    'danach steht die Auswahl auf denselben Feldern, mit dem neuen Bauwerk darauf');
+  assert.doesNotMatch(tausch, /state\.selected\.clear\(\)/);
 
   const html = fs.readFileSync(path.join(root, 'src', 'index.html'), 'utf8');
   assert.match(html, /id="castleSelectionList"/);
