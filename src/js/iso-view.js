@@ -164,10 +164,49 @@
     // where the mouse is
     if (state.hover) drawDiamond(ctx, state.hover.gx, state.hover.gy, 1, null, 'rgba(255,255,255,.5)');
 
+    drawSelection(ctx, items);
+    drawMarquee(ctx);
+
     const editor = window.castleEditor;
     const tool = editor && editor.getTool ? editor.getTool() : '—';
     setStatus(items.length + ' items' + (missing ? ', ' + missing + ' without a sprite' : '') +
               ' · tool: ' + tool + ' · middle mouse pans, wheel zooms');
+  }
+
+  // Was ausgewaehlt ist, bekommt einen Rahmen. Der Editor fuehrt die Auswahl,
+  // diese Ansicht zeigt sie nur - so kann sie nicht von der Karte abweichen.
+  function drawSelection(ctx, items) {
+    const editor = window.castleEditor;
+    if (!editor || !editor.getSelection) return;
+    const selected = editor.getSelection();
+    if (!selected || !selected.size) return;
+    for (const item of items) {
+      if (!selected.has(item.ref)) continue;
+      drawDiamond(ctx, item.gx, item.gy, item.tiles, 'rgba(120,190,255,.22)', 'rgba(150,205,255,.95)');
+    }
+  }
+
+  // Der laufende Auswahlkasten. In der schraegen Ansicht ist ein Rechteck der
+  // Karte eine Raute - deshalb kommt der Umriss aus der Geometrie und wird
+  // hier nur nachgezogen. Rot, wenn geloescht wird: dieselbe Farbe wie auf
+  // der Karte, damit die beiden Ansichten dasselbe sagen.
+  function drawMarquee(ctx) {
+    const editor = window.castleEditor;
+    if (!editor || !editor.getMarquee) return;
+    const box = editor.getMarquee();
+    const ecken = box && geo.marqueeOutline(box, state.view);
+    if (!ecken) return;
+    ctx.save();
+    ctx.beginPath();
+    ecken.forEach(([px, py], i) => { if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py); });
+    ctx.closePath();
+    const loeschen = box.kind === 'delete-marquee';
+    ctx.fillStyle = loeschen ? 'rgba(220,90,80,.18)' : 'rgba(120,190,255,.16)';
+    ctx.strokeStyle = loeschen ? 'rgba(240,120,110,.95)' : 'rgba(150,205,255,.95)';
+    ctx.lineWidth = 2;
+    ctx.fill();
+    ctx.stroke();
+    ctx.restore();
   }
 
   // One repaint per frame at most. The editor now tells the view about every

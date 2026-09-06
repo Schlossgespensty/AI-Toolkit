@@ -2748,6 +2748,20 @@
     addChangeListener,
     getTool: () => state.tool,
     getCurrentItemType: () => state.currentItemType,
+    // Fuer die 2.5D-Ansicht: was ausgewaehlt ist, und welcher Kasten gerade
+    // gezogen wird. Beides als Kopie und in KACHELN - die Ansicht rechnet in
+    // ihrem eigenen Bildschirmsystem und darf mit den Bildschirmpunkten der
+    // Karte nichts zu tun haben.
+    getSelection: () => new Set(state.selected),
+    getMarquee() {
+      const zieht = state.gesture === 'select-marquee' || state.gesture === 'copy-marquee'
+                 || state.gesture === 'delete-marquee';
+      if (!zieht || !state.dragStartTile || !state.marqueeEnd) return null;
+      const ende = screenToTile(state.marqueeEnd);
+      if (!ende) return null;
+      return { x0: state.dragStartTile.x, y0: state.dragStartTile.y,
+               x1: ende.x, y1: ende.y, kind: state.gesture };
+    },
     getContent: outputContent,
     hasDocument: () => Boolean(state.document),
     getPopulationSummary: calculatePopulationSummary,

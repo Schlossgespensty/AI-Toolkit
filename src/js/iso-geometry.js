@@ -81,6 +81,18 @@
   }
 
   // Every placed item of a castle document, ready to be sorted and drawn.
+  // Der Umriss eines Auswahlkastens in Iso-Punkten. Das Rechteck kommt in
+  // Editor-Koordinaten, wo y nach OBEN zaehlt; hier wird es in das
+  // Bildschirmsystem gedreht (gy = 99 - y) und um eine Kachel erweitert, weil
+  // der Kasten die Felder umschliesst und nicht ihre Mittelpunkte.
+  function marqueeOutline(box, view) {
+    if (!box) return null;
+    const x0 = Math.min(box.x0, box.x1), x1 = Math.max(box.x0, box.x1) + 1;
+    const yLow = Math.min(box.y0, box.y1), yHigh = Math.max(box.y0, box.y1);
+    const gy0 = GRID - 1 - yHigh, gy1 = GRID - 1 - yLow + 1;
+    return [[x0, gy0], [x1, gy0], [x1, gy1], [x0, gy1]].map(([gx, gy]) => isoPoint(gx, gy, view));
+  }
+
   function collectItems(document_, catalogue) {
     const out = [];
     if (!document_ || !Array.isArray(document_.frames)) return out;
@@ -88,14 +100,18 @@
     document_.frames.forEach((frame, frameIndex) => {
       const entry = items[String(frame.itemType)] || null;
       const offsets = Array.isArray(frame.tilePositionOfsets) ? frame.tilePositionOfsets : [];
-      for (const offset of offsets) {
+      offsets.forEach((offset, offsetIndex) => {
         const { gx, gy } = gridFromOffset(offset);
         out.push({
-          gx, gy, entry, frameIndex,
+          gx, gy, entry, frameIndex, offsetIndex,
+          // Derselbe Schluessel, den castle-editor.js fuer die Auswahl
+          // vergibt (frameRefKey). Ohne ihn koennte die Ansicht nicht sagen,
+          // welcher Gegenstand ausgewaehlt ist.
+          ref: 'f:' + frameIndex + ':' + offsetIndex,
           itemType: frame.itemType,
           tiles: entry ? entry.kacheln : 1
         });
-      }
+      });
     });
     return out;
   }
@@ -130,5 +146,5 @@
 
   return { GRID, HALF_W, HALF_H, gridFromOffset, offsetFromGrid, isoPoint,
            tileFromPoint, editorTileFromPoint,
-           depth, byDepth, spriteRect, collectItems, collectPlates, fitView };
+           depth, byDepth, spriteRect, collectItems, collectPlates, marqueeOutline, fitView };
 });

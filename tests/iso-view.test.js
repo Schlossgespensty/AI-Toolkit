@@ -197,3 +197,42 @@ test('sprite paths are relative to src/index.html, like the rest of the app', ()
       p + ' does not resolve to anything on disk');
   }
 });
+
+// ------------------------------------ der Auswahlkasten in der schraegen Ansicht
+
+test('the marquee outline is the map rectangle, turned into the slanted view', () => {
+  const view = { panX: 0, panY: 0, zoom: 1 };
+  // Ein Feld: (10,20) im Editor. Der Umriss umschliesst die Kachel, also
+  // reicht er von 10 bis 11 und - weil y nach oben zaehlt - von 99-20 bis
+  // 99-20+1 im Bildschirmsystem.
+  const eins = geometry.marqueeOutline({ x0: 10, y0: 20, x1: 10, y1: 20 }, view);
+  assert.equal(eins.length, 4);
+  assert.deepEqual(eins[0], geometry.isoPoint(10, 79, view));
+  assert.deepEqual(eins[1], geometry.isoPoint(11, 79, view));
+  assert.deepEqual(eins[2], geometry.isoPoint(11, 80, view));
+  assert.deepEqual(eins[3], geometry.isoPoint(10, 80, view));
+});
+
+test('the marquee does not care which corner the drag started in', () => {
+  const view = { panX: 0, panY: 0, zoom: 1 };
+  const hin = geometry.marqueeOutline({ x0: 10, y0: 20, x1: 14, y1: 26 }, view);
+  const zurueck = geometry.marqueeOutline({ x0: 14, y0: 26, x1: 10, y1: 20 }, view);
+  assert.deepEqual(hin, zurueck, 'von links unten oder von rechts oben gezogen: derselbe Kasten');
+  const quer = geometry.marqueeOutline({ x0: 14, y0: 20, x1: 10, y1: 26 }, view);
+  assert.deepEqual(hin, quer, 'und ueber die beiden anderen Ecken auch');
+});
+
+test('no box, no outline', () => {
+  const view = { panX: 0, panY: 0, zoom: 1 };
+  assert.equal(geometry.marqueeOutline(null, view), null);
+});
+
+test('every drawn item carries the key the editor uses for its selection', () => {
+  const dokument = { frames: [
+    { itemType: 20, tilePositionOfsets: [2030, 2031] },
+    { itemType: 25, tilePositionOfsets: [4050] }
+  ] };
+  const items = geometry.collectItems(dokument, { gegenstaende: {} });
+  assert.deepEqual(items.map(i => i.ref), ['f:0:0', 'f:0:1', 'f:1:0'],
+    'derselbe Aufbau wie frameRefKey in castle-editor.js: f:<Bauschritt>:<Feld>');
+});
