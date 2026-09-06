@@ -313,7 +313,13 @@ test('the ground is tiled at the same scale as the map, not stretched', () => {
   assert.match(grund, /ctx\.translate\(state\.view\.panX, state\.view\.panY\)/);
   assert.match(grund, /ctx\.clip\(\)/, 'die Karten-Raute schneidet den Grund ab');
   // Faellt das Bild aus, bleibt die Ansicht heil.
-  assert.match(grund, /if \(!pattern\) \{ ctx\.fillStyle = '#232a1c'; ctx\.fill\(\); return; \}/);
+  // Faellt das Bild aus, bleibt die Ansicht heil - und nie durchsichtig:
+  // die Farbe kommt immer, das Muster nur wenn es da ist.
+  assert.match(grund, /ctx\.fillStyle = '#232a1c';[\s\S]{0,20}ctx\.fill\(\);/);
+  assert.match(grund, /if \(!pattern\) return;/);
+  const rueckfall = iso.slice(iso.indexOf('function onImageFailed'), iso.indexOf('function hasOwnGround'));
+  assert.match(rueckfall, /if \(state\.ground && filename === state\.ground\)/);
+  assert.match(rueckfall, /setGround\(null\)/, 'ein kaputtes Bild wird vergessen, nicht jedes Mal neu versucht');
   assert.ok(fs.existsSync(path.join(root, 'assets', 'aiv', 'iso', 'grund.png')));
 });
 

@@ -65,6 +65,7 @@
     if (img) return img;
     img = new Image();
     img.onload = () => refresh();
+    img.onerror = () => onImageFailed(filename);
     // A ground the user picked arrives as a whole data: URL, not as the name
     // of a file next to the sprites. Prefixing the sprite path to it would
     // make an address that leads nowhere - and nothing would appear.
@@ -133,6 +134,18 @@
     paint();
   }
 
+  // A picture that will not load must not leave an empty map behind. If it was
+  // the ground the user picked, we fall back to the one that comes with the
+  // app and forget the broken choice - otherwise it would greet him again
+  // after every restart.
+  function onImageFailed(filename) {
+    if (state.ground && filename === state.ground) {
+      setGround(null);
+      return;
+    }
+    refresh();
+  }
+
   function hasOwnGround() { return Boolean(state.ground); }
   function groundIsStretched() { return groundFit() === 'stretch'; }
 
@@ -142,7 +155,13 @@
     if (img && img.complete && img.naturalWidth) {
       try { pattern = ctx.createPattern(img, 'repeat'); } catch { pattern = null; }
     }
-    if (!pattern) { ctx.fillStyle = '#232a1c'; ctx.fill(); return; }
+    // Immer erst die Farbe: solange ein Bild noch laedt oder gescheitert ist,
+    // bleibt die Karte sonst durchsichtig, und man sieht durch sie hindurch.
+    ctx.save();
+    ctx.fillStyle = '#232a1c';
+    ctx.fill();
+    ctx.restore();
+    if (!pattern) return;
 
     // Spread once: the picture covers exactly the box around the map diamond,
     // so its corners land on the map's corners.
