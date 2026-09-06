@@ -658,7 +658,7 @@
     if (!await window.unsavedChanges?.confirmEditor('castle', 'opening another castle')) return false;
     const result = await window.electronAPI.openFile('aiv');
     if (!result) return false;
-    loadDocument(result.document, result.path, { source: result.source, sourceBytes: result.sourceBytes });
+    loadDocument(result.document, result.path, { source: result.source, sourceBytes: result.sourceBytes, locks: result.locks });
     return true;
   }
 
@@ -667,6 +667,7 @@
       const diagnostics = { removedLegacySteps: 0 };
       const parsed = normalizeUnitStorage(normalizeDocument(deepClone(document), diagnostics));
       state.document = parsed;
+      if (options.locks) applyLockedFrameIndexes(options.locks);
       invalidatePlacementCache();
       state.filePath = path || null;
       state.sourcePath = options.source === 'aiv' && path ? path : null;
@@ -728,7 +729,8 @@
         kind: 'aiv',
         sourcePath: state.sourcePath,
         sourceBytes: state.sourceBytes,
-        unchanged: !state.dirty
+        unchanged: !state.dirty,
+        locks: lockedFrameIndexes()
       });
       if (!result) {
         setStatus('Save cancelled; the existing castle was not changed');
@@ -757,7 +759,8 @@
       const result = await window.electronAPI.saveFile(outputDocument(), 'aiv', defaultPath, {
         sourcePath: state.sourcePath,
         sourceBytes: state.sourceBytes,
-        unchanged: !state.dirty
+        unchanged: !state.dirty,
+        locks: lockedFrameIndexes()
       });
       if (!result) return false;
       state.filePath = result.path || result;
@@ -786,6 +789,23 @@
   // Umsortieren wandert sie mit, und eine Nummer, die auf den falschen
   // Schritt zeigt, kann es gar nicht geben. In die AIV-Datei wandert sie
   // nicht - das Format kennt kein solches Feld.
+  // Welche Bauschritte gesperrt sind, als Liste ihrer Nummern - so wandert
+  // die Sperre in die Begleitdatei neben der Burg und von dort zurueck.
+  function lockedFrameIndexes() {
+    const out = [];
+    frames().forEach((frame, fi) => { if (frame && frame.locked) out.push(fi); });
+    return out;
+  }
+
+  function applyLockedFrameIndexes(liste) {
+    const gesperrt = new Set(Array.isArray(liste) ? liste : []);
+    frames().forEach((frame, fi) => {
+      if (!frame) return;
+      if (gesperrt.has(fi)) frame.locked = true;
+      else delete frame.locked;
+    });
+  }
+
   function frameIsLocked(fi) {
     const frame = frames()[fi];
     return Boolean(frame && frame.locked);

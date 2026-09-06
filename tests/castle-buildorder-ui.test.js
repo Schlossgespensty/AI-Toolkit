@@ -424,3 +424,23 @@ test('the lock button takes the whole selection along', () => {
   assert.match(um, /const wert = !frame\.locked/,
     'alle bekommen denselben Zustand, sonst oeffnet der zweite Klick nur die Haelfte');
 });
+
+test('locks survive saving, in a file next to the castle', () => {
+  const main = fs.readFileSync(path.join(root, 'main.js'), 'utf8');
+  assert.match(main, /function lockSidecarPath\(aivPath\) \{ return aivPath \+ '\.locks\.json'; \}/,
+    'die Begleitdatei heisst wie die Burg, mit .locks.json dahinter');
+  assert.match(main, /if \(!liste\.length\) \{ if \(fs\.existsSync\(datei\)\) fs\.unlinkSync\(datei\); return; \}/,
+    'keine Sperren, keine Datei - eine leere waere Muell');
+  assert.match(main, /locks !== null\) writeLockSidecar\(destination, locks\)/,
+    'geschrieben wird erst, nachdem die Burg selbst heil auf der Platte liegt');
+  assert.match(main, /Object\.assign\(\{\}, gelesen, \{ locks: readLockSidecar\(filePath\) \}\)/,
+    'und beim Oeffnen kommt sie mit');
+
+  const script = fs.readFileSync(path.join(root, 'src', 'js', 'castle-editor.js'), 'utf8');
+  assert.equal((script.match(/locks: lockedFrameIndexes\(\)/g) || []).length, 2,
+    'beide Speicherwege schicken die Sperren mit: ueberschreiben und Speichern unter');
+  assert.match(functionBody(script, 'loadDocument'), /if \(options\.locks\) applyLockedFrameIndexes/);
+  const anwenden = functionBody(script, 'applyLockedFrameIndexes');
+  assert.match(anwenden, /else delete frame\.locked/,
+    'eine Burg ohne Begleitdatei kommt ohne Sperren - nicht mit denen der vorigen');
+});
