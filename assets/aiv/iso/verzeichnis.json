@@ -1,5 +1,5 @@
 {
- "erzeugt": "2026-09-06T17:01:28.862Z",
+ "erzeugt": "2026-09-06T17:11:34.741Z",
  "feld": 32,
  "gegenstaende": {
   "25": {
@@ -8,7 +8,7 @@
    "kacheln": 1,
    "bild": "mauer_25_klotz.png",
    "breite": 30,
-   "hoehe": 86
+   "hoehe": 95
   },
   "26": {
    "name": "Zinnenmauer hoch",
@@ -16,10 +16,10 @@
    "kacheln": 1,
    "bild": "mauer_26_klotz.png",
    "breite": 30,
-   "hoehe": 105,
+   "hoehe": 114,
    "wechselBild": "mauer_26_scharte.png",
    "wechselBreite": 30,
-   "wechselHoehe": 90,
+   "wechselHoehe": 99,
    "wechsel": "x+y ungerade"
   },
   "35": {
@@ -28,10 +28,10 @@
    "kacheln": 1,
    "bild": "mauer_35_klotz.png",
    "breite": 30,
-   "hoehe": 78,
+   "hoehe": 87,
    "wechselBild": "mauer_35_scharte.png",
    "wechselBreite": 30,
-   "wechselHoehe": 63,
+   "wechselHoehe": 72,
    "wechsel": "x+y ungerade"
   },
   "46": {
@@ -40,7 +40,7 @@
    "kacheln": 1,
    "bild": "mauer_46_klotz.png",
    "breite": 30,
-   "hoehe": 59
+   "hoehe": 68
   },
   "50": {
    "name": "Bogenmacher",
