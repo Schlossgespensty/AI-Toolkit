@@ -93,8 +93,66 @@
   // mauerAn(gx, gy) liefert den Mauereintrag eines Nachbarfeldes oder null.
   // Fehlt er, bleibt es beim Einzelbild - die Ansicht sieht dann aus wie
   // vorher, statt zu bruchlanden.
-  function variantFor(sprite, gx, gy, mauerAn) {
+  // Eine Treppe hat, anders als bisher gezeichnet, eine HOEHE - und zwar je
+  // Stufe eine andere. Gemessen in placeDefensiveStructureTile (0x005034a0):
+  // Mapper 181 steht 80 Punkte ueber dem Boden, 182 auf 64, 183 auf 48,
+  // 184 auf 32, 185 auf 16, 186 auf 0. Die fertigen Bilder bringen diese Hoehe
+  // schon als Koerper mit (lib/webbilder.js, TREPPEN_HOEHE), darum steigt eine
+  // gezogene Treppe von allein: das Bild von Stufe 1 ist 64 Punkte hoeher als
+  // das von Stufe 5, und spriteRect setzt beide auf ihrer Kachel ab.
+  //
+  // Zu entscheiden bleibt nur, WELCHE der vier Ansichten ein Feld bekommt.
+  // Das Spiel sucht dafuer den hoeheren Nachbarn - eine hoehere Treppe
+  // (hasHigherNeighborWithStairs) oder eine hoehere Mauer
+  // (hasHigherPlainNeighborWithWallOrGatehouse) - und nimmt das Bild dieser
+  // Seite; findet es keinen, das flache Podest.
+  //
+  // Aus dem Programm gelesen: Richtung 0 -> #134, 2 -> #135, 4 -> #136,
+  // 6 -> #133 (updateGfxLayer 0x00509180). Welches NACHBARFELD Richtung 0
+  // ist, steht dort nicht - directionTranslationMatrix wird erst im laufenden
+  // Spiel gefuellt. Diese Tabelle ist darum am Bild gemessen, mit einem
+  // harten Kriterium: eine Treppe von fuenf Stufen an einer Mauer wurde in
+  // jede Richtung mit jedem der vier Bilder gezeichnet, und genau eine
+  // Zuordnung setzt die fuenf Stufen zu EINEM durchgehenden Treppenlauf
+  // zusammen - bei den anderen drei stehen fuenf einzelne, quer stehende
+  // Treppchen da. Probebilder vom 06.09.2026 (11_richtung_*, 12_gy_*,
+  // 13_gxplus_*): gx-1 -> r6, gy-1 -> r0, gx+1 -> r2, und damit gy+1 -> r4.
+  const TREPPEN_NACHBAR = [
+    ['r0', 0, -1],   // hoeherer Nachbar bei gy-1, Bildschirm rechts oben
+    ['r2', 1, 0],    //                     gx+1,             rechts unten
+    ['r4', 0, 1],    //                     gy+1,             links unten
+    ['r6', -1, 0],   //                     gx-1,             links oben
+  ];
+
+  // Die Reihenfolge ist nicht beliebig: updateGfxLayer fragt ERST alle vier
+  // Richtungen nach einer hoeheren TREPPE ab und danach erst alle vier nach
+  // einer hoeheren MAUER. Das ist kein Feinschliff, sondern der Normalfall -
+  // jedes Treppenfeld einer AIV liegt an einer Steinmauer, also hat fast jede
+  // Stufe beides als Nachbarn. Wer nur einmal durchlaeuft, richtet die halbe
+  // Treppe zur Mauer statt zur naechsten Stufe.
+  function treppenFassung(sprite, gx, gy, hoeheAn) {
+    const treppe = sprite.treppe;
+    let gewaehlt = treppe.richtungen.allein;
+    if (typeof hoeheAn === 'function') {
+      const suche = (art) => {
+        for (const [richtung, dx, dy] of TREPPEN_NACHBAR) {
+          const nachbar = hoeheAn(gx + dx, gy + dy);
+          if (!nachbar || nachbar.art !== art) continue;
+          if (nachbar.hoehe > treppe.hoehe && treppe.richtungen[richtung])
+            return treppe.richtungen[richtung];
+        }
+        return null;
+      };
+      gewaehlt = suche('treppe') || suche('mauer') || gewaehlt;
+    }
+    if (!gewaehlt) return sprite;
+    return { bild: gewaehlt.bild, breite: gewaehlt.breite,
+             hoehe: gewaehlt.hoehe, kacheln: sprite.kacheln };
+  }
+
+  function variantFor(sprite, gx, gy, mauerAn, hoeheAn) {
     if (!sprite) return sprite;
+    if (sprite.treppe) return treppenFassung(sprite, gx, gy, hoeheAn);
     const y = (GRID - 1) - gy;
     const klotz = (((gx + y) % 2) + 2) % 2 === 1;
     const mauer = sprite.mauer;
@@ -128,6 +186,34 @@
     const felder = new Map();
     const eintragen = (gx, gy, entry) => {
       if (entry && entry.mauer) felder.set(gx + ':' + gy, entry.mauer);
+    };
+    for (const item of items || []) eintragen(item.gx, item.gy, item.entry);
+    for (const item of extra || []) eintragen(item.gx, item.gy, item.entry);
+    return (gx, gy) => felder.get(gx + ':' + gy) || null;
+  }
+
+  // Wie hoch ein Feld ist und was darauf steht - fuer die Treppenregel oben.
+  // Eine Hoehe tragen bisher nur Mauern und Treppen; alles andere liefert
+  // null, denn was das Spiel als Hoehe verbucht, ist bei den uebrigen Bauten
+  // nicht gemessen. Zurueck kommt { hoehe, art } mit art 'treppe', 'mauer'
+  // oder 'zinne'.
+  //
+  // 'zinne' steht getrennt, weil eine Zinnenmauer fuer die Treppe NICHT
+  // zaehlt: hasHigherPlainNeighborWithWallOrGatehouse (0x004f8ac0) verlangt
+  // L_WALL_OR_GATEHOUSE und schliesst L_CRENEL (0x200) aus.
+  //
+  // Liegen zwei Dinge auf einem Feld, gilt das hoehere.
+  function hoehenLookup(items, extra) {
+    const felder = new Map();
+    const eintragen = (gx, gy, entry) => {
+      if (!entry) return;
+      const wert = entry.treppe ? { hoehe: entry.treppe.hoehe, art: 'treppe' }
+                 : entry.mauer ? { hoehe: entry.mauer.hoehe, art: entry.mauer.zinne ? 'zinne' : 'mauer' }
+                 : null;
+      if (!wert) return;
+      const schluessel = gx + ':' + gy;
+      const bisher = felder.get(schluessel);
+      if (!bisher || wert.hoehe > bisher.hoehe) felder.set(schluessel, wert);
     };
     for (const item of items || []) eintragen(item.gx, item.gy, item.entry);
     for (const item of extra || []) eintragen(item.gx, item.gy, item.entry);
@@ -214,6 +300,6 @@
 
   return { GRID, HALF_W, HALF_H, gridFromOffset, offsetFromGrid, isoPoint,
            tileFromPoint, editorTileFromPoint,
-           depth, byDepth, spriteRect, variantFor, wallLookup,
+           depth, byDepth, spriteRect, variantFor, wallLookup, hoehenLookup,
            collectItems, collectPlates, marqueeOutline, fitView };
 });

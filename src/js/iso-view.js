@@ -188,8 +188,8 @@
     ctx.restore();
   }
 
-  function drawSprite(ctx, sprite, gx, gy, tiles, mauerAn) {
-    const variant = geo.variantFor(sprite, gx, gy, mauerAn);
+  function drawSprite(ctx, sprite, gx, gy, tiles, mauerAn, hoeheAn) {
+    const variant = geo.variantFor(sprite, gx, gy, mauerAn, hoeheAn);
     const img = image(variant.bild);
     if (!img || !img.complete || !img.naturalWidth) return false;
     const rect = geo.spriteRect(variant, gx, gy, tiles, state.view);
@@ -270,10 +270,15 @@
     // statt einer Reihe von Pfeilern (siehe geo.variantFor).
     const mauerAn = geo.wallLookup(items);
     state.mauerAn = mauerAn;
+    // Und wie hoch jedes Feld ist. Eine Treppe waehlt ihre Ansicht danach,
+    // auf welcher Seite der hoehere Nachbar liegt - Mauer wie Treppe zaehlen
+    // beide, genau wie im Spiel (siehe geo.variantFor).
+    const hoeheAn = geo.hoehenLookup(items);
+    state.hoeheAn = hoeheAn;
 
     let missing = 0;
     for (const item of items.sort(geo.byDepth)) {
-      if (item.entry && drawSprite(ctx, item.entry, item.gx, item.gy, item.tiles, mauerAn)) continue;
+      if (item.entry && drawSprite(ctx, item.entry, item.gx, item.gy, item.tiles, mauerAn, hoeheAn)) continue;
       drawDiamond(ctx, item.gx, item.gy, item.tiles, 'rgba(210,170,90,.55)');
       missing++;
     }
@@ -314,13 +319,21 @@
     const neueMauern = geo.wallLookup(kuenftig);
     const mauerAn = (gx, gy) =>
       neueMauern(gx, gy) || (state.mauerAn ? state.mauerAn(gx, gy) : null);
+    // Dasselbe fuer die Hoehen: eine gezogene Treppe sieht ihre eigenen
+    // Stufen schon waehrend des Ziehens, sonst zeigen alle fuenf das flache
+    // Podest und springen beim Loslassen um.
+    const neueHoehen = geo.hoehenLookup(kuenftig);
+    const hoeheAn = (gx, gy) => {
+      const neu = neueHoehen(gx, gy);
+      return neu != null ? neu : (state.hoeheAn ? state.hoeheAn(gx, gy) : null);
+    };
 
     ctx.save();
     ctx.globalAlpha = 0.5;
     for (const feld of kuenftig) {
       const eintrag = feld.entry;
       const kacheln = eintrag ? eintrag.kacheln : 1;
-      if (!eintrag || !drawSprite(ctx, eintrag, feld.gx, feld.gy, kacheln, mauerAn))
+      if (!eintrag || !drawSprite(ctx, eintrag, feld.gx, feld.gy, kacheln, mauerAn, hoeheAn))
         drawDiamond(ctx, feld.gx, feld.gy, kacheln, 'rgba(120,220,140,.45)', 'rgba(150,240,170,.9)');
     }
     ctx.restore();

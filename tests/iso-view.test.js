@@ -261,9 +261,140 @@ test('a crenellated wall alternates merlon and embrasure, tile by tile', () => {
   // Und das Zeichnen benutzt die gewaehlte Fassung, nicht mehr den Eintrag.
   const script = fs.readFileSync(path.join(root, 'src', 'js', 'iso-view.js'), 'utf8');
   const malen = script.slice(script.indexOf('function drawSprite'), script.indexOf('function drawDiamond'));
-  assert.match(malen, /const variant = geo\.variantFor\(sprite, gx, gy, mauerAn\)/);
+  assert.match(malen, /const variant = geo\.variantFor\(sprite, gx, gy, mauerAn, hoeheAn\)/);
   assert.match(malen, /image\(variant\.bild\)/);
   assert.match(malen, /geo\.spriteRect\(variant, gx, gy/);
+});
+
+// ------------------------------------------------------------------ Treppen
+//
+// Daniel am 06.09.2026: "die haben noch keine hoehe, die sind bisher nur alle
+// einfach trappen". Genau das pruefen die naechsten drei Tests - dass jede
+// Stufe ihre eigene, gemessene Hoehe hat und dass daraus ein steigender Lauf
+// wird.
+
+// Ein Katalogeintrag, wie ihn _exportiere_iso.js schreibt. Die Bildhoehen sind
+// die echten: Trittflaeche ueber der Bodenraute (hier 12) + 16 Zeilen Raute +
+// Koerperhoehe.
+function treppenEintrag(hoehe) {
+  const bild = (name, ueberRaute) =>
+    ({ bild: name, breite: 30, hoehe: ueberRaute + 16 + hoehe });
+  return {
+    name: 'Treppe', kacheln: 1,
+    bild: 'allein.png', breite: 30, hoehe: 2 + 16 + hoehe,
+    treppe: {
+      hoehe,
+      richtungen: {
+        r0: bild('r0.png', 12), r2: bild('r2.png', 7),
+        r4: bild('r4.png', 7), r6: bild('r6.png', 12),
+        allein: bild('allein.png', 2),
+      },
+    },
+  };
+}
+
+test('eine gezogene Treppe steigt - jede Stufe hat ihre eigene Hoehe', (t) => {
+  const dir = path.join(root, 'assets', 'aiv', 'iso');
+  if (!fs.existsSync(path.join(dir, 'verzeichnis.json'))) { t.skip('keine Bilder ausgegeben'); return; }
+  const katalog = JSON.parse(fs.readFileSync(path.join(dir, 'verzeichnis.json'), 'utf8')).gegenstaende;
+
+  // Gemessen in placeDefensiveStructureTile (0x005034a0), je Mapper eine
+  // Zeile: 181 -> +0x50, 182 -> +0x40, 183 -> +0x30, 184 -> +0x20,
+  // 185 -> +0x10, 186 hat gar keine.
+  const erwartet = { 181: 80, 182: 64, 183: 48, 184: 32, 185: 16, 186: 0 };
+  for (const [mapper, hoehe] of Object.entries(erwartet)) {
+    const e = katalog[mapper];
+    assert.ok(e && e.treppe, 'Mapper ' + mapper + ' braucht einen Treppeneintrag');
+    assert.equal(e.treppe.hoehe, hoehe, 'Mapper ' + mapper);
+    for (const richtung of ['r0', 'r2', 'r4', 'r6', 'allein']) {
+      const f = e.treppe.richtungen[richtung];
+      assert.ok(f, mapper + ' fehlt die Ansicht ' + richtung);
+      assert.ok(fs.existsSync(path.join(dir, f.bild)), 'Bilddatei fehlt: ' + f.bild);
+    }
+  }
+
+  // Und der Lauf steigt wirklich: das Bild von Stufe 1 ist genau 64 Zeilen
+  // hoeher als das von Stufe 5 - 80 minus 16. spriteRect setzt beide auf
+  // ihrer Kachel ab, also liegt Stufe 1 um diese 64 hoeher.
+  const hoch = katalog['181'].treppe.richtungen.r6.hoehe;
+  const tief = katalog['185'].treppe.richtungen.r6.hoehe;
+  assert.equal(hoch - tief, 64, 'Stufe 1 steht 64 Punkte ueber Stufe 5');
+  assert.equal(katalog['186'].treppe.hoehe, 0, 'Stair6 heisst Floor und ist es auch');
+  // und hat darum keinen Koerper: ihr Bild ist genau die nackte Bodenkachel,
+  // 18 Zeilen, so hoch wie tile_land3#104 selbst.
+  assert.equal(katalog['186'].treppe.richtungen.allein.hoehe, 18,
+    'Stufe 6 steht auf dem Boden, ohne Koerper darunter');
+  assert.ok(katalog['181'].treppe.richtungen.allein.hoehe
+            - katalog['186'].treppe.richtungen.allein.hoehe === 80,
+    'und Stufe 1 genau 80 Zeilen darueber');
+});
+
+test('eine Treppe zeigt zur Seite, auf der der hoehere Nachbar liegt', () => {
+  const stufe = treppenEintrag(64);
+  const ohne = geometry.variantFor(stufe, 10, 10, null, () => null);
+  assert.equal(ohne.bild, 'allein.png', 'kein hoeherer Nachbar -> das flache Podest');
+
+  // Die Zuordnung ist am Bild gemessen (Probebilder 11_/12_/13_ vom
+  // 06.09.2026): nur so setzen sich die fuenf Stufen zu EINEM Lauf zusammen.
+  const nachbar = (dx, dy, art) => (gx, gy) =>
+    (gx === 10 + dx && gy === 10 + dy) ? { hoehe: 90, art: art || 'mauer' } : null;
+  assert.equal(geometry.variantFor(stufe, 10, 10, null, nachbar(-1, 0)).bild, 'r6.png');
+  assert.equal(geometry.variantFor(stufe, 10, 10, null, nachbar(0, -1)).bild, 'r0.png');
+  assert.equal(geometry.variantFor(stufe, 10, 10, null, nachbar(1, 0)).bild, 'r2.png');
+  assert.equal(geometry.variantFor(stufe, 10, 10, null, nachbar(0, 1)).bild, 'r4.png');
+
+  // Ein NIEDRIGERER Nachbar zaehlt nicht - sonst wuerde die Treppe nach unten
+  // statt nach oben zeigen.
+  const tiefer = () => ({ hoehe: 16, art: 'mauer' });
+  assert.equal(geometry.variantFor(stufe, 10, 10, null, tiefer).bild, 'allein.png');
+
+  // Der Normalfall in einer echten Burg: die Stufe hat auf der einen Seite
+  // die naechsthoehere STUFE und auf der anderen die MAUER, an der sie
+  // entlanglaeuft. Das Spiel fragt erst alle vier Richtungen nach einer
+  // Treppe ab und danach erst nach einer Mauer - also gewinnt die Stufe,
+  // auch wenn die Mauer in der Richtungsliste frueher drankaeme.
+  const beides = (gx, gy) => {
+    if (gx === 11 && gy === 10) return { hoehe: 90, art: 'mauer' };  // r2, waere zuerst dran
+    if (gx === 9 && gy === 10) return { hoehe: 80, art: 'treppe' };  // r6
+    return null;
+  };
+  assert.equal(geometry.variantFor(stufe, 10, 10, null, beides).bild, 'r6.png',
+    'die naechste Stufe schlaegt die Mauer');
+
+  // Und eine ZINNENmauer zaehlt gar nicht: hasHigherPlainNeighborWithWall-
+  // OrGatehouse schliesst L_CRENEL aus.
+  const nurZinne = nachbar(-1, 0, 'zinne');
+  assert.equal(geometry.variantFor(stufe, 10, 10, null, nurZinne).bild, 'allein.png');
+});
+
+test('hoehenLookup kennt Mauern und Treppen, sonst nichts', () => {
+  const felder = [
+    { gx: 1, gy: 1, entry: { mauer: { hoehe: 90 } } },
+    { gx: 2, gy: 1, entry: treppenEintrag(48) },
+    { gx: 3, gy: 1, entry: { bild: 'haus.png' } },
+  ];
+  const hoeheAn = geometry.hoehenLookup(felder);
+  assert.deepEqual(hoeheAn(1, 1), { hoehe: 90, art: 'mauer' });
+  assert.deepEqual(hoeheAn(2, 1), { hoehe: 48, art: 'treppe' });
+  assert.equal(hoeheAn(3, 1), null, 'fuer ein Haus ist keine Hoehe gemessen');
+  assert.equal(hoeheAn(9, 9), null);
+
+  // Eine Zinnenmauer wird getrennt gefuehrt - fuer die Treppe zaehlt sie nicht.
+  const zinne = geometry.hoehenLookup([{ gx: 4, gy: 1, entry: { mauer: { hoehe: 98, zinne: true } } }]);
+  assert.deepEqual(zinne(4, 1), { hoehe: 98, art: 'zinne' });
+
+  // Hoehe 0 ist eine Hoehe, kein "nichts" - sonst faellt Stufe 6 heraus.
+  const boden = geometry.hoehenLookup([{ gx: 0, gy: 0, entry: treppenEintrag(0) }]);
+  assert.deepEqual(boden(0, 0), { hoehe: 0, art: 'treppe' });
+});
+
+test('auch die Vorschau kennt die Hoehen, damit eine gezogene Treppe schon beim Ziehen steigt', () => {
+  const script = fs.readFileSync(path.join(root, 'src', 'js', 'iso-view.js'), 'utf8');
+  const vorschau = script.slice(script.indexOf('function drawPreview'),
+                                script.indexOf('function drawSelection'));
+  assert.match(vorschau, /geo\.hoehenLookup\(kuenftig\)/,
+    'die Felder der Vorschau muessen fuer die Treppenregel schon mitzaehlen');
+  assert.match(vorschau, /drawSprite\(ctx, eintrag, feld\.gx, feld\.gy, kacheln, mauerAn, hoeheAn\)/);
 });
 
 test('dragging a wall shows the whole run at half opacity, not just one tile', () => {

@@ -1,5 +1,5 @@
 {
- "erzeugt": "2026-09-06T18:08:37.105Z",
+ "erzeugt": "2026-09-06T19:18:50.736Z",
  "feld": 32,
  "gegenstaende": {
   "25": {
@@ -11,6 +11,7 @@
    "hoehe": 108,
    "mauer": {
     "hoehe": 90,
+    "zinne": false,
     "laengs": {
      "klotz": [
       {
@@ -220,6 +221,7 @@
    "hoehe": 135,
    "mauer": {
     "hoehe": 98,
+    "zinne": true,
     "laengs": {
      "klotz": [
       {
@@ -612,6 +614,7 @@
    "hoehe": 105,
    "mauer": {
     "hoehe": 68,
+    "zinne": true,
     "laengs": {
      "klotz": [
       {
@@ -1004,6 +1007,7 @@
    "hoehe": 78,
    "mauer": {
     "hoehe": 60,
+    "zinne": false,
     "laengs": {
      "klotz": [
       {
@@ -1700,49 +1704,239 @@
    "name": "Treppe 1",
    "aiv": 14,
    "kacheln": 1,
-   "bild": "tile_land3_133.png",
+   "bild": "treppe_181_allein.png",
    "breite": 30,
-   "hoehe": 28
+   "hoehe": 98,
+   "treppe": {
+    "hoehe": 80,
+    "richtungen": {
+     "r0": {
+      "bild": "treppe_181_r0.png",
+      "breite": 30,
+      "hoehe": 108
+     },
+     "r2": {
+      "bild": "treppe_181_r2.png",
+      "breite": 30,
+      "hoehe": 103
+     },
+     "r4": {
+      "bild": "treppe_181_r4.png",
+      "breite": 30,
+      "hoehe": 103
+     },
+     "r6": {
+      "bild": "treppe_181_r6.png",
+      "breite": 30,
+      "hoehe": 108
+     },
+     "allein": {
+      "bild": "treppe_181_allein.png",
+      "breite": 30,
+      "hoehe": 98
+     }
+    },
+    "regel": {
+     "bild": "die Seite, auf der der HOEHERE Nachbar liegt (Treppe oder Mauer)",
+     "ohne": "kein hoeherer Nachbar -> allein (tile_land3#104, das flache Podest)",
+     "quelle": "updateGfxLayer 0x00509180, Richtung 0/2/4/6 -> #134/#135/#136/#133"
+    }
+   }
   },
   "182": {
    "name": "Treppe 2",
    "aiv": 15,
    "kacheln": 1,
-   "bild": "tile_land3_133.png",
+   "bild": "treppe_182_allein.png",
    "breite": 30,
-   "hoehe": 28
+   "hoehe": 82,
+   "treppe": {
+    "hoehe": 64,
+    "richtungen": {
+     "r0": {
+      "bild": "treppe_182_r0.png",
+      "breite": 30,
+      "hoehe": 92
+     },
+     "r2": {
+      "bild": "treppe_182_r2.png",
+      "breite": 30,
+      "hoehe": 87
+     },
+     "r4": {
+      "bild": "treppe_182_r4.png",
+      "breite": 30,
+      "hoehe": 87
+     },
+     "r6": {
+      "bild": "treppe_182_r6.png",
+      "breite": 30,
+      "hoehe": 92
+     },
+     "allein": {
+      "bild": "treppe_182_allein.png",
+      "breite": 30,
+      "hoehe": 82
+     }
+    },
+    "regel": {
+     "bild": "die Seite, auf der der HOEHERE Nachbar liegt (Treppe oder Mauer)",
+     "ohne": "kein hoeherer Nachbar -> allein (tile_land3#104, das flache Podest)",
+     "quelle": "updateGfxLayer 0x00509180, Richtung 0/2/4/6 -> #134/#135/#136/#133"
+    }
+   }
   },
   "183": {
    "name": "Treppe 3",
    "aiv": 16,
    "kacheln": 1,
-   "bild": "tile_land3_133.png",
+   "bild": "treppe_183_allein.png",
    "breite": 30,
-   "hoehe": 28
+   "hoehe": 66,
+   "treppe": {
+    "hoehe": 48,
+    "richtungen": {
+     "r0": {
+      "bild": "treppe_183_r0.png",
+      "breite": 30,
+      "hoehe": 76
+     },
+     "r2": {
+      "bild": "treppe_183_r2.png",
+      "breite": 30,
+      "hoehe": 71
+     },
+     "r4": {
+      "bild": "treppe_183_r4.png",
+      "breite": 30,
+      "hoehe": 71
+     },
+     "r6": {
+      "bild": "treppe_183_r6.png",
+      "breite": 30,
+      "hoehe": 76
+     },
+     "allein": {
+      "bild": "treppe_183_allein.png",
+      "breite": 30,
+      "hoehe": 66
+     }
+    },
+    "regel": {
+     "bild": "die Seite, auf der der HOEHERE Nachbar liegt (Treppe oder Mauer)",
+     "ohne": "kein hoeherer Nachbar -> allein (tile_land3#104, das flache Podest)",
+     "quelle": "updateGfxLayer 0x00509180, Richtung 0/2/4/6 -> #134/#135/#136/#133"
+    }
+   }
   },
   "184": {
    "name": "Treppe 4",
    "aiv": 17,
    "kacheln": 1,
-   "bild": "tile_land3_133.png",
+   "bild": "treppe_184_allein.png",
    "breite": 30,
-   "hoehe": 28
+   "hoehe": 50,
+   "treppe": {
+    "hoehe": 32,
+    "richtungen": {
+     "r0": {
+      "bild": "treppe_184_r0.png",
+      "breite": 30,
+      "hoehe": 60
+     },
+     "r2": {
+      "bild": "treppe_184_r2.png",
+      "breite": 30,
+      "hoehe": 55
+     },
+     "r4": {
+      "bild": "treppe_184_r4.png",
+      "breite": 30,
+      "hoehe": 55
+     },
+     "r6": {
+      "bild": "treppe_184_r6.png",
+      "breite": 30,
+      "hoehe": 60
+     },
+     "allein": {
+      "bild": "treppe_184_allein.png",
+      "breite": 30,
+      "hoehe": 50
+     }
+    },
+    "regel": {
+     "bild": "die Seite, auf der der HOEHERE Nachbar liegt (Treppe oder Mauer)",
+     "ohne": "kein hoeherer Nachbar -> allein (tile_land3#104, das flache Podest)",
+     "quelle": "updateGfxLayer 0x00509180, Richtung 0/2/4/6 -> #134/#135/#136/#133"
+    }
+   }
   },
   "185": {
    "name": "Treppe 5",
    "aiv": 18,
    "kacheln": 1,
-   "bild": "tile_land3_133.png",
+   "bild": "treppe_185_allein.png",
    "breite": 30,
-   "hoehe": 28
+   "hoehe": 34,
+   "treppe": {
+    "hoehe": 16,
+    "richtungen": {
+     "r0": {
+      "bild": "treppe_185_r0.png",
+      "breite": 30,
+      "hoehe": 44
+     },
+     "r2": {
+      "bild": "treppe_185_r2.png",
+      "breite": 30,
+      "hoehe": 39
+     },
+     "r4": {
+      "bild": "treppe_185_r4.png",
+      "breite": 30,
+      "hoehe": 39
+     },
+     "r6": {
+      "bild": "treppe_185_r6.png",
+      "breite": 30,
+      "hoehe": 44
+     },
+     "allein": {
+      "bild": "treppe_185_allein.png",
+      "breite": 30,
+      "hoehe": 34
+     }
+    },
+    "regel": {
+     "bild": "die Seite, auf der der HOEHERE Nachbar liegt (Treppe oder Mauer)",
+     "ohne": "kein hoeherer Nachbar -> allein (tile_land3#104, das flache Podest)",
+     "quelle": "updateGfxLayer 0x00509180, Richtung 0/2/4/6 -> #134/#135/#136/#133"
+    }
+   }
   },
   "186": {
    "name": "Treppe 6",
    "aiv": 19,
    "kacheln": 1,
-   "bild": "tile_land3_133.png",
+   "bild": "treppe_186_allein.png",
    "breite": 30,
-   "hoehe": 28
+   "hoehe": 18,
+   "treppe": {
+    "hoehe": 0,
+    "richtungen": {
+     "allein": {
+      "bild": "treppe_186_allein.png",
+      "breite": 30,
+      "hoehe": 18
+     }
+    },
+    "regel": {
+     "bild": "die Seite, auf der der HOEHERE Nachbar liegt (Treppe oder Mauer)",
+     "ohne": "kein hoeherer Nachbar -> allein (tile_land3#104, das flache Podest)",
+     "quelle": "updateGfxLayer 0x00509180, Richtung 0/2/4/6 -> #134/#135/#136/#133"
+    }
+   }
   },
   "301": {
    "name": "Jauchegrube",
