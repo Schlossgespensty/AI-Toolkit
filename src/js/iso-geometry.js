@@ -69,6 +69,23 @@
 
   // Where a sprite goes: centred on the lowest tile, its bottom edge one
   // half tile below that tile's centre - the same rule the .gm1 files use.
+  // A crenellated wall has no picture of its own: it is the plain wall with a
+  // merlon on top, and the merlon only sits on every other tile. The catalogue
+  // therefore carries two pictures for it, and this picks the one for a tile.
+  //
+  // The game decides by the parity of x + y - placeDefensiveStructureTile
+  // (0x005034a0) sets LogicLayer 0x400000 when x + y is odd, and that bit
+  // chooses the merlon over the flat embrasure. gy counts down the screen, so
+  // the editor's y has to be recovered before the sum is taken.
+  function variantFor(sprite, gx, gy) {
+    if (!sprite || !sprite.wechselBild) return sprite;
+    const y = (GRID - 1) - gy;
+    const odd = (((gx + y) % 2) + 2) % 2 === 1;
+    if (odd) return sprite;
+    return { bild: sprite.wechselBild, breite: sprite.wechselBreite,
+             hoehe: sprite.wechselHoehe, kacheln: sprite.kacheln };
+  }
+
   function spriteRect(sprite, gx, gy, tiles, view) {
     const [sx, sy] = isoPoint(gx + tiles - 1, gy + tiles - 1, view);
     const k = view.zoom;
@@ -146,5 +163,5 @@
 
   return { GRID, HALF_W, HALF_H, gridFromOffset, offsetFromGrid, isoPoint,
            tileFromPoint, editorTileFromPoint,
-           depth, byDepth, spriteRect, collectItems, collectPlates, marqueeOutline, fitView };
+           depth, byDepth, spriteRect, variantFor, collectItems, collectPlates, marqueeOutline, fitView };
 });

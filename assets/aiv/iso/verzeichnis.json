@@ -1,5 +1,5 @@
 {
- "erzeugt": "2026-09-05T20:25:44.092Z",
+ "erzeugt": "2026-09-06T16:37:34.140Z",
  "feld": 32,
  "gegenstaende": {
   "25": {
@@ -14,17 +14,25 @@
    "name": "Zinnenmauer hoch",
    "aiv": 12,
    "kacheln": 1,
-   "bild": "tile_buildings1_2.png",
+   "bild": "zinne_26_klotz.png",
    "breite": 30,
-   "hoehe": 97
+   "hoehe": 118,
+   "wechselBild": "zinne_26_scharte.png",
+   "wechselBreite": 30,
+   "wechselHoehe": 103,
+   "wechsel": "x+y ungerade"
   },
   "35": {
    "name": "Zinnenmauer niedrig",
    "aiv": 13,
    "kacheln": 1,
-   "bild": "tile_buildings1_1.png",
+   "bild": "zinne_35_klotz.png",
    "breite": 30,
-   "hoehe": 70
+   "hoehe": 91,
+   "wechselBild": "zinne_35_scharte.png",
+   "wechselBreite": 30,
+   "wechselHoehe": 76,
+   "wechsel": "x+y ungerade"
   },
   "46": {
    "name": "Niedrige Mauer",
@@ -302,7 +310,7 @@
      "dx": 0,
      "dy": 5,
      "kacheln": 5,
-     "bild": "tile_buildings1_147.png",
+     "bild": "tile_buildings1_172.png",
      "breite": 158,
      "hoehe": 80
     }
@@ -514,55 +522,65 @@
    "kacheln": 4,
    "bild": "tile_buildings2_707.png",
    "breite": 126,
-   "hoehe": 117
+   "hoehe": 117,
+   "platten": [
+    {
+     "dx": 0,
+     "dy": 4,
+     "kacheln": 4,
+     "bild": "tile_buildings1_296.png",
+     "breite": 126,
+     "hoehe": 64
+    }
+   ]
   },
   "181": {
    "name": "Treppe 1",
    "aiv": 14,
    "kacheln": 1,
-   "bild": "tile_buildings1_1.png",
+   "bild": "tile_land3_133.png",
    "breite": 30,
-   "hoehe": 70
+   "hoehe": 28
   },
   "182": {
    "name": "Treppe 2",
    "aiv": 15,
    "kacheln": 1,
-   "bild": "tile_buildings1_1.png",
+   "bild": "tile_land3_133.png",
    "breite": 30,
-   "hoehe": 70
+   "hoehe": 28
   },
   "183": {
    "name": "Treppe 3",
    "aiv": 16,
    "kacheln": 1,
-   "bild": "tile_land3_132.png",
+   "bild": "tile_land3_133.png",
    "breite": 30,
-   "hoehe": 45
+   "hoehe": 28
   },
   "184": {
    "name": "Treppe 4",
    "aiv": 17,
    "kacheln": 1,
-   "bild": "tile_land3_120.png",
+   "bild": "tile_land3_133.png",
    "breite": 30,
-   "hoehe": 37
+   "hoehe": 28
   },
   "185": {
    "name": "Treppe 5",
    "aiv": 18,
    "kacheln": 1,
-   "bild": "tile_land3_119.png",
+   "bild": "tile_land3_133.png",
    "breite": 30,
-   "hoehe": 22
+   "hoehe": 28
   },
   "186": {
    "name": "Treppe 6",
    "aiv": 19,
    "kacheln": 1,
-   "bild": "tile_land3_98.png",
+   "bild": "tile_land3_133.png",
    "breite": 30,
-   "hoehe": 18
+   "hoehe": 28
   },
   "301": {
    "name": "Jauchegrube",

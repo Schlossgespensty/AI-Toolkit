@@ -78,9 +78,10 @@
   }
 
   function drawSprite(ctx, sprite, gx, gy, tiles) {
-    const img = image(sprite.bild);
+    const variant = geo.variantFor(sprite, gx, gy);
+    const img = image(variant.bild);
     if (!img || !img.complete || !img.naturalWidth) return false;
-    const rect = geo.spriteRect(sprite, gx, gy, tiles, state.view);
+    const rect = geo.spriteRect(variant, gx, gy, tiles, state.view);
     ctx.drawImage(img, rect.x, rect.y, rect.w, rect.h);
     return true;
   }

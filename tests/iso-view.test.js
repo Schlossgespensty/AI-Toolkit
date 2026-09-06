@@ -236,3 +236,32 @@ test('every drawn item carries the key the editor uses for its selection', () =>
   assert.deepEqual(items.map(i => i.ref), ['f:0:0', 'f:0:1', 'f:1:0'],
     'derselbe Aufbau wie frameRefKey in castle-editor.js: f:<Bauschritt>:<Feld>');
 });
+
+test('a crenellated wall alternates merlon and embrasure, tile by tile', () => {
+  const zinne = { bild: 'klotz.png', breite: 30, hoehe: 118, kacheln: 1,
+                  wechselBild: 'scharte.png', wechselBreite: 30, wechselHoehe: 103 };
+  // gy zaehlt den Bildschirm hinunter: Editor-y = 99 - gy. Die Zinne steht,
+  // wo x + y ungerade ist - dieselbe Regel wie im Spiel.
+  const feld = (gx, gy) => geometry.variantFor(zinne, gx, gy).bild;
+  assert.equal(feld(0, 98), 'klotz.png', 'x 0, y 1 -> ungerade -> Zinne');
+  assert.equal(feld(1, 98), 'scharte.png', 'x 1, y 1 -> gerade -> Scharte');
+  assert.equal(feld(1, 99), 'klotz.png', 'x 1, y 0 -> ungerade -> Zinne');
+  assert.equal(feld(0, 99), 'scharte.png', 'x 0, y 0 -> gerade -> Scharte');
+
+  // Nebeneinander wechselt es Feld fuer Feld, und eine Zeile weiter versetzt.
+  const zeile = gy => [0,1,2,3,4,5].map(gx => feld(gx, gy) === 'klotz.png' ? 'Z' : '.').join('');
+  assert.equal(zeile(99), '.Z.Z.Z');
+  assert.equal(zeile(98), 'Z.Z.Z.', 'die naechste Reihe ist versetzt - ein Schachbrett');
+
+  // Jeder andere Bau bleibt unberuehrt.
+  const haus = { bild: 'haus.png', breite: 126, hoehe: 138, kacheln: 4 };
+  assert.equal(geometry.variantFor(haus, 3, 7), haus, 'ohne zweite Fassung derselbe Eintrag');
+  assert.equal(geometry.variantFor(null, 0, 0), null);
+
+  // Und das Zeichnen benutzt die gewaehlte Fassung, nicht mehr den Eintrag.
+  const script = fs.readFileSync(path.join(root, 'src', 'js', 'iso-view.js'), 'utf8');
+  const malen = script.slice(script.indexOf('function drawSprite'), script.indexOf('function drawDiamond'));
+  assert.match(malen, /const variant = geo\.variantFor\(sprite, gx, gy\)/);
+  assert.match(malen, /image\(variant\.bild\)/);
+  assert.match(malen, /geo\.spriteRect\(variant, gx, gy/);
+});
