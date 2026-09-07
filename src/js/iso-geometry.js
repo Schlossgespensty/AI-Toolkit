@@ -575,9 +575,13 @@
     const top = Number(py0) || 0;
     const edge = Number(cells) || MAP_PREVIEW_EDGE;
     const luft = (Number(oben) || 0) * view.zoom;
+    const anker = keepAnchor(keep);
     return {
-      x: view.panX - hw * (keep.x - keep.y + MAP_PREVIEW_EDGE) + left * 2 * hw,
-      y: view.panY - hh * (keep.x + keep.y - (MAP_PREVIEW_EDGE - 1 + 2 * KEEP_TILE)) + top * 2 * hh - luft,
+      // Der Anker, nicht die feste 43: nach einer Drehung sitzt der Bergfried
+      // auf einem anderen Dorffeld, und das Bild muss mitwandern. Bei (43,43)
+      // ist ax-ay = 0 und ax+ay = 86 - dann steht hier wieder das Alte.
+      x: view.panX - hw * (keep.x - keep.y + MAP_PREVIEW_EDGE - (anker.gx - anker.gy)) + left * 2 * hw,
+      y: view.panY - hh * (keep.x + keep.y - (MAP_PREVIEW_EDGE - 1 + anker.gx + anker.gy)) + top * 2 * hh - luft,
       w: edge * 2 * hw,
       h: edge * 2 * hh + luft
     };
