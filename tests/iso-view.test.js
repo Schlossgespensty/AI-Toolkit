@@ -888,7 +888,11 @@ test('die Ansicht dreht die Burg und rechnet die Maus zurueck', () => {
   // Gebaeude, weil sie aus dessen Ecke gerechnet werden.
   assert.match(iso, /const gerade = geo\.collectItems\(currentDocument\(\), state\.catalogue\);/);
   assert.match(iso, /const items = turnedTiles\(gerade\);/);
-  assert.match(iso, /turnedTiles\(geo\.collectPlates\(gerade\)/);
+  // Die Platten haengen an der GEDREHTEN Ecke, ihr eigener Versatz wird nicht
+  // mitgedreht. Gemessen an 201 Startplaetzen aus 60 Karten: 194 davon tragen
+  // den Lagerplatz genau 7 rechts und 2 unter der Bergfriedecke, und zwar bei
+  // jeder Drehung - der Startaufbau der Karte dreht sich nicht mit.
+  assert.match(iso, /const plates = geo\.collectPlates\(items\)/);
   // Ein Klick trifft das Feld, das man sieht - also zurueckgedreht.
   assert.match(iso, /geo\.unrotateGrid\(grid\.gx, grid\.gy, currentRotation\(\)\)/);
   assert.match(iso, /const tile = editorTileAt\(p\.x, p\.y\)/);

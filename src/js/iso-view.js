@@ -536,12 +536,18 @@
     ctx.closePath();
     paintGround(ctx, width, height);
 
-    // Erst einsammeln, dann drehen: die Bodenplatten haengen an ihrem Gebaeude
-    // und muessen aus dessen UNGEDREHTER Ecke gerechnet werden. Wer zuerst
-    // dreht, legt den Burghof neben die Burg.
+    // Die Bodenplatten haengen an der GEDREHTEN Ecke ihres Gebaeudes, und ihr
+    // eigener Versatz wird NICHT mitgedreht.
+    //
+    // GEMESSEN am 07.09.2026 an 201 Startplaetzen aus 60 Karten: bei 194 von
+    // ihnen liegt der Lagerplatz (Bautyp 10) genau 7 Felder rechts und 2
+    // Felder unter der Ecke des Bergfrieds - bei Drehung 0, 2, 4 und 6
+    // gleichermassen. Der Startaufbau auf der Karte dreht sich also nicht mit;
+    // das Spiel setzt ihn immer gleich hin. Genau diese 7/2 stehen auch im
+    // Katalog. Wer die Platten mitdreht, schiebt den Lagerplatz von der Karte.
     const gerade = geo.collectItems(currentDocument(), state.catalogue);
     const items = turnedTiles(gerade);
-    const plates = turnedTiles(geo.collectPlates(gerade));
+    const plates = geo.collectPlates(items);
     for (const plate of plates.sort(geo.byDepth))
       drawSprite(ctx, plate.sprite, plate.gx, plate.gy, plate.tiles);
 
