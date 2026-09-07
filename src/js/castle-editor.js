@@ -16,7 +16,7 @@
     brush: ['2', 'b'],
     select: ['3', 'v'],
     delete: ['4', 'd'],
-    copy: ['5', 'c'],
+    copy: ['5'],            // 'c' dreht jetzt die Ansicht, Kopieren bleibt auf 5 und Strg+C
     line: ['6', 'l'],
     bucket: ['7', 'f']
   };
@@ -1177,31 +1177,95 @@
     return null;
   }
 
+  // ---------------------------------------------- Drehung der flachen Karte
+  //
+  // Die 2.5D zeigt die Burg so, wie das Spiel sie am gewaehlten Startplatz
+  // baut - bei Drehung 6 also um drei Viertel gedreht. Zeigte die flache
+  // Karte weiter stur die Datei, laege dasselbe Bauteil in den zwei Ansichten
+  // an verschiedenen Stellen: unten gebaut, rechts wiedergefunden.
+  //
+  // Gedreht wird NUR DIE ANZEIGE. In der Datei bleibt jedes Feld, wo es war,
+  // und jeder Klick wird vor dem Setzen zurueckgedreht (dateiXY). Ohne
+  // geladene Karte oder bei Drehung 0 passiert gar nichts.
+  // Gedreht wird mit iso-geometry, nicht mit castle-geometry: geometry meint
+  // in dieser Datei window.castleGeometry, und dort gibt es rotateGrid nicht.
+  function drehGeo() {
+    return (typeof globalThis !== 'undefined' && globalThis.isoGeometry) || null;
+  }
+
+  function kartenDrehung() {
+    if (!drehGeo()) return 0;
+    // Dieselbe Zahl wie die 2.5D: Startplatz plus was von Hand gedreht wurde.
+    if (window.isoView && window.isoView.currentRotation) return window.isoView.currentRotation();
+    const info = window.isoView && window.isoView.gameMapInfo ? window.isoView.gameMapInfo() : null;
+    return (info && info.keep && Number(info.keep.orientation)) || 0;
+  }
+
+  // Ein Bauteil belegt das Rechteck von (x,y) nach rechts und nach unten.
+  // Gedreht werden seine beiden Eckfelder einzeln, dann die Huelle genommen -
+  // nur so stimmt es auch fuer die vier nicht quadratischen Bauten
+  // (Bergfried, Ingenieursgilde, Tunnelgraeber, Oelbrennerei), bei denen eine
+  // Vierteldrehung Breite und Hoehe tauscht.
+  function anzeigeRechteck(x, y, w, h) {
+    const dreh = kartenDrehung();
+    if (!dreh) return { x, y, w, h };
+    const ecken = [[x, 99 - y], [x + w - 1, 99 - y + h - 1]]
+      .map(([gx, gy]) => drehGeo().rotateGrid(gx, gy, 1, dreh));
+    const gx0 = Math.min(ecken[0].gx, ecken[1].gx);
+    const gx1 = Math.max(ecken[0].gx, ecken[1].gx);
+    const gy0 = Math.min(ecken[0].gy, ecken[1].gy);
+    const gy1 = Math.max(ecken[0].gy, ecken[1].gy);
+    return { x: gx0, y: 99 - gy0, w: gx1 - gx0 + 1, h: gy1 - gy0 + 1 };
+  }
+
+  // Ein einzelnes Feld in die Anzeige drehen.
+  function anzeigeXY(x, y) {
+    const dreh = kartenDrehung();
+    if (!dreh) return { x, y };
+    const g = drehGeo().rotateGrid(x, 99 - y, 1, dreh);
+    return { x: g.gx, y: 99 - g.gy };
+  }
+
+  // Und zurueck: was der Zeiger auf der Anzeige trifft, ist in der Datei ein
+  // anderes Feld. Ohne diesen Schritt baute jeder Klick an der falschen Stelle.
+  function dateiXY(x, y) {
+    const dreh = kartenDrehung();
+    if (!dreh) return { x, y };
+    const g = drehGeo().unrotateGrid(x, 99 - y, dreh);
+    return { x: g.gx, y: 99 - g.gy };
+  }
+
   function screenRectForXY(type, x, y) {
     const [w, h] = itemSize(type);
     if (isUnitType(type)) {
+      const einheit = anzeigeXY(x, y);
       return {
-        x: state.panX + (x - 0.5) * state.cell,
-        y: state.panY + (98.5 - y) * state.cell,
+        x: state.panX + (einheit.x - 0.5) * state.cell,
+        y: state.panY + (98.5 - einheit.y) * state.cell,
         w: 2 * state.cell,
         h: 2 * state.cell
       };
     }
+    const gedreht = anzeigeRechteck(x, y, w, h);
     return {
-      x: state.panX + x * state.cell,
-      y: state.panY + (99 - y) * state.cell,
-      w: w * state.cell,
-      h: h * state.cell
+      x: state.panX + gedreht.x * state.cell,
+      y: state.panY + (99 - gedreht.y) * state.cell,
+      w: gedreht.w * state.cell,
+      h: gedreht.h * state.cell
     };
   }
 
   function screenRectsForPlacement(type, off) {
-    return footprintRects(type, off).map(rect => ({
-      x: state.panX + rect.left * state.cell,
-      y: state.panY + (99 - rect.top) * state.cell,
-      w: (rect.right - rect.left + 1) * state.cell,
-      h: (rect.top - rect.bottom + 1) * state.cell
-    }));
+    return footprintRects(type, off).map(rect => {
+      const gedreht = anzeigeRechteck(rect.left, rect.top,
+                                      rect.right - rect.left + 1, rect.top - rect.bottom + 1);
+      return {
+        x: state.panX + gedreht.x * state.cell,
+        y: state.panY + (99 - gedreht.y) * state.cell,
+        w: gedreht.w * state.cell,
+        h: gedreht.h * state.cell
+      };
+    });
   }
 
   function refsInMarquee() {
@@ -2420,11 +2484,16 @@
   }
 
   function screenRectForFootprintRect(rect) {
+    // Ueber diesen Weg laufen Bergfried und Lagerplatz - die beiden, die man
+    // in einer leeren Burg ueberhaupt sieht. Ohne die Drehung hier blieben sie
+    // stehen, waehrend sich alles andere dreht.
+    const gedreht = anzeigeRechteck(rect.left, rect.top,
+                                    rect.right - rect.left + 1, rect.top - rect.bottom + 1);
     return {
-      x: state.panX + rect.left * state.cell,
-      y: state.panY + (99 - rect.top) * state.cell,
-      w: (rect.right - rect.left + 1) * state.cell,
-      h: (rect.top - rect.bottom + 1) * state.cell
+      x: state.panX + gedreht.x * state.cell,
+      y: state.panY + (99 - gedreht.y) * state.cell,
+      w: gedreht.w * state.cell,
+      h: gedreht.h * state.cell
     };
   }
 
@@ -2622,9 +2691,10 @@
 
   // Centre of a tile, in this map's screen coordinates
   function tileToScreenPos(tile) {
+    const gedreht = anzeigeXY(tile.x, tile.y);
     return {
-      x: state.panX + (tile.x + 0.5) * state.cell,
-      y: state.panY + (99 - tile.y + 0.5) * state.cell
+      x: state.panX + (gedreht.x + 0.5) * state.cell,
+      y: state.panY + (99 - gedreht.y + 0.5) * state.cell
     };
   }
 
@@ -2635,7 +2705,7 @@
     const row = Math.floor(localY);
     const y = 99 - row;
     if (x < 0 || x > 99 || y < 0 || y > 99) return null;
-    return { x, y };
+    return dateiXY(x, y);
   }
 
   // A pointer that belongs to another canvas - the 2.5D view, docked into the
@@ -3053,8 +3123,19 @@
   const karteAbbruch = document.getElementById('castleIsoMapCancel');
   let karteVorrat = null;   // einmal geholt, dann behalten
 
+  // Wechselt die Drehung, muss die flache Karte neu gemalt werden: ihre
+  // Bauteile liegen im Zwischenspeicher, und der weiss von der Karte nichts.
+  let letzteDrehung = 0;
+  function pruefeDrehungswechsel() {
+    const jetzt = kartenDrehung();
+    if (jetzt === letzteDrehung) return;
+    letzteDrehung = jetzt;
+    scheduleDraw(true);
+  }
+
   function updateMapControls() {
     const info = window.isoView && window.isoView.gameMapInfo ? window.isoView.gameMapInfo() : null;
+    pruefeDrehungswechsel();
     if (karteZurueck) karteZurueck.hidden = !info;
     if (karteArt) {
       karteArt.hidden = !info;
@@ -3154,6 +3235,10 @@
       updateGroundControls();
       ensureTerrain();
       if (karteDialog && karteDialog.open) karteDialog.close();
+      // Der Fokus bleibt sonst im Suchfeld des Dialogs, und weil Tasten in
+      // Eingabefeldern zu Recht ignoriert werden, ginge danach kein einziges
+      // Kuerzel mehr - auch das Drehen mit C und X nicht.
+      if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
       setStatus(map.keeps.length
         ? `Map "${map.name}" laid under the slanted view · ${map.keeps.length} starting place${map.keeps.length === 1 ? '' : 's'}`
         : `Map "${map.name}" laid under the slanted view · no starting place found, the castle sits in the middle of the map`);
@@ -3309,6 +3394,15 @@
       event.preventDefault(); copySelection();
     } else if ((event.ctrlKey || event.metaKey) && key === 'v') {
       event.preventDefault(); pasteCopy();
+    } else if (!event.ctrlKey && !event.metaKey && !event.altKey
+               && (key === 'c' || key === 'x') && window.isoView && window.isoView.turnView) {
+      // C dreht die Ansicht nach links, X nach rechts - so bestellt. Weil 'c'
+      // vorher das Zweitkuerzel fuers Kopieren war, ist es dort ausgetragen;
+      // Kopieren bleibt auf '5' und Strg+C.
+      event.preventDefault();
+      const wert = window.isoView.turnView(key === 'c' ? -1 : 1);
+      pruefeDrehungswechsel();
+      setStatus('View turned' + (wert ? ' by ' + (wert / 2) + ' quarter turn' + (wert === 2 ? '' : 's') : ' back to the file'));
     } else if (shortcutTool) {
       event.preventDefault();
       setTool(shortcutTool);

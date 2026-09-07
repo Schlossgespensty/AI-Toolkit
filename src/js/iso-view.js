@@ -316,9 +316,31 @@
 
   // Wie stark die Burg auf DIESEM Startplatz gedreht wird. Ohne Karte gar
   // nicht - dann ist die Ansicht der reine Bauplan.
+  // Die Ansicht laesst sich von Hand drehen: C eine Vierteldrehung nach links,
+  // X nach rechts. Gezaehlt wird in Spielwerten (0/2/4/6), damit dieselbe
+  // Zahl herauskommt, die auch ein Startplatz mitbringt. Der Standard ist 0 -
+  // die Burg steht so da, wie sie in der Datei liegt, Hof nach vorn.
+  //
+  // WAS DABEI NICHT MITGEHT: unser Bildvorrat kennt fuer die meisten Gebaeude
+  // nur eine Blickrichtung (gemessen an 128 mitgelieferten .aiv: 54,8 Prozent
+  // der gesetzten Felder). Lage, Reihenfolge und Hoehe drehen mit, das
+  // einzelne Gebaeudebild nicht.
+  const VIERTEL = 2;
+  let handDrehung = 0;
+
+  function viewRotation() { return handDrehung; }
+
+  function turnView(richtung) {
+    const schritt = Number(richtung) < 0 ? -VIERTEL : VIERTEL;
+    handDrehung = (((handDrehung + schritt) % 8) + 8) % 8;
+    paint();
+    return handDrehung;
+  }
+
   function currentRotation() {
     const keep = currentKeep();
-    return keep ? (Number(keep.orientation) || 0) : 0;
+    const vonDerKarte = keep ? (Number(keep.orientation) || 0) : 0;
+    return (vonDerKarte + handDrehung) % 8;
   }
 
   // Ein Feld des Bauplans an seinen gedrehten Platz - und zurueck, wenn die
@@ -931,7 +953,8 @@
   window.isoView = { init, openWindow, closeWindow, mountDock, unmount, refresh, paint, fit, isMounted,
                      setGround, hasOwnGround, setGroundFit, groundIsStretched,
                      setGameMap, setGameMapKeep, hasGameMap, gameMapInfo,
-                     mapMode, setMapMode, setTerrain, terrainKey, terrainReady };
+                     mapMode, setMapMode, setTerrain, terrainKey, terrainReady,
+                     viewRotation, turnView, currentRotation };
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();
