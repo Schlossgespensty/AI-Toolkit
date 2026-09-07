@@ -706,7 +706,12 @@ test('eine echte .map gibt ihr Bild und ihre Startplaetze her', (t) => {
   // selbst: das Gebaeudefeld der Karte merkt sich bei +238/+240 genau diese
   // Ecke, bei allen 486 Bergfrieden der 96 Karten mit Startplatz.
   for (const keep of karte.keeps) {
-    assert.deepEqual(geometry.mapTileForGrid(43, 43, keep), { mx: keep.x, my: keep.y });
+    // Nicht Dorffeld (43,43), sondern der Anker: nach einer Drehung sitzt der
+    // Bergfried 7 Felder weiter, und das Dorf wird um genau diesen Betrag
+    // verschoben (keepAnchor). Ungedreht ist der Anker wieder (43,43).
+    assert.deepEqual(geometry.mapTileForGrid(geometry.keepAnchor(keep).gx,
+                                             geometry.keepAnchor(keep).gy, keep),
+                     { mx: keep.x, my: keep.y });
   }
   // Und nichts ausserhalb der Liste wird gelesen.
   assert.throws(() => readGameMap('C:\\Windows\\System32\\drivers\\etc\\hosts', null),
@@ -853,23 +858,25 @@ test('jedes Dorffeld landet dort, wo das Spiel es hinlegt', (t) => {
       const tafel = wohin.get(keep.orientation);
       for (const [vx, vy] of proben) {
         const gedreht = geometry.rotateGrid(vx, vy, 1, keep.orientation);
-        const unser = geometry.mapTileForGrid(gedreht.gx, gedreht.gy, keep);
         const spiel = tafel[vy * 100 + vx + 1];
-        assert.deepEqual(unser,
-          { mx: keep.x - 43 + spiel.x, my: keep.y - 43 + spiel.y },
+        // Verglichen wird im DORFRASTER. Wohin das Dorf als Ganzes auf der
+        // Karte rutscht, ist eine andere Frage (keepAnchor) und wuerde hier
+        // auf beiden Seiten dasselbe abziehen - der Test pruefte sonst die
+        // Verschiebung gegen sich selbst statt die Drehung.
+        assert.deepEqual({ gx: gedreht.gx, gy: gedreht.gy }, { gx: spiel.x, gy: spiel.y },
           `${entry.name}: Feld (${vx},${vy}) bei Drehung ${keep.orientation}`);
       }
       const keepEcke = geometry.rotateGrid(43, 43, 7, keep.orientation);
       const unserKeep = geometry.mapTileForGrid(keepEcke.gx, keepEcke.gy, keep);
       const spielKeep = ersterKeep.get(keep.orientation);
-      assert.deepEqual(unserKeep,
-        { mx: keep.x - 43 + spielKeep.x, my: keep.y - 43 + spielKeep.y },
+      assert.deepEqual({ gx: keepEcke.gx, gy: keepEcke.gy }, { gx: spielKeep.x, gy: spielKeep.y },
         `${entry.name}: der Bergfried liegt nicht dort, wo placeBuilding ihn hinstellt`);
-      // Ungedreht MUSS er genau auf dem 7x7-Block der Karte sitzen.
-      if (keep.orientation === 0) {
-        assert.deepEqual(unserKeep, { mx: keep.x, my: keep.y },
-          `${entry.name}: ungedreht gehoert der Bergfried auf den Block der Karte`);
-      }
+      // Und er sitzt auf dem 7x7-Block der Karte - bei JEDER Drehung, nicht
+      // nur ungedreht. Vorher stand hier ein "if (orientation === 0)": die
+      // gedrehte Burg landete 7 Felder neben ihrem Startplatz, und im Bild
+      // sah man den Bergfried der Karte neben dem eigenen stehen.
+      assert.deepEqual(unserKeep, { mx: keep.x, my: keep.y },
+        `${entry.name}: der Bergfried gehoert auf den Block der Karte, Drehung ${keep.orientation}`);
     }
   }
   assert.ok(plaetze > 400, 'es wurden genug Startplaetze geprueft');
@@ -954,7 +961,11 @@ test('der Bergfried landet dort, wo LaunchSkirmishGame ihn hinsetzt', async (t) 
     return { name, bergfried, spiel };
   });
 
-  const SOLLVERSATZ = { 0: '0/0', 2: '0/7', 4: '7/7', 6: '7/0' };
+  // Der Bergfried liegt bei jeder Drehung auf seinem Startplatz. Bis zum
+  // 07.09.2026 stand hier { 0: '0/0', 2: '0/7', 4: '7/7', 6: '7/0' } - das war
+  // der fehlende Offset aus setKeepOffsetAndOrientation (0x004ecf70), sichtbar
+  // als zweiter Bergfried neben dem eigenen.
+  const SOLLVERSATZ = { 0: '0/0', 2: '0/0', 4: '0/0', 6: '0/0' };
   const versatz = new Map();
   let plaetze = 0;
   let vergleiche = 0;
@@ -969,7 +980,7 @@ test('der Bergfried landet dort, wo LaunchSkirmishGame ihn hinsetzt', async (t) 
         const unser = geometry.mapTileForGrid(gedreht.gx, gedreht.gy, keep);
         const feld = burg.spiel.get(dreh);
         vergleiche += 1;
-        assert.deepEqual(unser, { mx: keep.x - 43 + feld.x, my: keep.y - 43 + feld.y },
+        assert.deepEqual({ gx: gedreht.gx, gy: gedreht.gy }, { gx: feld.x, gy: feld.y },
           `${eintrag.name} / ${burg.name}: Bergfried nicht dort, wo placeBuilding ihn hinsetzt`);
         if (burg === burgen[0]) {
           const schluessel = (unser.mx - keep.x) + '/' + (unser.my - keep.y);
@@ -982,12 +993,14 @@ test('der Bergfried landet dort, wo LaunchSkirmishGame ihn hinsetzt', async (t) 
   }
   assert.ok(plaetze > 400, 'es wurden genug Startplaetze geprueft');
   assert.ok(vergleiche > 50000, 'es wurden genug Burgen geprueft');
-  // Nur bei Drehung 0 deckt sich der Bergfried mit dem Block der Karte.
-  const treffer = versatz.get('0/0') || 0;
-  assert.ok(treffer > 0 && treffer < plaetze,
-            'auf dem Block liegt er nur bei Drehung 0 - hier ' + treffer + ' von ' + plaetze);
-  for (const schluessel of versatz.keys())
-    assert.ok(['0/0', '0/7', '7/0', '7/7'].includes(schluessel), 'unbekannter Versatz ' + schluessel);
+  // Der Bergfried deckt sich mit dem Block der Karte - auf JEDEM Startplatz,
+  // bei jeder Drehung. Bis zum 07.09.2026 stand hier das Gegenteil ("nur bei
+  // Drehung 0"), und das war kein Befund, sondern der fehlende Offset aus
+  // setKeepOffsetAndOrientation: die gedrehte Burg landete 7 Felder daneben,
+  // und im Bild stand der Bergfried der Karte neben dem eigenen.
+  assert.equal(versatz.get('0/0') || 0, plaetze,
+               'der Bergfried gehoert auf jeden Startplatz - hier ' + (versatz.get('0/0') || 0) + ' von ' + plaetze);
+  assert.deepEqual([...versatz.keys()], ['0/0'], 'es darf keinen anderen Versatz geben');
 });
 
 // ------------------------------------------------------- das echte Gelaende

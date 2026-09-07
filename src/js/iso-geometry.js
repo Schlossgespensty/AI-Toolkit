@@ -409,6 +409,7 @@
   // heraus, und uebrig bleibt eine feste Ecke. Genau die liefert mapPreviewRect.
   const MAP_PREVIEW_EDGE = 200;   // Kantenlaenge des Vorschaubildes
   const KEEP_TILE = 43;           // Dorffeld (43,43) sitzt auf dem Startplatz
+  const KEEP_EDGE = 7;            // und der Bergfried ist 7x7 Felder gross
 
   // ------------------------------------------------------------ die Drehung
   //
@@ -513,8 +514,27 @@
   }
 
   // Welches Kartenfeld unter einem Dorffeld liegt.
+  // Wo der Bergfried nach der Drehung im Dorfraster sitzt.
+  //
+  // Gedreht wird um die Rastermitte (rotateGrid, so wie rotateAIV 0x004ed0b0
+  // es im Spiel tut). Danach steht der Bergfried NICHT mehr auf Dorffeld
+  // (43,43) - bei einer Vierteldrehung wandert er 7 Felder zur Seite. Das
+  // Spiel faengt das mit setKeepOffsetAndOrientation (0x004ecf70) ab: erst
+  // drehen, dann so verschieben, dass der Bergfried wieder auf dem Startplatz
+  // liegt. Genau dieser zweite Schritt fehlte hier.
+  //
+  // GEMESSEN am 07.09.2026, Dorffeld (43,43) durch rotateGrid geschickt:
+  //   A Friend Indeed (84,223) Drehung 6 -> Dorffeld (50,43), 7 Felder daneben
+  //   Armenia        (131,200) Drehung 6 -> Dorffeld (50,43), 7 Felder daneben
+  //   A New Land      (218,86) Drehung 4 -> Dorffeld (50,50), 7 in beide
+  // Ohne Drehung ist der Anker wieder (43,43), also bleibt alles wie vorher.
+  function keepAnchor(keep) {
+    return rotateGrid(KEEP_TILE, KEEP_TILE, KEEP_EDGE, keep && keep.orientation);
+  }
+
   function mapTileForGrid(gx, gy, keep) {
-    return { mx: keep.x - KEEP_TILE + gx, my: keep.y - KEEP_TILE + gy };
+    const anker = keepAnchor(keep);
+    return { mx: keep.x - anker.gx + gx, my: keep.y - anker.gy + gy };
   }
 
   // Und welchen Punkt der Vorschau ein Kartenfeld belegt. Nur Felder mit
@@ -605,6 +625,6 @@
            depth, byDepth, spriteRect, variantFor, wallLookup, hoehenLookup,
            collectItems, collectPlates, marqueeOutline, fitView,
            rotateGrid, unrotateGrid, keepOrientation,
-           mapTileForGrid, previewPointForMapTile, centreKeep,
+           mapTileForGrid, keepAnchor, previewPointForMapTile, centreKeep,
            mapPreviewRect, mapImageRect, villageWindow };
 });
