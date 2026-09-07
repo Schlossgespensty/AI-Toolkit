@@ -47,10 +47,63 @@ test('the isometric point puts north up-right and south down-left', () => {
 
 test('depth: bigger buildings reach further to the front', () => {
   assert.equal(geometry.depth({ gx: 10, gy: 10, tiles: 1 }), 20);
-  assert.equal(geometry.depth({ gx: 10, gy: 10, tiles: 5 }), 28);
+  // Die Diagonale durch Ost- und Suedecke, nicht durch die vordere Spitze:
+  // ein Bau von 5 Feldern kommt n-1 = 4 weiter nach vorn, nicht 2*(n-1) = 8.
+  assert.equal(geometry.depth({ gx: 10, gy: 10, tiles: 5 }), 24);
   const back = { gx: 5, gy: 5, tiles: 1 };
   const front = { gx: 40, gy: 40, tiles: 1 };
   assert.ok(geometry.byDepth(back, front) < 0, 'the one at the back is painted first');
+});
+
+// Monsterfish im Discord: "bei dem tur gibts noch sortierungs probleme wo der
+// vor den treppen liegt". Genau dieser Fall, als Zahl: eine Treppe an der
+// Ostseite eines 7x7-Torhauses hat ein groesseres gx als der ganze Bau, also
+// steht sie davor - und muss NACH ihm gemalt werden.
+test('ein Bau verdeckt nichts mehr, was seitlich davor steht', () => {
+  const torhaus = { gx: 20, gy: 20, tiles: 7 };      // [20..26] x [20..26]
+  const turm = { gx: 31, gy: 14, tiles: 6 };         // [31..36] x [14..19]
+  // alles, was rundum ein Feld weiter VORNE liegt, kommt spaeter
+  for (let gy = 20; gy <= 26; gy += 1) {
+    assert.ok(geometry.byDepth(torhaus, { gx: 27, gy, tiles: 1 }) < 0,
+      `Feld (27, ${gy}) steht oestlich vor dem Torhaus und gehoert davor`);
+    assert.ok(geometry.byDepth(torhaus, { gx: gy, gy: 27, tiles: 1 }) < 0,
+      `Feld (${gy}, 27) steht suedlich vor dem Torhaus und gehoert davor`);
+  }
+  // und alles, was rundum ein Feld weiter HINTEN liegt, kommt frueher
+  for (let gy = 20; gy <= 26; gy += 1) {
+    assert.ok(geometry.byDepth({ gx: 19, gy, tiles: 1 }, torhaus) < 0,
+      `Feld (19, ${gy}) steht westlich hinter dem Torhaus`);
+    assert.ok(geometry.byDepth({ gx: gy, gy: 19, tiles: 1 }, torhaus) < 0,
+      `Feld (${gy}, 19) steht noerdlich hinter dem Torhaus`);
+  }
+  for (let gy = 14; gy <= 19; gy += 1) {
+    assert.ok(geometry.byDepth(turm, { gx: 37, gy, tiles: 1 }) < 0,
+      `Feld (37, ${gy}) steht vor dem Turm und gehoert davor`);
+  }
+  // Gegenprobe, dass der Test etwas taugt: mit der alten Zahl faellt er.
+  const alt = item => item.gx + item.gy + 2 * ((item.tiles || 1) - 1);
+  assert.ok(alt(torhaus) > alt({ gx: 27, gy: 20, tiles: 1 }),
+    'die alte Rechnung legte das Torhaus vor die Treppe - genau der Fehler');
+});
+
+// Zwei Bauten nebeneinander, in beiden Achsen und in beiden Richtungen.
+test('zwei mehrfeldrige Bauten nebeneinander stehen in der richtigen Folge', () => {
+  const a = { gx: 10, gy: 10, tiles: 5 };            // [10..14] x [10..14]
+  const faelle = [
+    [{ gx: 15, gy: 10, tiles: 5 }, 'oestlich davor'],
+    [{ gx: 10, gy: 15, tiles: 5 }, 'suedlich davor'],
+    [{ gx: 15, gy: 15, tiles: 5 }, 'diagonal davor'],
+    [{ gx: 15, gy: 12, tiles: 3 }, 'kleiner, oestlich davor'],
+    [{ gx: 12, gy: 15, tiles: 3 }, 'kleiner, suedlich davor']
+  ];
+  for (const [b, was] of faelle) assert.ok(geometry.byDepth(a, b) < 0, was);
+  const dahinter = [
+    [{ gx: 5, gy: 10, tiles: 5 }, 'westlich dahinter'],
+    [{ gx: 10, gy: 5, tiles: 5 }, 'noerdlich dahinter'],
+    [{ gx: 7, gy: 12, tiles: 3 }, 'kleiner, westlich dahinter'],
+    [{ gx: 12, gy: 7, tiles: 3 }, 'kleiner, noerdlich dahinter']
+  ];
+  for (const [b, was] of dahinter) assert.ok(geometry.byDepth(b, a) < 0, was);
 });
 
 test('a sprite sits centred on its lowest tile', () => {
@@ -582,15 +635,15 @@ test('ohne Startplatz steht das Dorf in der Kartenmitte', () => {
 test('die Ansicht legt die Karte mit der Rechnung hin, nicht nach Augenmass', () => {
   const iso = fs.readFileSync(path.join(root, 'src', 'js', 'iso-view.js'), 'utf8');
   const malen = iso.slice(iso.indexOf('function paintGameMap'), iso.indexOf('function paintGround'));
-  assert.match(malen, /geo\.mapImageRect\(currentKeep\(\), state\.view, picture\.px0, picture\.py0, picture\.cells\)/);
+  assert.match(malen, /geo\.mapImageRect\(currentKeep\(\), state\.view, picture\.px0, picture\.py0, picture\.cells, picture\.top\)/);
   assert.match(malen, /ctx\.drawImage\(picture\.img, rect\.x, rect\.y, rect\.w, rect\.h\)/);
   assert.match(malen, /ctx\.clip\(\)/, 'die Karte endet an der Raute des Dorfes');
   assert.match(malen, /ctx\.imageSmoothingEnabled = picture\.smooth/);
   // Die Vorschau bleibt hart: ein Vorschaupunkt ist ein ganzes Feld und darf
   // nicht ins Nachbarfeld verlaufen. Nur das echte Gelaende wird geglaettet.
   const waehlen = iso.slice(iso.indexOf('function groundPicture'), iso.indexOf('function paintGameMap'));
-  assert.match(waehlen, /cells: geo\.MAP_PREVIEW_EDGE, smooth: false/);
-  assert.match(waehlen, /cells: terrain\.cells, smooth: true/);
+  assert.match(waehlen, /cells: geo\.MAP_PREVIEW_EDGE, top: 0, floor: 0, hoehen: null, smooth: false/);
+  assert.match(waehlen, /cells: terrain\.cells,\s*\n\s*top: terrain\.top, floor: terrain\.floor, hoehen: terrain\.village, smooth: true/);
   // Ohne Startplatz die Kartenmitte - und nicht etwa gar nichts.
   const platz = iso.slice(iso.indexOf('function currentKeep'), iso.indexOf('function paintGameMap'));
   assert.match(platz, /map\.keeps\[map\.keepIndex\] \|\| geo\.centreKeep\(\)/);
@@ -1005,16 +1058,33 @@ test('das gemalte Gelaende zeigt genau die Felder, die die Vorschau an dieser St
   const gfx = internals.readSection(bytes, verzeichnis, internals.GFX_SECTION);
   const vorrat = internals.readPictureStock(gameRoot);
 
-  // Welche gm-Datei gehoert zu dem Feld, das an Vorschaupunkt (px,py) steht?
-  const dateiAn = (px, py) => {
+  const hoehen = internals.readSection(bytes, verzeichnis, internals.HEIGHT_SECTION);
+
+  // Welches Kartenfeld liegt an Vorschaupunkt (px,py)? null ausserhalb.
+  const feldAn = (px, py) => {
     const mx = px + py;
     const my = py - px + internals.PREVIEW_EDGE - 1;
     if (mx < 0 || my < 0 || mx > 399 || my > 399) return null;
     const [von, bis] = internals.rowRange(my);
     if (mx < von || mx > bis) return null;
-    const bild = internals.pictureForValue(vorrat, gfx.readUInt16LE(internals.tileIndex(mx, my) * 2));
+    return internals.tileIndex(mx, my);
+  };
+  // Welche gm-Datei gehoert zu dem Feld?
+  const dateiAn = (px, py) => {
+    const feld = feldAn(px, py);
+    if (feld === null) return null;
+    const bild = internals.pictureForValue(vorrat, gfx.readUInt16LE(feld * 2));
     return bild ? bild.name : null;
   };
+  // Und wie hoch steht es. Das Bild hebt jede Kachel um genau diesen Wert an
+  // (renderMap 0x004e8cf0, Tabelle aus updateShowHiLayerOrResetChangedLayer),
+  // also muss der Block dort gesucht werden, wo die Hoehe ihn hinschiebt -
+  // sonst prueft der Test die falsche Stelle und misst nichts mehr.
+  const hoeheAn = (px, py) => {
+    const feld = feldAn(px, py);
+    return feld === null ? 0 : hoehen[feld];
+  };
+
   // Wasser oder nicht - ein Ja/Nein je Feld, das man auch im Bild wiederfindet.
   const nassLaut = (px, py) => /sea|water/i.test(dateiAn(px, py) || '');
 
@@ -1022,9 +1092,12 @@ test('das gemalte Gelaende zeigt genau die Felder, die die Vorschau an dieser St
     let gleich = 0, zahl = 0;
     for (let cy = 0; cy < gelaende.cells; cy += 1) {
       for (let cx = 0; cx < gelaende.cells; cx += 1) {
+        const hebung = hoeheAn(gelaende.px0 + cx, gelaende.py0 + cy);
+        const oben = gelaende.top - hebung;      // wo dieser Block im Bild steht
         let blau = 0, punkte = 0;
-        for (let y = cy * internals.TILE_H; y < (cy + 1) * internals.TILE_H; y += 1) {
+        for (let y = cy * internals.TILE_H + oben; y < (cy + 1) * internals.TILE_H + oben; y += 1) {
           for (let x = cx * internals.TILE_W; x < (cx + 1) * internals.TILE_W; x += 1) {
+            if (y < 0 || y >= gelaende.height) { punkte = -1; break; }
             const at = (y * gelaende.width + x) * 4;
             if (!gelaende.rgba[at + 3]) { punkte = -1; break; }
             if (gelaende.rgba[at + 2] > gelaende.rgba[at]) blau += 1;
@@ -1068,7 +1141,12 @@ test('das Gelaendebild bleibt in der Groesse, die gemessen wurde', (t) => {
   const gelaende = readMapTerrain(eintrag.path, null, keep);
 
   assert.equal(gelaende.width, gelaende.cells * 30);
-  assert.equal(gelaende.height, gelaende.cells * 16);
+  // Oben kommt so viel Luft dazu, wie das hoechste Feld des Dorfes gehoben
+  // wird - sonst schnitte der Bildrand die Bergkuppe ab.
+  assert.equal(gelaende.height, gelaende.cells * 16 + gelaende.top);
+  const dorf = Buffer.from(gelaende.village, 'base64');
+  assert.equal(dorf.length, 100 * 100, 'eine Hoehe je Dorffeld');
+  assert.equal(gelaende.top, Math.max(...dorf), 'die Luft oben ist genau die hoechste Hoehe');
   assert.ok(gelaende.cells <= 101, 'Kante ' + gelaende.cells);
   assert.equal(gelaende.missing, 0, 'jedes Feld im Fenster hat ein Bild');
   assert.ok(gelaende.tiles > 15000, 'genug Kacheln gemalt: ' + gelaende.tiles);
@@ -1105,4 +1183,116 @@ test('der Umschalter zwischen Vorschau und Gelaende haengt richtig', () => {
   assert.match(editor, /window\.isoView\.setMapMode\(/);
   // Kommt die Antwort zu spaet, gehoert sie nicht mehr hierher.
   assert.match(editor, /if \(window\.isoView\.terrainKey\(\) !== key\) return;/);
+});
+
+// ----------------------------------------------------------------- die Hoehe
+
+test('eine Kachel steigt um genau die Zahl, die im HeightLayer steht', () => {
+  const view = { zoom: 1, panX: 0, panY: 0 };
+  // renderMap hebt jede Kachel um heightBasedScreenYOffset[HeightLayer[Feld]],
+  // und die Tabelle ist in der normalen Ansicht die Eins-zu-eins-Abbildung
+  // (updateShowHiLayerOrResetChangedLayer 0x00501a20, Betriebsart 2, gesetzt
+  // in Constructor_TileMapState 0x00515f40). Senkrecht ist ein Punkt des
+  // Spiels ein Punkt der Ansicht - eine Kachel ist hier wie dort 16 hoch.
+  const flach = geometry.isoPoint(10, 10, view);
+  const hoch = geometry.isoPoint(10, 10, view, 130);
+  assert.equal(hoch[0], flach[0], 'zur Seite verrutscht dabei nichts');
+  assert.equal(hoch[1], flach[1] - 130);
+  // und mit Zoom mitskaliert
+  const gezoomt = geometry.isoPoint(10, 10, { zoom: 2, panX: 0, panY: 0 }, 8);
+  assert.equal(gezoomt[1], geometry.isoPoint(10, 10, { zoom: 2, panX: 0, panY: 0 })[1] - 16);
+  // Ein Bauwerk haengt an seiner vorderen Ecke und steigt mit ihr.
+  const sprite = { breite: 30, hoehe: 16 };
+  const unten = geometry.spriteRect(sprite, 0, 0, 1, view);
+  const oben = geometry.spriteRect(sprite, 0, 0, 1, view, 24);
+  assert.equal(oben.y, unten.y - 24);
+  assert.equal(oben.x, unten.x);
+});
+
+test('die Maus findet das Feld auch, wenn der Boden dort hoeher liegt', () => {
+  const view = { zoom: 1, panX: 500, panY: 100 };
+  // Ein Gelaende mit einer Stufe: alles auf 8, die halbe Karte auf 72.
+  const hoehe = (gx, gy) => (gx >= 50 ? 72 : 8);
+  for (const [gx, gy] of [[10, 10], [50, 30], [80, 80], [55, 5], [99, 99]]) {
+    const hebung = hoehe(gx, gy);
+    // Mitte des Feldes auf dem Bildschirm, mit Hebung
+    const [px, py] = geometry.isoPoint(gx + 0.5, gy + 0.5, view, hebung);
+    const getroffen = geometry.tileFromPoint(px, py, view, hoehe);
+    assert.deepEqual(getroffen, { gx, gy }, `Feld (${gx},${gy}) auf Hoehe ${hebung}`);
+  }
+  // An der Kante liegen zwei Felder an derselben Stelle: (46,26) unten auf 8
+  // und (50,30) oben auf 72 - genau 64 Punkte, also vier Felder. Was ein
+  // Mensch dort sieht, ist das VORDERE; das tiefe steckt dahinter.
+  const kante = geometry.isoPoint(50.5, 30.5, view, 72);
+  assert.deepEqual(geometry.isoPoint(46.5, 26.5, view, 8), kante, 'wirklich derselbe Punkt');
+  assert.deepEqual(geometry.tileFromPoint(kante[0], kante[1], view, hoehe), { gx: 50, gy: 30 });
+  // Gegenprobe: ohne die Hoehenauskunft trifft dieselbe Rechnung daneben,
+  // sonst misst der Test nichts.
+  const [px, py] = geometry.isoPoint(80.5, 80.5, view, 72);
+  const blind = geometry.tileFromPoint(px, py, view);
+  assert.notDeepEqual(blind, { gx: 80, gy: 80 });
+});
+
+test('das Gelaendebild macht oben Platz fuer den Berg und die Ansicht setzt es dort an', () => {
+  const view = { zoom: 1, panX: 0, panY: 0 };
+  const keep = { x: 200, y: 199 };
+  const ohne = geometry.mapImageRect(keep, view, 3, 4, 101, 0);
+  const mit = geometry.mapImageRect(keep, view, 3, 4, 101, 140);
+  assert.equal(mit.x, ohne.x, 'zur Seite aendert sich nichts');
+  assert.equal(mit.w, ohne.w);
+  assert.equal(mit.y, ohne.y - 140, 'das Bild faengt 140 Punkte hoeher an');
+  assert.equal(mit.h, ohne.h + 140, 'und ist genau um diese 140 hoeher');
+  assert.equal(mit.y + mit.h, ohne.y + ohne.h, 'unten liegt es gleich - dort haengt der Boden');
+});
+
+test('die Hoehe kommt aus derselben Quelle wie der Boden', () => {
+  const iso = fs.readFileSync(path.join(root, 'src', 'js', 'iso-view.js'), 'utf8');
+  // Ohne echtes Gelaende bleibt alles flach: die Vorschau ist ein flaches Bild.
+  const waehlen = iso.slice(iso.indexOf('function groundPicture'), iso.indexOf('function paintGameMap'));
+  assert.match(waehlen, /hoehen: null, smooth: false/, 'die Vorschau bringt keine Hoehen mit');
+  const grund = iso.slice(iso.indexOf('function paintGround'), iso.indexOf('function bauHoehe'));
+  assert.match(grund, /state\.hoehenFeld = picture \? picture\.hoehen : null/);
+  assert.match(grund, /state\.hoehenFeld = null/, 'ohne Karte gibt es keine Hoehen');
+  // Ein Bauwerk haengt an seiner vorderen Ecke - dieselbe Ecke, auf der auch
+  // sein Bild sitzt (spriteRect).
+  const bau = iso.slice(iso.indexOf('function bauHoehe'), iso.indexOf('function drawDiamond'));
+  assert.match(bau, /bodenHoehe\(gx \+ \(tiles \|\| 1\) - 1, gy \+ \(tiles \|\| 1\) - 1\)/);
+  assert.match(bau, /geo\.spriteRect\(variant, gx, gy, tiles, state\.view, bauHoehe\(gx, gy, tiles\)\)/);
+  // Und die Maus rechnet die Hoehe zurueck, sonst klickt man daneben.
+  assert.match(iso, /geo\.tileFromPoint\(px, py, state\.view, bodenHoehe\)/);
+});
+
+test('das Gelaende bringt eine Hoehe je Dorffeld mit, und die Kanten stehen darunter', (t) => {
+  const { listGameMaps, readGameMap, internals } = require(path.join(root, 'src', 'node', 'game-map.js'));
+  const { maps, gameRoot } = listGameMaps(null);
+  if (!maps.length || !gameRoot) { t.skip('kein Stronghold Crusader gefunden'); return; }
+  // Eine Karte mit echtem Hoehenunterschied - auf Rock Face liegen 28.188
+  // Felder auf Hoehe 130 und 10.903 auf 0.
+  const eintrag = maps.find(m => m.name === 'Rock Face') || maps[0];
+  const karte = readGameMap(eintrag.path, null);
+  const keep = karte.keeps[0] || geometry.centreKeep();
+  const bytes = fs.readFileSync(eintrag.path);
+  const vorschau = internals.readPreview(bytes);
+  const verzeichnis = internals.findDirectory(bytes, vorschau.end);
+  const gelaende = internals.renderTerrain(bytes, verzeichnis, gameRoot, { x: keep.x, y: keep.y });
+  const hoehen = internals.readSection(bytes, verzeichnis, internals.HEIGHT_SECTION);
+
+  assert.equal(gelaende.village.length, 100 * 100);
+  // Jedes Dorffeld traegt die Hoehe des Kartenfeldes, das die Rechnung nennt.
+  let geprueft = 0;
+  for (let gy = 0; gy < 100; gy += 1) {
+    for (let gx = 0; gx < 100; gx += 1) {
+      const { mx, my } = geometry.mapTileForGrid(gx, gy, keep);
+      if (my < 0 || my > 399) continue;
+      const [von, bis] = internals.rowRange(my);
+      if (mx < von || mx > bis) continue;
+      assert.equal(gelaende.village[gy * 100 + gx], hoehen[internals.tileIndex(mx, my)]);
+      geprueft += 1;
+    }
+  }
+  assert.ok(geprueft > 9000, 'fast das ganze Dorf liegt auf der Karte: ' + geprueft);
+  assert.ok(gelaende.top >= 130, 'die Luft oben reicht fuer den Berg: ' + gelaende.top);
+  assert.ok(gelaende.floor <= gelaende.top);
+  // Und die Steilkanten sind gemalt worden - ohne sie stuende der Berg auf nichts.
+  assert.ok(gelaende.cliffs > 500, 'Steilkanten gemalt: ' + gelaende.cliffs);
 });

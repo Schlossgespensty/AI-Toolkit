@@ -208,14 +208,41 @@
     return keep ? `${map.path}#${keep.x},${keep.y}` : null;
   }
 
+  // Das Gelaende bringt seine Hoehen mit: ein Byte je Dorffeld, als Text
+  // verpackt, weil ein Byte-Feld nicht durch den Kanal passt. Ohne sie stuende
+  // die Burg flach auf einem Gelaende, das Berge hat.
+  function dorfHoehen(text) {
+    if (typeof text !== 'string' || !text) return null;
+    try {
+      const roh = typeof atob === 'function' ? atob(text) : null;
+      if (!roh || roh.length !== geo.GRID * geo.GRID) return null;
+      const feld = new Uint8Array(roh.length);
+      for (let i = 0; i < roh.length; i += 1) feld[i] = roh.charCodeAt(i);
+      return feld;
+    } catch { return null; }
+  }
+
   function setTerrain(terrain) {
     if (state.terrain) state.images.delete(state.terrain.dataUrl);
     state.terrain = terrain && terrain.dataUrl
       ? { key: terrain.key, dataUrl: terrain.dataUrl,
           px0: Number(terrain.px0) || 0, py0: Number(terrain.py0) || 0,
-          cells: Number(terrain.cells) || geo.MAP_PREVIEW_EDGE }
+          cells: Number(terrain.cells) || geo.MAP_PREVIEW_EDGE,
+          top: Number(terrain.top) || 0,
+          village: dorfHoehen(terrain.village) }
       : null;
     paint();
+  }
+
+  // Wie hoch der Boden unter einem Dorffeld liegt, in Bildpunkten. Null,
+  // solange kein echtes Gelaende liegt: die Vorschau ist ein flaches Bild, und
+  // eine Burg ueber einem flachen Boden schweben zu lassen waere schlimmer als
+  // sie flach zu lassen.
+  function bodenHoehe(gx, gy) {
+    const feld = state.hoehenFeld;
+    if (!feld) return 0;
+    if (gx < 0 || gy < 0 || gx >= geo.GRID || gy >= geo.GRID) return 0;
+    return feld[gy * geo.GRID + gx] || 0;
   }
 
   function terrainReady() {
@@ -306,7 +333,7 @@
   }
 
   function editorTileAt(px, py) {
-    const grid = geo.tileFromPoint(px, py, state.view);
+    const grid = geo.tileFromPoint(px, py, state.view, bodenHoehe);
     if (!grid) return null;
     const back = geo.unrotateGrid(grid.gx, grid.gy, currentRotation());
     return { x: back.gx, y: geo.GRID - 1 - back.gy };
@@ -331,21 +358,40 @@
       const terrain = state.terrain;
       const img = image(terrain.dataUrl);
       if (img && img.complete && img.naturalWidth) {
-        return { img, px0: terrain.px0, py0: terrain.py0, cells: terrain.cells, smooth: true };
+        return { img, px0: terrain.px0, py0: terrain.py0, cells: terrain.cells,
+                 top: terrain.top, floor: terrain.floor, hoehen: terrain.village, smooth: true };
       }
     }
     const img = image(map.dataUrl);
     if (!img || !img.complete || !img.naturalWidth) return null;
-    return { img, px0: 0, py0: 0, cells: geo.MAP_PREVIEW_EDGE, smooth: false };
+    return { img, px0: 0, py0: 0, cells: geo.MAP_PREVIEW_EDGE, top: 0, floor: 0, hoehen: null, smooth: false };
   }
 
-  function paintGameMap(ctx) {
-    const picture = groundPicture();
+  function paintGameMap(ctx, picture) {
     if (!picture) return;
     // Beide Bilder sind Ausschnitte desselben Rasters, nur verschieden fein
     // gemalt - dieselbe Rechnung legt sie an dieselbe Stelle.
-    const rect = geo.mapImageRect(currentKeep(), state.view, picture.px0, picture.py0, picture.cells);
+    const rect = geo.mapImageRect(currentKeep(), state.view, picture.px0, picture.py0, picture.cells, picture.top);
     ctx.save();
+    // Beschnitten wird auf die Raute des Dorfes - aber der Boden liegt nicht
+    // mehr in ihrer Ebene. Er steht zwischen dem tiefsten Feld (floor) und dem
+    // hoechsten (top) darueber, und der Beschnitt muss genau diesen Streifen
+    // freigeben: oben, sonst saegt er jede Bergkuppe waagerecht ab; unten,
+    // sonst bleibt am Suedrand ein dunkler Saum, weil der Boden dort um seine
+    // Grundhoehe hochgerueckt ist. Aus der Raute wird damit ein Sechseck.
+    if (picture.top > 0) {
+      const oben = picture.top * state.view.zoom;
+      const unten = (picture.floor || 0) * state.view.zoom;
+      const punkt = (cx, cy, hoch) => {
+        const [px, py] = geo.isoPoint(cx, cy, state.view);
+        return [px, py - (hoch ? oben : unten)];
+      };
+      ctx.beginPath();
+      [punkt(0, 0, true), punkt(geo.GRID, 0, true), punkt(geo.GRID, 0, false),
+       punkt(geo.GRID, geo.GRID, false), punkt(0, geo.GRID, false), punkt(0, geo.GRID, true)]
+        .forEach(([px, py], index) => { if (index === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py); });
+      ctx.closePath();
+    }
     ctx.clip();
     // Ein Vorschaupunkt ist ein ganzes Feld und muss ein hartes Quadrat bleiben
     // - geglaettet schmierte der Rand eines Feldes ueber seinen Nachbarn. Das
@@ -362,9 +408,15 @@
       ctx.fillStyle = '#232a1c';
       ctx.fill();
       ctx.restore();
-      paintGameMap(ctx);
+      // Was jetzt unter der Burg liegt, bestimmt auch, wie hoch sie steht:
+      // beide holen ihre Zahl aus derselben Quelle, also koennen sie nicht
+      // auseinanderlaufen.
+      const picture = groundPicture();
+      state.hoehenFeld = picture ? picture.hoehen : null;
+      paintGameMap(ctx, picture);
       return;
     }
+    state.hoehenFeld = null;
     const img = image(groundSource());
     let pattern = null;
     if (img && img.complete && img.naturalWidth) {
@@ -403,20 +455,28 @@
     ctx.restore();
   }
 
+  // Ein Bauwerk haengt an seiner vorderen Ecke - also gilt die Hoehe DIESES
+  // Feldes. Das Spiel laesst auf einer Kante ohnehin nicht bauen, innerhalb
+  // eines Bauwerks ist der Boden also eben.
+  function bauHoehe(gx, gy, tiles) {
+    return bodenHoehe(gx + (tiles || 1) - 1, gy + (tiles || 1) - 1);
+  }
+
   function drawSprite(ctx, sprite, gx, gy, tiles, mauerAn, hoeheAn) {
     const variant = geo.variantFor(sprite, gx, gy, mauerAn, hoeheAn);
     const img = image(variant.bild);
     if (!img || !img.complete || !img.naturalWidth) return false;
-    const rect = geo.spriteRect(variant, gx, gy, tiles, state.view);
+    const rect = geo.spriteRect(variant, gx, gy, tiles, state.view, bauHoehe(gx, gy, tiles));
     ctx.drawImage(img, rect.x, rect.y, rect.w, rect.h);
     return true;
   }
 
   function drawDiamond(ctx, gx, gy, tiles, fill, stroke) {
+    const hebung = bauHoehe(gx, gy, tiles);
     ctx.beginPath();
     [[gx, gy], [gx + tiles, gy], [gx + tiles, gy + tiles], [gx, gy + tiles]]
       .forEach(([cx, cy], index) => {
-        const [px, py] = geo.isoPoint(cx, cy, state.view);
+        const [px, py] = geo.isoPoint(cx, cy, state.view, hebung);
         if (index === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
       });
     ctx.closePath();
@@ -532,7 +592,18 @@
       ? ' · turned ' + (keep.orientation / 2) + ' quarter turn' + (keep.orientation === 2 ? '' : 's') +
         ' (game value ' + keep.orientation + ')'
       : (map.keeps.length ? ' · not turned (game value 0)' : '');
-    return ' · map: ' + map.name + platz + drehung;
+    // Und ob der Boden Hoehen hat. Ohne diese Zeile sieht man dem Bild nur an,
+    // DASS etwas anders liegt, aber nicht warum - und ob es an dieser Karte
+    // liegt oder daran, dass gerade die flache Vorschau darunterliegt.
+    const feld = state.hoehenFeld;
+    let hoehe = '';
+    if (feld) {
+      let tief = 255, hoch = 0;
+      for (const wert of feld) { if (wert < tief) tief = wert; if (wert > hoch) hoch = wert; }
+      hoehe = hoch === tief ? ' · flat ground (height ' + hoch + ')'
+                            : ' · ground rises ' + (hoch - tief) + ' points (height ' + tief + ' to ' + hoch + ')';
+    }
+    return ' · map: ' + map.name + platz + drehung + hoehe;
   }
 
   // Was ein Klick setzen wuerde - mit dem richtigen Bild, halb durchsichtig.
@@ -696,7 +767,7 @@
         return;
       }
       const tile = editorTileAt(p.x, p.y);
-      const grid = geo.tileFromPoint(p.x, p.y, state.view);
+      const grid = geo.tileFromPoint(p.x, p.y, state.view, bodenHoehe);
       const moved = !state.hover || !grid || state.hover.gx !== grid.gx || state.hover.gy !== grid.gy;
       state.hover = grid;
       if (tile && (state.drawing || moved)) toEditor('move', event, tile);

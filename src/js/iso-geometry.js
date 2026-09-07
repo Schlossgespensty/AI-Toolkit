@@ -31,18 +31,32 @@
     return ((GRID - 1) - gy) * GRID + gx;
   }
 
-  // Screen point of a grid corner
-  function isoPoint(gx, gy, view) {
+  // Screen point of a grid corner. hebung sind Bildpunkte des SPIELS, um die
+  // der Boden dort hoeher liegt - senkrecht nach oben, denn eine Kachel ist
+  // beim Spiel wie bei uns 16 Punkte hoch, also zaehlt eine Hoehe eins zu eins
+  // (siehe game-map.js, HEIGHT_SECTION).
+  function isoPoint(gx, gy, view, hebung) {
     const hw = HALF_W * view.zoom;
     const hh = HALF_H * view.zoom;
-    return [view.panX + (gx - gy) * hw, view.panY + (gx + gy) * hh];
+    return [view.panX + (gx - gy) * hw,
+            view.panY + (gx + gy) * hh - (Number(hebung) || 0) * view.zoom];
   }
 
   // The other way round: which tile is under a point on screen? Solving
   //   px = panX + (gx - gy) * hw
   //   py = panY + (gx + gy) * hh
   // for gx and gy. Returns null outside the grid.
-  function tileFromPoint(px, py, view) {
+  //
+  // Mit Hoehen wird daraus eine Suche: ein Punkt auf dem Bildschirm gehoert zu
+  // dem Feld, das um SEINE eigene Hoehe nach oben gerueckt ist - man kennt die
+  // Hoehe aber erst, wenn man das Feld kennt.
+  //
+  // An einer Steilkante gibt es dabei zwei richtige Antworten: das hohe Feld
+  // davor und das tiefe dahinter liegen an derselben Stelle auf dem
+  // Bildschirm. Genommen wird, was ein Mensch dort sieht - das VORDERE, also
+  // das mit dem groessten gx+gy; das Spiel malt aus demselben Grund von hinten
+  // nach vorn.
+  function flatTileFromPoint(px, py, view) {
     const hw = HALF_W * view.zoom;
     const hh = HALF_H * view.zoom;
     const a = (px - view.panX) / hw;      // gx - gy
@@ -53,18 +67,81 @@
     return { gx, gy };
   }
 
+  // Geraten wird nicht, sondern durchprobiert: ein Feld traegt den Punkt genau
+  // dann, wenn es bei SEINER Hoehe dorthin faellt. Die in Frage kommenden
+  // Felder liegen alle auf einer Linie - je 16 Punkte Hoehe ein Feld weiter
+  // nach vorn -, und mehr als 255 Punkte kann eine Hoehe nicht haben (ein
+  // Byte). Also 64 Schritte zu 4 Punkten, das deckt jedes erreichbare Feld ab
+  // und kostet nichts. Passen mehrere, gewinnt das vorderste.
+  const MAX_HOEHE = 255;
+
+  function tileFromPoint(px, py, view, hoeheAn) {
+    if (typeof hoeheAn !== 'function') return flatTileFromPoint(px, py, view);
+    let treffer = null;
+    let letzt = null;
+    for (let probe = 0; probe <= MAX_HOEHE; probe += 4) {
+      const feld = flatTileFromPoint(px, py + probe * view.zoom, view);
+      if (!feld) continue;
+      if (letzt && feld.gx === letzt.gx && feld.gy === letzt.gy) continue;
+      letzt = feld;
+      const hebung = Number(hoeheAn(feld.gx, feld.gy)) || 0;
+      const zurueck = flatTileFromPoint(px, py + hebung * view.zoom, view);
+      if (!zurueck || zurueck.gx !== feld.gx || zurueck.gy !== feld.gy) continue;
+      if (!treffer || feld.gx + feld.gy > treffer.gx + treffer.gy) treffer = feld;
+    }
+    // Trifft gar nichts - etwa weil der Zeiger ueber einer Steilkante steht,
+    // deren Oberkante zu keinem Feld gehoert -, gilt der flache Platz.
+    return treffer || flatTileFromPoint(px, py, view);
+  }
+
   // A point on screen straight into the editor's own tile coordinates
-  function editorTileFromPoint(px, py, view) {
-    const grid = tileFromPoint(px, py, view);
+  function editorTileFromPoint(px, py, view, hoeheAn) {
+    const grid = tileFromPoint(px, py, view, hoeheAn);
     if (!grid) return null;
     return { x: grid.gx, y: (GRID - 1) - grid.gy };
   }
 
-  // What is further back has to be painted first. The measure is the lowest
-  // corner of the item: an item of n tiles reaches n-1 further in both
-  // directions.
+  // Was weiter hinten steht, wird zuerst gemalt. WELCHE Zahl das entscheidet,
+  // war bis zum 07.09.2026 falsch - Monsterfish hat es an Torhaus und Turm
+  // gesehen: sie lagen vor der Treppe, obwohl sie dahinter gehoeren.
+  //
+  // WIE DAS SPIEL SORTIERT, nachgesehen statt geraten:
+  // renderMap (0x004e8cf0) hat gar keine Liste von Gebaeuden, die es sortiert.
+  // Es laeuft den BILDSCHIRM Feld fuer Feld ab (screenPointToTileNumber, von
+  // hinten nach vorn) und malt je Feld, was dessen Schichten sagen. Ein
+  // mehrfeldriges Gebaeude ist dabei kein Bild, sondern n*n Bilder:
+  // updateBuildingGraphicsLayer (0x00506370) laeuft ueber
+  // constructionTileCount Felder, holt sich zu jedem Feld ueber
+  // getBuildingSizeIndexMappingData den Versatz (buildingX/buildingY) und
+  // schreibt GfxLayer[Feld] EINZELN. Jedes Feld eines Torhauses hat also sein
+  // eigenes Teilbild und seine eigene Tiefe.
+  //
+  // Unsere Bilder sind ganze Gebaeude, nicht Teilbilder - wir koennen also
+  // nicht Feld fuer Feld malen. Gebraucht wird eine Zahl je Gegenstand, die
+  // dieselbe Reihenfolge ergibt. Sie lautet
+  //
+  //     tiefe = gx + gy + (n - 1)          statt vorher gx + gy + 2*(n-1)
+  //
+  // also die Diagonale durch die OST- und die SUEDECKE des Grundrisses (die
+  // breiteste Zeile des Gebaeudes), nicht die durch seine vordere Spitze.
+  //
+  // Warum das stimmt, fuer quadratische Grundrisse durchgerechnet: Gegenstand
+  // A liegt hinter B, wenn er ganz kleinere gx hat (A.gx+nA-1 < B.gx) oder
+  // ganz kleinere gy. Sei A ein Bau von n Feldern ab (x,y), B ein Feld (a,b).
+  //   B hinten in x: a <= x-1, und b <= y+n-1 (sonst ueberlappen sie sich auf
+  //     dem Bildschirm gar nicht) -> a+b <= x+y+n-2 < x+y+n-1.
+  //   B vorn in x:   a >= x+n und b >= y     -> a+b >= x+y+n > x+y+n-1.
+  // Fuer y dasselbe, und fuer zwei mehrfeldrige Bauten ebenso. Die Faelle, in
+  // denen beide Richtungen zugleich gelten wuerden (A hinten in x UND vorn in
+  // y), sind genau die, in denen sich die Bilder auf dem Bildschirm nicht
+  // beruehren - dort ist die Reihenfolge gleichgueltig.
+  //
+  // Das gilt, weil ein Bild genau so breit ist wie sein Grundriss: der Katalog
+  // fuehrt breite = 32*n - 2 - nachgezaehlt an allen 322 Bildern der 73
+  // Eintraege, keine einzige Abweichung. Ein Bild,
+  // das seitlich ueber seine Felder hinausragt, waere hiervon nicht gedeckt.
   function depth(item) {
-    return item.gx + item.gy + 2 * ((item.tiles || 1) - 1);
+    return item.gx + item.gy + ((item.tiles || 1) - 1);
   }
 
   // Eine Mauer hat kein festes Bild. Das Spiel rechnet jedes Feld neu, und
@@ -223,8 +300,8 @@
   // Where a sprite goes: centred on the lowest tile, its bottom edge one
   // half tile below that tile's centre - the same rule the .gm1 files use.
 
-  function spriteRect(sprite, gx, gy, tiles, view) {
-    const [sx, sy] = isoPoint(gx + tiles - 1, gy + tiles - 1, view);
+  function spriteRect(sprite, gx, gy, tiles, view, hebung) {
+    const [sx, sy] = isoPoint(gx + tiles - 1, gy + tiles - 1, view, hebung);
     const k = view.zoom;
     return {
       x: sx - (sprite.breite / 2) * k,
@@ -466,18 +543,23 @@
   // Das gilt fuer die Vorschau wie fuer das echte Gelaende: beide sind
   // Ausschnitte DESSELBEN Rasters, nur verschieden fein gemalt. Zwei Rechnungen
   // waeren zwei Rechnungen, und eine davon laege irgendwann schief.
-  function mapImageRect(keep, view, px0, py0, cells) {
+  // oben: so viele Punkte steht das Bild ueber dem flachen Rahmen, weil das
+  // Gelaende seine Berge nach oben herausschiebt (game-map.js gibt das als
+  // terrain.top zurueck). Senkrecht ist ein Bildpunkt des Spiels genau ein
+  // Punkt der Ansicht mal Zoom - die Kachelhoehe ist hier wie dort 16.
+  function mapImageRect(keep, view, px0, py0, cells, oben) {
     if (!keep) return null;
     const hw = HALF_W * view.zoom;
     const hh = HALF_H * view.zoom;
     const left = Number(px0) || 0;
     const top = Number(py0) || 0;
     const edge = Number(cells) || MAP_PREVIEW_EDGE;
+    const luft = (Number(oben) || 0) * view.zoom;
     return {
       x: view.panX - hw * (keep.x - keep.y + MAP_PREVIEW_EDGE) + left * 2 * hw,
-      y: view.panY - hh * (keep.x + keep.y - (MAP_PREVIEW_EDGE - 1 + 2 * KEEP_TILE)) + top * 2 * hh,
+      y: view.panY - hh * (keep.x + keep.y - (MAP_PREVIEW_EDGE - 1 + 2 * KEEP_TILE)) + top * 2 * hh - luft,
       w: edge * 2 * hw,
-      h: edge * 2 * hh
+      h: edge * 2 * hh + luft
     };
   }
 
