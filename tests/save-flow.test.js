@@ -31,3 +31,23 @@ test('packaged runtime no longer depends on the legacy project plugins folder', 
   assert.equal(packageJson.build.extraFiles.some(entry => entry.from === 'plugins'), false);
   assert.doesNotMatch(main, /projectRoot\(\),\s*'plugins'/);
 });
+
+test('saving does not treat the encoder as if it returned a promise', () => {
+  // writeNativeAiv ist SYNCHRON. Ein .then() daran wirft
+  // "writeNativeAiv(...).then is not a function" - und dann geht weder
+  // Speichern noch Schnellspeichern. Genau das ist am 07.09.2026 passiert,
+  // gemeldet von Monsterfish aus der ausgelieferten Fassung.
+  const geber = fs.readFileSync(path.join(root, 'src', 'node', 'aiv-file.js'), 'utf8');
+  const quelle = geber.slice(geber.indexOf('function writeNativeAiv'));
+  assert.ok(!/^async function writeNativeAiv/m.test(quelle),
+    'writeNativeAiv gibt ein Ergebnis zurueck, kein Versprechen');
+
+  const haupt = fs.readFileSync(path.join(root, 'main.js'), 'utf8');
+  const stelle = haupt.slice(haupt.indexOf('async function writeAivDocument'),
+                             haupt.indexOf('function placeholderPortrait'));
+  assert.ok(!/writeNativeAiv\([\s\S]*?\}\)\s*\.then/.test(stelle),
+    'kein .then an writeNativeAiv');
+  assert.match(stelle, /const ergebnis = writeNativeAiv\(/);
+  assert.match(stelle, /if \(locks !== null\) writeLockSidecar\(destination, locks\);/,
+    'die Sperr-Begleitdatei wird trotzdem geschrieben');
+});

@@ -137,7 +137,10 @@ function readLockSidecar(aivPath) {
 async function writeAivDocument(document, destination, { sourcePath = null, sourceBytes = null, unchanged = false, locks = null } = {}) {
   const codec = await aivCodecPromise;
   const inputDocument = asCastleDocument(document);
-  return writeNativeAiv({
+  // writeNativeAiv ist SYNCHRON und gibt ein Ergebnis zurueck, kein Versprechen.
+  // Hier stand einmal ein .then() daran - das warf "writeNativeAiv(...).then is
+  // not a function", und Speichern wie Schnellspeichern gingen gar nicht mehr.
+  const ergebnis = writeNativeAiv({
     codec,
     document: inputDocument,
     destination,
@@ -146,10 +149,9 @@ async function writeAivDocument(document, destination, { sourcePath = null, sour
     sourcePath,
     sourceBytes,
     unchanged
-  }).then(ergebnis => {
-    if (locks !== null) writeLockSidecar(destination, locks);
-    return ergebnis;
   });
+  if (locks !== null) writeLockSidecar(destination, locks);
+  return ergebnis;
 }
 
 function placeholderPortrait(size) {
