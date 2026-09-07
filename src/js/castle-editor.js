@@ -1816,9 +1816,46 @@
     els.palette.appendChild(items);
   }
 
+  // Die Kostenanzeige neben der Bauliste liegt in eigenen Dateien
+  // (castle-cost-*.js, castle-cost-panel.css) und wird von hier nachgeladen,
+  // damit index.html und combined.css unberuehrt bleiben.
+  function ladeKostenanzeige() {
+    const stil = document.createElement('link');
+    stil.rel = 'stylesheet';
+    stil.href = 'css/castle-cost-panel.css';
+    document.head.appendChild(stil);
+    const dateien = ['js/castle-cost-data.js', 'js/castle-cost-model.js', 'js/castle-cost-panel.js'];
+    const naechste = index => {
+      if (index >= dateien.length) { updateCostPanel(); return; }
+      const skript = document.createElement('script');
+      skript.src = dateien[index];
+      skript.onload = () => naechste(index + 1);
+      // Faellt eine Datei aus, bleibt der Editor heil - nur der Kostenblock fehlt.
+      skript.onerror = () => console.error(`Cost panel: ${dateien[index]} could not be loaded`);
+      document.head.appendChild(skript);
+    };
+    naechste(0);
+  }
+
+  // Uebergibt der Kostenanzeige den aktuellen Stand: alle Bauschritte und den
+  // Schritt, bis zu dem gerechnet werden soll.
+  function updateCostPanel() {
+    if (!window.castleCostPanel) return;
+    const aktiv = Number.isInteger(state.insertionFrameIndex)
+      && state.insertionFrameIndex >= 0 && state.insertionFrameIndex < frames().length
+      ? state.insertionFrameIndex
+      : null;
+    window.castleCostPanel.update({
+      frames: frames(),
+      stepIndex: aktiv,
+      populationData: state.populationData
+    });
+  }
+
   function renderBuildList() {
     renderSelectionList();
     updatePopulationPanel();
+    updateCostPanel();
     els.buildList.innerHTML = '';
     const activeStep = Number.isInteger(state.insertionFrameIndex) && state.insertionFrameIndex >= 0 && state.insertionFrameIndex < frames().length
       ? state.insertionFrameIndex
@@ -3309,6 +3346,7 @@
   resizeObserver.observe(els.host);
 
   window.castleEditor = {
+    extras: { state, placementRefs, setTool, setStatus, renderBuildList, scheduleDraw }, // fuer editor-extras.js: Gruppen und Kopierspeicher, siehe dort
     openFile,
     saveFile,
     saveAs,
@@ -3390,6 +3428,9 @@
     refreshPopulation: () => updatePopulationPanel(false),
     onWorkspaceShown() { resizeCanvas(); clampPan(); updatePopulationPanel(false); scheduleDraw(); }
   };
+
+  ladeKostenanzeige();
+  try { document.head.appendChild(Object.assign(document.createElement('script'), { src: 'js/editor-extras.js' })); } catch (error) { console.warn('Castle extras not loaded:', error); } // Gruppen, Kopierspeicher, Tastenkuerzel
 
   init();
 })();

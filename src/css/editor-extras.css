@@ -1,0 +1,81 @@
+/* Zusatzwerkzeuge: Gruppen, Kopierspeicher, Tastenkuerzel-Knopf.
+   Eine eigene Datei, damit combined.css unberuehrt bleibt. Eingehaengt wird
+   sie von editor-extras.js. Farben und Masse kommen aus denselben Variablen
+   wie der Rest der Oberflaeche - dieses Blatt bringt keine eigenen mit. */
+
+.castleExtrasGroup { gap: 6px; }
+
+#castleClipboardBtn:disabled { opacity: .5; }
+
+#castleClipboardClearBtn {
+  min-width: 30px;
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+.castleGroupsDialog { width: min(620px, calc(100vw - 40px)); }
+
+.castleGroupsNew {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: center;
+}
+
+.castleGroupsNew input {
+  width: 100%;
+  min-height: 32px;
+  padding: 0 9px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  background: var(--app-bg-deep);
+  color: var(--text-main);
+  font: inherit;
+}
+
+.castleGroupsNew input:focus { border-color: var(--accent); outline: 1px solid var(--accent); }
+
+.castleGroupsList {
+  display: grid;
+  gap: 6px;
+  max-height: 46vh;
+  overflow-y: auto;
+  padding-right: 2px;
+}
+
+.castleGroupsEmpty {
+  margin: 4px 0;
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+/* Name links, Anzahl daneben, danach die vier Knoepfe. Die Anzahl bekommt
+   eine feste Spalte, damit die Knoepfe aller Zeilen untereinander stehen. */
+.castleGroupRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 34px repeat(4, auto);
+  gap: 6px;
+  align-items: center;
+  padding: 5px 7px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+}
+
+.castleGroupRow:hover { border-color: var(--line-strong); }
+
+.castleGroupName {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text-main);
+}
+
+.castleGroupCount {
+  color: var(--text-muted);
+  font: 12px var(--font-data);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.castleGroupRow button { min-height: 28px; padding: 3px 9px; font-size: 12px; }

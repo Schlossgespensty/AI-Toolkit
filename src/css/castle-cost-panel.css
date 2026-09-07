@@ -1,0 +1,226 @@
+/* Eigene Datei, damit combined.css unberuehrt bleibt. Geladen wird sie aus
+   castle-editor.js. Farben und Abstaende kommen aus den Variablen von
+   combined.css, damit der Block nicht wie ein Fremdkoerper wirkt. */
+
+.castleCostOverview {
+  flex: 0 0 auto;
+  padding: 9px 10px 10px;
+  border-top: 1px solid var(--line-strong);
+  background: var(--surface-2);
+  font-size: 1.2rem;
+  color: var(--text-soft);
+}
+
+.castleCostOverview .costOverviewTitle {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 7px;
+  font-size: 1.15rem;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--text-muted);
+}
+
+.castleCostOverview .costOverviewTitle strong {
+  font-family: var(--font-data);
+  font-size: 1.25rem;
+  color: var(--selected);
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.castleCostOverview .costBalanceRow {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.castleCostOverview .costBalanceRow label {
+  color: var(--text-muted);
+}
+
+.castleCostOverview .costBalanceRow select {
+  min-width: 0;
+  padding: 3px 5px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface-1);
+  color: var(--text-main);
+  font: inherit;
+}
+
+.castleCostOverview .costBalanceRow button {
+  padding: 3px 8px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface-3);
+  color: var(--text-main);
+  font: inherit;
+  cursor: pointer;
+}
+
+.castleCostOverview .costBalanceRow button:hover {
+  background: var(--surface-raised);
+  border-color: var(--line-strong);
+}
+
+.castleCostOverview .costGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px 6px;
+  margin-bottom: 8px;
+}
+
+.castleCostOverview .costCell {
+  display: flex;
+  flex-direction: column;
+  padding: 4px 6px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface-1);
+}
+
+.castleCostOverview .costCell span {
+  font-size: 1.05rem;
+  color: var(--text-muted);
+}
+
+.castleCostOverview .costCell strong {
+  font-family: var(--font-data);
+  font-size: 1.3rem;
+  color: var(--text-main);
+}
+
+.castleCostOverview .costCell strong.costZero {
+  color: var(--text-muted);
+  opacity: .55;
+}
+
+.castleCostOverview .costSection {
+  margin-top: 8px;
+  padding-top: 7px;
+  border-top: 1px solid var(--line);
+}
+
+.castleCostOverview .costSectionTitle {
+  margin-bottom: 4px;
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  color: var(--text-muted);
+}
+
+.castleCostOverview .populationOverviewRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 1px 0;
+}
+
+.castleCostOverview .populationOverviewRow strong {
+  font-family: var(--font-data);
+  color: var(--text-main);
+}
+
+.castleCostOverview .populationOverviewPrimary strong {
+  color: var(--selected);
+}
+
+.castleCostOverview .populationNegative {
+  color: var(--danger) !important;
+}
+
+.castleCostOverview .costTimeMain span {
+  color: var(--text-main);
+}
+
+.castleCostOverview .costHint {
+  margin-top: 4px;
+  font-size: 1.05rem;
+  line-height: 1.35;
+  color: var(--text-muted);
+}
+
+.castleCostOverview .costProvenance {
+  margin-top: 8px;
+  padding-top: 6px;
+  border-top: 1px solid var(--line);
+  opacity: .8;
+}
+
+.castleCostOverview .costNote {
+  margin: 6px 0;
+  padding: 5px 7px;
+  border: 1px solid var(--danger);
+  border-radius: var(--radius-sm);
+  background: rgba(208, 107, 102, .12);
+  color: var(--text-main);
+  font-size: 1.05rem;
+  line-height: 1.35;
+}
+
+.castleCostOverview .costToggle {
+  width: 100%;
+  margin-top: 8px;
+  padding: 4px 6px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface-1);
+  color: var(--text-soft);
+  font: inherit;
+  cursor: pointer;
+}
+
+.castleCostOverview .costToggle:hover {
+  background: var(--surface-3);
+  border-color: var(--line-strong);
+}
+
+.castleCostOverview .costTable {
+  max-height: 190px;
+  margin-top: 5px;
+  overflow-y: auto;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface-1);
+}
+
+/* Die Leiste ist schmal. Passt Name und Preis nicht nebeneinander, rutscht der
+   Preis in die naechste Zeile - lieber zwei Zeilen als ein abgeschnittener
+   Name ("1x I..." sagt niemandem etwas). */
+.castleCostOverview .costTableRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 8px;
+  padding: 3px 6px;
+  border-bottom: 1px solid var(--line);
+  font-size: 1.1rem;
+}
+
+.castleCostOverview .costTableRow:last-child {
+  border-bottom: 0;
+}
+
+.castleCostOverview .costTableName {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.castleCostOverview .costTableValue {
+  flex: 0 0 auto;
+  margin-left: auto;
+  font-family: var(--font-data);
+  color: var(--text-main);
+}
+
+/* Ein Preis aus der geladenen Balance statt aus der exe - damit man sieht,
+   welche Zeile die Balance ueberschrieben hat. */
+.castleCostOverview .costTableRow.costFromBalance .costTableValue {
+  color: var(--replace);
+}
