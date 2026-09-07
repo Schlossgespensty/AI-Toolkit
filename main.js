@@ -15,7 +15,10 @@ const {
   isWithin
 } = require('./src/node/ucp-library');
 const { placeholderPortraitPng, resizeBgraBitmapToPng } = require('./src/node/pixel-image');
-const { listGameMaps, readGameMap, readMapTerrain } = require('./src/node/game-map');
+const { listGameMaps, readGameMap, readMapTerrain, internals: mapInternals } = require('./src/node/game-map');
+// 17 der 189 Karten haben keinen vorgebauten Bergfried - ihre Startplaetze
+// stehen als eigener Marker in der Karte, siehe map-startplaces.js.
+const { withStartPlaces } = require('./src/node/map-startplaces');
 const { transferableBytes, writeNativeAiv } = require('./src/node/aiv-file');
 
 const aivCodecPromise = import('./src/node/aiv-codec.mjs');
@@ -438,7 +441,8 @@ ipcMain.handle('choose-castle-background', async event => {
 // Datei holen.
 ipcMain.handle('list-game-maps', () => listGameMaps(savedUcpInstallation()));
 
-ipcMain.handle('load-game-map', (_event, filePath) => readGameMap(filePath, savedUcpInstallation()));
+ipcMain.handle('load-game-map', (_event, filePath) =>
+  withStartPlaces(readGameMap(filePath, savedUcpInstallation()), mapInternals));
 
 // Dieselbe Karte als echtes Gelaende. Das Bild ist rund 3 MB und wird darum
 // nur auf Verlangen gemalt - die Vorschau liegt schon in der Karte, das
