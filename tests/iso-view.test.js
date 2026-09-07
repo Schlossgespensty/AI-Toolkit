@@ -582,11 +582,15 @@ test('ohne Startplatz steht das Dorf in der Kartenmitte', () => {
 test('die Ansicht legt die Karte mit der Rechnung hin, nicht nach Augenmass', () => {
   const iso = fs.readFileSync(path.join(root, 'src', 'js', 'iso-view.js'), 'utf8');
   const malen = iso.slice(iso.indexOf('function paintGameMap'), iso.indexOf('function paintGround'));
-  assert.match(malen, /geo\.mapPreviewRect\(currentKeep\(\), state\.view\)/);
-  assert.match(malen, /ctx\.drawImage\(img, rect\.x, rect\.y, rect\.w, rect\.h\)/);
+  assert.match(malen, /geo\.mapImageRect\(currentKeep\(\), state\.view, picture\.px0, picture\.py0, picture\.cells\)/);
+  assert.match(malen, /ctx\.drawImage\(picture\.img, rect\.x, rect\.y, rect\.w, rect\.h\)/);
   assert.match(malen, /ctx\.clip\(\)/, 'die Karte endet an der Raute des Dorfes');
-  assert.match(malen, /ctx\.imageSmoothingEnabled = false/,
-               'ein Vorschaupunkt ist ein Feld und darf nicht ins Nachbarfeld verlaufen');
+  assert.match(malen, /ctx\.imageSmoothingEnabled = picture\.smooth/);
+  // Die Vorschau bleibt hart: ein Vorschaupunkt ist ein ganzes Feld und darf
+  // nicht ins Nachbarfeld verlaufen. Nur das echte Gelaende wird geglaettet.
+  const waehlen = iso.slice(iso.indexOf('function groundPicture'), iso.indexOf('function paintGameMap'));
+  assert.match(waehlen, /cells: geo\.MAP_PREVIEW_EDGE, smooth: false/);
+  assert.match(waehlen, /cells: terrain\.cells, smooth: true/);
   // Ohne Startplatz die Kartenmitte - und nicht etwa gar nichts.
   const platz = iso.slice(iso.indexOf('function currentKeep'), iso.indexOf('function paintGameMap'));
   assert.match(platz, /map\.keeps\[map\.keepIndex\] \|\| geo\.centreKeep\(\)/);
@@ -931,4 +935,174 @@ test('der Bergfried landet dort, wo LaunchSkirmishGame ihn hinsetzt', async (t) 
             'auf dem Block liegt er nur bei Drehung 0 - hier ' + treffer + ' von ' + plaetze);
   for (const schluessel of versatz.keys())
     assert.ok(['0/0', '0/7', '7/0', '7/7'].includes(schluessel), 'unbekannter Versatz ' + schluessel);
+});
+
+// ------------------------------------------------------- das echte Gelaende
+
+test('das Dorf-Fenster deckt jedes Feld des Bauplans ab und ist nicht groesser als noetig', () => {
+  // Fuer jeden Startplatz: die 100x100 Felder des Dorfes muessen im Fenster
+  // liegen, und das Fenster darf hoechstens 101 Punkte Kante haben - sonst
+  // waechst das Bild ohne Grund. 101 statt 100 kommt vor, wenn die Ecken auf
+  // halbe Vorschaupunkte fallen.
+  const plaetze = [{ x: 84, y: 223 }, { x: 225, y: 77 }, { x: 200, y: 200 },
+                   { x: 43, y: 43 }, { x: 356, y: 356 }, geometry.centreKeep()];
+  for (const keep of plaetze) {
+    const fenster = geometry.villageWindow(keep);
+    assert.ok(fenster.cells === 100 || fenster.cells === 101,
+              `Kante ${fenster.cells} bei (${keep.x},${keep.y})`);
+    for (const [gx, gy] of [[0, 0], [99, 0], [0, 99], [99, 99], [50, 50], [17, 83]]) {
+      const feld = geometry.mapTileForGrid(gx, gy, keep);
+      const punkt = geometry.previewPointForMapTile(feld.mx, feld.my);
+      assert.ok(punkt.px >= fenster.px0 && punkt.px <= fenster.px0 + fenster.cells,
+                `px ${punkt.px} liegt nicht im Fenster ${fenster.px0}..${fenster.px0 + fenster.cells}`);
+      assert.ok(punkt.py >= fenster.py0 && punkt.py <= fenster.py0 + fenster.cells,
+                `py ${punkt.py} liegt nicht im Fenster ${fenster.py0}..${fenster.py0 + fenster.cells}`);
+    }
+  }
+});
+
+test('Gelaende und Vorschau werden von derselben Rechnung hingelegt', () => {
+  // Die ganze Vorschau ist nur der Sonderfall "Ausschnitt von 0,0 ueber 200
+  // Punkte". Waeren es zwei Rechnungen, laege eine davon irgendwann schief.
+  const view = { zoom: 0.37, panX: 411, panY: -88 };
+  const keep = { x: 84, y: 223 };
+  assert.deepEqual(geometry.mapImageRect(keep, view, 0, 0, geometry.MAP_PREVIEW_EDGE),
+                   geometry.mapPreviewRect(keep, view));
+
+  // Und der Ausschnitt landet auf demselben Fleck wie das Stueck der Vorschau,
+  // das dieselben Punkte zeigt: Punkt px0 der Vorschau liegt genau auf der
+  // linken Kante des Gelaendebildes.
+  for (const zoom of [0.2, 1, 3.5]) {
+    const sicht = { zoom, panX: 120, panY: 40 };
+    const fenster = geometry.villageWindow(keep);
+    const ganz = geometry.mapPreviewRect(keep, sicht);
+    const teil = geometry.mapImageRect(keep, sicht, fenster.px0, fenster.py0, fenster.cells);
+    const punktBreite = ganz.w / geometry.MAP_PREVIEW_EDGE;
+    const punktHoehe = ganz.h / geometry.MAP_PREVIEW_EDGE;
+    assert.ok(Math.abs(teil.x - (ganz.x + fenster.px0 * punktBreite)) < 1e-9, 'linke Kante');
+    assert.ok(Math.abs(teil.y - (ganz.y + fenster.py0 * punktHoehe)) < 1e-9, 'obere Kante');
+    assert.ok(Math.abs(teil.w - fenster.cells * punktBreite) < 1e-9, 'Breite');
+    assert.ok(Math.abs(teil.h - fenster.cells * punktHoehe) < 1e-9, 'Hoehe');
+  }
+});
+
+test('das gemalte Gelaende zeigt genau die Felder, die die Vorschau an dieser Stelle zeigt', (t) => {
+  // Der Totschlagtest fuer die Lage. Ohne Farbvergleich: fuer jeden Block von
+  // 30x16 Punkten wird nachgesehen, welche Kachel dort steht, und mit der
+  // Bildnummer aus dem GfxLayer verglichen - der Quelle, aus der auch die
+  // Vorschau stammt. Verschoben um ein Feld muss es NICHT mehr passen.
+  const { listGameMaps, readGameMap, internals } = require(path.join(root, 'src', 'node', 'game-map.js'));
+  const { maps, gameRoot } = listGameMaps(null);
+  if (!maps.length || !gameRoot) { t.skip('kein Stronghold Crusader gefunden'); return; }
+  const eintrag = maps.find(m => m.name === 'Crete Peninsula') || maps[0];
+  const karte = readGameMap(eintrag.path, null);
+  const keep = karte.keeps[0] || geometry.centreKeep();
+
+  const bytes = fs.readFileSync(eintrag.path);
+  const vorschau = internals.readPreview(bytes);
+  const verzeichnis = internals.findDirectory(bytes, vorschau.end);
+  const gelaende = internals.renderTerrain(bytes, verzeichnis, gameRoot, { x: keep.x, y: keep.y });
+  const gfx = internals.readSection(bytes, verzeichnis, internals.GFX_SECTION);
+  const vorrat = internals.readPictureStock(gameRoot);
+
+  // Welche gm-Datei gehoert zu dem Feld, das an Vorschaupunkt (px,py) steht?
+  const dateiAn = (px, py) => {
+    const mx = px + py;
+    const my = py - px + internals.PREVIEW_EDGE - 1;
+    if (mx < 0 || my < 0 || mx > 399 || my > 399) return null;
+    const [von, bis] = internals.rowRange(my);
+    if (mx < von || mx > bis) return null;
+    const bild = internals.pictureForValue(vorrat, gfx.readUInt16LE(internals.tileIndex(mx, my) * 2));
+    return bild ? bild.name : null;
+  };
+  // Wasser oder nicht - ein Ja/Nein je Feld, das man auch im Bild wiederfindet.
+  const nassLaut = (px, py) => /sea|water/i.test(dateiAn(px, py) || '');
+
+  const treffer = (dx, dy) => {
+    let gleich = 0, zahl = 0;
+    for (let cy = 0; cy < gelaende.cells; cy += 1) {
+      for (let cx = 0; cx < gelaende.cells; cx += 1) {
+        let blau = 0, punkte = 0;
+        for (let y = cy * internals.TILE_H; y < (cy + 1) * internals.TILE_H; y += 1) {
+          for (let x = cx * internals.TILE_W; x < (cx + 1) * internals.TILE_W; x += 1) {
+            const at = (y * gelaende.width + x) * 4;
+            if (!gelaende.rgba[at + 3]) { punkte = -1; break; }
+            if (gelaende.rgba[at + 2] > gelaende.rgba[at]) blau += 1;
+            punkte += 1;
+          }
+          if (punkte < 0) break;
+        }
+        // nur eindeutige Bloecke: ganz Wasser oder gar kein Wasser
+        if (punkte !== internals.TILE_W * internals.TILE_H) continue;
+        if (blau !== 0 && blau !== punkte) continue;
+        if (dateiAn(gelaende.px0 + cx + dx, gelaende.py0 + cy + dy) === null) continue;
+        if (nassLaut(gelaende.px0 + cx + dx, gelaende.py0 + cy + dy) === (blau > 0)) gleich += 1;
+        zahl += 1;
+      }
+    }
+    return { anteil: zahl ? gleich / zahl : 0, zahl };
+  };
+
+  const genau = treffer(0, 0);
+  assert.ok(genau.zahl > 1000, 'es wurden genug eindeutige Felder geprueft: ' + genau.zahl);
+  assert.ok(genau.anteil > 0.97, 'ohne Versatz passt es: ' + (genau.anteil * 100).toFixed(2) + '%');
+  for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1], [1, 1], [-1, -1]]) {
+    const daneben = treffer(dx, dy);
+    assert.ok(daneben.anteil < genau.anteil,
+      `um (${dx},${dy}) verschoben passt es genauso gut - dann misst der Test nichts: ` +
+      `${(daneben.anteil * 100).toFixed(2)}% gegen ${(genau.anteil * 100).toFixed(2)}%`);
+  }
+});
+
+test('das Gelaendebild bleibt in der Groesse, die gemessen wurde', (t) => {
+  // Die ganze Karte in Kachelaufloesung waere 6000x3200 Punkte. Gemalt wird
+  // nur die Raute des Dorfes: gemessen 3030x1616 Punkte, davon die Haelfte
+  // durchsichtig, und daraus ein PNG von rund 3 MB. Waechst das unbemerkt,
+  // kommt die data:-Adresse nicht mehr durch den Kanal.
+  const { listGameMaps, readGameMap, readMapTerrain } = require(path.join(root, 'src', 'node', 'game-map.js'));
+  const { maps } = listGameMaps(null);
+  if (!maps.length) { t.skip('kein Stronghold Crusader gefunden'); return; }
+  const eintrag = maps.find(m => m.name === 'A Friend Indeed') || maps[0];
+  const karte = readGameMap(eintrag.path, null);
+  const keep = karte.keeps[0] || geometry.centreKeep();
+  const gelaende = readMapTerrain(eintrag.path, null, keep);
+
+  assert.equal(gelaende.width, gelaende.cells * 30);
+  assert.equal(gelaende.height, gelaende.cells * 16);
+  assert.ok(gelaende.cells <= 101, 'Kante ' + gelaende.cells);
+  assert.equal(gelaende.missing, 0, 'jedes Feld im Fenster hat ein Bild');
+  assert.ok(gelaende.tiles > 15000, 'genug Kacheln gemalt: ' + gelaende.tiles);
+  const megabyte = gelaende.dataUrl.length / 1048576;
+  assert.ok(megabyte < 8, 'die data:-Adresse bleibt unter 8 MB, hier ' + megabyte.toFixed(2));
+  assert.ok(gelaende.dataUrl.startsWith('data:image/png;base64,'));
+  // Nur Karten aus der Liste, und nur Startplaetze auf der Karte.
+  assert.throws(() => readMapTerrain('C:\\Windows\\System32\\drivers\\etc\\hosts', null, keep),
+                /not one of the game maps/);
+  assert.throws(() => readMapTerrain(eintrag.path, null, { x: -1, y: 0 }), /not on the map/);
+  assert.throws(() => readMapTerrain(eintrag.path, null, null), /not on the map/);
+});
+
+test('der Umschalter zwischen Vorschau und Gelaende haengt richtig', () => {
+  // Der Knopf steht bei den anderen Kartenknoepfen und zeigt sich nur mit
+  // Karte. Und das Gelaende wird NICHT gemerkt - 3 MB passen nicht in den
+  // Sitzungsspeicher, in dem auch die Karte selbst liegt.
+  assert.match(html, /id="castleIsoMapMode"[^>]*hidden/);
+  const iso = fs.readFileSync(path.join(root, 'src', 'js', 'iso-view.js'), 'utf8');
+  assert.match(iso, /mapMode, setMapMode, setTerrain, terrainKey, terrainReady/, 'von aussen erreichbar');
+  const merken = iso.slice(iso.indexOf('function rememberGameMap'), iso.indexOf('function setGameMap'));
+  assert.doesNotMatch(merken, /terrain/i, 'das Gelaende gehoert nicht in den Sitzungsspeicher');
+  // Karte oder Startplatz gewechselt heisst: das alte Gelaende passt nicht mehr.
+  const schluessel = iso.slice(iso.indexOf('function terrainKey'), iso.indexOf('function setTerrain'));
+  assert.match(schluessel, /map\.path/);
+  assert.match(schluessel, /keep\.x/);
+
+  const preload = fs.readFileSync(path.join(root, 'preload.js'), 'utf8');
+  assert.match(preload, /loadMapTerrain: \(request\) => ipcRenderer\.invoke\('load-map-terrain', request\)/);
+  const main = fs.readFileSync(path.join(root, 'main.js'), 'utf8');
+  assert.match(main, /ipcMain\.handle\('load-map-terrain'/);
+  const editor = fs.readFileSync(path.join(root, 'src', 'js', 'castle-editor.js'), 'utf8');
+  assert.match(editor, /window\.electronAPI\.loadMapTerrain\(\{ path: info\.path, keep: info\.keep \}\)/);
+  assert.match(editor, /window\.isoView\.setMapMode\(/);
+  // Kommt die Antwort zu spaet, gehoert sie nicht mehr hierher.
+  assert.match(editor, /if \(window\.isoView\.terrainKey\(\) !== key\) return;/);
 });

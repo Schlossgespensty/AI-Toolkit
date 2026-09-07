@@ -127,6 +127,9 @@
     state.images.delete(groundSource());
     // Only ever one ground: a picture of your own puts a map of the game away.
     if (url && gameMap()) { state.gameMap = null; rememberGameMap(); }
+    // Und mit der Karte auch ihr Gelaende: das Bild ist entpackt rund 19 MB,
+    // und ohne Karte kommt es nie wieder zum Vorschein.
+    if (url && state.terrain) { state.images.delete(state.terrain.dataUrl); state.terrain = null; }
     paint();
   }
 
@@ -150,6 +153,12 @@
       setGameMap(null);
       return;
     }
+    // Ein kaputtes Gelaendebild kostet nur das Gelaende: die Vorschau liegt
+    // noch da, und der Grund bleibt sichtbar.
+    if (state.terrain && filename === state.terrain.dataUrl) {
+      setTerrain(null);
+      return;
+    }
     refresh();
   }
 
@@ -168,6 +177,51 @@
   // way round. Two pictures on the same floor would hide each other, and no
   // one could tell which of them is to scale.
   const MAP_KEY = 'castleIsoGameMap';
+  const MAP_MODE_KEY = 'castleIsoMapMode';   // 'preview' or 'terrain'
+
+  // Das echte Gelaende wird NICHT gemerkt. Es ist rund 3 MB als PNG, also gut
+  // 4 MB als data:-Adresse - localStorage haelt ueblicherweise 5 MB fuer alles
+  // zusammen, und die Karte laege danach nirgends mehr. Gemerkt wird nur, DASS
+  // der Nutzer das Gelaende sehen will; geholt wird es beim naechsten Start neu.
+  function mapMode() {
+    if (state.mapMode === undefined) {
+      let stored = null;
+      try { stored = window.localStorage.getItem(MAP_MODE_KEY); } catch { stored = null; }
+      state.mapMode = stored === 'terrain' ? 'terrain' : 'preview';
+    }
+    return state.mapMode;
+  }
+
+  function setMapMode(mode) {
+    state.mapMode = mode === 'terrain' ? 'terrain' : 'preview';
+    try { window.localStorage.setItem(MAP_MODE_KEY, state.mapMode); } catch { /* a view must not fall over because storage is off */ }
+    paint();
+  }
+
+  // Welches Gelaende die Ansicht gerade braucht: eine Karte und ein Startplatz.
+  // Wechselt eines von beidem, passt das gehaltene Bild nicht mehr, und die
+  // Ansicht faellt auf die Vorschau zurueck, bis das neue da ist.
+  function terrainKey() {
+    const map = gameMap();
+    if (!map || !map.path) return null;
+    const keep = currentKeep();
+    return keep ? `${map.path}#${keep.x},${keep.y}` : null;
+  }
+
+  function setTerrain(terrain) {
+    if (state.terrain) state.images.delete(state.terrain.dataUrl);
+    state.terrain = terrain && terrain.dataUrl
+      ? { key: terrain.key, dataUrl: terrain.dataUrl,
+          px0: Number(terrain.px0) || 0, py0: Number(terrain.py0) || 0,
+          cells: Number(terrain.cells) || geo.MAP_PREVIEW_EDGE }
+      : null;
+    paint();
+  }
+
+  function terrainReady() {
+    const wanted = terrainKey();
+    return Boolean(wanted && state.terrain && state.terrain.key === wanted);
+  }
 
   function gameMap() {
     if (state.gameMap === undefined) {
@@ -189,9 +243,12 @@
     const previous = gameMap();
     if (previous) state.images.delete(previous.dataUrl);
     state.gameMap = map
-      ? { name: map.name, dataUrl: map.dataUrl,
+      ? { name: map.name, path: map.path || null, dataUrl: map.dataUrl,
           keeps: Array.isArray(map.keeps) ? map.keeps : [], keepIndex: 0 }
       : null;
+    // Das Gelaende der alten Karte zeigt die alte Karte. Es jetzt stehen zu
+    // lassen hiesse, die neue Karte mit fremdem Boden zu zeigen.
+    setTerrain(null);
     rememberGameMap();
     if (state.gameMap && state.ground) setGround(null);   // paints as well
     else paint();
@@ -209,7 +266,9 @@
   function gameMapInfo() {
     const map = gameMap();
     if (!map) return null;
-    return { name: map.name, keeps: map.keeps, keepIndex: map.keepIndex };
+    const keep = currentKeep();
+    return { name: map.name, path: map.path || null, keeps: map.keeps, keepIndex: map.keepIndex,
+             keep, mode: mapMode(), terrainKey: terrainKey(), terrainReady: terrainReady() };
   }
 
   // Which starting place the village is built on. Without one the village goes
@@ -262,17 +321,38 @@
     return { x: back.gx, y: geo.GRID - 1 - back.gy };
   }
 
-  function paintGameMap(ctx) {
+  // Was gerade unter der Burg liegt. Das echte Gelaende nur, wenn es gewaehlt
+  // UND fertig geladen ist - sonst die Vorschau. So bleibt der Grund nie leer:
+  // das Gelaende braucht eine halbe Sekunde, die Vorschau ist sofort da.
+  function groundPicture() {
     const map = gameMap();
+    if (!map) return null;
+    if (mapMode() === 'terrain' && terrainReady()) {
+      const terrain = state.terrain;
+      const img = image(terrain.dataUrl);
+      if (img && img.complete && img.naturalWidth) {
+        return { img, px0: terrain.px0, py0: terrain.py0, cells: terrain.cells, smooth: true };
+      }
+    }
     const img = image(map.dataUrl);
-    if (!img || !img.complete || !img.naturalWidth) return;
-    const rect = geo.mapPreviewRect(currentKeep(), state.view);
+    if (!img || !img.complete || !img.naturalWidth) return null;
+    return { img, px0: 0, py0: 0, cells: geo.MAP_PREVIEW_EDGE, smooth: false };
+  }
+
+  function paintGameMap(ctx) {
+    const picture = groundPicture();
+    if (!picture) return;
+    // Beide Bilder sind Ausschnitte desselben Rasters, nur verschieden fein
+    // gemalt - dieselbe Rechnung legt sie an dieselbe Stelle.
+    const rect = geo.mapImageRect(currentKeep(), state.view, picture.px0, picture.py0, picture.cells);
     ctx.save();
     ctx.clip();
-    // Each preview point becomes one whole tile, so it must stay a hard square
-    // - smoothed, the edge of a field would smear over its neighbour.
-    ctx.imageSmoothingEnabled = false;
-    ctx.drawImage(img, rect.x, rect.y, rect.w, rect.h);
+    // Ein Vorschaupunkt ist ein ganzes Feld und muss ein hartes Quadrat bleiben
+    // - geglaettet schmierte der Rand eines Feldes ueber seinen Nachbarn. Das
+    // Gelaende ist ein echtes Bild aus Kacheln des Spiels und wird geglaettet,
+    // sonst franst es beim Verkleinern aus.
+    ctx.imageSmoothingEnabled = picture.smooth;
+    ctx.drawImage(picture.img, rect.x, rect.y, rect.w, rect.h);
     ctx.restore();
   }
 
@@ -773,7 +853,8 @@
 
   window.isoView = { init, openWindow, closeWindow, mountDock, unmount, refresh, paint, fit, isMounted,
                      setGround, hasOwnGround, setGroundFit, groundIsStretched,
-                     setGameMap, setGameMapKeep, hasGameMap, gameMapInfo };
+                     setGameMap, setGameMapKeep, hasGameMap, gameMapInfo,
+                     mapMode, setMapMode, setTerrain, terrainKey, terrainReady };
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();

@@ -15,7 +15,7 @@ const {
   isWithin
 } = require('./src/node/ucp-library');
 const { placeholderPortraitPng, resizeBgraBitmapToPng } = require('./src/node/pixel-image');
-const { listGameMaps, readGameMap } = require('./src/node/game-map');
+const { listGameMaps, readGameMap, readMapTerrain } = require('./src/node/game-map');
 const { transferableBytes, writeNativeAiv } = require('./src/node/aiv-file');
 
 const aivCodecPromise = import('./src/node/aiv-codec.mjs');
@@ -437,6 +437,15 @@ ipcMain.handle('choose-castle-background', async event => {
 ipcMain.handle('list-game-maps', () => listGameMaps(savedUcpInstallation()));
 
 ipcMain.handle('load-game-map', (_event, filePath) => readGameMap(filePath, savedUcpInstallation()));
+
+// Dieselbe Karte als echtes Gelaende. Das Bild ist rund 3 MB und wird darum
+// nur auf Verlangen gemalt - die Vorschau liegt schon in der Karte, das
+// Gelaende muss aus den gm-Dateien des Spiels zusammengesetzt werden.
+// WELCHER Startplatz gilt, sagt das Fenster: es kennt auch den Fall
+// "keine Startplaetze, Dorf in die Kartenmitte", und zwei Stellen, die das
+// getrennt entscheiden, waeren zwei Stellen zum Auseinanderlaufen.
+ipcMain.handle('load-map-terrain', (_event, request) =>
+  readMapTerrain(request && request.path, savedUcpInstallation(), request && request.keep));
 
 ipcMain.handle('scan-ucp-ai-library', (_event, gameRoot) => scanUcpInstallation(gameRoot));
 

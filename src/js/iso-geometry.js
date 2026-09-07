@@ -459,18 +459,55 @@
              player: null, orientation: 0 };
   }
 
-  // Wohin das Vorschaubild gehoert, damit ein Kartenfeld auf einem Editorfeld
-  // liegt. Groesse und Ecke, fertig fuer ctx.drawImage.
-  function mapPreviewRect(keep, view) {
+  // Wohin ein Bild gehoert, das den Ausschnitt (px0,py0) bis (px0+cells,
+  // py0+cells) der Vorschau abdeckt. Groesse und Ecke, fertig fuer
+  // ctx.drawImage. Ein Vorschaupunkt ist genau eine Kachel breit und hoch,
+  // also 2*hw mal 2*hh gross - px0 und py0 verschieben nur die Ecke.
+  // Das gilt fuer die Vorschau wie fuer das echte Gelaende: beide sind
+  // Ausschnitte DESSELBEN Rasters, nur verschieden fein gemalt. Zwei Rechnungen
+  // waeren zwei Rechnungen, und eine davon laege irgendwann schief.
+  function mapImageRect(keep, view, px0, py0, cells) {
     if (!keep) return null;
     const hw = HALF_W * view.zoom;
     const hh = HALF_H * view.zoom;
+    const left = Number(px0) || 0;
+    const top = Number(py0) || 0;
+    const edge = Number(cells) || MAP_PREVIEW_EDGE;
     return {
-      x: view.panX - hw * (keep.x - keep.y + MAP_PREVIEW_EDGE),
-      y: view.panY - hh * (keep.x + keep.y - (MAP_PREVIEW_EDGE - 1 + 2 * KEEP_TILE)),
-      w: MAP_PREVIEW_EDGE * 2 * hw,
-      h: MAP_PREVIEW_EDGE * 2 * hh
+      x: view.panX - hw * (keep.x - keep.y + MAP_PREVIEW_EDGE) + left * 2 * hw,
+      y: view.panY - hh * (keep.x + keep.y - (MAP_PREVIEW_EDGE - 1 + 2 * KEEP_TILE)) + top * 2 * hh,
+      w: edge * 2 * hw,
+      h: edge * 2 * hh
     };
+  }
+
+  // Wohin das Vorschaubild gehoert: der Sonderfall "ganze Karte".
+  function mapPreviewRect(keep, view) {
+    return mapImageRect(keep, view, 0, 0, MAP_PREVIEW_EDGE);
+  }
+
+  // Welches Stueck der Karte das Dorf von 100x100 Feldern einnimmt, gemessen
+  // in Vorschaupunkten. Der Hauptprozess malt genau dieses Stueck als echtes
+  // Gelaende, die Ansicht legt es mit mapImageRect an dieselbe Stelle - beide
+  // rechnen es hier aus, damit sie nicht auseinanderlaufen koennen.
+  //
+  // Die vier Ecken des Dorfes reichen: die Abbildung Feld -> Vorschaupunkt ist
+  // eine Drehung, ein Viereck bleibt ein Viereck. Der Rahmen ist 100x100 Punkte
+  // gross, das Dorf selbst fuellt darin eine Raute, also die Haelfte.
+  // Warum die Kante trotzdem 101 sein kann: liegt keep.x + keep.y gerade, so
+  // fallen die Ecken auf halbe Punkte, und der Rahmen braucht einen Punkt mehr.
+  function villageWindow(keep) {
+    if (!keep) return null;
+    let pxLow = Infinity, pxHigh = -Infinity, pyLow = Infinity, pyHigh = -Infinity;
+    for (const [gx, gy] of [[0, 0], [GRID - 1, 0], [0, GRID - 1], [GRID - 1, GRID - 1]]) {
+      const tile = mapTileForGrid(gx, gy, keep);
+      const point = previewPointForMapTile(tile.mx, tile.my);
+      pxLow = Math.min(pxLow, point.px); pxHigh = Math.max(pxHigh, point.px);
+      pyLow = Math.min(pyLow, point.py); pyHigh = Math.max(pyHigh, point.py);
+    }
+    const px0 = Math.floor(pxLow);
+    const py0 = Math.floor(pyLow);
+    return { px0, py0, cells: Math.max(Math.ceil(pxHigh) - px0, Math.ceil(pyHigh) - py0) + 1 };
   }
 
   // Zoom and offset so that the whole 100x100 grid fits into a box
@@ -486,5 +523,6 @@
            depth, byDepth, spriteRect, variantFor, wallLookup, hoehenLookup,
            collectItems, collectPlates, marqueeOutline, fitView,
            rotateGrid, unrotateGrid, keepOrientation,
-           mapTileForGrid, previewPointForMapTile, centreKeep, mapPreviewRect };
+           mapTileForGrid, previewPointForMapTile, centreKeep,
+           mapPreviewRect, mapImageRect, villageWindow };
 });

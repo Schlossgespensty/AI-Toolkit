@@ -3008,6 +3008,7 @@
   const karteKnopf = document.getElementById('castleIsoMapBtn');
   const karteZurueck = document.getElementById('castleIsoMapReset');
   const karteBergfried = document.getElementById('castleIsoMapKeep');
+  const karteArt = document.getElementById('castleIsoMapMode');
   const karteDialog = document.getElementById('castleIsoMapDialog');
   const karteListe = document.getElementById('castleIsoMapList');
   const karteFilter = document.getElementById('castleIsoMapFilter');
@@ -3018,6 +3019,12 @@
   function updateMapControls() {
     const info = window.isoView && window.isoView.gameMapInfo ? window.isoView.gameMapInfo() : null;
     if (karteZurueck) karteZurueck.hidden = !info;
+    if (karteArt) {
+      karteArt.hidden = !info;
+      const echt = Boolean(info && info.mode === 'terrain');
+      karteArt.textContent = echt ? 'Terrain' : 'Preview';
+      karteArt.setAttribute('aria-pressed', String(echt));
+    }
     if (!karteBergfried) return;
     // Der Wähler zeigt sich nur, wenn es etwas zu wählen gibt - bei einem
     // einzigen Startplatz gäbe es nichts zu tun.
@@ -3036,6 +3043,41 @@
       return option;
     }));
     karteBergfried.value = String(info.keepIndex);
+  }
+
+  // Das echte Gelaende holen, wenn es gebraucht wird und noch nicht daliegt.
+  // Es wird NICHT gemerkt (rund 3 MB), also faellt es bei jedem Neustart und
+  // bei jedem Wechsel von Karte oder Startplatz an - und bis es da ist, liegt
+  // die Vorschau darunter, damit der Grund nie leer aussieht.
+  let gelaendeLaeuft = null;
+  async function ensureTerrain() {
+    if (!window.isoView || !window.isoView.gameMapInfo) return;
+    const info = window.isoView.gameMapInfo();
+    if (!info || info.mode !== 'terrain' || info.terrainReady) return;
+    if (!info.path) {
+      // Eine Karte aus einer aelteren Sitzung kennt ihren Pfad nicht.
+      setStatus('Pick the map again - the remembered one does not say where it lies.');
+      return;
+    }
+    const key = info.terrainKey;
+    if (!key || gelaendeLaeuft === key) return;
+    gelaendeLaeuft = key;
+    setStatus(`Drawing the real terrain of "${info.name}" …`);
+    try {
+      const terrain = await window.electronAPI.loadMapTerrain({ path: info.path, keep: info.keep });
+      // Zwischendurch kann die Karte oder der Startplatz gewechselt haben -
+      // dann gehoert dieses Bild nicht mehr hierher.
+      if (window.isoView.terrainKey() !== key) return;
+      window.isoView.setTerrain({ ...terrain, key });
+      setStatus(`Real terrain of "${info.name}" · ${terrain.tiles} fields, ${terrain.trees} trees, ` +
+                `${terrain.width}x${terrain.height} points`);
+    } catch (error) {
+      setStatus(`Could not draw the terrain: ${error.message}`);
+      window.isoView.setMapMode('preview');
+      updateMapControls();
+    } finally {
+      if (gelaendeLaeuft === key) gelaendeLaeuft = null;
+    }
   }
 
   function renderMapList(filter) {
@@ -3073,6 +3115,7 @@
       window.isoView.setGameMap(map);
       updateMapControls();
       updateGroundControls();
+      ensureTerrain();
       if (karteDialog && karteDialog.open) karteDialog.close();
       setStatus(map.keeps.length
         ? `Map "${map.name}" laid under the slanted view · ${map.keeps.length} starting place${map.keeps.length === 1 ? '' : 's'}`
@@ -3104,12 +3147,21 @@
   if (karteBergfried) karteBergfried.addEventListener('change', () => {
     if (!window.isoView) return;
     window.isoView.setGameMapKeep(Number(karteBergfried.value));
+    ensureTerrain();
     const info = window.isoView.gameMapInfo();
     const keep = info && info.keeps[info.keepIndex];
     setStatus(keep
       ? `Castle built on ${keep.player ? `start ${keep.player}` : 'the starting place'} at (${keep.x}, ${keep.y})` +
         (keep.orientation ? ` · the game turns it by ${keep.orientation / 2} quarter turn${keep.orientation === 2 ? '' : 's'}` : ' · not turned')
       : 'Starting place changed');
+  });
+  if (karteArt) karteArt.addEventListener('click', () => {
+    if (!window.isoView) return;
+    const echt = window.isoView.mapMode() !== 'terrain';
+    window.isoView.setMapMode(echt ? 'terrain' : 'preview');
+    updateMapControls();
+    if (echt) ensureTerrain();
+    else setStatus('Ground back to the quick preview of the map');
   });
   if (karteZurueck) karteZurueck.addEventListener('click', () => {
     if (!window.isoView) return;
@@ -3130,6 +3182,7 @@
   window.addEventListener('DOMContentLoaded', () => {
     updateGroundControls();
     updateMapControls();
+    ensureTerrain();
   });
 
   document.querySelectorAll('.castleTool').forEach(btn => btn.addEventListener('click', () => setTool(btn.dataset.tool)));

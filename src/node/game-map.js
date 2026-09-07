@@ -35,7 +35,8 @@ const { explode } = require('node-pkware/simple');
 const { encodeRgbaPng } = require('./pixel-image');
 // Die Drehregel steht in iso-geometry.js, weil die Ansicht sie auch braucht.
 // Zwei Kopien derselben Regel waeren zwei Regeln, und eine davon veraltet.
-const { keepOrientation } = require('../js/iso-geometry.js');
+const geometry = require('../js/iso-geometry.js');
+const { keepOrientation } = geometry;
 
 const PREVIEW_EDGE = 200;          // Kantenlaenge des Vorschaubildes
 const MAP_TILES = 80400;           // Felder der Raute
@@ -56,6 +57,44 @@ const BUILDING_STRIDE = 812;
 const BUILDING_TYPE_AT = 210;
 const BUILDING_OWNER_AT = 214;
 const BUILDING_X_AT = 238;
+
+// --------------------------------------------------------- das echte Gelaende
+//
+// Abschnitt 1001 (GfxLayer, 2 Byte je Feld) traegt nicht eine Gelaendeart,
+// sondern die FERTIGE Bildnummer, durchgezaehlt ueber alle gm-Dateien in der
+// Reihenfolge, in der die exe sie laedt (Namensliste ab 0xb601c0, Schrittweite
+// 1000, Abbruch bei "null"; je Datei die Bildzahl aus dem gm1-Kopf @12).
+// Was auf dem Boden STEHT, steht in Abschnitt 1004 (OrganismLayer): 0 nichts,
+// 1..1999 Platz in der Baumliste (Abschnitt 1014, 2000 Eintraege zu 156 Byte),
+// ab 2000 ein Fels - dessen Bild steckt schon im GfxLayer.
+// Alles belegt in VillageStudio/doku/Wissensstand.md, 1b5 und 1b6; der Code
+// stammt aus VillageStudio/lib (gelaende.js, karte.js, gm1.js) und ist hier
+// uebernommen, weil das Toolkit kein Fremdmodul nachladen soll.
+const GFX_SECTION = 1001;          // die Bildnummer je Feld
+const ORGANISM_SECTION = 1004;     // was auf dem Feld steht
+const TREES_SECTION = 1014;        // LandscapeState.trees
+const TREE_STRIDE = 156;
+const FIRST_ROCK = 2000;           // ab hier ist es ein Fels, kein Baum
+const NAME_LIST_VA = 0xb601c0;     // Namensliste der gm-Dateien in der exe
+const NAME_STRIDE = 1000;
+// Gemessen, nicht hergeleitet: ab Listenplatz 149 liegt der Zaehler des Spiels
+// um 21 Bilder unter der Summe aus exe-Liste und Dateikoepfen. Woher die 21
+// kommen, ist offen - der Wert ist an 11.497.200 Feldern aus 143 Karten
+// angepasst (VillageStudio/lib/gelaende.js).
+const PICTURE_SHIFT_FROM = 149, PICTURE_SHIFT = 21;
+const TILE_W = 30, TILE_H = 16;    // eine Rautenkachel des Spiels
+const TREE_DX = 14, TREE_DY = 6;   // renderMap haengt einen Baum so an sein Feld
+const GM1_HEAD = 88, GM1_PALETTES = 10, GM1_COLOURS = 256;
+// So viele Punkte stehen in jeder Zeile einer Rautenkachel
+const TILE_ROW = [2, 6, 10, 14, 18, 22, 26, 30, 30, 26, 22, 18, 14, 10, 6, 2];
+// Ein Feld ausserhalb des Dorfes wird von der Ansicht ohnehin abgeschnitten.
+// Ein Feld Zugabe, damit am Rand kein durchsichtiger Streifen stehen bleibt.
+const CLIP_MARGIN = 1;
+const GM1_CACHE_MAX = 32;
+// So weit ausserhalb des Ausschnitts wird noch eingesammelt: ein Baumbild ist
+// bis zu 185 Punkte breit und haengt weit links unten, ein hoher Fels steht
+// weit ueber seiner eigenen Kachel.
+const REACH_SIDE = 200, REACH_UP = 300;
 
 // Der uebliche Ort, wenn niemand eine Installation gewaehlt hat.
 const DEFAULT_GAME_ROOT = 'C:\\Program Files (x86)\\Steam\\steamapps\\common\\Stronghold Crusader Extreme';
@@ -235,6 +274,376 @@ function nameKeeps(blocks, buildingsSection) {
   return found;
 }
 
+// ------------------------------------------------ die Bilder des Spiels lesen
+//
+// Uebernommen aus VillageStudio/lib/gm1.js und lib/gelaende.js. Nur das, was
+// das Gelaende braucht - Gebaeudebilder und Schriften bleiben dort.
+
+// 15 Bit: 0RRRRRGGGGGBBBBB
+function colourOf(word) {
+  return [((word >> 10) & 31) * 255 / 31 | 0, ((word >> 5) & 31) * 255 / 31 | 0, (word & 31) * 255 / 31 | 0];
+}
+
+// Kopf, Farbtafeln und Bildverzeichnis einer .gm1
+function readGm1(buffer) {
+  const count = buffer.readUInt32LE(12);
+  const paletteAt = GM1_HEAD;
+  const offsetsAt = paletteAt + GM1_PALETTES * GM1_COLOURS * 2;
+  const sizesAt = offsetsAt + count * 4;
+  const headsAt = sizesAt + count * 4;
+  const picturesAt = headsAt + count * 16;
+
+  const palettes = [];
+  for (let index = 0; index < GM1_PALETTES; index += 1) {
+    const palette = [];
+    for (let colour = 0; colour < GM1_COLOURS; colour += 1) {
+      palette.push(colourOf(buffer.readUInt16LE(paletteAt + index * 512 + colour * 2)));
+    }
+    palettes.push(palette);
+  }
+
+  const pictures = [];
+  for (let index = 0; index < count; index += 1) {
+    const at = headsAt + index * 16;
+    pictures.push({
+      offset: buffer.readUInt32LE(offsetsAt + index * 4),
+      size: buffer.readUInt32LE(sizesAt + index * 4),
+      width: buffer.readUInt16LE(at),
+      height: buffer.readUInt16LE(at + 2),
+      lift: buffer.readUInt16LE(at + 10),        // kachelVersatz: hebt den Aufbau
+      direction: buffer.readUInt8(at + 12),
+      palette: buffer.readUInt8(at + 15)
+    });
+  }
+  return { count, palettes, pictures, picturesAt, buffer };
+}
+
+// Ein TGX-Strom in eine RGBA-Flaeche. Ohne Farbtafel sind Farben 2 Byte lang,
+// mit Farbtafel 1 Byte als Nummer darin.
+function tgxToRgba(data, width, height, palette) {
+  const image = Buffer.alloc(width * height * 4, 0);
+  const put = (x, y, rgb) => {
+    if (x < 0 || y < 0 || x >= width || y >= height) return;
+    const at = (y * width + x) * 4;
+    image[at] = rgb[0]; image[at + 1] = rgb[1]; image[at + 2] = rgb[2]; image[at + 3] = 255;
+  };
+
+  let read = 0, x = 0, y = 0;
+  while (read < data.length) {
+    const mark = data[read]; read += 1;
+    const kind = mark & 0xE0;
+    const run = (mark & 0x1F) + 1;
+    if (kind === 0x00) {                       // Punkte am Stueck
+      for (let step = 0; step < run; step += 1) {
+        if (palette) { put(x, y, palette[data[read]]); read += 1; }
+        else { if (read + 1 >= data.length) return image; put(x, y, colourOf(data.readUInt16LE(read))); read += 2; }
+        x += 1;
+      }
+    } else if (kind === 0x80) {                // Zeilenende
+      y += 1; x = 0;
+    } else if (kind === 0x40) {                // ein Punkt, wiederholt
+      let rgb;
+      if (palette) { rgb = palette[data[read]]; read += 1; }
+      else { if (read + 1 >= data.length) return image; rgb = colourOf(data.readUInt16LE(read)); read += 2; }
+      for (let step = 0; step < run; step += 1) { put(x, y, rgb); x += 1; }
+    } else if (kind === 0x20) {                // durchsichtig
+      x += run;
+    } else {
+      break;                                    // unbekannte Marke: hier ist Schluss
+    }
+    if (y >= height) break;
+  }
+  return image;
+}
+
+// Eine Rautenkachel: 512 Byte, Punkt fuer Punkt, Zeilenlaengen nach TILE_ROW
+function diamondToRgba(data) {
+  const image = Buffer.alloc(TILE_W * TILE_H * 4, 0);
+  let read = 0;
+  for (let y = 0; y < TILE_ROW.length; y += 1) {
+    const run = TILE_ROW[y];
+    for (let step = 0; step < run; step += 1) {
+      const x = 15 + step - run / 2;
+      if (read * 2 + 1 >= data.length) return image;
+      const rgb = colourOf(data.readUInt16LE(read * 2));
+      const at = ((x | 0) + y * TILE_W) * 4;
+      image[at] = rgb[0]; image[at + 1] = rgb[1]; image[at + 2] = rgb[2]; image[at + 3] = 255;
+      read += 1;
+    }
+  }
+  return image;
+}
+
+// Die Namensliste der exe steht an einer virtuellen Adresse; in der Datei
+// liegt sie woanders. Der PE-Kopf sagt, wie beides zusammenhaengt.
+function virtualToFile(exe) {
+  const pe = exe.readUInt32LE(0x3c);
+  const sections = exe.readUInt16LE(pe + 6);
+  const optionalSize = exe.readUInt16LE(pe + 20);
+  const imageBase = exe.readUInt32LE(pe + 24 + 28);
+  const table = pe + 24 + optionalSize;
+  const parts = [];
+  for (let index = 0; index < sections; index += 1) {
+    const at = table + index * 40;
+    parts.push({
+      virtualAt: exe.readUInt32LE(at + 12),
+      rawSize: exe.readUInt32LE(at + 16),
+      rawAt: exe.readUInt32LE(at + 20)
+    });
+  }
+  return (address) => {
+    const relative = address - imageBase;
+    for (const part of parts) {
+      if (relative >= part.virtualAt && relative < part.virtualAt + part.rawSize) {
+        return part.rawAt + (relative - part.virtualAt);
+      }
+    }
+    return -1;
+  };
+}
+
+// Die Ladereihenfolge der gm-Dateien samt Bildzahl und Startplatz. Einmal je
+// Installation gelesen - die exe aendert sich waehrend einer Sitzung nicht.
+let pictureStockHeld = null;
+function readPictureStock(gameRoot) {
+  if (pictureStockHeld && pictureStockHeld.root === gameRoot) return pictureStockHeld.stock;
+  const exe = fs.readFileSync(path.join(gameRoot, 'Stronghold Crusader.exe'));
+  const toFile = virtualToFile(exe);
+  const start = toFile(NAME_LIST_VA);
+  if (start < 0) throw new Error('The game executable does not carry the list of picture files.');
+
+  const files = [];
+  let total = 0;
+  for (let index = 0; index < 260; index += 1) {
+    const at = start + index * NAME_STRIDE;
+    if (at + 64 > exe.length) break;
+    const name = exe.toString('ascii', at, at + 64).replace(/\0.*$/s, '');
+    if (!/^[\w\-. ]+$/.test(name)) break;
+    if (name === 'null') break;                 // loadGmFiles bricht hier ab
+    let count = 0;
+    const file = path.join(gameRoot, 'gm', `${name}.gm1`);
+    if (fs.existsSync(file)) {
+      const handle = fs.openSync(file, 'r');
+      const head = Buffer.alloc(GM1_HEAD);
+      try { fs.readSync(handle, head, 0, GM1_HEAD, 0); } finally { fs.closeSync(handle); }
+      count = head.readUInt32LE(12);
+    }
+    files.push({ gmId: index + 1, name, count, from: total - (index >= PICTURE_SHIFT_FROM ? PICTURE_SHIFT : 0) });
+    total += count;
+  }
+  const stock = {
+    files,
+    withPictures: files.filter(entry => entry.count > 0).sort((a, b) => a.from - b.from),
+    byGmId: new Map(files.map(entry => [entry.gmId, entry])),
+    total
+  };
+  pictureStockHeld = { root: gameRoot, stock };
+  return stock;
+}
+
+// Bildnummer aus dem GfxLayer -> Datei und Nummer darin. renderGM greift auf
+// Platz GMTotalPicturesProcessed[gmID] + bildNr - 1 zu, der Zaehler beginnt
+// bei 1: der 0-basierte Platz ist also der Wert minus eins.
+function pictureForValue(stock, value) {
+  if (value <= 0) return null;
+  const wanted = value - 1;
+  const list = stock.withPictures;
+  let low = 0, high = list.length - 1;
+  while (low <= high) {
+    const middle = (low + high) >> 1;
+    const entry = list[middle];
+    if (wanted < entry.from) high = middle - 1;
+    else if (wanted >= entry.from + entry.count) low = middle + 1;
+    else return { name: entry.name, index: wanted - entry.from };
+  }
+  return null;
+}
+
+const gm1Held = new Map();
+function heldGm1(gameRoot, name) {
+  const key = `${gameRoot}|${name}`;
+  const found = gm1Held.get(key);
+  if (found) return found;
+  const parsed = readGm1(fs.readFileSync(path.join(gameRoot, 'gm', `${name}.gm1`)));
+  if (gm1Held.size >= GM1_CACHE_MAX) gm1Held.delete(gm1Held.keys().next().value);
+  gm1Held.set(key, parsed);
+  return parsed;
+}
+
+// Die Baumliste, Abschnitt 1014. Nur die Felder, die zum Zeichnen noetig sind.
+function readTrees(section) {
+  if (!section || section.length % TREE_STRIDE) return null;
+  const list = [];
+  for (let index = 0; index < section.length / TREE_STRIDE; index += 1) {
+    const at = index * TREE_STRIDE;
+    list.push({
+      picture: section.readInt32LE(at),          // +0x00 1-basierte Bildnummer
+      gmId: section.readInt16LE(at + 4),         // +0x04 welche gm-Datei
+      palette: section.readInt32LE(at + 8),      // +0x08 welche Farbtafel
+      originX: section.readInt16LE(at + 0x0c),   // +0x0c Aufhaengepunkt
+      originY: section.readInt16LE(at + 0x0e),
+      alive: section.readInt16LE(at + 0x44)      // +0x44 0 = leerer Platz
+    });
+  }
+  return list;
+}
+
+// -------------------------------------------------------- das Gelaende malen
+//
+// WIE GROSS DARF DAS BILD WERDEN? Ein Feld ist beim Spiel 30 Punkte breit und
+// 16 hoch, und ein Vorschaupunkt ist genau ein Feld. Die ganze Karte in dieser
+// Aufloesung waere 200*30 x 200*16 = 6000x3200 = 19,2 Millionen Punkte, roh
+// 76,8 MB - das ist als ein Bild nicht zu haben.
+//
+// Gebraucht wird davon nur, was die Ansicht ueberhaupt zeigt: paintGround
+// schneidet den Grund an der Raute des 100x100-Dorfes ab. Diese Raute liegt in
+// einem Rahmen von 100x100 Vorschaupunkten und fuellt davon die Haelfte -
+// 5.000 von 40.000 Punkten der Karte, also ein Achtel. Gemessen an
+// "A Friend Indeed", Startplatz 1:
+//   ganzer Rahmen 3030x1616 = 4,90 Mio Punkte  -> PNG 5,07 MB
+//   nur die Raute darin, der Rest durchsichtig -> PNG 3,02 MB
+// Ueber sechs Karten lag das PNG zwischen 2,77 und 3,60 MB, das Zeichnen bei
+// 197-317 ms, das Packen bei 193-254 ms. Ein einziges Bild traegt damit.
+// In Kacheln zerlegt braeuchte es bei 10x10 Punkten je Kachel 76 der 100
+// Kacheln (nachgerechnet: eine Kachel faellt nur weg, wenn sie ganz ausserhalb
+// der Raute liegt) - das spart ein Viertel und kostet 76 Bilder statt einem.
+//
+// Das Bild geht deshalb NICHT in den Sitzungsspeicher des Fensters: 3 MB als
+// data:-Adresse sind rund 4 MB Text, und localStorage haelt ueblicherweise
+// 5 MB fuer alles zusammen.
+function renderTerrain(buffer, directory, gameRoot, keep) {
+  const window = geometry.villageWindow(keep);
+  const stock = readPictureStock(gameRoot);
+  const gfx = readSection(buffer, directory, GFX_SECTION);
+  if (!gfx || gfx.length !== MAP_TILES * 2) throw new Error('This map carries no terrain layer (section 1001).');
+  let organisms = null;
+  let trees = null;
+  try {
+    organisms = readSection(buffer, directory, ORGANISM_SECTION);
+    trees = readTrees(readSection(buffer, directory, TREES_SECTION));
+  } catch { organisms = null; trees = null; }
+  if (!organisms || organisms.length !== MAP_TILES * 2 || !trees) { organisms = null; trees = null; }
+
+  const width = window.cells * TILE_W;
+  const height = window.cells * TILE_H;
+  // Aus der Lage eines Feldes im schraegen Bild hergeleitet: ein Feld sitzt bei
+  // (15*(x-y), 8*(x+y)), und der Vorschaupunkt (px,py) gehoert zu
+  // x-y = 2px-199 und x+y = 2py+199.
+  const originX = TILE_W * window.px0 - 2985;
+  const originY = TILE_H * window.py0 + 1592;
+  const rgba = Buffer.alloc(width * height * 4, 0);
+
+  // Welcher Teil einer Bildzeile gehoert ueberhaupt zum Dorf? Die Ansicht
+  // schneidet den Grund an der Raute ab, also braucht alles ausserhalb gar
+  // nicht erst gemalt zu werden - das ist die halbe Bildflaeche und war im
+  // Versuch der Unterschied zwischen 5,07 MB und 3,02 MB.
+  // Fuer einen Punkt mit den Vorschau-Koordinaten (P,Q) gilt
+  //   gx = P + Q - (keep.x - 43)      gy = Q - P + 199 - (keep.y - 43)
+  // und beide muessen zwischen 0 und 100 liegen. Nach P aufgeloest ergibt das
+  // je Zeile genau ein Stueck.
+  const anchorX = keep.x - geometry.KEEP_TILE;
+  const anchorY = keep.y - geometry.KEEP_TILE;
+  const low = new Int32Array(height);
+  const high = new Int32Array(height);
+  for (let y = 0; y < height; y += 1) {
+    const q = (y + 0.5) / TILE_H + window.py0;
+    const from = Math.max(anchorX - q, q + (PREVIEW_EDGE - 1) - anchorY - geometry.GRID) - CLIP_MARGIN;
+    const to = Math.min(anchorX - q + geometry.GRID, q + (PREVIEW_EDGE - 1) - anchorY) + CLIP_MARGIN;
+    low[y] = Math.max(0, Math.ceil((from - window.px0) * TILE_W - 0.5));
+    high[y] = Math.min(width - 1, Math.floor((to - window.px0) * TILE_W - 0.5));
+  }
+
+  const put = (x, y, r, g, b) => {
+    if (y < 0 || y >= height || x < low[y] || x > high[y]) return;
+    const at = (y * width + x) * 4;
+    rgba[at] = r; rgba[at + 1] = g; rgba[at + 2] = b; rgba[at + 3] = 255;
+  };
+
+  // Alles einsammeln, was in den Ausschnitt ragt, und von hinten nach vorn
+  // malen - ein hoher Fels steht weit ueber seiner eigenen Kachel.
+  const order = [];
+  for (let y = 0; y <= 399; y += 1) {
+    const [from, to] = rowRange(y);
+    for (let x = from; x <= to; x += 1) {
+      const sx = 15 * (x - y) - originX;
+      const sy = 8 * (x + y) - originY;
+      if (sx > width + REACH_SIDE || sx < -REACH_SIDE || sy > height + REACH_SIDE || sy < -REACH_UP) continue;
+      order.push([tileIndex(x, y), sx, sy]);
+    }
+  }
+  order.sort((a, b) => a[2] - b[2]);
+
+  const painted = { tiles: 0, missing: 0, trees: 0 };
+
+  // Welcher Baum steht auf diesem Feld? null, wenn keiner.
+  const treeOn = (tile) => {
+    if (!organisms) return null;
+    const value = organisms.readUInt16LE(tile * 2);
+    if (!value || value >= FIRST_ROCK) return null;   // 0 nichts, ab 2000 ein Fels
+    const tree = trees[value];
+    if (!tree || tree.alive === 0 || tree.picture === 0) return null;
+    const file = stock.byGmId.get(tree.gmId);
+    if (!file || tree.picture > file.count) return null;
+    return { tree, name: file.name };
+  };
+
+  const paintTree = (sx, sy, hit) => {
+    const tree = hit.tree;
+    const gm1 = heldGm1(gameRoot, hit.name);
+    const entry = gm1.pictures[tree.picture - 1];
+    if (!entry) return;
+    const raw = gm1.buffer.subarray(gm1.picturesAt + entry.offset, gm1.picturesAt + entry.offset + entry.size);
+    const palette = gm1.palettes[(tree.palette >= 0 && tree.palette < gm1.palettes.length) ? tree.palette : entry.palette];
+    const picture = tgxToRgba(raw, entry.width, entry.height, palette);
+    const atX = sx - tree.originX + TREE_DX;
+    const atY = sy - tree.originY + TREE_DY;
+    for (let y = 0; y < entry.height; y += 1) {
+      for (let x = 0; x < entry.width; x += 1) {
+        const at = (y * entry.width + x) * 4;
+        if (picture[at + 3]) put(atX + x, atY + y, picture[at], picture[at + 1], picture[at + 2]);
+      }
+    }
+    painted.trees += 1;
+  };
+
+  for (const [tile, sx, sy] of order) {
+    const hit = treeOn(tile);
+    const found = pictureForValue(stock, gfx.readUInt16LE(tile * 2));
+    if (!found) { painted.missing += 1; if (hit) paintTree(sx, sy, hit); continue; }
+    const gm1 = heldGm1(gameRoot, found.name);
+    const entry = gm1.pictures[found.index];
+    if (!entry) { painted.missing += 1; continue; }
+    const raw = gm1.buffer.subarray(gm1.picturesAt + entry.offset, gm1.picturesAt + entry.offset + entry.size);
+
+    // die Rautenkachel selbst
+    const diamond = diamondToRgba(raw.subarray(0, 512));
+    for (let y = 0; y < TILE_H; y += 1) {
+      for (let x = 0; x < TILE_W; x += 1) {
+        const at = (y * TILE_W + x) * 4;
+        if (diamond[at + 3]) put(sx + x, sy + y, diamond[at], diamond[at + 1], diamond[at + 2]);
+      }
+    }
+    // was darueber steht (Fels, Busch): lift hebt es ueber die eigene Kachel
+    if (raw.length > 512) {
+      const lift = entry.lift || 0;
+      const above = tgxToRgba(raw.subarray(512), TILE_W, entry.height, null);
+      const right = entry.direction === 3 ? 14 : 0;
+      for (let y = 0; y < entry.height; y += 1) {
+        for (let x = 0; x < TILE_W; x += 1) {
+          const at = (y * TILE_W + x) * 4;
+          if (above[at + 3]) put(sx + right + x, sy - lift + y, above[at], above[at + 1], above[at + 2]);
+        }
+      }
+    }
+    // und zuletzt, was auf dem Feld STEHT - das Spiel malt den Baum in
+    // derselben Runde direkt nach der Kachel
+    if (hit) paintTree(sx, sy, hit);
+    painted.tiles += 1;
+  }
+
+  return { width, height, px0: window.px0, py0: window.py0, cells: window.cells, rgba, ...painted };
+}
+
 // ------------------------------------------------------------------- aussen
 
 function gameRootOrDefault(gameRoot) {
@@ -278,12 +687,16 @@ function listGameMaps(gameRoot) {
 
 // Eine Karte oeffnen. Nur Dateien, die auch in der Liste stehen - so kann ein
 // Fenster ueber diesen Kanal nichts Beliebiges aus dem Dateisystem holen.
-function readGameMap(filePath, gameRoot) {
+function knownMap(filePath, gameRoot) {
   const { maps } = listGameMaps(gameRoot);
   const known = maps.find(entry => path.resolve(entry.path).toLowerCase() === path.resolve(String(filePath || '')).toLowerCase());
   if (!known) throw new Error('That map is not one of the game maps.');
   if (fs.statSync(known.path).size > MAX_MAP_BYTES) throw new Error('That map file is unexpectedly large.');
+  return known;
+}
 
+function readGameMap(filePath, gameRoot) {
+  const known = knownMap(filePath, gameRoot);
   const buffer = fs.readFileSync(known.path);
   const preview = readPreview(buffer);
   const directory = findDirectory(buffer, preview.end);
@@ -306,11 +719,51 @@ function readGameMap(filePath, gameRoot) {
   };
 }
 
+// Dieselbe Karte noch einmal, aber als echtes Gelaende statt als Farbpunkte.
+// WELCHER Startplatz gemeint ist, sagt das Fenster - es kennt auch den Fall
+// "keine Startplaetze, Dorf in die Kartenmitte" (geo.centreKeep), und zwei
+// Stellen, die das getrennt entscheiden, waeren zwei Stellen zum Auseinander-
+// laufen. Geprueft wird der Platz trotzdem: er muss auf der Karte liegen.
+function readMapTerrain(filePath, gameRoot, keep) {
+  const known = knownMap(filePath, gameRoot);
+  const root = gameRootOrDefault(gameRoot);
+  if (!root) throw new Error('The game folder is not set.');
+  // Nicht Number(keep && keep.x): fehlt der Platz ganz, waere das die 0, und
+  // die Karte wuerde still an der falschen Ecke gemalt statt zu widersprechen.
+  const x = keep && typeof keep.x === 'number' ? keep.x : NaN;
+  const y = keep && typeof keep.y === 'number' ? keep.y : NaN;
+  if (!Number.isInteger(x) || !Number.isInteger(y) || x < 0 || x > 399 || y < 0 || y > 399) {
+    throw new Error('That starting place is not on the map.');
+  }
+
+  const buffer = fs.readFileSync(known.path);
+  const preview = readPreview(buffer);
+  const directory = findDirectory(buffer, preview.end);
+  if (!directory) throw new Error('That map has no section directory.');
+  const terrain = renderTerrain(buffer, directory, root, { x, y });
+  return {
+    name: known.name,
+    path: known.path,
+    px0: terrain.px0,
+    py0: terrain.py0,
+    cells: terrain.cells,
+    width: terrain.width,
+    height: terrain.height,
+    tiles: terrain.tiles,
+    missing: terrain.missing,
+    trees: terrain.trees,
+    dataUrl: `data:image/png;base64,${encodeRgbaPng(terrain.width, terrain.height, terrain.rgba).toString('base64')}`
+  };
+}
+
 module.exports = {
   listGameMaps,
   readGameMap,
+  readMapTerrain,
   // fuer die Tests und fuer Werkzeuge, die eine Karte ohne Electron lesen
   internals: { readPreview, previewPng, findDirectory, readSection, findKeeps, nameKeeps, keepOrientation,
                rowBase, rowRange, tileIndex,
-               PREVIEW_EDGE, MAP_TILES, BUILDING_SECTION, BUILDINGS_SECTION, STONE_KEEP, KEEP_EDGE }
+               readPictureStock, pictureForValue, readGm1, renderTerrain, virtualToFile,
+               PREVIEW_EDGE, MAP_TILES, BUILDING_SECTION, BUILDINGS_SECTION, STONE_KEEP, KEEP_EDGE,
+               TILE_W, TILE_H, GFX_SECTION, ORGANISM_SECTION, TREES_SECTION }
 };
