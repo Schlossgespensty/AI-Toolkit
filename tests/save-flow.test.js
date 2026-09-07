@@ -37,6 +37,7 @@ test('saving does not treat the encoder as if it returned a promise', () => {
   // "writeNativeAiv(...).then is not a function" - und dann geht weder
   // Speichern noch Schnellspeichern. Genau das ist am 07.09.2026 passiert,
   // gemeldet von Monsterfish aus der ausgelieferten Fassung.
+  const root = path.resolve(__dirname, '..');
   const geber = fs.readFileSync(path.join(root, 'src', 'node', 'aiv-file.js'), 'utf8');
   const quelle = geber.slice(geber.indexOf('function writeNativeAiv'));
   assert.ok(!/^async function writeNativeAiv/m.test(quelle),
