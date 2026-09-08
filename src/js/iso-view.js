@@ -465,16 +465,13 @@
 
   function hasMapTiles() { return Boolean(vorrat() && vorrat().plaetze); }
 
-  // Feldnummer in der Karte. Die Karte ist eine Raute in einem 400x400-Rahmen;
-  // je Zeile beginnt sie an einer anderen Stelle (rowBase in game-map.js).
+  // Feldnummer in der Karte. Die Plaetze kommen als volles 400x400-Raster
+  // herueber, deshalb reicht eine Multiplikation - die Rautenzaehlung der
+  // Datei bleibt drueben, wo ihre Formel steht. Am 09.09.2026 hatte ich sie
+  // hier nachgebaut und dabei geraten; die Karte kam in Streifen heraus.
   function kartenFeld(mx, my) {
-    if (my < 0 || my >= KARTE_FELDER) return -1;
-    const halb = my <= 199 ? my * my + 2 * my : 40200 + 400 * (399 - my) - (399 - my) * (399 - my);
-    // rowRange: das gueltige x-Fenster dieser Zeile
-    const spanne = my <= 199 ? my : 399 - my;
-    const von = 199 - spanne, bis = 200 + spanne;
-    if (mx < von || mx > bis) return -1;
-    return halb - 199 + (mx - von);
+    if (mx < 0 || my < 0 || mx >= KARTE_FELDER || my >= KARTE_FELDER) return -1;
+    return my * KARTE_FELDER + mx;
   }
 
   // Ein Kartenfeld in Dorfkoordinaten - dieselbe Verschiebung, mit der auch

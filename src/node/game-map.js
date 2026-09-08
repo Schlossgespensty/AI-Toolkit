@@ -952,12 +952,21 @@ function buildTileAtlas(gfx, gameRoot) {
     }
   });
 
-  // Platz im Vorrat je Feld. 0xffff heisst "hier ist nichts zu malen".
-  const plaetze = new Uint16Array(MAP_TILES);
-  for (let feld = 0; feld < MAP_TILES; feld += 1) {
-    const wert = gfx.readUInt16LE(feld * 2);
-    const platz = wert === 0 ? undefined : platzVon.get(wert);
-    plaetze[feld] = platz === undefined ? 0xffff : platz;
+  // Platz im Vorrat je Feld - und zwar in einem VOLLEN 400x400-Raster, nicht
+  // in der Rautennummerierung der Datei. Die Raute spart 80.400 statt 160.000
+  // Plaetze, aber der Empfaenger muesste ihre Zeilenformel nachbauen; genau
+  // das ist am 09.09.2026 schiefgegangen und hat die Karte in Streifen
+  // gezogen. 160.000 mal zwei Byte sind 320 KB - der Fehler war teurer als
+  // die 163 KB, die das Raten gespart haette.
+  // 0xffff heisst "hier ist nichts zu malen", auch ausserhalb der Raute.
+  const plaetze = new Uint16Array(400 * 400).fill(0xffff);
+  for (let my = 0; my < 400; my += 1) {
+    const [von, bis] = rowRange(my);
+    for (let mx = von; mx <= bis; mx += 1) {
+      const wert = gfx.readUInt16LE(tileIndex(mx, my) * 2);
+      const platz = wert === 0 ? undefined : platzVon.get(wert);
+      if (platz !== undefined) plaetze[my * 400 + mx] = platz;
+    }
   }
 
   return {
@@ -975,6 +984,16 @@ function buildTileAtlas(gfx, gameRoot) {
 
 // Der Kachelvorrat einer Karte, samt Hoehen und Startplaetzen - alles, was die
 // Ansicht braucht, um die ganze Karte selbst zu malen.
+// Die Hoehenschicht aus der Rautenzaehlung in ein volles 400x400-Raster.
+function hoehenRaster(heights) {
+  const raster = new Uint8Array(400 * 400);
+  for (let my = 0; my < 400; my += 1) {
+    const [von, bis] = rowRange(my);
+    for (let mx = von; mx <= bis; mx += 1) raster[my * 400 + mx] = heights[tileIndex(mx, my)] || 0;
+  }
+  return raster;
+}
+
 function readMapTiles(filePath, gameRoot) {
   const known = knownMap(filePath, gameRoot);
   const root = gameRootOrDefault(gameRoot);
@@ -992,8 +1011,8 @@ function readMapTiles(filePath, gameRoot) {
     name: known.name,
     path: known.path,
     ...vorrat,
-    // Ein Byte Hoehe je Feld, in derselben Feldnummerierung wie die Plaetze.
-    hoehen: heights ? Buffer.from(heights).toString('base64') : null
+    // Hoehen in derselben Zaehlung wie die Plaetze: volles 400x400-Raster.
+    hoehen: heights ? Buffer.from(hoehenRaster(heights)).toString('base64') : null
   };
 }
 
