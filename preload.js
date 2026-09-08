@@ -31,6 +31,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   openAiMedia: (request) => ipcRenderer.invoke('open-ai-media', request),
   openUcpPath: (request) => ipcRenderer.invoke('open-ucp-path', request),
   setActiveWorkspace: (workspace) => ipcRenderer.send('set-active-workspace', workspace),
+  setCastleOverviewPreferences: (preferences) => ipcRenderer.send('set-castle-overview-preferences', preferences),
 
   onLoadFile: (callback) => {
     ipcRenderer.removeAllListeners('load-file');
@@ -55,5 +56,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
   onTriggerClearCastleBackground: (callback) => ipcRenderer.on('trigger-clear-castle-background', callback),
   onTriggerEditCastleMapping: (callback) => ipcRenderer.on('trigger-edit-castle-mapping', callback),
   onTriggerCustomizeCastleShortcuts: (callback) => ipcRenderer.on('trigger-customize-castle-shortcuts', callback),
+  onTriggerCastleOverview: (callback) => ipcRenderer.on('trigger-castle-overview', (_event, command) => callback(command)),
   onRequestWindowClose: (callback) => ipcRenderer.on('request-window-close', callback)
 });

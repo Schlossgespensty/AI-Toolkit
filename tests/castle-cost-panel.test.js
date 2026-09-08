@@ -263,7 +263,7 @@ test('Die AIC-Bedarfsrechnung wird mit der bis dahin gestellten Bevoelkerung gef
   assert.deepEqual(ergebnis.population.farms.used, ['WheatFarm', 'HopFarm']);
 });
 
-test('Die Oberflaeche wird aus castle-editor.js nachgeladen, ohne index.html anzufassen', () => {
+test('Kosten und Schritt-Bevoelkerung haben getrennte, verschiebbare Oberflaechen', () => {
   const editor = fs.readFileSync(path.join(root, 'src', 'js', 'castle-editor.js'), 'utf8');
   assert.match(editor, /castle-cost-data\.js/);
   assert.match(editor, /castle-cost-model\.js/);
@@ -271,7 +271,19 @@ test('Die Oberflaeche wird aus castle-editor.js nachgeladen, ohne index.html anz
   assert.match(editor, /castle-cost-panel\.css/);
   assert.match(editor, /castleCostPanel/);
   const html = fs.readFileSync(path.join(root, 'src', 'index.html'), 'utf8');
-  assert.doesNotMatch(html, /castle-cost/, 'index.html darf unberuehrt bleiben');
+  assert.match(html, /id="castlePopulationOverview"/);
+  assert.match(html, /id="castleCostOverview"/);
+  assert.match(html, /id="castlePopulationStep"/);
+  assert.match(html, /data-info-target="castlePopulationInfo"/);
+  assert.doesNotMatch(html, /castlePopulationProvided|castlePopulationRequired|castlePopulationLeft|castleCharacterPopulationNeeded|castlePopulationAfterCharacter/,
+    'die Anzeige fuer die vollstaendige Burg ist entfernt');
+  assert.doesNotMatch(html, /castleSetSkinBtn|castleRemoveSkinBtn|castleOpenSkinsBtn/,
+    'die Haut-Auswahl gibt ihren Platz an die Kosten ab');
+  assert.match(editor, /const OVERVIEW_STORAGE_KEY/);
+  assert.match(editor, /function applyOverviewLayout/);
+  assert.match(editor, /onTriggerCastleOverview/);
   const css = fs.readFileSync(path.join(root, 'src', 'css', 'combined.css'), 'utf8');
-  assert.doesNotMatch(css, /castleCostOverview/, 'combined.css darf unberuehrt bleiben');
+  assert.match(css, /castleOverviewInfoButton/);
+  assert.match(css, /\.castlePalette \{ flex: 1 1 auto; \}/,
+    'die Kosten bleiben am unteren Rand und die Gegenstandsliste nimmt den freien Platz');
 });

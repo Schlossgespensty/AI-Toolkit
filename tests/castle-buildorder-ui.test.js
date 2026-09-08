@@ -197,21 +197,28 @@ test('Castle-only menu actions replace obsolete hidden toolbar controls', () => 
   const main = fs.readFileSync(path.join(root, 'main.js'), 'utf8');
   const preload = fs.readFileSync(path.join(root, 'preload.js'), 'utf8');
   assert.doesNotMatch(html, /id="castleDeleteSelectedBtn"|id="ucpCastleMappingBtn"/);
-  assert.match(main, /function editMenuForWorkspace\(workspace\)/);
+  assert.match(main, /function editMenuForWorkspace\(workspace,/);
   assert.match(main, /workspace === 'character'/);
   assert.match(main, /workspace === 'castle'/);
   assert.match(main, /label: 'Edit Castle Mapping…'/);
   assert.match(main, /label: 'Customize Castle Shortcuts…'/);
+  assert.match(main, /label: 'Castle Overviews'/);
+  assert.match(main, /label: 'Show Population'/);
+  assert.match(main, /label: 'Show Castle Costs'/);
+  assert.match(main, /label: 'Population Side'/);
+  assert.match(main, /label: 'Castle Costs Side'/);
   assert.match(main, /label: documentLabel \? `New \$\{documentLabel\}` : 'New'/);
   assert.match(preload, /onTriggerNewDocument/);
   assert.match(preload, /setActiveWorkspace/);
+  assert.match(preload, /onTriggerCastleOverview/);
+  assert.match(preload, /setCastleOverviewPreferences/);
 });
 
 test('Castle tool shortcuts are editable, validated, and persisted locally', () => {
   const html = fs.readFileSync(path.join(root, 'src', 'index.html'), 'utf8');
   const script = fs.readFileSync(path.join(root, 'src', 'js', 'castle-editor.js'), 'utf8');
   assert.match(html, /id="castleShortcutDialog"/);
-  assert.equal((html.match(/class="castleShortcutKey"/g) || []).length, 12);
+  assert.equal((html.match(/class="castleShortcutKey"/g) || []).length, 16);
   assert.match(script, /const DEFAULT_TOOL_SHORTCUTS/);
   assert.match(script, /localStorage\.setItem\(SHORTCUT_STORAGE_KEY/);
   assert.match(script, /assigned more than once/);
@@ -273,8 +280,8 @@ test('without an item chosen, dragging is a selection box in every tool', () => 
 
   assert.match(down, /state\.currentItemType == null \|\| event\.ctrlKey \|\| event\.metaKey/,
     'ohne Gebaeude - oder mit Strg - wird ausgewaehlt');
-  assert.match(down, /state\.tool === 'delete' \|\| \(state\.tool === 'copy' && state\.copyBuffer\)/,
-    'ausgenommen sind die zwei Werkzeuge, die selbst eine Ziehgeste haben');
+  assert.match(down, /state\.tool === 'delete' \|\| state\.tool === 'replace' \|\| \(state\.tool === 'copy' && state\.copyBuffer\)/,
+    'ausgenommen sind die Werkzeuge, die selbst eine Ziehgeste haben');
   assert.match(down, /if \(boxInstead && !ownsTheDrag\) \{[\s\S]{0,40}beginSelectGesture/,
     'und dann laeuft dieselbe Geste wie im Auswahl-Werkzeug');
 });
@@ -464,44 +471,56 @@ test('locks are session-only and never enter an AIV document', () => {
   assert.match(functionBody(script, 'outputDocument'), /stripSessionLocks/);
 });
 
-test('the selection panel lists what is selected and can swap it', () => {
+test('the dedicated Replace tool opens a per-item-type replacement dialog', () => {
   const script = fs.readFileSync(path.join(root, 'src', 'js', 'castle-editor.js'), 'utf8');
   const nach = functionBody(script, 'selectionByType');
   assert.match(nach, /Number\(refType\(ref\)\)/, 'gebuendelt nach Bauwerk');
 
-  const tausch = functionBody(script, 'replaceSelectedWith');
-  assert.match(tausch, /validatePlacement\(Number\(newType\), refOffset\(ref\)/,
+  const oeffnen = functionBody(script, 'openReplacementDialog');
+  assert.match(oeffnen, /selectionByType\(selectedRefs\)/);
+  assert.match(oeffnen, /select\.dataset\.sourceType = String\(type\)/,
+    'jeder vorhandene Typ bekommt seine eigene Zielauswahl');
+  assert.match(oeffnen, /Keep cannot be replaced/);
+
+  const tausch = functionBody(script, 'replaceSelectionByType');
+  assert.match(tausch, /validatePlacement\(change\.targetType, change\.off/,
     'geprueft wird mit derselben Pruefung wie beim Setzen');
-  assert.match(tausch, /ignoreRefs: zuErsetzen/,
+  assert.match(tausch, /ignoreRefs: changingRefs/,
     'und was ersetzt wird, zaehlt dabei als frei - es verschwindet ja');
-  assert.match(tausch, /!refIsLocked\(ref\)/, 'gesperrte bleiben, wie sie sind');
+  assert.match(tausch, /refIsLocked\(ref\)/, 'gesperrte bleiben, wie sie sind');
+  assert.match(tausch, /isUnitType\(sourceType\) !== isUnitType\(targetType\)/,
+    'Bauwerke und Rallypoints koennen nicht ineinander umgedeutet werden');
   assert.match(tausch, /pushUndo\(\)/, 'ein Strg+Z holt alles zurueck');
   assert.match(tausch, /sort\(\(a, b\) => b - a\)/,
     'von hinten nach vorn, sonst verschieben sich die Nummern beim Teilen');
-  assert.match(tausch, /if \(!rest\.length\) \{ frame\.itemType = Number\(newType\); continue; \}/,
+  assert.match(tausch, /if \(!remainingOffsets\.length\)/,
     'ist der ganze Bauschritt gemeint, wird er umgestellt statt geteilt');
-  assert.match(tausch, /insertBuildFrames\(neueSchritte\)/,
+  assert.match(tausch, /frames\(\)\.splice\(fi \+ 1, 0/,
     'und ein teilweise gewaehlter Schritt wird geteilt');
-  // Die Auswahl findet ueber die FELDER zurueck, nicht ueber die Nummern der
-  // Bauschritte - die verschieben sich beim Teilen.
-  assert.match(tausch, /const felder = new Set\(refs\.map\(refOffset\)\)/);
-  assert.match(tausch, /if \(felder\.has\(Number\(off\)\)\) state\.selected\.add\(frameRefKey\(fi, oi\)\)/,
+  assert.match(tausch, /const desired = originalRefs\.map/);
+  assert.match(tausch, /available\.get\(`\$\{wanted\.type\}:\$\{wanted\.off\}`\)/,
     'danach steht die Auswahl auf denselben Feldern, mit dem neuen Bauwerk darauf');
-  assert.doesNotMatch(tausch, /state\.selected\.clear\(\)/);
 
   const html = fs.readFileSync(path.join(root, 'src', 'index.html'), 'utf8');
-  assert.match(html, /id="castleSelectionList"/);
-  assert.match(html, /id="castleReplaceBtn"/);
+  assert.match(html, /data-tool="replace"/);
+  assert.match(html, /id="castleReplaceDialog"/);
+  assert.match(html, /id="castleReplaceRows"/);
+  assert.doesNotMatch(html, /id="castleSelectionList"|id="castleReplaceBtn"/);
+  assert.ok(html.indexOf('data-tool="copy"') < html.indexOf('data-tool="replace"'));
+  assert.ok(html.indexOf('data-tool="replace"') < html.indexOf('data-tool="delete"'));
+
+  const down = functionBody(script, 'onPointerDown');
+  const up = functionBody(script, 'onPointerUp');
+  assert.match(down, /state\.tool === 'replace'[\s\S]*state\.gesture = 'replace-marquee'/);
+  assert.match(up, /state\.gesture === 'replace-marquee'[\s\S]*openReplacementDialog\(refs\)/);
 });
 
 
-test('choosing an item keeps the selection, so it can be replaced', () => {
+test('choosing a palette item is only for placement, not replacement', () => {
   const script = fs.readFileSync(path.join(root, 'src', 'js', 'castle-editor.js'), 'utf8');
   const waehlen = functionBody(script, 'selectItem');
-  // Der Fehler: selectItem warf die Auswahl weg. Wer etwas auswaehlte und
-  // dann den Ersatz aus der Liste holte, stand ohne Auswahl da - der Knopf
-  // war grau, waehrend daneben noch dreissig Mauern aufgezaehlt waren.
-  assert.doesNotMatch(waehlen, /state\.selected\.clear\(\)/);
+  assert.match(waehlen, /state\.selected\.clear\(\)/);
+  assert.doesNotMatch(waehlen, /replace/i);
   assert.match(waehlen, /renderBuildList\(\)/,
     'und die Liste daneben wird neu gezeichnet, statt alt stehen zu bleiben');
 });

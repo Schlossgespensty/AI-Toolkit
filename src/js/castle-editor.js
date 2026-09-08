@@ -11,6 +11,11 @@
   const FUTURE_FILTER = 'grayscale(1) brightness(.42)';
   const FUTURE_TINT = 'rgba(144, 176, 221, .13)';
   const SHORTCUT_STORAGE_KEY = 'aiv.castleToolShortcuts.v1';
+  const OVERVIEW_STORAGE_KEY = 'aiv.castleOverviewLayout.v1';
+  const DEFAULT_OVERVIEW_LAYOUT = {
+    population: { visible: true, side: 'left' },
+    costs: { visible: true, side: 'right' }
+  };
   const DEFAULT_TOOL_SHORTCUTS = {
     single: ['1', 's'],
     brush: ['2', 'b'],
@@ -18,7 +23,8 @@
     delete: ['4', 'd'],
     copy: ['5'],            // 'c' dreht jetzt die Ansicht, Kopieren bleibt auf 5 und Strg+C
     line: ['6', 'l'],
-    bucket: ['7', 'f']
+    bucket: ['7', 'f'],
+    replace: ['8', 'r']
   };
   const deepClone = value => JSON.parse(JSON.stringify(value));
   const retainSourceBytes = value => {
@@ -36,10 +42,13 @@
 
   const els = {
     canvas: document.getElementById('castleCanvas'),
-    selectionPanel: document.getElementById('castleSelectionPanel'),
-    selectionList: document.getElementById('castleSelectionList'),
-    selectionCount: document.getElementById('castleSelectionCount'),
-    replaceBtn: document.getElementById('castleReplaceBtn'),
+    replaceDialog: document.getElementById('castleReplaceDialog'),
+    replaceForm: document.getElementById('castleReplaceForm'),
+    replaceRows: document.getElementById('castleReplaceRows'),
+    replaceSummary: document.getElementById('castleReplaceSummary'),
+    replaceError: document.getElementById('castleReplaceError'),
+    replaceApply: document.getElementById('castleReplaceApplyBtn'),
+    replaceCancel: document.getElementById('castleReplaceCancelBtn'),
     brushMinus: document.getElementById('castleBrushMinus'),
     brushPlus: document.getElementById('castleBrushPlus'),
     brushSizeOut: document.getElementById('castleBrushSize'),
@@ -64,14 +73,10 @@
     shortcutError: document.getElementById('castleShortcutError'),
     shortcutDefaults: document.getElementById('castleShortcutDefaultsBtn'),
     shortcutCancel: document.getElementById('castleShortcutCancelBtn'),
-    setSkin: document.getElementById('castleSetSkinBtn'),
-    removeSkin: document.getElementById('castleRemoveSkinBtn'),
-    openSkins: document.getElementById('castleOpenSkinsBtn'),
-    populationProvided: document.getElementById('castlePopulationProvided'),
-    populationRequired: document.getElementById('castlePopulationRequired'),
-    populationLeft: document.getElementById('castlePopulationLeft'),
-    characterPopulationNeeded: document.getElementById('castleCharacterPopulationNeeded'),
-    characterPopulationAfterWorkers: document.getElementById('castlePopulationAfterCharacter'),
+    populationOverview: document.getElementById('castlePopulationOverview'),
+    costOverview: document.getElementById('castleCostOverview'),
+    buildPanel: document.querySelector('.castleBuildPanel'),
+    palettePanel: document.querySelector('.castlePalettePanel'),
     saveNotice: document.getElementById('castleSaveNotice')
   };
   const displayCtx = els.canvas.getContext('2d', { alpha: false });
@@ -148,7 +153,8 @@
     blueprintOpacity: 0.5,
     blueprintVisible: true,
     blueprintLoadToken: 0,
-    toolShortcuts: deepClone(DEFAULT_TOOL_SHORTCUTS)
+    toolShortcuts: deepClone(DEFAULT_TOOL_SHORTCUTS),
+    overviewLayout: deepClone(DEFAULT_OVERVIEW_LAYOUT)
   };
   let saveNoticeTimer = null;
   let blueprintDialogOpen = false;
@@ -436,29 +442,10 @@
     return { provided, required, left: provided - required, counts };
   }
 
-  function setPopulationValue(el, value, markNegative = false) {
-    if (!el) return;
-    el.textContent = String(value);
-    el.classList.toggle('populationNegative', markNegative && Number(value) < 0);
-  }
-
   function updatePopulationPanel(emitCastleEvent = true) {
     const summary = calculatePopulationSummary();
-    setPopulationValue(els.populationProvided, summary.provided);
-    setPopulationValue(els.populationRequired, summary.required);
-    setPopulationValue(els.populationLeft, summary.left, true);
-
-    const characterPopulation = window.characterPopulation;
-    // The Castle workspace calculates character workers independently from the
-    // Character page, using the castle's total PROVIDED population as its base.
-    // Castle building requirements remain visible separately and are only subtracted
-    // when showing the final population left after both castle + character workers.
-    const castleProvided = Math.max(0, Number(summary.provided) || 0);
-    const characterStats = characterPopulation?.calculateAt?.(castleProvided) || { population: 0 };
-    const characterNeeded = Number(characterStats.population) || 0;
-    setPopulationValue(els.characterPopulationNeeded, characterNeeded);
-    setPopulationValue(els.characterPopulationAfterWorkers, summary.left - characterNeeded, true);
-
+    // The complete-castle counter is no longer shown here, but Character and
+    // other workspaces still consume this event and the public summary API.
     if (emitCastleEvent) {
       window.dispatchEvent(new CustomEvent('castle-population-changed', { detail: summary }));
     }
@@ -801,15 +788,9 @@
   // Umsortieren wandert sie mit, und eine Nummer, die auf den falschen
   // Schritt zeigt, kann es gar nicht geben. In die AIV-Datei wandert sie
   // nicht - das Format kennt kein solches Feld.
-  // Welche Bauschritte gesperrt sind, als Liste ihrer Nummern - so wandert
-  // die Sperre in die Begleitdatei neben der Burg und von dort zurueck.
-  // Die Liste dessen, was gerade ausgewaehlt ist - nach Bauwerk gebuendelt.
-  // Ein Klick auf eine Zeile laesst nur dieses Bauwerk in der Auswahl; der
-  // Knopf darunter tauscht alles Ausgewaehlte gegen das Bauwerk aus, das in
-  // der Liste der Gegenstaende gewaehlt ist.
-  function selectionByType() {
+  function selectionByType(refs = state.selected) {
     const nach = new Map();
-    for (const ref of state.selected) {
+    for (const ref of refs) {
       if (!refExists(ref)) continue;
       const type = Number(refType(ref));
       if (!nach.has(type)) nach.set(type, []);
@@ -818,120 +799,192 @@
     return nach;
   }
 
-  function renderSelectionList() {
-    if (!els.selectionPanel) return;
-    const nach = selectionByType();
-    els.selectionPanel.hidden = nach.size === 0;
-    els.selectionCount.textContent = state.selected.size ? state.selected.size + ' placement' + (state.selected.size === 1 ? '' : 's') : '';
-    els.selectionList.textContent = '';
-    const nurEiner = nach.size === 1;
-    for (const [type, refs] of Array.from(nach).sort((a, b) => b[1].length - a[1].length)) {
-      const zeile = document.createElement('button');
-      zeile.type = 'button';
-      zeile.className = 'selectionRow' + (nurEiner ? ' only' : '');
-      const name = document.createElement('span');
-      name.textContent = itemName(type);
-      name.title = itemName(type) + ' [' + type + ']';
-      const anzahl = document.createElement('span');
-      anzahl.className = 'count';
-      anzahl.textContent = String(refs.length);
-      zeile.append(name, anzahl);
-      zeile.addEventListener('click', () => {
-        state.selected = new Set(refs);
-        activateBuildStepForRefs(state.selected);
-        renderSelectionList();
-        renderBuildList();
-        scheduleDraw();
-        setStatus('Narrowed the selection to ' + refs.length + ' × ' + itemName(type));
-      });
-      els.selectionList.appendChild(zeile);
+  function replacementTargetsFor(sourceType) {
+    const unit = isUnitType(sourceType);
+    return Object.keys(state.constants)
+      .map(Number)
+      .filter(type => type !== geometry.KEEP_ITEM_TYPE && isUnitType(type) === unit)
+      .sort((a, b) => itemName(a).localeCompare(itemName(b)) || a - b);
+  }
+
+  function updateReplacementApplyState() {
+    if (!els.replaceApply) return;
+    const changedChoice = Array.from(els.replaceRows.querySelectorAll('select[data-source-type]'))
+      .some(select => Number(select.value) !== Number(select.dataset.sourceType));
+    els.replaceApply.disabled = !changedChoice;
+    els.replaceError.textContent = '';
+  }
+
+  // The Replace tool owns its selection and its choices. Picking a normal
+  // palette item no longer changes or operates on an unrelated selection.
+  function openReplacementDialog(refs) {
+    const selectedRefs = new Set(Array.from(refs || []).filter(refExists));
+    if (!selectedRefs.size) {
+      setStatus('Nothing selected to replace.');
+      return false;
     }
-    updateReplaceButton();
+    state.selected = selectedRefs;
+    activateBuildStepForRefs(state.selected);
+    els.replaceRows.textContent = '';
+    els.replaceError.textContent = '';
+    const groups = selectionByType(selectedRefs);
+    let mutableCount = 0;
+
+    for (const [type, typeRefs] of Array.from(groups).sort((a, b) => itemName(a[0]).localeCompare(itemName(b[0])))) {
+      const locked = typeRefs.filter(refIsLocked).length;
+      const immutableKeep = type === geometry.KEEP_ITEM_TYPE;
+      const mutable = immutableKeep ? 0 : typeRefs.length - locked;
+      mutableCount += mutable;
+
+      const row = document.createElement('label');
+      row.className = 'castleReplaceRow';
+      const source = document.createElement('span');
+      source.className = 'castleReplaceSource';
+      source.textContent = `${typeRefs.length}× ${itemName(type)}`;
+      source.title = `${itemName(type)} [${type}]`;
+      row.appendChild(source);
+
+      if (mutable) {
+        const select = document.createElement('select');
+        select.dataset.sourceType = String(type);
+        select.setAttribute('aria-label', `Replace ${itemName(type)} with`);
+        for (const target of replacementTargetsFor(type)) {
+          const option = document.createElement('option');
+          option.value = String(target);
+          option.textContent = `${itemName(target)} [${target}]`;
+          select.appendChild(option);
+        }
+        select.value = String(type);
+        select.addEventListener('change', updateReplacementApplyState);
+        row.appendChild(select);
+      } else {
+        const reason = document.createElement('span');
+        reason.className = 'castleReplaceUnavailable';
+        reason.textContent = immutableKeep ? 'Keep cannot be replaced' : 'Locked';
+        row.appendChild(reason);
+      }
+
+      if (locked && mutable) {
+        const note = document.createElement('small');
+        note.textContent = `${locked} locked placement${locked === 1 ? '' : 's'} will stay unchanged`;
+        row.appendChild(note);
+      }
+      els.replaceRows.appendChild(row);
+    }
+
+    els.replaceSummary.textContent = `${selectedRefs.size} placement${selectedRefs.size === 1 ? '' : 's'} across ${groups.size} item type${groups.size === 1 ? '' : 's'}. Choose one replacement per type.`;
+    els.replaceApply.disabled = true;
+    if (mutableCount === 0) els.replaceError.textContent = 'The selection contains only locked placements or the Keep.';
+    if (els.replaceDialog.open) els.replaceDialog.close();
+    els.replaceDialog.showModal();
+    els.replaceRows.querySelector('select')?.focus();
+    renderBuildList();
+    scheduleDraw();
+    return true;
   }
 
-  function updateReplaceButton() {
-    if (!els.replaceBtn) return;
-    const ziel = state.currentItemType;
-    const moeglich = state.selected.size > 0 && ziel != null;
-    els.replaceBtn.disabled = !moeglich;
-    els.replaceBtn.textContent = ziel == null
-      ? 'Choose an item below to replace with'
-      : 'Replace with ' + itemName(ziel);
+  function replacementFailure(message) {
+    els.replaceError.textContent = message;
+    setStatus(message);
+    return false;
   }
 
-  // Ersetzen heisst: dieselben Felder, anderes Bauwerk. Nur Bauwerke gleicher
-  // Groesse - ein 1x1 gegen ein 7x7 zu tauschen waere kein Ersetzen, sondern
-  // ein Neubau mit anderem Platzbedarf, und der braucht die Pruefung, die das
-  // Setzen ohnehin hat.
-  //
-  // Ist von einem Bauschritt nur ein Teil ausgewaehlt, wird er geteilt: die
-  // ausgewaehlten Felder wandern in einen neuen Schritt mit dem neuen
-  // Bauwerk, der Rest bleibt unberuehrt stehen.
-  function replaceSelectedWith(newType) {
-    if (newType == null || !state.selected.size) return;
-    const refs = Array.from(state.selected).filter(ref => refExists(ref) && !refIsLocked(ref));
-    const gesperrt = state.selected.size - refs.length;
-    if (!refs.length) return setStatus('Locked - unlock the build step first.');
+  // A partially selected frame is split directly after its original frame;
+  // this preserves build order while allowing every source type to have its
+  // own target. Units can only become units and buildings only buildings.
+  function replaceSelectionByType(mapping) {
+    const originalRefs = Array.from(state.selected).filter(refExists);
+    const changes = [];
+    for (const ref of originalRefs) {
+      const sourceType = Number(refType(ref));
+      const targetType = Number(mapping.get(sourceType));
+      if (!Number.isFinite(targetType) || targetType === sourceType || refIsLocked(ref) || sourceType === geometry.KEEP_ITEM_TYPE) continue;
+      if (!state.constants[String(targetType)] || targetType === geometry.KEEP_ITEM_TYPE) {
+        return replacementFailure(`Invalid replacement for ${itemName(sourceType)}.`);
+      }
+      if (isUnitType(sourceType) !== isUnitType(targetType)) {
+        return replacementFailure('Buildings can only replace buildings, and rallypoints can only replace rallypoints.');
+      }
+      changes.push({ ref, sourceType, targetType, off: refOffset(ref), parsed: parseRef(ref) });
+    }
+    if (!changes.length) return replacementFailure('Choose at least one different replacement.');
 
-    // Ein groesseres Bauwerk darf an die Stelle eines kleineren - wenn der
-    // Platz reicht. Geprueft wird mit derselben Pruefung wie beim Setzen, und
-    // die zu ersetzenden Felder zaehlen dabei als frei: sie verschwinden ja.
-    const zuErsetzen = new Set(refs);
-    for (const ref of refs) {
-      const pruefung = validatePlacement(Number(newType), refOffset(ref), {
-        ignoreRefs: zuErsetzen,
+    const changingRefs = new Set(changes.map(change => change.ref));
+    const proposed = [];
+    const totals = new Map();
+    for (const change of changes) totals.set(change.targetType, (totals.get(change.targetType) || 0) + 1);
+    for (const [targetType, added] of totals) {
+      const maximum = maxAmount(targetType);
+      if (maximum != null && countType(targetType, changingRefs) + added > Number(maximum)) {
+        return replacementFailure(`Maximum amount for ${itemName(targetType)} is ${maximum}.`);
+      }
+    }
+    for (const change of changes) {
+      const check = validatePlacement(change.targetType, change.off, {
+        ignoreRefs: changingRefs,
+        extraNew: proposed,
         checkMax: false
       });
-      if (!pruefung.ok) {
-        return setStatus('No room for ' + itemName(Number(newType)) + ' there: ' + pruefung.reason);
-      }
+      if (!check.ok) return replacementFailure(`No room for ${itemName(change.targetType)}: ${check.reason}`);
+      proposed.push({ type: change.targetType, off: change.off });
     }
 
     pushUndo();
-    // Die Felder merken, nicht die Nummern: beim Teilen verschieben sich die
-    // Nummern der Bauschritte, die Felder bleiben, wo sie sind. Darueber
-    // findet die Auswahl hinterher zurueck.
-    const felder = new Set(refs.map(refOffset));
-    const proFrame = new Map();
-    const einheiten = [];
-    for (const ref of refs) {
-      const parsed = parseRef(ref);
-      if (parsed.kind === 'unit') { einheiten.push(parsed.mi); continue; }
-      if (!proFrame.has(parsed.fi)) proFrame.set(parsed.fi, new Set());
-      proFrame.get(parsed.fi).add(parsed.oi);
-    }
-    for (const mi of einheiten) state.document.miscItems[mi].itemType = Number(newType);
+    const desired = originalRefs.map(ref => {
+      const sourceType = Number(refType(ref));
+      const change = changes.find(entry => entry.ref === ref);
+      return { type: change ? change.targetType : sourceType, off: refOffset(ref) };
+    });
 
-    const neueSchritte = [];
-    // Von hinten nach vorn, damit die Nummern der noch offenen Schritte
-    // gueltig bleiben, waehrend vordere geteilt werden.
-    for (const fi of Array.from(proFrame.keys()).sort((a, b) => b - a)) {
+    for (const change of changes.filter(entry => entry.parsed.kind === 'unit')) {
+      state.document.miscItems[change.parsed.mi].itemType = change.targetType;
+    }
+
+    const byFrame = new Map();
+    for (const change of changes.filter(entry => entry.parsed.kind === 'frame')) {
+      if (!byFrame.has(change.parsed.fi)) byFrame.set(change.parsed.fi, []);
+      byFrame.get(change.parsed.fi).push(change);
+    }
+    for (const fi of Array.from(byFrame.keys()).sort((a, b) => b - a)) {
       const frame = frames()[fi];
       if (!frame) continue;
-      const gewaehlt = proFrame.get(fi);
-      const alleFelder = frame.tilePositionOfsets || [];
-      const genommen = alleFelder.filter((_off, oi) => gewaehlt.has(oi));
-      const rest = alleFelder.filter((_off, oi) => !gewaehlt.has(oi));
-      if (!rest.length) { frame.itemType = Number(newType); continue; }
-      frame.tilePositionOfsets = rest;
-      neueSchritte.push({ itemType: Number(newType), tilePositionOfsets: genommen, shouldPause: false });
+      const frameChanges = byFrame.get(fi);
+      const targetType = frameChanges[0].targetType;
+      const indexes = new Set(frameChanges.map(change => change.parsed.oi));
+      const allOffsets = frame.tilePositionOfsets || [];
+      const replacedOffsets = allOffsets.filter((_off, oi) => indexes.has(oi));
+      const remainingOffsets = allOffsets.filter((_off, oi) => !indexes.has(oi));
+      if (!remainingOffsets.length) {
+        frame.itemType = targetType;
+      } else {
+        frame.tilePositionOfsets = remainingOffsets;
+        frames().splice(fi + 1, 0, { itemType: targetType, tilePositionOfsets: replacedOffsets, shouldPause: false });
+      }
     }
-    if (neueSchritte.length) insertBuildFrames(neueSchritte);
+    renumberUnits();
+    invalidatePlacementCache();
 
-    // Die Auswahl bleibt auf denselben Feldern stehen, jetzt mit dem neuen
-    // Bauwerk darauf - so kann man gleich weiterarbeiten, statt neu zu ziehen.
+    const available = new Map();
+    for (const placement of placementRefs()) {
+      const key = `${placement.type}:${placement.off}`;
+      if (!available.has(key)) available.set(key, []);
+      available.get(key).push(placement.ref);
+    }
     state.selected = new Set();
-    frames().forEach((frame, fi) => {
-      if (Number(frame.itemType) !== Number(newType)) return;
-      (frame.tilePositionOfsets || []).forEach((off, oi) => {
-        if (felder.has(Number(off))) state.selected.add(frameRefKey(fi, oi));
-      });
-    });
+    for (const wanted of desired) {
+      const refs = available.get(`${wanted.type}:${wanted.off}`);
+      if (refs?.length) state.selected.add(refs.shift());
+    }
     activateBuildStepForRefs(state.selected);
-    renderSelectionList();
-    changed('Replaced ' + refs.length + ' placement' + (refs.length === 1 ? '' : 's') +
-            ' with ' + itemName(Number(newType)) +
-            (gesperrt ? ' (' + gesperrt + ' locked and left alone)' : ''));
+    changed(`Replaced ${changes.length} placement${changes.length === 1 ? '' : 's'} across ${totals.size} target type${totals.size === 1 ? '' : 's'}`);
+    return true;
+  }
+
+  function submitReplacementDialog(event) {
+    event.preventDefault();
+    const mapping = new Map(Array.from(els.replaceRows.querySelectorAll('select[data-source-type]'))
+      .map(select => [Number(select.dataset.sourceType), Number(select.value)]));
+    if (replaceSelectionByType(mapping)) els.replaceDialog.close();
   }
 
   function frameIsLocked(fi) {
@@ -1572,7 +1625,7 @@
   }
 
   function toolLabel(tool) {
-    return ({ single: 'Single', brush: 'Brush', line: 'Line', select: 'Select / Move', copy: 'Copy Selection', delete: 'Delete Area' })[tool] || tool;
+    return ({ single: 'Single', brush: 'Brush', line: 'Line', select: 'Select / Move', copy: 'Copy Selection', replace: 'Replace Area', delete: 'Delete Area' })[tool] || tool;
   }
 
   function isPlacementTool(tool) {
@@ -1639,9 +1692,9 @@
     state.tool = tool;
     if (remember && isPlacementTool(tool) && !lineOnly) state.lastPlacementTool = tool;
     if (tool !== 'copy') state.copyBuffer = null;
-    if (tool === 'copy') state.currentItemType = null;
+    if (tool === 'copy' || tool === 'replace') state.currentItemType = null;
     document.querySelectorAll('.castleTool').forEach(btn => btn.classList.toggle('active', btn.dataset.tool === tool));
-    els.canvas.classList.toggle('tool-select', tool === 'select' || tool === 'copy');
+    els.canvas.classList.toggle('tool-select', tool === 'select' || tool === 'copy' || tool === 'replace');
     updateToolAvailability();
     updateBrushSizeUI();
     updateSelectedItemInfo();
@@ -1693,6 +1746,61 @@
     updateToolShortcutHints();
   }
 
+  function sanitizeOverviewLayout(value) {
+    const layout = deepClone(DEFAULT_OVERVIEW_LAYOUT);
+    for (const key of Object.keys(layout)) {
+      const candidate = value && value[key];
+      if (!candidate || typeof candidate !== 'object') continue;
+      layout[key].visible = candidate.visible !== false;
+      layout[key].side = candidate.side === 'right' ? 'right' : 'left';
+    }
+    return layout;
+  }
+
+  function applyOverviewLayout() {
+    const entries = [
+      ['population', els.populationOverview],
+      ['costs', els.costOverview]
+    ];
+    for (const [key, panel] of entries) {
+      if (!panel) continue;
+      const preference = state.overviewLayout[key];
+      const parent = preference.side === 'right' ? els.palettePanel : els.buildPanel;
+      if (parent && panel.parentElement !== parent) parent.appendChild(panel);
+      panel.hidden = !preference.visible;
+      panel.dataset.side = preference.side;
+    }
+  }
+
+  function saveOverviewLayout() {
+    try { localStorage.setItem(OVERVIEW_STORAGE_KEY, JSON.stringify(state.overviewLayout)); }
+    catch { /* the layout still works for the current window */ }
+    window.electronAPI?.setCastleOverviewPreferences?.(state.overviewLayout);
+  }
+
+  function loadOverviewLayout() {
+    try {
+      state.overviewLayout = sanitizeOverviewLayout(JSON.parse(localStorage.getItem(OVERVIEW_STORAGE_KEY) || 'null'));
+    } catch {
+      state.overviewLayout = deepClone(DEFAULT_OVERVIEW_LAYOUT);
+    }
+    applyOverviewLayout();
+    window.electronAPI?.setCastleOverviewPreferences?.(state.overviewLayout);
+  }
+
+  function setOverviewPreference(command) {
+    if (!command || !Object.hasOwn(DEFAULT_OVERVIEW_LAYOUT, command.panel)) return;
+    if (command.property === 'visible' && typeof command.value === 'boolean') {
+      state.overviewLayout[command.panel].visible = command.value;
+    } else if (command.property === 'side' && (command.value === 'left' || command.value === 'right')) {
+      state.overviewLayout[command.panel].side = command.value;
+    } else {
+      return;
+    }
+    applyOverviewLayout();
+    saveOverviewLayout();
+  }
+
   function populateShortcutDialog(shortcuts = state.toolShortcuts) {
     for (const input of els.shortcutForm.querySelectorAll('.castleShortcutKey')) {
       const key = shortcuts[input.dataset.tool]?.[Number(input.dataset.slot)] || '';
@@ -1736,11 +1844,8 @@
   }
 
   function selectItem(type) {
+    state.selected.clear();
     state.currentItemType = Number(type);
-    // Die Auswahl bleibt stehen. Sie wegzuwerfen hiess: wer etwas auswaehlt
-    // und dann den Ersatz aus der Liste holt, steht ohne Auswahl da - und der
-    // Ersetzen-Knopf war grau, waehrend daneben noch dreissig Mauern
-    // aufgezaehlt waren.
     // Walls open with the line tool - that is how they are built. The choice is
     // not remembered, so the next ordinary building comes back to what the user
     // had picked before.
@@ -1749,16 +1854,12 @@
     renderPalette();
     renderBuildList();
     updateSelectedItemInfo();
-    setStatus(state.selected.size
-      ? `Selected ${itemName(type)} — click the map to place, or replace the ${state.selected.size} selected`
-      : `Selected ${itemName(type)} — click the map to place`);
+    setStatus(`Selected ${itemName(type)} — click the map to place`);
   }
 
   function updateSelectedItemInfo() {
     if (state.currentItemType == null) {
       els.itemInfo.textContent = 'Select an item';
-      els.setSkin.disabled = true;
-      els.removeSkin.disabled = true;
       return;
     }
     const type = state.currentItemType;
@@ -1774,8 +1875,6 @@
       : `${allowsMultiplePerStep(type) ? 'multiple per step' : 'single per step'} · `;
     const sizeLabel = type === geometry.KEEP_ITEM_TYPE ? `${w}×${h} + forced 5×5 Stockpile` : `${w}×${h}`;
     els.itemInfo.textContent = `${itemName(type)} [${type}] · ${kind}${sizeLabel} · overlap: ${overlapMode(type)} · max: ${max}`;
-    els.setSkin.disabled = false;
-    els.removeSkin.disabled = !state.customSkinTypes.has(String(type));
   }
 
   function getPaletteGroups() {
@@ -1792,7 +1891,6 @@
   }
 
   function renderPalette() {
-    updateReplaceButton();
     const groups = getPaletteGroups();
     if (!groups.length) {
       els.palette.innerHTML = '<div class="paletteEmpty">No item categories configured.</div>';
@@ -1873,9 +1971,8 @@
     els.palette.appendChild(items);
   }
 
-  // Die Kostenanzeige neben der Bauliste liegt in eigenen Dateien
-  // (castle-cost-*.js, castle-cost-panel.css) und wird von hier nachgeladen,
-  // damit index.html und combined.css unberuehrt bleiben.
+  // Die Berechnung und die Detaildarstellung der beiden Uebersichten liegen
+  // in eigenen castle-cost-Dateien und werden erst vom Burgeditor gebraucht.
   function ladeKostenanzeige() {
     const stil = document.createElement('link');
     stil.rel = 'stylesheet';
@@ -1910,7 +2007,6 @@
   }
 
   function renderBuildList() {
-    renderSelectionList();
     updatePopulationPanel();
     updateCostPanel();
     els.buildList.innerHTML = '';
@@ -2377,16 +2473,17 @@
     // Draw markers last so stacked sprites cannot cover their numbers or counts.
     drawUnitMarkers(proposed);
 
-    if ((state.gesture === 'select-marquee' || state.gesture === 'copy-marquee' || state.gesture === 'delete-marquee') && state.dragStartScreen && state.marqueeEnd) {
+    if ((state.gesture === 'select-marquee' || state.gesture === 'copy-marquee' || state.gesture === 'replace-marquee' || state.gesture === 'delete-marquee') && state.dragStartScreen && state.marqueeEnd) {
       const x = Math.min(state.dragStartScreen.x, state.marqueeEnd.x);
       const y = Math.min(state.dragStartScreen.y, state.marqueeEnd.y);
       const w = Math.abs(state.dragStartScreen.x - state.marqueeEnd.x);
       const h = Math.abs(state.dragStartScreen.y - state.marqueeEnd.y);
       const deleting = state.gesture === 'delete-marquee';
       const copying = state.gesture === 'copy-marquee';
+      const replacing = state.gesture === 'replace-marquee';
       ctx.save();
-      ctx.fillStyle = deleting ? 'rgba(215,95,95,.16)' : copying ? 'rgba(174,120,255,.16)' : 'rgba(58,123,213,.15)';
-      ctx.strokeStyle = deleting ? css('--danger', '#d75f5f') : copying ? css('--copy', '#ae78ff') : css('--accent', '#3a7bd5');
+      ctx.fillStyle = deleting ? 'rgba(215,95,95,.16)' : copying ? 'rgba(174,120,255,.16)' : replacing ? 'rgba(221,169,75,.18)' : 'rgba(58,123,213,.15)';
+      ctx.strokeStyle = deleting ? css('--danger', '#d75f5f') : copying ? css('--copy', '#ae78ff') : replacing ? css('--replace', '#dda94b') : css('--accent', '#3a7bd5');
       ctx.lineWidth = 2;
       ctx.setLineDash([6, 4]);
       ctx.fillRect(x, y, w, h);
@@ -2741,7 +2838,7 @@
     // Hand halten (Copy) - dort wuerde die Weiche ihre eigene Geste
     // wegnehmen.
     const boxInstead = state.currentItemType == null || event.ctrlKey || event.metaKey;
-    const ownsTheDrag = state.tool === 'delete' || (state.tool === 'copy' && state.copyBuffer);
+    const ownsTheDrag = state.tool === 'delete' || state.tool === 'replace' || (state.tool === 'copy' && state.copyBuffer);
     if (boxInstead && !ownsTheDrag) {
       beginSelectGesture(tile, event);
       return;
@@ -2793,6 +2890,12 @@
       }
       state.selected.clear();
       state.gesture = 'copy-marquee';
+      scheduleDraw();
+      return;
+    }
+    if (state.tool === 'replace') {
+      state.selected.clear();
+      state.gesture = 'replace-marquee';
       scheduleDraw();
       return;
     }
@@ -2904,7 +3007,7 @@
         if (!route.length) setStatus('No unobstructed route to that tile.');
         for (const p of route) brushAdd(p);
       }
-    } else if (state.gesture === 'select-marquee' || state.gesture === 'copy-marquee' || state.gesture === 'delete-marquee') {
+    } else if (state.gesture === 'select-marquee' || state.gesture === 'copy-marquee' || state.gesture === 'replace-marquee' || state.gesture === 'delete-marquee') {
       state.marqueeEnd = pos;
       scheduleDraw(false);
     } else if (state.gesture === 'move' && tile && state.dragStartTile) {
@@ -2960,6 +3063,13 @@
       } else {
         state.selected.clear();
         setStatus(ignored ? 'Nothing copyable selected. Units and the Keep are ignored.' : 'Nothing selected to copy.');
+      }
+    } else if (state.gesture === 'replace-marquee') {
+      const refs = refsInMarquee();
+      state.selected = refs;
+      if (!openReplacementDialog(refs)) {
+        state.selected.clear();
+        renderBuildList();
       }
     } else if (state.gesture === 'delete-marquee') {
       const refs = refsInMarquee();
@@ -3341,12 +3451,10 @@
   els.shortcutDefaults.addEventListener('click', () => populateShortcutDialog(DEFAULT_TOOL_SHORTCUTS));
   els.shortcutCancel.addEventListener('click', () => els.shortcutDialog.close());
   els.shortcutForm.addEventListener('submit', saveShortcutDialog);
-  if (els.replaceBtn) els.replaceBtn.addEventListener('click', () => replaceSelectedWith(state.currentItemType));
+  els.replaceCancel.addEventListener('click', () => els.replaceDialog.close());
+  els.replaceForm.addEventListener('submit', submitReplacementDialog);
   if (els.brushMinus) els.brushMinus.addEventListener('click', () => setBrushSize(state.brushSize - 1));
   if (els.brushPlus) els.brushPlus.addEventListener('click', () => setBrushSize(state.brushSize + 1));
-  els.setSkin.addEventListener('click', setSkin);
-  els.removeSkin.addEventListener('click', removeSkin);
-  els.openSkins.addEventListener('click', () => window.electronAPI.openAivSkinsFolder());
   els.buildSlider.addEventListener('input', selectBuildStepFromSlider);
   window.addEventListener('character-population-changed', () => updatePopulationPanel(false));
 
@@ -3430,6 +3538,9 @@
   window.electronAPI.onTriggerCustomizeCastleShortcuts(() => {
     if (window.appWorkspace?.getActive() === 'castle') showShortcutDialog();
   });
+  window.electronAPI.onTriggerCastleOverview(command => {
+    if (window.appWorkspace?.getActive() === 'castle') setOverviewPreference(command);
+  });
 
   const resizeObserver = new ResizeObserver(() => resizeCanvas());
   resizeObserver.observe(els.host);
@@ -3504,7 +3615,7 @@
     },
     getMarquee() {
       const zieht = state.gesture === 'select-marquee' || state.gesture === 'copy-marquee'
-                 || state.gesture === 'delete-marquee';
+                 || state.gesture === 'replace-marquee' || state.gesture === 'delete-marquee';
       if (!zieht || !state.dragStartTile || !state.marqueeEnd) return null;
       const ende = screenToTile(state.marqueeEnd);
       if (!ende) return null;
@@ -3515,9 +3626,11 @@
     hasDocument: () => Boolean(state.document),
     getPopulationSummary: calculatePopulationSummary,
     refreshPopulation: () => updatePopulationPanel(false),
+    refreshOverviewLayout: applyOverviewLayout,
     onWorkspaceShown() { resizeCanvas(); clampPan(); updatePopulationPanel(false); scheduleDraw(); }
   };
 
+  loadOverviewLayout();
   ladeKostenanzeige();
   try { document.head.appendChild(Object.assign(document.createElement('script'), { src: 'js/editor-extras.js' })); } catch (error) { console.warn('Castle extras not loaded:', error); } // Gruppen, Kopierspeicher, Tastenkuerzel
 

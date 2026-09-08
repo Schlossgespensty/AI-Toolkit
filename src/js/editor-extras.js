@@ -8,25 +8,16 @@
  * herausgibt; im Editor selbst steht nur eine einzige Zeile, die diese Datei
  * nachlaedt, und eine, die sein Innenleben unter .extras erreichbar macht.
  *
- * Drei Dinge stehen hier:
+ * Zwei Dinge stehen hier:
  *
- *   1. Die fehlende Zeile im Tastenkuerzel-Fenster. Der Editor kennt sieben
- *      Werkzeuge, das Fenster in index.html zeigt nur sechs davon - das
- *      Fuellwerkzeug fehlt. Beim Speichern prueft der Editor aber ALLE sieben
- *      und bricht mit "bucket needs a primary shortcut" ab. Das Fenster war
- *      also da, konnte aber nie gespeichert werden. Die fehlende Zeile wird
- *      hier nachgetragen, damit das vorhandene Fenster endlich tut, was es
- *      verspricht - inklusive Merken ueber das Schliessen hinaus, denn das
- *      erledigt der Editor bereits selbst im localStorage.
- *
- *   2. Benannte Gruppen. Mehrfachauswahl und gemeinsames Verschieben gibt es
+ *   1. Benannte Gruppen. Mehrfachauswahl und gemeinsames Verschieben gibt es
  *      schon; was fehlte, war der Name und das Wiederfinden. Eine Gruppe merkt
  *      sich Bautyp und Feld ihrer Mitglieder - nicht die laufende Nummer des
  *      Bauschritts, denn die verschiebt sich beim Umsortieren. Wird die Gruppe
  *      am Stueck verschoben, zieht sie mit; passiert etwas anderes, bleibt sie
  *      stehen, statt falsche Felder zu lernen.
  *
- *   3. Ein Kopierspeicher, der den Burgenwechsel ueberlebt. Der Editor legt
+ *   2. Ein Kopierspeicher, der den Burgenwechsel ueberlebt. Der Editor legt
  *      seine Kopie in state.copyBuffer ab und wirft sie beim Laden einer
  *      anderen Burg weg. Hier wird sie zusaetzlich abgelegt und vor dem
  *      Einfuegen zurueckgereicht. Eingefuegt wird danach ueber den Weg des
@@ -206,46 +197,7 @@
     }
   }
 
-  // --- 1. Die fehlende Zeile im Tastenkuerzel-Fenster --------------------
-
-  function addFillShortcutRow() {
-    const grid = doc.querySelector('#castleShortcutForm .castleShortcutGrid');
-    if (!grid || grid.querySelector('.castleShortcutKey[data-tool="bucket"]')) return;
-    const label = doc.createElement('span');
-    label.textContent = 'Fill';
-    grid.appendChild(label);
-    for (const slot of [0, 1]) {
-      const input = doc.createElement('input');
-      input.className = 'castleShortcutKey';
-      input.dataset.tool = 'bucket';
-      input.dataset.slot = String(slot);
-      input.readOnly = true;
-      input.value = slot === 0 ? '7' : 'F';
-      // Der Editor haengt seinen Tasten-Hoerer beim Start an alle damals
-      // vorhandenen Felder. Dieses hier kommt spaeter dazu und bringt ihn
-      // deshalb selbst mit - Wort fuer Wort derselbe Ablauf.
-      input.addEventListener('keydown', event => {
-        if (event.key === 'Tab' || event.key === 'Escape') return;
-        event.preventDefault();
-        const error = doc.getElementById('castleShortcutError');
-        if (event.key === 'Backspace' || event.key === 'Delete') {
-          input.value = '';
-          if (error) error.textContent = '';
-          return;
-        }
-        const key = String(event.key || '').trim().toLowerCase();
-        if (!/^[a-z0-9]$/.test(key) || event.ctrlKey || event.metaKey || event.altKey) {
-          if (error) error.textContent = 'Use one letter or number without modifier keys.';
-          return;
-        }
-        input.value = key.toUpperCase();
-        if (error) error.textContent = '';
-      });
-      grid.appendChild(input);
-    }
-  }
-
-  // --- 2. Gruppen -------------------------------------------------------
+  // --- 1. Gruppen -------------------------------------------------------
 
   function allGroupStores() {
     const stored = readStore(GROUP_STORE, {});
@@ -672,7 +624,6 @@
     ex = ed?.extras;
     if (!ed || !ex || !ex.state) return false;
     addStylesheet();
-    addFillShortcutRow();
     addToolbar();
     addGroupsDialog();
     castleKey = castleKeyForPath(ed.getPath?.());

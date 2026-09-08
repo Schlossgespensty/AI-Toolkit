@@ -176,6 +176,7 @@ function createWindow() {
     });
   });
   win.__activeWorkspace = 'ucp';
+  win.__castleOverviewPreferences = defaultCastleOverviewPreferences();
   win.__closeApproved = false;
   win.__closeProtectionReady = false;
   win.on('close', event => {
@@ -185,7 +186,7 @@ function createWindow() {
   });
   win.webContents.once('did-finish-load', () => { win.__closeProtectionReady = true; });
   win.webContents.once('render-process-gone', () => { win.__closeApproved = true; });
-  win.on('focus', () => installApplicationMenu(win.__activeWorkspace));
+  win.on('focus', () => installApplicationMenu(win.__activeWorkspace, win));
   win.loadFile(path.join(__dirname, 'src', 'index.html'));
   return win;
 }
@@ -196,6 +197,24 @@ function sendToFocused(channel, payload) {
 }
 
 const WORKSPACES = new Set(['ucp', 'character', 'castle', 'content']);
+
+function defaultCastleOverviewPreferences() {
+  return {
+    population: { visible: true, side: 'left' },
+    costs: { visible: true, side: 'right' }
+  };
+}
+
+function sanitizeCastleOverviewPreferences(value) {
+  const defaults = defaultCastleOverviewPreferences();
+  for (const key of Object.keys(defaults)) {
+    const candidate = value && value[key];
+    if (!candidate || typeof candidate !== 'object') continue;
+    defaults[key].visible = candidate.visible !== false;
+    defaults[key].side = candidate.side === 'right' ? 'right' : 'left';
+  }
+  return defaults;
+}
 
 function fileMenuForWorkspace(workspace) {
   const documentLabel = workspace === 'castle' ? 'Castle' : workspace === 'character' ? 'Character' : '';
@@ -216,7 +235,7 @@ function fileMenuForWorkspace(workspace) {
   ];
 }
 
-function editMenuForWorkspace(workspace) {
+function editMenuForWorkspace(workspace, overviewPreferences = defaultCastleOverviewPreferences()) {
   const items = [
     { label: 'Undo', accelerator: 'CmdOrCtrl+Z', click: () => sendToFocused('trigger-undo') },
     { label: 'Redo', accelerator: 'CmdOrCtrl+Y', click: () => sendToFocused('trigger-redo') }
@@ -233,9 +252,35 @@ function editMenuForWorkspace(workspace) {
       { label: 'Expand All/Collapse All', accelerator: 'CmdOrCtrl+Tab', click: () => sendToFocused('trigger-toggle-section') }
     );
   } else if (workspace === 'castle') {
+    const overview = sanitizeCastleOverviewPreferences(overviewPreferences);
+    const overviewCommand = (panel, property, value) => () => {
+      sendToFocused('trigger-castle-overview', { panel, property, value });
+    };
     items.push(
       { type: 'separator' },
       { label: 'Delete Selected', accelerator: 'Delete', click: () => sendToFocused('trigger-delete-selected') },
+      {
+        label: 'Castle Overviews',
+        submenu: [
+          { label: 'Show Population', type: 'checkbox', checked: overview.population.visible, click: item => overviewCommand('population', 'visible', item.checked)() },
+          { label: 'Show Castle Costs', type: 'checkbox', checked: overview.costs.visible, click: item => overviewCommand('costs', 'visible', item.checked)() },
+          { type: 'separator' },
+          {
+            label: 'Population Side',
+            submenu: [
+              { label: 'Left', type: 'radio', checked: overview.population.side === 'left', click: overviewCommand('population', 'side', 'left') },
+              { label: 'Right', type: 'radio', checked: overview.population.side === 'right', click: overviewCommand('population', 'side', 'right') }
+            ]
+          },
+          {
+            label: 'Castle Costs Side',
+            submenu: [
+              { label: 'Left', type: 'radio', checked: overview.costs.side === 'left', click: overviewCommand('costs', 'side', 'left') },
+              { label: 'Right', type: 'radio', checked: overview.costs.side === 'right', click: overviewCommand('costs', 'side', 'right') }
+            ]
+          }
+        ]
+      },
       { type: 'separator' },
       { label: 'Load/Replace Background…', click: () => sendToFocused('trigger-load-castle-background') },
       { label: 'Clear Background', click: () => sendToFocused('trigger-clear-castle-background') },
@@ -247,7 +292,7 @@ function editMenuForWorkspace(workspace) {
   return items;
 }
 
-function menuTemplateForWorkspace(workspace = 'ucp') {
+function menuTemplateForWorkspace(workspace = 'ucp', overviewPreferences = defaultCastleOverviewPreferences()) {
   return [
     { label: 'File', submenu: fileMenuForWorkspace(workspace) },
     {
@@ -259,14 +304,17 @@ function menuTemplateForWorkspace(workspace = 'ucp') {
         { label: 'AI Content', accelerator: 'CmdOrCtrl+4', click: () => sendToFocused('trigger-workspace', 'content') }
       ]
     },
-    { label: 'Edit', submenu: editMenuForWorkspace(workspace) },
+    { label: 'Edit', submenu: editMenuForWorkspace(workspace, overviewPreferences) },
     { role: 'viewMenu' }
   ];
 }
 
-function installApplicationMenu(workspace = 'ucp') {
+function installApplicationMenu(workspace = 'ucp', win = BrowserWindow.getFocusedWindow()) {
   const selected = WORKSPACES.has(workspace) ? workspace : 'ucp';
-  Menu.setApplicationMenu(Menu.buildFromTemplate(menuTemplateForWorkspace(selected)));
+  const overview = win && win.__castleOverviewPreferences
+    ? win.__castleOverviewPreferences
+    : defaultCastleOverviewPreferences();
+  Menu.setApplicationMenu(Menu.buildFromTemplate(menuTemplateForWorkspace(selected, overview)));
 }
 
 ipcMain.on('set-active-workspace', (event, workspace) => {
@@ -274,7 +322,16 @@ ipcMain.on('set-active-workspace', (event, workspace) => {
   const win = BrowserWindow.fromWebContents(event.sender);
   if (!win) return;
   win.__activeWorkspace = workspace;
-  if (BrowserWindow.getFocusedWindow() === win) installApplicationMenu(workspace);
+  if (BrowserWindow.getFocusedWindow() === win) installApplicationMenu(workspace, win);
+});
+
+ipcMain.on('set-castle-overview-preferences', (event, preferences) => {
+  const win = BrowserWindow.fromWebContents(event.sender);
+  if (!win) return;
+  win.__castleOverviewPreferences = sanitizeCastleOverviewPreferences(preferences);
+  if (BrowserWindow.getFocusedWindow() === win && win.__activeWorkspace === 'castle') {
+    installApplicationMenu('castle', win);
+  }
 });
 
 app.whenReady().then(() => {

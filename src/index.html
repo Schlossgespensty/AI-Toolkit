@@ -157,6 +157,7 @@
           <button type="button" class="castleTool" data-tool="bucket" title="Fills everything up to a wall &#8212; the edge of the map counts as one. Shortcut: 7 or F">Fill <kbd>7</kbd></button>
           <button type="button" class="castleTool" data-tool="select" title="Shortcut: 3 or V">Select / Move <kbd>4</kbd></button>
           <button type="button" class="castleTool" data-tool="copy" title="Shortcut: 5 or C &#8212; Ctrl+C copies what is selected, Ctrl+V places it at the cursor">Copy<kbd>5</kbd></button>
+          <button type="button" class="castleTool" data-tool="replace" title="Draw a box, then choose replacements by item type. Shortcut: 8 or R">Replace<kbd>8</kbd></button>
           <button type="button" class="castleTool" data-tool="delete" title="Shortcut: 4 or D">Delete<kbd>4</kbd></button>
         </div>
         <div id="castleBlueprintControls" class="toolbarGroup castleBlueprintControls" aria-label="Temporary castle blueprint" hidden>
@@ -191,15 +192,22 @@
           </div>
           <div class="buildHint">Drag steps to reorder. Use Ctrl+click or Shift+click to select several steps.</div>
           <div id="castleBuildList" class="castleBuildList"></div>
-          <section class="castlePopulationOverview" aria-label="Castle population overview">
-            <div class="populationOverviewTitle">Population</div>
-            <div class="populationOverviewRow"><span>Provided by castle</span><strong id="castlePopulationProvided">0</strong></div>
-            <div class="populationOverviewRow"><span>Required by castle</span><strong id="castlePopulationRequired">0</strong></div>
-            <div class="populationOverviewRow populationOverviewPrimary"><span>Left after castle</span><strong id="castlePopulationLeft">0</strong></div>
-            <div class="populationOverviewDivider"></div>
-            <div class="populationOverviewRow"><span>Required by character at provided pop.</span><strong id="castleCharacterPopulationNeeded">0</strong></div>
-            <div class="populationOverviewRow populationOverviewPrimary"><span>Left after castle + character</span><strong id="castlePopulationAfterCharacter">0</strong></div>
-            <div class="populationOverviewDivider"></div>
+          <section id="castlePopulationOverview" class="castlePopulationOverview castleOverviewPanel" data-overview="population" aria-label="Population up to the selected build step">
+            <div class="populationOverviewTitle castleOverviewTitle">
+              <span>Population</span>
+              <span class="castleOverviewTitleActions">
+                <strong id="castlePopulationStep">-</strong>
+                <button type="button" class="castleOverviewInfoButton" data-info-target="castlePopulationInfo" aria-label="About the population overview" aria-expanded="false">i</button>
+              </span>
+            </div>
+            <div class="populationOverviewRow"><span>Provided by castle</span><strong id="castleCostPopProvided">0</strong></div>
+            <div class="populationOverviewRow"><span>Required by castle</span><strong id="castleCostPopRequired">0</strong></div>
+            <div class="populationOverviewRow"><span>Required by character (AIC)</span><strong id="castleCostPopAic">-</strong></div>
+            <div class="populationOverviewRow populationOverviewPrimary"><span>Free</span><strong id="castleCostPopFree">-</strong></div>
+            <div id="castlePopulationInfo" class="castleOverviewInfo" hidden>
+              <p>These values include only the build steps up to the current position.</p>
+              <p id="castleCostAicDetail"></p>
+            </div>
           </section>
         </aside>
 
@@ -243,26 +251,14 @@
         </main>
 
         <aside class="castlePanel castlePalettePanel">
-          <div id="castleSelectionPanel" class="selectionPanel" hidden>
-            <div class="panelHeader">
-              <div>Selected</div>
-              <span id="castleSelectionCount"></span>
-            </div>
-            <div id="castleSelectionList" class="selectionList"></div>
-            <button id="castleReplaceBtn" type="button" class="replaceButton" disabled>Replace with the chosen item</button>
-          </div>
           <div class="panelHeader">
             <div>Items</div>
           </div>
           <div id="castlePalette" class="castlePalette"></div>
           <div class="selectedItemCard">
             <div id="castleSelectedItemInfo" class="selectedItemInfo">Select an item</div>
-            <div class="skinButtons">
-              <button id="castleSetSkinBtn" type="button" disabled>Set PNG skin</button>
-              <button id="castleRemoveSkinBtn" type="button" disabled>Remove</button>
-              <button id="castleOpenSkinsBtn" type="button" title="Open the persistent AIV skin folder">Folder</button>
-            </div>
           </div>
+          <section id="castleCostOverview" class="castleCostOverview castleOverviewPanel" data-overview="costs" aria-label="Castle costs up to the selected build step"></section>
         </aside>
       </div>
     </div>
@@ -499,6 +495,8 @@
       <span>Delete</span><input class="castleShortcutKey" data-tool="delete" data-slot="0" value="4" readonly><input class="castleShortcutKey" data-tool="delete" data-slot="1" value="D" readonly>
       <span>Copy</span><input class="castleShortcutKey" data-tool="copy" data-slot="0" value="5" readonly><input class="castleShortcutKey" data-tool="copy" data-slot="1" value="C" readonly>
       <span>Line</span><input class="castleShortcutKey" data-tool="line" data-slot="0" value="6" readonly><input class="castleShortcutKey" data-tool="line" data-slot="1" value="L" readonly>
+      <span>Fill</span><input class="castleShortcutKey" data-tool="bucket" data-slot="0" value="7" readonly><input class="castleShortcutKey" data-tool="bucket" data-slot="1" value="F" readonly>
+      <span>Replace</span><input class="castleShortcutKey" data-tool="replace" data-slot="0" value="8" readonly><input class="castleShortcutKey" data-tool="replace" data-slot="1" value="R" readonly>
     </div>
     <div id="castleShortcutError" class="castleShortcutError" role="alert"></div>
     <div class="ucpCreateActions castleShortcutActions">
@@ -506,6 +504,22 @@
       <span class="castleShortcutActionSpacer"></span>
       <button id="castleShortcutCancelBtn" type="button">Cancel</button>
       <button type="submit">Save shortcuts</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="castleReplaceDialog" class="ucpCreateDialog castleReplaceDialog">
+  <form id="castleReplaceForm">
+    <div class="ucpCreateHeading">
+      <h2>Replace selected items</h2>
+      <p id="castleReplaceSummary">Choose a replacement for each item type inside the box.</p>
+    </div>
+    <div id="castleReplaceRows" class="castleReplaceRows"></div>
+    <div id="castleReplaceError" class="castleShortcutError" role="alert"></div>
+    <div class="ucpCreateActions castleShortcutActions">
+      <span class="castleShortcutActionSpacer"></span>
+      <button id="castleReplaceCancelBtn" type="button">Cancel</button>
+      <button id="castleReplaceApplyBtn" type="submit">Apply replacements</button>
     </div>
   </form>
 </dialog>

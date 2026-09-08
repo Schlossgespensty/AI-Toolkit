@@ -1,9 +1,11 @@
-/* Eigene Datei, damit combined.css unberuehrt bleibt. Geladen wird sie aus
-   castle-editor.js. Farben und Abstaende kommen aus den Variablen von
-   combined.css, damit der Block nicht wie ein Fremdkoerper wirkt. */
+/* Detaildarstellung der Kostenanzeige. Die gemeinsamen Regeln fuer die
+   verschiebbaren Uebersichten stehen in combined.css. */
 
 .castleCostOverview {
-  flex: 0 0 auto;
+  flex: 0 1 auto;
+  min-height: 0;
+  max-height: 65%;
+  overflow-y: auto;
   padding: 9px 10px 10px;
   border-top: 1px solid var(--line-strong);
   background: var(--surface-2);

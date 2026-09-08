@@ -108,16 +108,16 @@ test('Das Tastenkuerzel-Fenster kennt jetzt alle Werkzeuge des Editors', () => {
     editorSource.indexOf('const deepClone'));
   const werkzeuge = [...block.matchAll(/^\s{4}(\w+):\s*\[/gm)].map(m => m[1]);
   assert.ok(werkzeuge.includes('bucket'), 'bucket muss ein Werkzeug mit Kuerzel sein');
+  assert.ok(werkzeuge.includes('replace'), 'replace muss ein Werkzeug mit Kuerzel sein');
   assert.match(editorSource, /if \(!keys\[0\]\) throw new Error/);
 
-  // In index.html fehlt genau dieses Werkzeug - deshalb traegt das
-  // Zusatzmodul die Zeile nach. Faellt die Zeile in index.html eines Tages
-  // doch hinein, faellt dieser Test auf und die Doppelung wird bemerkt.
+  // Das Fenster ist vollstaendig in index.html. Spaet eingefuegte Felder
+  // wuerden den beim Start gebundenen Tasten-Hoerer verpassen.
   const dialog = html.slice(html.indexOf('id="castleShortcutDialog"'), html.indexOf('id="castleIsoMapDialog"'));
   const imFenster = [...dialog.matchAll(/data-tool="(\w+)" data-slot="0"/g)].map(m => m[1]);
   const fehlend = werkzeuge.filter(tool => !imFenster.includes(tool));
-  assert.deepEqual(fehlend, ['bucket']);
-  assert.ok(extrasSource.includes("input.dataset.tool = 'bucket'"), 'das Zusatzmodul muss die Fill-Zeile nachtragen');
+  assert.deepEqual(fehlend, []);
+  assert.ok(!extrasSource.includes('addFillShortcutRow'), 'das Zusatzmodul darf keine spaeten Kuerzelfelder mehr nachtragen');
 });
 
 test('Der Editor haengt das Zusatzmodul ein und reicht sein Innenleben heraus', () => {

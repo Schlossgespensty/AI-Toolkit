@@ -1,9 +1,6 @@
-// Die Anzeige neben der Bauschritt-Liste: was die Burg bis zum gewaehlten
-// Schritt gekostet hat, wie viel Zeit vergangen ist und wie die Bevoelkerung
-// zu diesem Zeitpunkt dasteht.
-//
-// Die Oberflaeche wird hier im Code gebaut und in die vorhandene Bauleiste
-// gehaengt, damit index.html und combined.css unberuehrt bleiben.
+// Die beiden Anzeigen am Rand des Burgeditors: Kosten und Bevoelkerung bis
+// zum gewaehlten Bauschritt. Ihre statischen Einhaengepunkte stehen in der
+// Seite, damit der Benutzer beide Anzeigen unabhaengig verschieben kann.
 // Gerechnet wird nichts in dieser Datei - das steht in castle-cost-model.js.
 'use strict';
 (() => {
@@ -46,17 +43,16 @@
   }
 
   function baueOberflaeche() {
-    const panel = document.querySelector('.castleBuildPanel');
-    if (!panel) return false;
-    const anker = panel.querySelector('.castlePopulationOverview');
-
-    const wurzel = document.createElement('section');
-    wurzel.className = 'castleCostOverview';
-    wurzel.setAttribute('aria-label', 'Cost, timing and population up to the selected build step');
+    const wurzel = document.getElementById('castleCostOverview');
+    const bevoelkerung = document.getElementById('castlePopulationOverview');
+    if (!wurzel || !bevoelkerung) return false;
     wurzel.innerHTML = `
-      <div class="costOverviewTitle">
-        <span>Up to step</span>
-        <strong id="castleCostStep">-</strong>
+      <div class="costOverviewTitle castleOverviewTitle">
+        <span>Castle costs</span>
+        <span class="castleOverviewTitleActions">
+          <strong id="castleCostStep">-</strong>
+          <button type="button" class="castleOverviewInfoButton" data-info-target="castleCostInfo" aria-label="About the castle cost overview" aria-expanded="false">i</button>
+        </span>
       </div>
 
       <div class="costBalanceRow">
@@ -73,29 +69,20 @@
       <div class="costSection">
         <div class="costSectionTitle">Elapsed game time</div>
         <div class="populationOverviewRow costTimeMain"><span id="castleCostTimeLabel">-</span><strong id="castleCostTimeDays">0</strong></div>
-        <div class="costHint" id="castleCostTimeHint"></div>
-      </div>
-
-      <div class="costSection">
-        <div class="costSectionTitle">Population up to this step</div>
-        <div class="populationOverviewRow"><span>Provided by castle</span><strong id="castleCostPopProvided">0</strong></div>
-        <div class="populationOverviewRow"><span>Required by castle</span><strong id="castleCostPopRequired">0</strong></div>
-        <div class="populationOverviewRow"><span>Required by character (AIC)</span><strong id="castleCostPopAic">-</strong></div>
-        <div class="populationOverviewRow populationOverviewPrimary"><span>Free</span><strong id="castleCostPopFree">-</strong></div>
-        <div class="costHint" id="castleCostAicDetail"></div>
       </div>
 
       <button type="button" class="costToggle" id="castleCostToggle" aria-expanded="false">Show cost per building</button>
       <div class="costTable" id="castleCostTable" hidden></div>
 
-      <div class="costHint costProvenance" id="castleCostProvenance"></div>
+      <div id="castleCostInfo" class="castleOverviewInfo" hidden>
+        <p class="costHint" id="castleCostTimeHint"></p>
+        <p class="costHint costProvenance" id="castleCostProvenance"></p>
+      </div>
     `;
-
-    if (anker) panel.insertBefore(wurzel, anker);
-    else panel.appendChild(wurzel);
 
     els.wurzel = wurzel;
     els.step = wurzel.querySelector('#castleCostStep');
+    els.populationStep = bevoelkerung.querySelector('#castlePopulationStep');
     els.balance = wurzel.querySelector('#castleCostBalance');
     els.loadBtn = wurzel.querySelector('#castleCostLoadBalance');
     els.file = wurzel.querySelector('#castleCostBalanceFile');
@@ -104,11 +91,11 @@
     els.timeLabel = wurzel.querySelector('#castleCostTimeLabel');
     els.timeDays = wurzel.querySelector('#castleCostTimeDays');
     els.timeHint = wurzel.querySelector('#castleCostTimeHint');
-    els.popProvided = wurzel.querySelector('#castleCostPopProvided');
-    els.popRequired = wurzel.querySelector('#castleCostPopRequired');
-    els.popAic = wurzel.querySelector('#castleCostPopAic');
-    els.popFree = wurzel.querySelector('#castleCostPopFree');
-    els.aicDetail = wurzel.querySelector('#castleCostAicDetail');
+    els.popProvided = bevoelkerung.querySelector('#castleCostPopProvided');
+    els.popRequired = bevoelkerung.querySelector('#castleCostPopRequired');
+    els.popAic = bevoelkerung.querySelector('#castleCostPopAic');
+    els.popFree = bevoelkerung.querySelector('#castleCostPopFree');
+    els.aicDetail = bevoelkerung.querySelector('#castleCostAicDetail');
     els.toggle = wurzel.querySelector('#castleCostToggle');
     els.table = wurzel.querySelector('#castleCostTable');
     els.provenance = wurzel.querySelector('#castleCostProvenance');
@@ -134,12 +121,24 @@
       els.table.hidden = !state.aufgeklappt;
       zeichne();
     });
+    for (const button of document.querySelectorAll('.castleOverviewInfoButton')) {
+      button.addEventListener('click', () => {
+        const info = document.getElementById(button.dataset.infoTarget || '');
+        if (!info) return;
+        const expanded = info.hidden;
+        info.hidden = !expanded;
+        button.setAttribute('aria-expanded', String(expanded));
+      });
+    }
 
     fuelleBalanceListe();
     const daten = window.castleCostData;
     els.provenance.textContent = daten
       ? `Vanilla prices read from the game exe at ${daten._quelle && daten._quelle.kosten ? '0x005C21D0' : 'the build cost table'}. One build step = 50 ticks = one game day (measured, 445 of 445 steps).`
       : 'Cost table not loaded.';
+    if (window.castleEditor && typeof window.castleEditor.refreshOverviewLayout === 'function') {
+      window.castleEditor.refreshOverviewLayout();
+    }
     return true;
   }
 
@@ -219,9 +218,11 @@
       populationData, aicAt: aicRechner(), aic: aicFelder()
     });
 
-    els.step.textContent = ergebnis.totalSteps
+    const schrittText = ergebnis.totalSteps
       ? `${ergebnis.steps} of ${ergebnis.totalSteps}`
       : 'no steps';
+    els.step.textContent = schrittText;
+    if (els.populationStep) els.populationStep.textContent = schrittText;
 
     for (const r of RESSOURCEN) {
       const feld = els.grid.querySelector(`[data-res="${r.key}"]`);
