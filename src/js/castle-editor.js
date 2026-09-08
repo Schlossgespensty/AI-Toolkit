@@ -3251,14 +3251,16 @@
     if (!karteDialog || !karteFehler) return;
     karteFehler.textContent = '';
     if (karteFilter) karteFilter.value = '';
-    if (!karteVorrat) {
-      try {
-        const answer = await window.electronAPI.listGameMaps();
-        karteVorrat = (answer && answer.maps) || [];
-      } catch (error) {
-        karteVorrat = [];
-        karteFehler.textContent = `Could not list the maps: ${error.message}`;
-      }
+    // Bei JEDEM Oeffnen frisch holen. Vorher wurde die Liste einmal gemerkt -
+    // wer eine eigene Karte in den maps-Ordner legte, fand sie erst nach einem
+    // Neustart des Werkzeugs. Das Lesen von 189 Kartennamen kostet nichts,
+    // ein Neustart mitten in der Arbeit dagegen viel.
+    try {
+      const answer = await window.electronAPI.listGameMaps();
+      karteVorrat = (answer && answer.maps) || [];
+    } catch (error) {
+      karteVorrat = karteVorrat || [];
+      karteFehler.textContent = `Could not list the maps: ${error.message}`;
     }
     renderMapList('');
     if (!karteDialog.open) karteDialog.showModal();
