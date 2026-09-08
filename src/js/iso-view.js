@@ -424,6 +424,110 @@
     ctx.restore();
   }
 
+  // ------------------------------------- die ganze Karte aus dem Kachelvorrat
+  //
+  // Statt eines fertigen Bildes vom Dorffenster bekommt die Ansicht das, was
+  // auch das Spiel im Speicher haelt: einen Vorrat aller Kacheln dieser Karte
+  // und je Feld die Nummer seiner Kachel. Gemalt wird beim Zeichnen, und nur
+  // was im Fenster liegt - so wie renderMap (0x004e8cf0) es tut. Deshalb
+  // laesst sich die GANZE Karte in voller Aufloesung zeigen, ohne dass je ein
+  // Bild von 12000x6400 Punkten entsteht.
+  const KARTE_FELDER = 400;
+
+  function vorrat() { return state.kachelVorrat || null; }
+
+  // Base64 in ein Zahlenfeld. Die Bruecke kann keine Binaerdaten, deshalb
+  // kommen Plaetze und Hoehen als Text.
+  function ausBase64(text, Art) {
+    if (!text) return null;
+    const roh = atob(text);
+    const bytes = new Uint8Array(roh.length);
+    for (let i = 0; i < roh.length; i += 1) bytes[i] = roh.charCodeAt(i);
+    return new Art(bytes.buffer);
+  }
+
+  function setMapTiles(daten) {
+    if (!daten) { state.kachelVorrat = null; paint(); return; }
+    const bild = new Image();
+    bild.onload = () => paint();
+    bild.src = daten.atlas;
+    state.kachelVorrat = {
+      bild,
+      plaetze: ausBase64(daten.plaetze, Uint16Array),
+      hoehen: daten.hoehen ? ausBase64(daten.hoehen, Uint8Array) : null,
+      spalten: Number(daten.spalten) || 64,
+      kw: Number(daten.kachelBreite) || 30,
+      kh: Number(daten.kachelHoehe) || 16,
+      name: daten.name || ''
+    };
+    paint();
+  }
+
+  function hasMapTiles() { return Boolean(vorrat() && vorrat().plaetze); }
+
+  // Feldnummer in der Karte. Die Karte ist eine Raute in einem 400x400-Rahmen;
+  // je Zeile beginnt sie an einer anderen Stelle (rowBase in game-map.js).
+  function kartenFeld(mx, my) {
+    if (my < 0 || my >= KARTE_FELDER) return -1;
+    const halb = my <= 199 ? my * my + 2 * my : 40200 + 400 * (399 - my) - (399 - my) * (399 - my);
+    // rowRange: das gueltige x-Fenster dieser Zeile
+    const spanne = my <= 199 ? my : 399 - my;
+    const von = 199 - spanne, bis = 200 + spanne;
+    if (mx < von || mx > bis) return -1;
+    return halb - 199 + (mx - von);
+  }
+
+  // Ein Kartenfeld in Dorfkoordinaten - dieselbe Verschiebung, mit der auch
+  // das Gelaendebild aufgelegt wird (geo.mapTileForGrid, rueckwaerts).
+  function dorfAus(mx, my, keep, anker) {
+    return { gx: mx - keep.x + anker.gx, gy: my - keep.y + anker.gy };
+  }
+
+  function paintMapTiles(ctx, width, height) {
+    const v = vorrat();
+    const map = gameMap();
+    const keep = currentKeep();
+    if (!v || !v.plaetze || !map || !keep || !v.bild.complete || !v.bild.naturalWidth) return false;
+    const anker = geo.keepAnchor(keep);
+    const hw = 16 * state.view.zoom, hh = 8 * state.view.zoom;
+
+    // Welche Felder liegen im Fenster? Aus den vier Ecken zurueckgerechnet,
+    // statt alle 160.000 zu pruefen.
+    const ecken = [[0, 0], [width, 0], [0, height], [width, height]].map(([px, py]) => {
+      const dx = (px - state.view.panX) / hw, dy = (py - state.view.panY) / hh;
+      return { gx: (dy + dx) / 2, gy: (dy - dx) / 2 };
+    });
+    const rand = 3 + Math.ceil(255 / (16 * state.view.zoom));   // hohe Felder ragen herein
+    const gx0 = Math.floor(Math.min(...ecken.map(e => e.gx))) - rand;
+    const gx1 = Math.ceil(Math.max(...ecken.map(e => e.gx))) + rand;
+    const gy0 = Math.floor(Math.min(...ecken.map(e => e.gy))) - rand;
+    const gy1 = Math.ceil(Math.max(...ecken.map(e => e.gy))) + rand;
+
+    const kw = v.kw, kh = v.kh;
+    let gemalt = 0;
+    // Von hinten nach vorn: kleineres gx+gy zuerst, sonst deckt das hintere
+    // Feld das vordere zu.
+    for (let summe = gx0 + gy0; summe <= gx1 + gy1; summe += 1) {
+      for (let gx = Math.max(gx0, summe - gy1); gx <= Math.min(gx1, summe - gy0); gx += 1) {
+        const gy = summe - gx;
+        const mx = gx + keep.x - anker.gx;
+        const my = gy + keep.y - anker.gy;
+        const feld = kartenFeld(mx, my);
+        if (feld < 0) continue;
+        const platz = v.plaetze[feld];
+        if (platz === 0xffff) continue;
+        const hebung = (v.hoehen ? v.hoehen[feld] : 0) * state.view.zoom;
+        const [px, py] = geo.isoPoint(gx, gy, state.view, 0);
+        ctx.drawImage(v.bild,
+          (platz % v.spalten) * kw, Math.floor(platz / v.spalten) * kh, kw, kh,
+          px - hw, py - hebung, 2 * hw, 2 * hh);
+        gemalt += 1;
+      }
+    }
+    state.letzteKacheln = gemalt;
+    return gemalt > 0;
+  }
+
   function paintGround(ctx, width, height) {
     if (gameMap()) {
       ctx.save();
@@ -556,7 +660,8 @@
       if (index === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
     });
     ctx.closePath();
-    paintGround(ctx, width, height);
+    // Der Kachelvorrat zeigt die GANZE Karte und geht deshalb vor.
+    if (!paintMapTiles(ctx, width, height)) paintGround(ctx, width, height);
 
     // Die Bodenplatten haengen an der GEDREHTEN Ecke ihres Gebaeudes, und ihr
     // eigener Versatz wird NICHT mitgedreht.
@@ -954,7 +1059,8 @@
                      setGround, hasOwnGround, setGroundFit, groundIsStretched,
                      setGameMap, setGameMapKeep, hasGameMap, gameMapInfo,
                      mapMode, setMapMode, setTerrain, terrainKey, terrainReady,
-                     viewRotation, turnView, currentRotation };
+                     viewRotation, turnView, currentRotation,
+                     setMapTiles, hasMapTiles };
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();
