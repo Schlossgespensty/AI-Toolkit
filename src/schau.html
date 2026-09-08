@@ -1,0 +1,39 @@
+<!doctype html><meta charset="utf-8"><title>Schau</title>
+<style>html,body{margin:0;background:#1b1b1b}#isoDockBody{width:1000px;height:760px}
+#isoDockCanvas{width:100%;height:100%;display:block}#isoDockStatus{color:#ddd;font:12px monospace;padding:4px}</style>
+<div id="isoDockBody"><canvas id="isoDockCanvas"></canvas></div>
+<div id="isoDockStatus"></div>
+<script>
+// Ein Ersatz-Editor: genau das, was iso-view.js von ihm abfragt.
+const p = new URLSearchParams(location.search);
+window.castleEditor = {
+  hasDocument: () => true,
+  // Der Bergfried auf Dorffeld (43,43). Der Versatz in der AIV zaehlt die
+  // Zeile umgedreht: (99-43)*100 + 43 = 5643.
+  getDocument: () => ({ frames: p.get('leer') ? [] : [{ itemType: 61, tilePositionOfsets: [5643] }] }),
+  getTool: () => 'schau',
+  addChangeListener: () => {}
+};
+</script>
+<script src="js/iso-geometry.js"></script>
+<script src="js/iso-view.js"></script>
+<script>
+(async () => {
+  await window.isoView.mountDock();
+  const karte = await (await fetch('/karte?name=' + encodeURIComponent(p.get('karte') || 'A Friend Indeed'))).json();
+  // Zum Messen: die Drehung kann per ?dreh=0 erzwungen werden. Bei 0 lag der
+  // Bergfried nachweislich richtig - deckt es dort und sonst nicht, ist die
+  // Verschiebung nach der Drehung schuld.
+  if (p.has('dreh') && karte.keeps[0]) karte.keeps[0].orientation = Number(p.get('dreh'));
+  window.isoView.setGameMap(karte);
+  window.isoView.setGameMapKeep(0);
+  if (p.get('modus') !== 'preview') {
+    window.isoView.setMapMode('terrain');
+    const gelaende = await (await fetch('/gelaende?name=' + encodeURIComponent(karte.name) + '&platz=0' + (p.get('ohnekeep') ? '&ohnekeep=1' : ''))).json();
+    window.isoView.setTerrain({ ...gelaende, key: window.isoView.terrainKey() });
+  }
+  window.isoView.fit();
+  window.isoView.paint();
+  document.title = 'fertig';
+})();
+</script>
