@@ -891,6 +891,131 @@ function readGameMap(filePath, gameRoot) {
   };
 }
 
+// Die ganze Karte, ohne sie auszumalen.
+//
+// readMapTerrain malt ein fertiges Bild des Dorffensters: 3030x1634 Punkte,
+// rund 4 MB, und nur 100x100 der 400x400 Felder. Die ganze Karte so zu malen
+// waere 12000x6400 Punkte - 293 MB roh, 401 MB als Text ueber die Bruecke.
+//
+// Das Spiel macht es anders: renderMap (0x004e8cf0) laeuft den BILDSCHIRM Feld
+// fuer Feld ab und holt jede Kachel einzeln aus ihrer .gm1. Gemalt wird nur,
+// was zu sehen ist, und nie ein Zwischenbild. Deshalb liefert diese Funktion
+// dasselbe, was das Spiel im Speicher haelt: die Bildnummer je Feld und einen
+// Vorrat aus allen Kacheln, die auf dieser Karte ueberhaupt vorkommen.
+//
+// GEMESSEN am 09.09.2026:
+//   Kartendatei           833 KB
+//   Bildschicht 1001      157 KB  (80.400 Felder, je zwei Byte)
+//   verschiedene Kacheln  956 auf "A Friend Indeed", 1773 auf "Crete Peninsula"
+// Der Vorrat bleibt damit unter vier Megabyte - fuer die GANZE Karte, wo heute
+// vier Megabyte fuer einen Ausschnitt hinuebergehen.
+const ATLAS_SPALTEN = 64;          // 64 * 30 = 1920 Punkte breit
+
+function buildTileAtlas(gfx, gameRoot) {
+  const stock = readPictureStock(gameRoot);
+
+  // Welche Bildnummern kommen ueberhaupt vor? Jede bekommt einen festen Platz.
+  const platzVon = new Map();
+  const reihe = [];
+  for (let feld = 0; feld < MAP_TILES; feld += 1) {
+    const wert = gfx.readUInt16LE(feld * 2);
+    if (!wert || platzVon.has(wert)) continue;
+    platzVon.set(wert, reihe.length);
+    reihe.push(wert);
+  }
+
+  const zeilen = Math.max(1, Math.ceil(reihe.length / ATLAS_SPALTEN));
+  const breite = ATLAS_SPALTEN * TILE_W;
+  const hoehe = zeilen * TILE_H;
+  const rgba = Buffer.alloc(breite * hoehe * 4, 0);
+  let fehlend = 0;
+
+  reihe.forEach((wert, platz) => {
+    const found = pictureForValue(stock, wert);
+    if (!found) { fehlend += 1; return; }
+    let bild = null;
+    try {
+      const gm1 = heldGm1(gameRoot, found.name);
+      const entry = gm1.pictures[found.index];
+      if (entry) {
+        const raw = gm1.buffer.subarray(gm1.picturesAt + entry.offset, gm1.picturesAt + entry.offset + entry.size);
+        bild = diamondToRgba(raw.subarray(0, 512));
+      }
+    } catch { bild = null; }
+    if (!bild) { fehlend += 1; return; }
+    const spalte = platz % ATLAS_SPALTEN;
+    const zeile = Math.floor(platz / ATLAS_SPALTEN);
+    for (let y = 0; y < TILE_H; y += 1) {
+      const von = y * TILE_W * 4;
+      const nach = ((zeile * TILE_H + y) * breite + spalte * TILE_W) * 4;
+      bild.copy(rgba, nach, von, von + TILE_W * 4);
+    }
+  });
+
+  // Platz im Vorrat je Feld - und zwar in einem VOLLEN 400x400-Raster, nicht
+  // in der Rautennummerierung der Datei. Die Raute spart 80.400 statt 160.000
+  // Plaetze, aber der Empfaenger muesste ihre Zeilenformel nachbauen; genau
+  // das ist am 09.09.2026 schiefgegangen und hat die Karte in Streifen
+  // gezogen. 160.000 mal zwei Byte sind 320 KB - der Fehler war teurer als
+  // die 163 KB, die das Raten gespart haette.
+  // 0xffff heisst "hier ist nichts zu malen", auch ausserhalb der Raute.
+  const plaetze = new Uint16Array(400 * 400).fill(0xffff);
+  for (let my = 0; my < 400; my += 1) {
+    const [von, bis] = rowRange(my);
+    for (let mx = von; mx <= bis; mx += 1) {
+      const wert = gfx.readUInt16LE(tileIndex(mx, my) * 2);
+      const platz = wert === 0 ? undefined : platzVon.get(wert);
+      if (platz !== undefined) plaetze[my * 400 + mx] = platz;
+    }
+  }
+
+  return {
+    atlas: `data:image/png;base64,${encodeRgbaPng(breite, hoehe, rgba).toString('base64')}`,
+    atlasBreite: breite,
+    atlasHoehe: hoehe,
+    spalten: ATLAS_SPALTEN,
+    kachelBreite: TILE_W,
+    kachelHoehe: TILE_H,
+    kacheln: reihe.length,
+    fehlend,
+    plaetze: Buffer.from(plaetze.buffer).toString('base64')
+  };
+}
+
+// Der Kachelvorrat einer Karte, samt Hoehen und Startplaetzen - alles, was die
+// Ansicht braucht, um die ganze Karte selbst zu malen.
+// Die Hoehenschicht aus der Rautenzaehlung in ein volles 400x400-Raster.
+function hoehenRaster(heights) {
+  const raster = new Uint8Array(400 * 400);
+  for (let my = 0; my < 400; my += 1) {
+    const [von, bis] = rowRange(my);
+    for (let mx = von; mx <= bis; mx += 1) raster[my * 400 + mx] = heights[tileIndex(mx, my)] || 0;
+  }
+  return raster;
+}
+
+function readMapTiles(filePath, gameRoot) {
+  const known = knownMap(filePath, gameRoot);
+  const root = gameRootOrDefault(gameRoot);
+  if (!root) throw new Error('The game folder is not set.');
+  const buffer = fs.readFileSync(known.path);
+  const preview = readPreview(buffer);
+  const directory = findDirectory(buffer, preview.end);
+  if (!directory) throw new Error('This map carries no sections.');
+  const gfx = readSection(buffer, directory, GFX_SECTION);
+  if (!gfx || gfx.length !== MAP_TILES * 2) throw new Error('This map carries no terrain layer (section 1001).');
+  let heights = null;
+  try { heights = readSection(buffer, directory, HEIGHT_SECTION); } catch { heights = null; }
+  const vorrat = buildTileAtlas(gfx, root);
+  return {
+    name: known.name,
+    path: known.path,
+    ...vorrat,
+    // Hoehen in derselben Zaehlung wie die Plaetze: volles 400x400-Raster.
+    hoehen: heights ? Buffer.from(hoehenRaster(heights)).toString('base64') : null
+  };
+}
+
 // Dieselbe Karte noch einmal, aber als echtes Gelaende statt als Farbpunkte.
 // WELCHER Startplatz gemeint ist, sagt das Fenster - es kennt auch den Fall
 // "keine Startplaetze, Dorf in die Kartenmitte" (geo.centreKeep), und zwei
@@ -939,10 +1064,12 @@ module.exports = {
   listGameMaps,
   readGameMap,
   readMapTerrain,
+  readMapTiles,
   // fuer die Tests und fuer Werkzeuge, die eine Karte ohne Electron lesen
   internals: { readPreview, previewPng, findDirectory, readSection, findKeeps, nameKeeps, keepOrientation,
                rowBase, rowRange, tileIndex,
                readPictureStock, pictureForValue, readGm1, renderTerrain, virtualToFile,
+               buildTileAtlas, diamondToRgba, heldGm1, ATLAS_SPALTEN,
                PREVIEW_EDGE, MAP_TILES, BUILDING_SECTION, BUILDINGS_SECTION, STONE_KEEP, KEEP_EDGE,
                TILE_W, TILE_H, GFX_SECTION, ORGANISM_SECTION, TREES_SECTION,
                HEIGHT_SECTION, PILLAR_SECTION, PILLAR_TOP, PILLAR_HEAD, CLIFF_FILE, MAX_LIFT }

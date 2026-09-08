@@ -3271,6 +3271,28 @@
   // bei jedem Wechsel von Karte oder Startplatz an - und bis es da ist, liegt
   // die Vorschau darunter, damit der Grund nie leer aussieht.
   let gelaendeLaeuft = null;
+
+  // Der Kachelvorrat der ganzen Karte. Er haengt nur an der Karte, nicht am
+  // Startplatz - einmal geholt, gilt er fuer alle Burgen darauf.
+  let kachelnLaufen = null;
+  async function ensureMapTiles() {
+    if (!window.isoView || !window.isoView.setMapTiles) return;
+    const info = window.isoView.gameMapInfo();
+    if (!info || !info.path) return;
+    if (kachelnLaufen === info.path) return;
+    kachelnLaufen = info.path;
+    try {
+      const vorrat = await window.electronAPI.loadMapTiles(info.path);
+      if (kachelnLaufen !== info.path) return;      // inzwischen andere Karte
+      window.isoView.setMapTiles(vorrat);
+      setStatus(`Whole map "${vorrat.name}" ready · ${vorrat.kacheln} different tiles`
+                + (vorrat.fehlend ? `, ${vorrat.fehlend} without a picture` : ''));
+    } catch (error) {
+      kachelnLaufen = null;
+      setStatus(`Could not read the map tiles: ${error.message}`);
+    }
+  }
+
   async function ensureTerrain() {
     if (!window.isoView || !window.isoView.gameMapInfo) return;
     const info = window.isoView.gameMapInfo();
@@ -3334,6 +3356,7 @@
     try {
       const map = await window.electronAPI.loadGameMap(entry.path);
       window.isoView.setGameMap(map);
+      ensureMapTiles();
       updateMapControls();
       updateGroundControls();
       ensureTerrain();
@@ -3393,6 +3416,8 @@
   if (karteZurueck) karteZurueck.addEventListener('click', () => {
     if (!window.isoView) return;
     window.isoView.setGameMap(null);
+    kachelnLaufen = null;
+    window.isoView.setMapTiles(null);
     updateMapControls();
     updateGroundControls();
     setStatus('Map of the game taken away');

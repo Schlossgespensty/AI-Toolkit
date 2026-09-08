@@ -26,6 +26,7 @@ test('editor offset becomes grid coordinates, y flipped', () => {
   assert.deepEqual(geometry.gridFromOffset(0), { gx: 0, gy: 99 });
   assert.deepEqual(geometry.gridFromOffset(9999), { gx: 99, gy: 0 });
 });
+
 test('offset and grid convert back and forth', () => {
   for (const offset of [0, 1, 99, 100, 5643, 9999]) {
     const { gx, gy } = geometry.gridFromOffset(offset);
@@ -678,6 +679,70 @@ test('die Karte wird ueber einen eigenen Kanal geholt, nicht ueber den Dateidial
   assert.match(html, /id="castleIsoMapDialog"/);
 });
 
+test('eine echte .map gibt ihr Bild und ihre Startplaetze her', (t) => {
+  const { listGameMaps, readGameMap } = require(path.join(root, 'src', 'node', 'game-map.js'));
+  const { maps } = listGameMaps(null);
+  if (!maps.length) { t.skip('kein Stronghold Crusader gefunden'); return; }
+
+  const freund = maps.find(entry => entry.name === 'A Friend Indeed');
+  if (!freund) { t.skip('die Karte "A Friend Indeed" fehlt'); return; }
+  const karte = readGameMap(freund.path, null);
+  assert.equal(karte.edge, 200);
+  assert.match(karte.dataUrl, /^data:image\/png;base64,/);
+  // Sechs Bergfriede - nachgezaehlt: 294 Felder mit Bautyp 41 in Abschnitt
+  // 1049, das sind 6 mal 7 mal 7. Die Reihenfolge ist die des SPIELS, nicht
+  // die des Suchens: die Nummer steht im Gebaeudefeld (1013, Besitzer bei
+  // +214). Von Norden nach Sueden gefunden hiessen sie 3, 4, 2, 1, 6, 5.
+  assert.deepEqual(karte.keeps, [
+    { x: 84, y: 223, player: 1, orientation: 6 },
+    { x: 94, y: 156, player: 2, orientation: 6 },
+    { x: 246, y: 93, player: 3, orientation: 4 },
+    { x: 278, y: 148, player: 4, orientation: 4 },
+    { x: 169, y: 328, player: 5, orientation: 0 },
+    { x: 222, y: 319, player: 6, orientation: 0 }
+  ]);
+  // Dorffeld (43,43) trifft jeden dieser Startplaetze - der Ansatzpunkt liegt
+  // auf der ECKE des 7x7-Blocks, nicht auf seiner Mitte. Belegt an der Datei
+  // selbst: das Gebaeudefeld der Karte merkt sich bei +238/+240 genau diese
+  // Ecke, bei allen 486 Bergfrieden der 96 Karten mit Startplatz.
+  for (const keep of karte.keeps) {
+    // Nicht Dorffeld (43,43), sondern der Anker: nach einer Drehung sitzt der
+    // Bergfried 7 Felder weiter, und das Dorf wird um genau diesen Betrag
+    // verschoben (keepAnchor). Ungedreht ist der Anker wieder (43,43).
+    assert.deepEqual(geometry.mapTileForGrid(geometry.keepAnchor(keep).gx,
+                                             geometry.keepAnchor(keep).gy, keep),
+                     { mx: keep.x, my: keep.y });
+  }
+  // Und nichts ausserhalb der Liste wird gelesen.
+  assert.throws(() => readGameMap('C:\\Windows\\System32\\drivers\\etc\\hosts', null),
+                /not one of the game maps/);
+});
+
+test('jede Karte des Spiels laesst sich lesen', (t) => {
+  const { listGameMaps, readGameMap } = require(path.join(root, 'src', 'node', 'game-map.js'));
+  const { maps } = listGameMaps(null);
+  if (maps.length < 20) { t.skip('kein vollstaendiger Kartenordner gefunden'); return; }
+  let mitStartplatz = 0;
+  for (const entry of maps) {
+    const karte = readGameMap(entry.path, null);
+    assert.match(karte.dataUrl, /^data:image\/png;base64,/, entry.name + ' hat kein Bild');
+    const nummern = [];
+    for (const keep of karte.keeps) {
+      assert.ok(keep.x >= 0 && keep.x <= 399 && keep.y >= 0 && keep.y <= 399,
+                entry.name + ': Startplatz ausserhalb der Karte');
+      assert.ok([0, 2, 4, 6].includes(keep.orientation),
+                entry.name + ': Drehung ' + keep.orientation + ' kennt rotateAIV nicht');
+      if (keep.player !== null) {
+        assert.ok(keep.player >= 1 && keep.player <= 8, entry.name + ': Spielernummer ausserhalb 1..8');
+        assert.ok(!nummern.includes(keep.player), entry.name + ': Spielernummer doppelt vergeben');
+        nummern.push(keep.player);
+      }
+    }
+    if (karte.keeps.length) mitStartplatz++;
+  }
+  assert.ok(mitStartplatz > maps.length / 2, 'die meisten Karten haben einen Startplatz');
+});
+
 test('die Werkzeugleiste holt sich den gemerkten Grund nach, wenn die Ansicht da ist', () => {
   // castle-editor.js steht in index.html VOR iso-view.js. Beim Verdrahten gibt
   // es window.isoView also noch nicht, und beide Abfragen liefern "nichts
@@ -752,6 +817,71 @@ test('ein grosses Gebaeude wird an seiner Ecke gedreht, nicht an seinem Feld', (
   assert.deepEqual(geometry.rotateGrid(43, 43, 7, 0), { gx: 43, gy: 43 });
 });
 
+test('jedes Dorffeld landet dort, wo das Spiel es hinlegt', (t) => {
+  const { listGameMaps, readGameMap } = require(path.join(root, 'src', 'node', 'game-map.js'));
+  const { maps } = listGameMaps(null);
+  if (maps.length < 20) { t.skip('kein vollstaendiger Kartenordner gefunden'); return; }
+
+  // Jedes Feld traegt seine eigene Nummer, dann sagt der Nachbau eindeutig,
+  // wohin es gewandert ist.
+  const dorf = new Array(10000);
+  for (let i = 0; i < 10000; i += 1) dorf[i] = i + 1;
+  const wohin = new Map();
+  for (const orientation of [0, 2, 4, 6]) {
+    const gedreht = rotateAIVNachbau(dorf, orientation);
+    const tafel = new Array(10001);
+    for (let y = 0; y < 100; y += 1)
+      for (let x = 0; x < 100; x += 1) tafel[gedreht[y * 100 + x]] = { x, y };
+    wohin.set(orientation, tafel);
+  }
+  // Und der Bergfried als 7x7-Block: applyAIV nimmt den ERSTEN seiner Felder
+  // im gedrehten Raster, zeilenweise gesucht, und gibt ihn an placeBuilding.
+  const block = new Array(10000).fill(0);
+  for (let vy = 43; vy <= 49; vy += 1) for (let vx = 43; vx <= 49; vx += 1) block[vy * 100 + vx] = 1;
+  const ersterKeep = new Map();
+  for (const orientation of [0, 2, 4, 6]) {
+    const gedreht = rotateAIVNachbau(block, orientation);
+    let erste = null;
+    for (let y = 0; y < 100 && !erste; y += 1)
+      for (let x = 0; x < 100; x += 1) if (gedreht[y * 100 + x]) { erste = { x, y }; break; }
+    ersterKeep.set(orientation, erste);
+  }
+
+  let plaetze = 0;
+  // Extremwerte statt mittlerer Werte: die vier Ecken des Dorfes, der
+  // Bergfried und die Mitte.
+  const proben = [[0, 0], [99, 0], [0, 99], [99, 99], [43, 43], [50, 50], [1, 98], [98, 1]];
+  for (const entry of maps) {
+    const karte = readGameMap(entry.path, null);
+    for (const keep of karte.keeps) {
+      plaetze += 1;
+      const tafel = wohin.get(keep.orientation);
+      for (const [vx, vy] of proben) {
+        const gedreht = geometry.rotateGrid(vx, vy, 1, keep.orientation);
+        const spiel = tafel[vy * 100 + vx + 1];
+        // Verglichen wird im DORFRASTER. Wohin das Dorf als Ganzes auf der
+        // Karte rutscht, ist eine andere Frage (keepAnchor) und wuerde hier
+        // auf beiden Seiten dasselbe abziehen - der Test pruefte sonst die
+        // Verschiebung gegen sich selbst statt die Drehung.
+        assert.deepEqual({ gx: gedreht.gx, gy: gedreht.gy }, { gx: spiel.x, gy: spiel.y },
+          `${entry.name}: Feld (${vx},${vy}) bei Drehung ${keep.orientation}`);
+      }
+      const keepEcke = geometry.rotateGrid(43, 43, 7, keep.orientation);
+      const unserKeep = geometry.mapTileForGrid(keepEcke.gx, keepEcke.gy, keep);
+      const spielKeep = ersterKeep.get(keep.orientation);
+      assert.deepEqual({ gx: keepEcke.gx, gy: keepEcke.gy }, { gx: spielKeep.x, gy: spielKeep.y },
+        `${entry.name}: der Bergfried liegt nicht dort, wo placeBuilding ihn hinstellt`);
+      // Und er sitzt auf dem 7x7-Block der Karte - bei JEDER Drehung, nicht
+      // nur ungedreht. Vorher stand hier ein "if (orientation === 0)": die
+      // gedrehte Burg landete 7 Felder neben ihrem Startplatz, und im Bild
+      // sah man den Bergfried der Karte neben dem eigenen stehen.
+      assert.deepEqual(unserKeep, { mx: keep.x, my: keep.y },
+        `${entry.name}: der Bergfried gehoert auf den Block der Karte, Drehung ${keep.orientation}`);
+    }
+  }
+  assert.ok(plaetze > 400, 'es wurden genug Startplaetze geprueft');
+});
+
 test('die Ansicht dreht die Burg und rechnet die Maus zurueck', () => {
   const iso = fs.readFileSync(path.join(root, 'src', 'js', 'iso-view.js'), 'utf8');
   // Erst einsammeln, dann drehen - sonst landen die Bodenplatten neben ihrem
@@ -772,6 +902,109 @@ test('die Ansicht dreht die Burg und rechnet die Maus zurueck', () => {
   // anders liegt.
   assert.match(iso, /turned '/);
   assert.match(iso, /game value/);
+});
+
+// ------------------------------------------- der Bergfried auf der Karte
+//
+// Dieser Test geht den ECHTEN Weg des Werkzeugs - parseAiv, verzeichnis.json,
+// collectItems, rotateGrid, mapTileForGrid - und nicht einen Nachbau davon.
+// Verglichen wird gegen die Regel des Spiels, aus dem Programm gelesen:
+//
+//   applyAIV (0x004ef0d0) baut den Bergfried NICHT als Bauschritt. Bauwert 38
+//   (AIVBT_KEEP2) hat einen eigenen Zweig, der nur zwei Zahlen setzt:
+//   DAT_AIVState.keepX/keepY = keepXOffset/keepYOffset + dem ERSTEN 38er im
+//   gedrehten Raster, zeilenweise gesucht (Schreibbefehle 0x004ef199 und
+//   0x004ef1ae nach 0x018a5b60 / 0x018a5b64).
+//   LaunchSkirmishGame (0x00441270) liest genau diese beiden Zellen bei
+//   0x00441eb4 / 0x00441eb9 und ruft damit
+//   placeBuilding(..., keepX, keepY, M_MAPPER_KEEP2, 7, keepOrientation).
+//   Den Bergfried der KARTE hat es vorher zerstoert, nachdem es dessen x/y
+//   als Startplatz gemerkt hat.
+//
+// Folge, und der Grund fuer diesen Test: der Bergfried liegt NUR bei Drehung 0
+// auf dem 7x7-Block der Karte. Bei 2, 4 und 6 liegt er 7 Felder daneben, weil
+// um die Mitte des 100x100-Rasters gedreht wird und der Bergfried mit seinen
+// Feldern (43,43) bis (49,49) 3,5 Felder neben dieser Mitte sitzt. Wer ihn
+// "aufs Feld zurueckrueckt", baut den Fehler erst ein.
+test('der Bergfried landet dort, wo LaunchSkirmishGame ihn hinsetzt', async (t) => {
+  const { listGameMaps, readGameMap } = require(path.join(root, 'src', 'node', 'game-map.js'));
+  const { maps, gameRoot } = listGameMaps(null);
+  if (maps.length < 20 || !gameRoot) { t.skip('kein vollstaendiger Kartenordner gefunden'); return; }
+  const aivOrdner = path.join(gameRoot, 'aiv');
+  let namen = [];
+  try { namen = fs.readdirSync(aivOrdner).filter(name => name.toLowerCase().endsWith('.aiv')); }
+  catch { namen = []; }
+  if (namen.length < 10) { t.skip('kein aiv-Ordner des Spiels gefunden'); return; }
+
+  const { parseAiv, internals } = await import('../src/node/aiv-codec.mjs');
+  const katalog = require(path.join(root, 'assets', 'aiv', 'iso', 'verzeichnis.json'));
+
+  // Wo das Spiel den Bergfried sucht: erster Bauwert 38 im gedrehten Raster.
+  // Gedreht wird mit dem Schleifen-Nachbau von rotateAIV, nicht mit rotateGrid
+  // - sonst prueft sich die Formel gegen sich selbst.
+  function spielFeld(constructions, orientation) {
+    const gedreht = rotateAIVNachbau(constructions, orientation);
+    for (let y = 0; y < 100; y += 1)
+      for (let x = 0; x < 100; x += 1)
+        if (gedreht[y * 100 + x] === 38) return { x, y };
+    return null;
+  }
+
+  const burgen = namen.map(name => {
+    const bytes = fs.readFileSync(path.join(aivOrdner, name));
+    const abschnitt = internals.readDirectory(bytes).sections.get(internals.SECTION_IDS.bmap_id);
+    const constructions = Array.from(new Uint16Array(abschnitt.buffer, abschnitt.byteOffset, 10000));
+    // genau der Weg der Ansicht: erst einsammeln, dann drehen
+    const bergfried = geometry.collectItems(parseAiv(bytes), katalog)
+      .find(item => Number(item.itemType) === 61);
+    assert.ok(bergfried, name + ': kein Bergfried im Bauplan');
+    assert.deepEqual({ gx: bergfried.gx, gy: bergfried.gy, tiles: bergfried.tiles },
+                     { gx: 43, gy: 43, tiles: 7 },
+                     name + ': der Bergfried sitzt nicht auf (43,43) mit 7 Feldern');
+    const spiel = new Map([0, 2, 4, 6].map(dreh => [dreh, spielFeld(constructions, dreh)]));
+    return { name, bergfried, spiel };
+  });
+
+  // Der Bergfried liegt bei jeder Drehung auf seinem Startplatz. Bis zum
+  // 07.09.2026 stand hier { 0: '0/0', 2: '0/7', 4: '7/7', 6: '7/0' } - das war
+  // der fehlende Offset aus setKeepOffsetAndOrientation (0x004ecf70), sichtbar
+  // als zweiter Bergfried neben dem eigenen.
+  const SOLLVERSATZ = { 0: '0/0', 2: '0/0', 4: '0/0', 6: '0/0' };
+  const versatz = new Map();
+  let plaetze = 0;
+  let vergleiche = 0;
+  for (const eintrag of maps) {
+    const karte = readGameMap(eintrag.path, null);
+    for (const keep of karte.keeps) {
+      plaetze += 1;
+      const dreh = Number(keep.orientation) || 0;
+      for (const burg of burgen) {
+        const gedreht = geometry.rotateGrid(burg.bergfried.gx, burg.bergfried.gy,
+                                            burg.bergfried.tiles, dreh);
+        const unser = geometry.mapTileForGrid(gedreht.gx, gedreht.gy, keep);
+        const feld = burg.spiel.get(dreh);
+        vergleiche += 1;
+        assert.deepEqual({ gx: gedreht.gx, gy: gedreht.gy }, { gx: feld.x, gy: feld.y },
+          `${eintrag.name} / ${burg.name}: Bergfried nicht dort, wo placeBuilding ihn hinsetzt`);
+        if (burg === burgen[0]) {
+          const schluessel = (unser.mx - keep.x) + '/' + (unser.my - keep.y);
+          versatz.set(schluessel, (versatz.get(schluessel) || 0) + 1);
+          assert.equal(schluessel, SOLLVERSATZ[dreh],
+            `${eintrag.name}: Drehung ${dreh} gehoert Versatz ${SOLLVERSATZ[dreh]}`);
+        }
+      }
+    }
+  }
+  assert.ok(plaetze > 400, 'es wurden genug Startplaetze geprueft');
+  assert.ok(vergleiche > 50000, 'es wurden genug Burgen geprueft');
+  // Der Bergfried deckt sich mit dem Block der Karte - auf JEDEM Startplatz,
+  // bei jeder Drehung. Bis zum 07.09.2026 stand hier das Gegenteil ("nur bei
+  // Drehung 0"), und das war kein Befund, sondern der fehlende Offset aus
+  // setKeepOffsetAndOrientation: die gedrehte Burg landete 7 Felder daneben,
+  // und im Bild stand der Bergfried der Karte neben dem eigenen.
+  assert.equal(versatz.get('0/0') || 0, plaetze,
+               'der Bergfried gehoert auf jeden Startplatz - hier ' + (versatz.get('0/0') || 0) + ' von ' + plaetze);
+  assert.deepEqual([...versatz.keys()], ['0/0'], 'es darf keinen anderen Versatz geben');
 });
 
 // ------------------------------------------------------- das echte Gelaende
@@ -821,6 +1054,127 @@ test('Gelaende und Vorschau werden von derselben Rechnung hingelegt', () => {
     assert.ok(Math.abs(teil.w - fenster.cells * punktBreite) < 1e-9, 'Breite');
     assert.ok(Math.abs(teil.h - fenster.cells * punktHoehe) < 1e-9, 'Hoehe');
   }
+});
+
+test('das gemalte Gelaende zeigt genau die Felder, die die Vorschau an dieser Stelle zeigt', (t) => {
+  // Der Totschlagtest fuer die Lage. Ohne Farbvergleich: fuer jeden Block von
+  // 30x16 Punkten wird nachgesehen, welche Kachel dort steht, und mit der
+  // Bildnummer aus dem GfxLayer verglichen - der Quelle, aus der auch die
+  // Vorschau stammt. Verschoben um ein Feld muss es NICHT mehr passen.
+  const { listGameMaps, readGameMap, internals } = require(path.join(root, 'src', 'node', 'game-map.js'));
+  const { maps, gameRoot } = listGameMaps(null);
+  if (!maps.length || !gameRoot) { t.skip('kein Stronghold Crusader gefunden'); return; }
+  const eintrag = maps.find(m => m.name === 'Crete Peninsula') || maps[0];
+  const karte = readGameMap(eintrag.path, null);
+  const keep = karte.keeps[0] || geometry.centreKeep();
+
+  const bytes = fs.readFileSync(eintrag.path);
+  const vorschau = internals.readPreview(bytes);
+  const verzeichnis = internals.findDirectory(bytes, vorschau.end);
+  const gelaende = internals.renderTerrain(bytes, verzeichnis, gameRoot, { x: keep.x, y: keep.y });
+  const gfx = internals.readSection(bytes, verzeichnis, internals.GFX_SECTION);
+  const vorrat = internals.readPictureStock(gameRoot);
+
+  const hoehen = internals.readSection(bytes, verzeichnis, internals.HEIGHT_SECTION);
+
+  // Welches Kartenfeld liegt an Vorschaupunkt (px,py)? null ausserhalb.
+  const feldAn = (px, py) => {
+    const mx = px + py;
+    const my = py - px + internals.PREVIEW_EDGE - 1;
+    if (mx < 0 || my < 0 || mx > 399 || my > 399) return null;
+    const [von, bis] = internals.rowRange(my);
+    if (mx < von || mx > bis) return null;
+    return internals.tileIndex(mx, my);
+  };
+  // Welche gm-Datei gehoert zu dem Feld?
+  const dateiAn = (px, py) => {
+    const feld = feldAn(px, py);
+    if (feld === null) return null;
+    const bild = internals.pictureForValue(vorrat, gfx.readUInt16LE(feld * 2));
+    return bild ? bild.name : null;
+  };
+  // Und wie hoch steht es. Das Bild hebt jede Kachel um genau diesen Wert an
+  // (renderMap 0x004e8cf0, Tabelle aus updateShowHiLayerOrResetChangedLayer),
+  // also muss der Block dort gesucht werden, wo die Hoehe ihn hinschiebt -
+  // sonst prueft der Test die falsche Stelle und misst nichts mehr.
+  const hoeheAn = (px, py) => {
+    const feld = feldAn(px, py);
+    return feld === null ? 0 : hoehen[feld];
+  };
+
+  // Wasser oder nicht - ein Ja/Nein je Feld, das man auch im Bild wiederfindet.
+  const nassLaut = (px, py) => /sea|water/i.test(dateiAn(px, py) || '');
+
+  const treffer = (dx, dy) => {
+    let gleich = 0, zahl = 0;
+    for (let cy = 0; cy < gelaende.cells; cy += 1) {
+      for (let cx = 0; cx < gelaende.cells; cx += 1) {
+        const hebung = hoeheAn(gelaende.px0 + cx, gelaende.py0 + cy);
+        const oben = gelaende.top - hebung;      // wo dieser Block im Bild steht
+        let blau = 0, punkte = 0;
+        for (let y = cy * internals.TILE_H + oben; y < (cy + 1) * internals.TILE_H + oben; y += 1) {
+          for (let x = cx * internals.TILE_W; x < (cx + 1) * internals.TILE_W; x += 1) {
+            if (y < 0 || y >= gelaende.height) { punkte = -1; break; }
+            const at = (y * gelaende.width + x) * 4;
+            if (!gelaende.rgba[at + 3]) { punkte = -1; break; }
+            if (gelaende.rgba[at + 2] > gelaende.rgba[at]) blau += 1;
+            punkte += 1;
+          }
+          if (punkte < 0) break;
+        }
+        // nur eindeutige Bloecke: ganz Wasser oder gar kein Wasser
+        if (punkte !== internals.TILE_W * internals.TILE_H) continue;
+        if (blau !== 0 && blau !== punkte) continue;
+        if (dateiAn(gelaende.px0 + cx + dx, gelaende.py0 + cy + dy) === null) continue;
+        if (nassLaut(gelaende.px0 + cx + dx, gelaende.py0 + cy + dy) === (blau > 0)) gleich += 1;
+        zahl += 1;
+      }
+    }
+    return { anteil: zahl ? gleich / zahl : 0, zahl };
+  };
+
+  const genau = treffer(0, 0);
+  assert.ok(genau.zahl > 1000, 'es wurden genug eindeutige Felder geprueft: ' + genau.zahl);
+  assert.ok(genau.anteil > 0.97, 'ohne Versatz passt es: ' + (genau.anteil * 100).toFixed(2) + '%');
+  for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1], [1, 1], [-1, -1]]) {
+    const daneben = treffer(dx, dy);
+    assert.ok(daneben.anteil < genau.anteil,
+      `um (${dx},${dy}) verschoben passt es genauso gut - dann misst der Test nichts: ` +
+      `${(daneben.anteil * 100).toFixed(2)}% gegen ${(genau.anteil * 100).toFixed(2)}%`);
+  }
+});
+
+test('das Gelaendebild bleibt in der Groesse, die gemessen wurde', (t) => {
+  // Die ganze Karte in Kachelaufloesung waere 6000x3200 Punkte. Gemalt wird
+  // nur die Raute des Dorfes: gemessen 3030x1616 Punkte, davon die Haelfte
+  // durchsichtig, und daraus ein PNG von rund 3 MB. Waechst das unbemerkt,
+  // kommt die data:-Adresse nicht mehr durch den Kanal.
+  const { listGameMaps, readGameMap, readMapTerrain } = require(path.join(root, 'src', 'node', 'game-map.js'));
+  const { maps } = listGameMaps(null);
+  if (!maps.length) { t.skip('kein Stronghold Crusader gefunden'); return; }
+  const eintrag = maps.find(m => m.name === 'A Friend Indeed') || maps[0];
+  const karte = readGameMap(eintrag.path, null);
+  const keep = karte.keeps[0] || geometry.centreKeep();
+  const gelaende = readMapTerrain(eintrag.path, null, keep);
+
+  assert.equal(gelaende.width, gelaende.cells * 30);
+  // Oben kommt so viel Luft dazu, wie das hoechste Feld des Dorfes gehoben
+  // wird - sonst schnitte der Bildrand die Bergkuppe ab.
+  assert.equal(gelaende.height, gelaende.cells * 16 + gelaende.top);
+  const dorf = Buffer.from(gelaende.village, 'base64');
+  assert.equal(dorf.length, 100 * 100, 'eine Hoehe je Dorffeld');
+  assert.equal(gelaende.top, Math.max(...dorf), 'die Luft oben ist genau die hoechste Hoehe');
+  assert.ok(gelaende.cells <= 101, 'Kante ' + gelaende.cells);
+  assert.equal(gelaende.missing, 0, 'jedes Feld im Fenster hat ein Bild');
+  assert.ok(gelaende.tiles > 15000, 'genug Kacheln gemalt: ' + gelaende.tiles);
+  const megabyte = gelaende.dataUrl.length / 1048576;
+  assert.ok(megabyte < 8, 'die data:-Adresse bleibt unter 8 MB, hier ' + megabyte.toFixed(2));
+  assert.ok(gelaende.dataUrl.startsWith('data:image/png;base64,'));
+  // Nur Karten aus der Liste, und nur Startplaetze auf der Karte.
+  assert.throws(() => readMapTerrain('C:\\Windows\\System32\\drivers\\etc\\hosts', null, keep),
+                /not one of the game maps/);
+  assert.throws(() => readMapTerrain(eintrag.path, null, { x: -1, y: 0 }), /not on the map/);
+  assert.throws(() => readMapTerrain(eintrag.path, null, null), /not on the map/);
 });
 
 test('der Umschalter zwischen Vorschau und Gelaende haengt richtig', () => {
@@ -923,4 +1277,39 @@ test('die Hoehe kommt aus derselben Quelle wie der Boden', () => {
   assert.match(bau, /geo\.spriteRect\(variant, gx, gy, tiles, state\.view, bauHoehe\(gx, gy, tiles\)\)/);
   // Und die Maus rechnet die Hoehe zurueck, sonst klickt man daneben.
   assert.match(iso, /geo\.tileFromPoint\(px, py, state\.view, bodenHoehe\)/);
+});
+
+test('das Gelaende bringt eine Hoehe je Dorffeld mit, und die Kanten stehen darunter', (t) => {
+  const { listGameMaps, readGameMap, internals } = require(path.join(root, 'src', 'node', 'game-map.js'));
+  const { maps, gameRoot } = listGameMaps(null);
+  if (!maps.length || !gameRoot) { t.skip('kein Stronghold Crusader gefunden'); return; }
+  // Eine Karte mit echtem Hoehenunterschied - auf Rock Face liegen 28.188
+  // Felder auf Hoehe 130 und 10.903 auf 0.
+  const eintrag = maps.find(m => m.name === 'Rock Face') || maps[0];
+  const karte = readGameMap(eintrag.path, null);
+  const keep = karte.keeps[0] || geometry.centreKeep();
+  const bytes = fs.readFileSync(eintrag.path);
+  const vorschau = internals.readPreview(bytes);
+  const verzeichnis = internals.findDirectory(bytes, vorschau.end);
+  const gelaende = internals.renderTerrain(bytes, verzeichnis, gameRoot, { x: keep.x, y: keep.y });
+  const hoehen = internals.readSection(bytes, verzeichnis, internals.HEIGHT_SECTION);
+
+  assert.equal(gelaende.village.length, 100 * 100);
+  // Jedes Dorffeld traegt die Hoehe des Kartenfeldes, das die Rechnung nennt.
+  let geprueft = 0;
+  for (let gy = 0; gy < 100; gy += 1) {
+    for (let gx = 0; gx < 100; gx += 1) {
+      const { mx, my } = geometry.mapTileForGrid(gx, gy, keep);
+      if (my < 0 || my > 399) continue;
+      const [von, bis] = internals.rowRange(my);
+      if (mx < von || mx > bis) continue;
+      assert.equal(gelaende.village[gy * 100 + gx], hoehen[internals.tileIndex(mx, my)]);
+      geprueft += 1;
+    }
+  }
+  assert.ok(geprueft > 9000, 'fast das ganze Dorf liegt auf der Karte: ' + geprueft);
+  assert.ok(gelaende.top >= 130, 'die Luft oben reicht fuer den Berg: ' + gelaende.top);
+  assert.ok(gelaende.floor <= gelaende.top);
+  // Und die Steilkanten sind gemalt worden - ohne sie stuende der Berg auf nichts.
+  assert.ok(gelaende.cliffs > 500, 'Steilkanten gemalt: ' + gelaende.cliffs);
 });
