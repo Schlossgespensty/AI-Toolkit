@@ -632,6 +632,7 @@ button:disabled { cursor: default; }
   box-shadow: 0 24px 80px rgba(0,0,0,.58);
 }
 .helpText {
+  white-space: pre-line;
   padding: 15px;
   border: 1px solid var(--line);
   border-radius: var(--radius);
@@ -1629,7 +1630,7 @@ button:disabled { cursor: default; }
    hand then costs no layout, and the grid track it came from keeps its width,
    so neither the map nor the three canvas buffers are resized until the panel
    is really dropped. The width and height are the ones it had a moment before
-   it was picked up, written once by dock-view.js.
+   it was picked up, written once by panel-view.js.
    It rides above the overlay (z-index 15) while it is visible. Over a drop
    zone it gets out of the way by opacity alone - same box, same size, so
    nothing has to be measured again when it comes back, and the pointer

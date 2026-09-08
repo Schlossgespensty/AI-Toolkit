@@ -1,5 +1,4 @@
-// ERZEUGTE DATEI - nicht von Hand aendern.
-// Erzeugt von src/js/castle-cost-data.build.js am 2026-09-07.
+// Eingebetteter Kostendaten-Snapshot vom 2026-09-07.
 //
 // Was hier steht: je Bauart des Editors die Vanilla-Baukosten in der
 // Reihenfolge Holz, Stein, Eisen, Pech, Gold - und der Name, unter dem

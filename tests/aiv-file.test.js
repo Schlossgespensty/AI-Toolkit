@@ -16,7 +16,12 @@ test('saves an edited castle from its in-memory binary after the original disapp
   t.after(() => fs.rmSync(temporary, { recursive: true, force: true }));
   const codec = await codecPromise;
   const sourcePath = path.join(temporary, 'castle.aiv');
-  const original = fs.readFileSync(path.join(root, 'examples', 'Jeanne', 'aiv', 'jeanne1.aiv'));
+  const originalDocument = {
+    pauseDelayAmount: 100,
+    frames: [{ itemType: 61, tilePositionOfsets: [5643], shouldPause: false }],
+    miscItems: []
+  };
+  const original = Buffer.from(codec.encodeAiv(originalDocument, templates));
   fs.writeFileSync(sourcePath, original);
   const document = codec.parseAiv(original);
   document.pauseDelayAmount += 7;

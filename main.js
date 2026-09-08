@@ -103,41 +103,7 @@ function asCastleDocument(value) {
   return document;
 }
 
-// Welche Bauschritte gesperrt sind, passt in keine AIV-Datei - das Format
-// kennt kein solches Feld. Es liegt deshalb daneben, in <burg>.aiv.locks.json.
-// Wer die Burg ohne diese Datei weitergibt, verliert nur die Sperren; die
-// Burg selbst bleibt heil, und das Spiel sieht die Datei nie.
-function lockSidecarPath(aivPath) { return aivPath + '.locks.json'; }
-
-function writeLockSidecar(aivPath, locks) {
-  const datei = lockSidecarPath(aivPath);
-  const liste = Array.isArray(locks) ? locks.filter(n => Number.isInteger(n) && n >= 0) : [];
-  try {
-    // Keine Sperren, keine Datei: eine leere Begleitdatei waere Muell, der
-    // beim naechsten Weitergeben Fragen aufwirft.
-    if (!liste.length) { if (fs.existsSync(datei)) fs.unlinkSync(datei); return; }
-    atomicWriteFile(datei, JSON.stringify({
-      zweck: 'Gesperrte Bauschritte der Burg daneben. Nur fuer das AI Toolkit, das Spiel liest das nicht.',
-      datei: path.basename(aivPath),
-      geschrieben: new Date().toISOString(),
-      gesperrt: liste
-    }, null, 1), 'utf8');
-  } catch (error) {
-    console.warn('Sperren konnten nicht abgelegt werden:', error.message);
-  }
-}
-
-function readLockSidecar(aivPath) {
-  try {
-    const datei = lockSidecarPath(aivPath);
-    if (!fs.existsSync(datei)) return [];
-    const gelesen = JSON.parse(fs.readFileSync(datei, 'utf8'));
-    const liste = Array.isArray(gelesen && gelesen.gesperrt) ? gelesen.gesperrt : [];
-    return liste.filter(n => Number.isInteger(n) && n >= 0);
-  } catch { return []; }
-}
-
-async function writeAivDocument(document, destination, { sourcePath = null, sourceBytes = null, unchanged = false, locks = null } = {}) {
+async function writeAivDocument(document, destination, { sourcePath = null, sourceBytes = null, unchanged = false } = {}) {
   const codec = await aivCodecPromise;
   const inputDocument = asCastleDocument(document);
   // writeNativeAiv ist SYNCHRON und gibt ein Ergebnis zurueck, kein Versprechen.
@@ -153,7 +119,6 @@ async function writeAivDocument(document, destination, { sourcePath = null, sour
     sourceBytes,
     unchanged
   });
-  if (locks !== null) writeLockSidecar(destination, locks);
   return ergebnis;
 }
 
@@ -189,13 +154,27 @@ function createWindow() {
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,
-      nodeIntegration: false
+      nodeIntegration: false,
+      sandbox: true
     }
   };
   const iconPath = path.join(__dirname, 'assets', 'icon.png');
   if (fs.existsSync(iconPath)) options.icon = iconPath;
 
   const win = new BrowserWindow(options);
+  win.webContents.setWindowOpenHandler(({ url }) => (
+    url === 'about:blank' ? { action: 'allow' } : { action: 'deny' }
+  ));
+  win.webContents.on('will-navigate', (event, url) => {
+    if (url !== win.webContents.getURL()) event.preventDefault();
+  });
+  win.webContents.on('will-attach-webview', event => event.preventDefault());
+  win.webContents.on('did-create-window', child => {
+    child.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
+    child.webContents.on('will-navigate', (event, url) => {
+      if (url !== 'about:blank') event.preventDefault();
+    });
+  });
   win.__activeWorkspace = 'ucp';
   win.__closeApproved = false;
   win.__closeProtectionReady = false;
@@ -352,8 +331,7 @@ ipcMain.handle('open-file', async (_event, kind = 'json') => {
   const filePath = result.filePaths[0];
   if (kind === 'aiv') {
     if (path.extname(filePath).toLowerCase() === '.aiv') {
-      const gelesen = await readAivDocument(filePath);
-      return Object.assign({}, gelesen, { locks: readLockSidecar(filePath) });
+      return readAivDocument(filePath);
     }
     return { document: JSON.parse(fs.readFileSync(filePath, 'utf8')), path: filePath, source: 'aivjson' };
   }
@@ -366,8 +344,7 @@ ipcMain.handle('save-file', async (_event, {
   defaultPath = undefined,
   sourcePath = null,
   sourceBytes = null,
-  unchanged = false,
-  locks = null
+  unchanged = false
 } = {}) => {
   const filters = kind === 'aiv'
     ? [{ name: 'Stronghold AIV Castle', extensions: ['aiv'] }]
@@ -376,14 +353,14 @@ ipcMain.handle('save-file', async (_event, {
   if (result.canceled || !result.filePath) return null;
   if (kind === 'aiv') {
     const filePath = result.filePath.toLowerCase().endsWith('.aiv') ? result.filePath : `${result.filePath}.aiv`;
-    return writeAivDocument(content, filePath, { sourcePath, sourceBytes, unchanged, locks });
+    return writeAivDocument(content, filePath, { sourcePath, sourceBytes, unchanged });
   }
   atomicWriteFile(result.filePath, content, 'utf8');
   return result.filePath;
 });
 
-ipcMain.handle('quick-save-file', async (_event, { path: filePath, content, kind = 'json', sourcePath = null, sourceBytes = null, unchanged = false, locks = null }) => {
-  if (kind === 'aiv') return writeAivDocument(content, filePath, { sourcePath, sourceBytes, unchanged, locks });
+ipcMain.handle('quick-save-file', async (_event, { path: filePath, content, kind = 'json', sourcePath = null, sourceBytes = null, unchanged = false }) => {
+  if (kind === 'aiv') return writeAivDocument(content, filePath, { sourcePath, sourceBytes, unchanged });
   atomicWriteFile(filePath, content, 'utf8');
   return filePath;
 });

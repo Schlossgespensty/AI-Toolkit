@@ -286,7 +286,13 @@
       if (!teile.length) teile.push('no cost');
       const div = document.createElement('div');
       div.className = 'costTableRow';
-      div.innerHTML = `<span class="costTableName">${zeile.count}x ${zeile.name}</span><span class="costTableValue">${teile.join(', ')}</span>`;
+      const name = document.createElement('span');
+      name.className = 'costTableName';
+      name.textContent = `${zeile.count}x ${zeile.name}`;
+      const value = document.createElement('span');
+      value.className = 'costTableValue';
+      value.textContent = teile.join(', ');
+      div.append(name, value);
       if (zeile.source === 'balance') div.classList.add('costFromBalance');
       div.title = zeile.source === 'balance'
         ? 'Price from the selected balance file'

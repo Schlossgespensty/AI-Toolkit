@@ -450,24 +450,18 @@ test('the lock button takes the whole selection along', () => {
     'alle bekommen denselben Zustand, sonst oeffnet der zweite Klick nur die Haelfte');
 });
 
-test('locks survive saving, in a file next to the castle', () => {
+test('locks are session-only and never enter an AIV document', () => {
   const main = fs.readFileSync(path.join(root, 'main.js'), 'utf8');
-  assert.match(main, /function lockSidecarPath\(aivPath\) \{ return aivPath \+ '\.locks\.json'; \}/,
-    'die Begleitdatei heisst wie die Burg, mit .locks.json dahinter');
-  assert.match(main, /if \(!liste\.length\) \{ if \(fs\.existsSync\(datei\)\) fs\.unlinkSync\(datei\); return; \}/,
-    'keine Sperren, keine Datei - eine leere waere Muell');
-  assert.match(main, /locks !== null\) writeLockSidecar\(destination, locks\)/,
-    'geschrieben wird erst, nachdem die Burg selbst heil auf der Platte liegt');
-  assert.match(main, /Object\.assign\(\{\}, gelesen, \{ locks: readLockSidecar\(filePath\) \}\)/,
-    'und beim Oeffnen kommt sie mit');
+  assert.doesNotMatch(main, /lockSidecar|readLockSidecar|writeLockSidecar|\.locks\.json/,
+    'die Sitzungssperren erzeugen keine Begleitdatei');
 
   const script = fs.readFileSync(path.join(root, 'src', 'js', 'castle-editor.js'), 'utf8');
-  assert.equal((script.match(/locks: lockedFrameIndexes\(\)/g) || []).length, 2,
-    'beide Speicherwege schicken die Sperren mit: ueberschreiben und Speichern unter');
-  assert.match(functionBody(script, 'loadDocument'), /if \(options\.locks\) applyLockedFrameIndexes/);
-  const anwenden = functionBody(script, 'applyLockedFrameIndexes');
-  assert.match(anwenden, /else delete frame\.locked/,
-    'eine Burg ohne Begleitdatei kommt ohne Sperren - nicht mit denen der vorigen');
+  assert.doesNotMatch(script, /locks: lockedFrameIndexes\(\)/,
+    'kein Speicherweg schickt Sitzungssperren an den Hauptprozess');
+  assert.match(functionBody(script, 'stripSessionLocks'), /delete frame\.locked/,
+    'beim Laden und Speichern wird ein altes locked-Feld entfernt');
+  assert.match(functionBody(script, 'loadDocument'), /stripSessionLocks/);
+  assert.match(functionBody(script, 'outputDocument'), /stripSessionLocks/);
 });
 
 test('the selection panel lists what is selected and can swap it', () => {

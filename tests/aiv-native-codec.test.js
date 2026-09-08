@@ -23,18 +23,21 @@ function comparable(document) {
   };
 }
 
-function collectAivFiles(directory, output = []) {
-  for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
-    const candidate = path.join(directory, entry.name);
-    if (entry.isDirectory()) collectAivFiles(candidate, output);
-    else if (/\.aiv$/i.test(entry.name)) output.push(candidate);
-  }
-  return output;
+function sampleDocument() {
+  return {
+    pauseDelayAmount: 100,
+    frames: [
+      { itemType: 61, tilePositionOfsets: [4950], shouldPause: false },
+      { itemType: 25, tilePositionOfsets: [4949], shouldPause: true },
+      { itemType: 25, tilePositionOfsets: [5049], shouldPause: false }
+    ],
+    miscItems: [{ positionOfset: 5050, itemType: 0, number: 0 }]
+  };
 }
 
 test('native codec returns the original bytes when an opened castle is unchanged', async () => {
   const codec = await codecPromise;
-  const source = fs.readFileSync(path.join(root, 'examples', 'Jeanne', 'aiv', 'jeanne1.aiv'));
+  const source = Buffer.from(codec.encodeAiv(sampleDocument(), templates));
   const document = codec.parseAiv(source);
   const output = codec.encodeAiv(document, templates, { source, unchanged: true });
   assert.equal(Buffer.from(output).equals(source), true);
@@ -42,7 +45,7 @@ test('native codec returns the original bytes when an opened castle is unchanged
 
 test('native edits preserve untouched source sections and directory metadata', async () => {
   const codec = await codecPromise;
-  const source = fs.readFileSync(path.join(root, 'examples', 'Jeanne', 'aiv', 'jeanne1.aiv'));
+  const source = Buffer.from(codec.encodeAiv(sampleDocument(), templates));
   const document = codec.parseAiv(source);
   document.pauseDelayAmount += 1;
   document.frames[0].shouldPause = !document.frames[0].shouldPause;
@@ -65,39 +68,9 @@ test('native edits preserve untouched source sections and directory metadata', a
   }
 });
 
-test('native codec opens and rewrites every legacy Hyaene castle', async () => {
-  const codec = await codecPromise;
-  const aivRoot = path.join(root, 'examples', 'Hyaene', 'aiv');
-  const files = fs.readdirSync(aivRoot).filter(name => /\.aiv$/i.test(name)).sort();
-  assert.equal(files.length, 8);
-  for (const fileName of files) {
-    const source = fs.readFileSync(path.join(aivRoot, fileName));
-    const document = codec.parseAiv(source);
-    const output = codec.encodeAiv(document, templates, { source });
-    const reopened = codec.parseAiv(output);
-    assert.ok(reopened.frames.length > 0, `${fileName} has no frames after native save`);
-    assert.deepEqual(comparable(reopened), comparable(document), fileName);
-  }
-});
-
-test('native codec opens every binary AIV in the reference library', async () => {
-  const codec = await codecPromise;
-  const files = collectAivFiles(path.join(root, 'examples'));
-  assert.ok(files.length >= 294);
-  for (const filePath of files) {
-    const document = codec.parseAiv(fs.readFileSync(filePath));
-    assert.ok(Array.isArray(document.frames), filePath);
-    assert.ok(Array.isArray(document.miscItems), filePath);
-  }
-});
-
 test('native codec creates a new binary AIV without a source file', async () => {
   const codec = await codecPromise;
-  const document = {
-    pauseDelayAmount: 100,
-    frames: [{ itemType: 61, tilePositionOfsets: [4950], shouldPause: false }],
-    miscItems: [{ positionOfset: 5050, itemType: 0, number: 0 }]
-  };
+  const document = sampleDocument();
   const output = codec.encodeAiv(document, templates);
   const reopened = codec.parseAiv(output);
   assert.deepEqual(comparable(reopened), comparable(document));

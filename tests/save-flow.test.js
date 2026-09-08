@@ -49,6 +49,6 @@ test('saving does not treat the encoder as if it returned a promise', () => {
   assert.ok(!/writeNativeAiv\([\s\S]*?\}\)\s*\.then/.test(stelle),
     'kein .then an writeNativeAiv');
   assert.match(stelle, /const ergebnis = writeNativeAiv\(/);
-  assert.match(stelle, /if \(locks !== null\) writeLockSidecar\(destination, locks\);/,
-    'die Sperr-Begleitdatei wird trotzdem geschrieben');
+  assert.doesNotMatch(stelle, /locks|Sidecar/,
+    'Sitzungssperren sind kein Teil des Speicherwegs');
 });
