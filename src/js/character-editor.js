@@ -132,7 +132,7 @@ function showHelp(content) {
 
   const text = document.createElement("div");
   text.className = "helpText";
-  text.innerHTML = content;
+  text.textContent = String(content || '').replace(/<br\s*\/?>/gi, '\n');
 
   const close = document.createElement("button");
   close.textContent = "Close";
@@ -177,9 +177,14 @@ function createField(key, value, parent) {
   if (searchQuery) {
     const idx = key.toLowerCase().indexOf(searchQuery);
     if (idx !== -1) {
-      label.innerHTML = key.substring(0, idx) +
-        "<span class='searchMatch'>" + key.substring(idx, idx + searchQuery.length) + "</span>" +
-        key.substring(idx + searchQuery.length);
+      const match = document.createElement('span');
+      match.className = 'searchMatch';
+      match.textContent = key.substring(idx, idx + searchQuery.length);
+      label.append(
+        document.createTextNode(key.substring(0, idx)),
+        match,
+        document.createTextNode(key.substring(idx + searchQuery.length))
+      );
     } else label.textContent = key;
   } else label.textContent = key;
 

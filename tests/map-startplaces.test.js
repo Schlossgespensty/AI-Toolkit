@@ -1,16 +1,12 @@
 'use strict';
 
-// Was diese Tests widerlegen sollen, vor dem Messen aufgeschrieben:
-//  1. "Ein 2x2-Marker wird als Startplatz erkannt"  -> faellt, wenn nichts kommt.
-//  2. "Nur 2x2 zaehlt"                              -> faellt, wenn 3x3 auch gemeldet wird.
-//  3. "Karten mit echtem Bergfried bleiben unberuehrt" -> faellt, wenn keeps sich aendert.
-//  4. "Die 17 Karten ohne Bergfried bekommen Plaetze"  -> faellt, wenn eine leer bleibt.
-//  5. "Keine Karte VERLIERT Plaetze"                -> faellt, wenn irgendwo weniger steht.
+// Self-contained tests for detecting start-place markers. Installed game maps
+// are intentionally not fixtures for the project test suite.
 
 const test = require('node:test');
 const assert = require('node:assert');
 const { withStartPlaces, findStartMarkers, MARKER } = require('../src/node/map-startplaces');
-const { listGameMaps, readGameMap, internals } = require('../src/node/game-map');
+const { internals } = require('../src/node/game-map');
 
 const geo = { rowRange: internals.rowRange, tileIndex: internals.tileIndex };
 
@@ -55,34 +51,4 @@ test('eine Karte, die schon Startplaetze hat, wird nicht angefasst', () => {
 test('eine kaputte Karte kippt das Laden nicht', () => {
   const karte = { path: 'gibt-es-nicht.map', keeps: [] };
   assert.deepEqual(withStartPlaces(karte, internals).keeps, []);
-});
-
-// Ab hier braucht es das installierte Spiel. Fehlt es, wird uebersprungen -
-// aber NICHT stillschweigend: der Grund steht in der Ausgabe.
-const { maps } = (() => { try { return listGameMaps(); } catch { return { maps: [] }; } })();
-
-test('echte Karten: keine verliert Startplaetze, die 17 ohne Bergfried bekommen welche', { skip: maps.length ? false : 'Spiel nicht gefunden' }, () => {
-  let ergaenzt = 0, leerGeblieben = [];
-  for (const m of maps) {
-    let vorher;
-    try { vorher = readGameMap(m.path); } catch { continue; }
-    const anzahlVorher = vorher.keeps.length;
-    const nachher = withStartPlaces(readGameMap(m.path), internals);
-    assert.ok(nachher.keeps.length >= anzahlVorher, `${m.name} hat Plaetze verloren`);
-    if (anzahlVorher === 0) {
-      if (nachher.keeps.length) ergaenzt += 1; else leerGeblieben.push(m.name);
-    } else {
-      assert.equal(nachher.keeps.length, anzahlVorher, `${m.name} wurde angefasst, obwohl sie Bergfriede hat`);
-    }
-  }
-  assert.equal(ergaenzt, 15, 'genau 15 Karten sollten Marker-Startplaetze bekommen');
-  assert.deepEqual(leerGeblieben.sort(), ['crusader_tutorial', 'crusaders_mission1a']);
-});
-
-test('A Mighty Oasis hat 6 Startplaetze, ohne Spielernummer', { skip: maps.length ? false : 'Spiel nicht gefunden' }, () => {
-  const m = maps.find(x => x.name === 'A Mighty Oasis');
-  const karte = withStartPlaces(readGameMap(m.path), internals);
-  assert.equal(karte.keeps.length, 6);
-  assert.ok(karte.keeps.every(k => k.player === null), 'keine erfundene Spielernummer');
-  assert.ok(karte.keeps.every(k => k.fromMarker === true));
 });

@@ -9,7 +9,7 @@
 // The view can live in one of two hosts: the panel inside the castle column
 // (#castleIsoWindow) or a window of its own. Only ever one of them, and both
 // share this one set of drawing routines - the surface changes, the picture
-// does not. Which host is in use is dock-view.js's decision, not this file's.
+// does not. Which host is in use is panel-view.js's decision, not this file's.
 //
 // All the arithmetic lives in iso-geometry.js and is tested without a
 // screen (tests/iso-view.test.js).

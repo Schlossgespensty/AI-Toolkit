@@ -1,5 +1,5 @@
 // Docking arithmetic — pure functions, no DOM, no canvas.
-// Kept separate from dock-view.js so it can be tested with node --test.
+// Kept separate from panel-view.js so it can be tested with node --test.
 //
 // Every rectangle is {x, y, w, h} and every point is {x, y}, both in client
 // coordinates (what getBoundingClientRect and event.clientX give). Mixing
