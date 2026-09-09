@@ -165,6 +165,28 @@ test('the 2.5D view is opened from the castle toolbar, not as a tab', () => {
   assert.ok(!shell.includes('isoWorkspace'), 'the shell does not know it either');
 });
 
+test('only the Map and 2.5D switches stay in the main toolbar', () => {
+  const toolbar = html.slice(html.indexOf('<header class="castleToolbar'), html.indexOf('</header>', html.indexOf('<header class="castleToolbar')));
+  assert.match(toolbar, /id="castleMapBtn"/);
+  assert.match(toolbar, /id="castleIsoBtn"/);
+  for (const id of ['castleIsoGroundBtn', 'castleIsoGroundFit', 'castleIsoGroundReset',
+                    'castleIsoMapBtn', 'castleIsoMapKeep', 'castleIsoMapMode', 'castleIsoMapReset']) {
+    assert.doesNotMatch(toolbar, new RegExp(`id="${id}"`), `${id} must not occupy the main toolbar`);
+  }
+  const controls = html.slice(html.indexOf('id="castleIsoControls"'), html.indexOf('id="castleMapWindow"'));
+  assert.match(controls, /role="toolbar"/);
+  assert.match(controls, /id="castleIsoGroundBtn"/);
+  assert.match(controls, /id="castleIsoMapBtn"/);
+
+  const panel = fs.readFileSync(path.join(root, 'src', 'js', 'panel-view.js'), 'utf8');
+  assert.match(panel, /node\.active === 'iso'.*strip\.appendChild\(els\.isoControls\)/);
+  assert.match(panel, /tree\.style\.removeProperty\('flex'\)/,
+    'a surviving view must discard the share it had inside a removed split');
+  const view = fs.readFileSync(path.join(root, 'src', 'js', 'iso-view.js'), 'utf8');
+  assert.match(view, /controlSlot\.appendChild\(state\.controls\)/,
+    'the same controls move into the detached 2.5D window');
+});
+
 test('the castle editor lets an outside view use its tools', () => {
   const editor = fs.readFileSync(path.join(root, 'src', 'js', 'castle-editor.js'), 'utf8');
   assert.ok(editor.includes('pointerFromOutside'), 'the bridge exists');

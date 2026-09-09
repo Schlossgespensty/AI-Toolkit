@@ -471,6 +471,27 @@ test('locks are session-only and never enter an AIV document', () => {
   assert.match(functionBody(script, 'outputDocument'), /stripSessionLocks/);
 });
 
+test('map rotation stays in 2.5D and never turns or warps the flat editor', () => {
+  const editor = fs.readFileSync(path.join(root, 'src', 'js', 'castle-editor.js'), 'utf8');
+  assert.doesNotMatch(editor, /function (?:kartenDrehung|anzeigeRechteck|anzeigeXY|dateiXY)/,
+    'the flat editor has no coordinate-rotation layer');
+  assert.doesNotMatch(editor, /pruefeDrehungswechsel|currentRotation\(\)/,
+    'changing a map start or 2.5D direction does not invalidate or turn the flat map');
+
+  const rect = functionBody(editor, 'screenRectForXY');
+  assert.match(rect, /state\.panX \+ x \* state\.cell/);
+  assert.match(rect, /w: w \* state\.cell/,
+    'a non-square sprite keeps its original width and height');
+  const tile = functionBody(editor, 'screenToTile');
+  assert.match(tile, /return \{ x, y \};/,
+    'a click addresses the same AIV tile shown by the flat map');
+
+  const iso = fs.readFileSync(path.join(root, 'src', 'js', 'iso-view.js'), 'utf8');
+  assert.match(iso, /function currentRotation\(\)/);
+  assert.match(iso, /geo\.rotateGrid\(item\.gx, item\.gy, item\.tiles, rotation\)/,
+    'the 2.5D view still applies the game-map rotation');
+});
+
 test('the dedicated Replace tool opens a per-item-type replacement dialog', () => {
   const script = fs.readFileSync(path.join(root, 'src', 'js', 'castle-editor.js'), 'utf8');
   const nach = functionBody(script, 'selectionByType');

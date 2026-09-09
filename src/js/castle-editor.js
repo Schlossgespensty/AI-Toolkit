@@ -636,7 +636,21 @@
 
   async function newFile() {
     if (!await window.unsavedChanges?.confirmEditor('castle', 'creating a new castle')) return false;
-    state.document = newCastleDocument();
+    const document = newCastleDocument();
+    const disposition = await window.ucpLibrary?.chooseDocumentDisposition?.('castle', 'new') || 'separate';
+    if (disposition === 'cancel') return false;
+    if (disposition === 'project') {
+      const added = await window.ucpLibrary.addCastleDocument({ document, unchanged: false });
+      if (!added) return false;
+      loadDocument(document, added.path, {
+        projectManaged: true,
+        source: 'aiv',
+        sourceBytes: added.sourceBytes
+      });
+      setStatus(`New castle added to the loaded AI as ${added.fileName}`);
+      return true;
+    }
+    state.document = document;
     invalidatePlacementCache();
     state.filePath = null;
     state.sourcePath = null;
@@ -660,6 +674,25 @@
     if (!await window.unsavedChanges?.confirmEditor('castle', 'opening another castle')) return false;
     const result = await window.electronAPI.openFile('aiv');
     if (!result) return false;
+    const disposition = await window.ucpLibrary?.chooseDocumentDisposition?.('castle', 'open') || 'separate';
+    if (disposition === 'cancel') return false;
+    if (disposition === 'project') {
+      const added = await window.ucpLibrary.addCastleDocument({
+        document: result.document,
+        suggestedFileName: result.path,
+        sourcePath: result.source === 'aiv' ? result.path : null,
+        sourceBytes: result.sourceBytes,
+        unchanged: true
+      });
+      if (!added) return false;
+      loadDocument(result.document, added.path, {
+        projectManaged: true,
+        source: 'aiv',
+        sourceBytes: added.sourceBytes
+      });
+      setStatus(`${added.fileName} added to the loaded AI`);
+      return true;
+    }
     loadDocument(result.document, result.path, { source: result.source, sourceBytes: result.sourceBytes });
     return true;
   }
@@ -926,6 +959,9 @@
         checkMax: false
       });
       if (!check.ok) return replacementFailure(`No room for ${itemName(change.targetType)}: ${check.reason}`);
+      if (check.replacements.size) {
+        return replacementFailure(`${itemName(change.targetType)} would also replace an item outside the selected area.`);
+      }
       proposed.push({ type: change.targetType, off: change.off });
     }
 
@@ -1223,95 +1259,35 @@
     return null;
   }
 
-  // ---------------------------------------------- Drehung der flachen Karte
-  //
-  // Die 2.5D zeigt die Burg so, wie das Spiel sie am gewaehlten Startplatz
-  // baut - bei Drehung 6 also um drei Viertel gedreht. Zeigte die flache
-  // Karte weiter stur die Datei, laege dasselbe Bauteil in den zwei Ansichten
-  // an verschiedenen Stellen: unten gebaut, rechts wiedergefunden.
-  //
-  // Gedreht wird NUR DIE ANZEIGE. In der Datei bleibt jedes Feld, wo es war,
-  // und jeder Klick wird vor dem Setzen zurueckgedreht (dateiXY). Ohne
-  // geladene Karte oder bei Drehung 0 passiert gar nichts.
-  // Gedreht wird mit iso-geometry, nicht mit castle-geometry: geometry meint
-  // in dieser Datei window.castleGeometry, und dort gibt es rotateGrid nicht.
-  function drehGeo() {
-    return (typeof globalThis !== 'undefined' && globalThis.isoGeometry) || null;
-  }
-
-  function kartenDrehung() {
-    if (!drehGeo()) return 0;
-    // Dieselbe Zahl wie die 2.5D: Startplatz plus was von Hand gedreht wurde.
-    if (window.isoView && window.isoView.currentRotation) return window.isoView.currentRotation();
-    const info = window.isoView && window.isoView.gameMapInfo ? window.isoView.gameMapInfo() : null;
-    return (info && info.keep && Number(info.keep.orientation)) || 0;
-  }
-
-  // Ein Bauteil belegt das Rechteck von (x,y) nach rechts und nach unten.
-  // Gedreht werden seine beiden Eckfelder einzeln, dann die Huelle genommen -
-  // nur so stimmt es auch fuer die vier nicht quadratischen Bauten
-  // (Bergfried, Ingenieursgilde, Tunnelgraeber, Oelbrennerei), bei denen eine
-  // Vierteldrehung Breite und Hoehe tauscht.
-  function anzeigeRechteck(x, y, w, h) {
-    const dreh = kartenDrehung();
-    if (!dreh) return { x, y, w, h };
-    const ecken = [[x, 99 - y], [x + w - 1, 99 - y + h - 1]]
-      .map(([gx, gy]) => drehGeo().rotateGrid(gx, gy, 1, dreh));
-    const gx0 = Math.min(ecken[0].gx, ecken[1].gx);
-    const gx1 = Math.max(ecken[0].gx, ecken[1].gx);
-    const gy0 = Math.min(ecken[0].gy, ecken[1].gy);
-    const gy1 = Math.max(ecken[0].gy, ecken[1].gy);
-    return { x: gx0, y: 99 - gy0, w: gx1 - gx0 + 1, h: gy1 - gy0 + 1 };
-  }
-
-  // Ein einzelnes Feld in die Anzeige drehen.
-  function anzeigeXY(x, y) {
-    const dreh = kartenDrehung();
-    if (!dreh) return { x, y };
-    const g = drehGeo().rotateGrid(x, 99 - y, 1, dreh);
-    return { x: g.gx, y: 99 - g.gy };
-  }
-
-  // Und zurueck: was der Zeiger auf der Anzeige trifft, ist in der Datei ein
-  // anderes Feld. Ohne diesen Schritt baute jeder Klick an der falschen Stelle.
-  function dateiXY(x, y) {
-    const dreh = kartenDrehung();
-    if (!dreh) return { x, y };
-    const g = drehGeo().unrotateGrid(x, 99 - y, dreh);
-    return { x: g.gx, y: 99 - g.gy };
-  }
+  // The flat editor is the file-oriented plan. Map/start-position rotation
+  // belongs only to the 2.5D view; applying it here warped non-square sprites
+  // such as the Keep and made the two perspectives unnecessarily coupled.
 
   function screenRectForXY(type, x, y) {
     const [w, h] = itemSize(type);
     if (isUnitType(type)) {
-      const einheit = anzeigeXY(x, y);
       return {
-        x: state.panX + (einheit.x - 0.5) * state.cell,
-        y: state.panY + (98.5 - einheit.y) * state.cell,
+        x: state.panX + (x - 0.5) * state.cell,
+        y: state.panY + (98.5 - y) * state.cell,
         w: 2 * state.cell,
         h: 2 * state.cell
       };
     }
-    const gedreht = anzeigeRechteck(x, y, w, h);
     return {
-      x: state.panX + gedreht.x * state.cell,
-      y: state.panY + (99 - gedreht.y) * state.cell,
-      w: gedreht.w * state.cell,
-      h: gedreht.h * state.cell
+      x: state.panX + x * state.cell,
+      y: state.panY + (99 - y) * state.cell,
+      w: w * state.cell,
+      h: h * state.cell
     };
   }
 
   function screenRectsForPlacement(type, off) {
-    return footprintRects(type, off).map(rect => {
-      const gedreht = anzeigeRechteck(rect.left, rect.top,
-                                      rect.right - rect.left + 1, rect.top - rect.bottom + 1);
-      return {
-        x: state.panX + gedreht.x * state.cell,
-        y: state.panY + (99 - gedreht.y) * state.cell,
-        w: gedreht.w * state.cell,
-        h: gedreht.h * state.cell
-      };
-    });
+    return footprintRects(type, off).map(rect => ({
+      x: state.panX + rect.left * state.cell,
+      y: state.panY + (99 - rect.top) * state.cell,
+      w: (rect.right - rect.left + 1) * state.cell,
+      h: (rect.top - rect.bottom + 1) * state.cell
+    }));
   }
 
   function refsInMarquee() {
@@ -2574,16 +2550,11 @@
   }
 
   function screenRectForFootprintRect(rect) {
-    // Ueber diesen Weg laufen Bergfried und Lagerplatz - die beiden, die man
-    // in einer leeren Burg ueberhaupt sieht. Ohne die Drehung hier blieben sie
-    // stehen, waehrend sich alles andere dreht.
-    const gedreht = anzeigeRechteck(rect.left, rect.top,
-                                    rect.right - rect.left + 1, rect.top - rect.bottom + 1);
     return {
-      x: state.panX + gedreht.x * state.cell,
-      y: state.panY + (99 - gedreht.y) * state.cell,
-      w: gedreht.w * state.cell,
-      h: gedreht.h * state.cell
+      x: state.panX + rect.left * state.cell,
+      y: state.panY + (99 - rect.top) * state.cell,
+      w: (rect.right - rect.left + 1) * state.cell,
+      h: (rect.top - rect.bottom + 1) * state.cell
     };
   }
 
@@ -2781,10 +2752,9 @@
 
   // Centre of a tile, in this map's screen coordinates
   function tileToScreenPos(tile) {
-    const gedreht = anzeigeXY(tile.x, tile.y);
     return {
-      x: state.panX + (gedreht.x + 0.5) * state.cell,
-      y: state.panY + (99 - gedreht.y + 0.5) * state.cell
+      x: state.panX + (tile.x + 0.5) * state.cell,
+      y: state.panY + (99 - tile.y + 0.5) * state.cell
     };
   }
 
@@ -2795,7 +2765,7 @@
     const row = Math.floor(localY);
     const y = 99 - row;
     if (x < 0 || x > 99 || y < 0 || y > 99) return null;
-    return dateiXY(x, y);
+    return { x, y };
   }
 
   // A pointer that belongs to another canvas - the 2.5D view, docked into the
@@ -3226,19 +3196,8 @@
   const karteAbbruch = document.getElementById('castleIsoMapCancel');
   let karteVorrat = null;   // einmal geholt, dann behalten
 
-  // Wechselt die Drehung, muss die flache Karte neu gemalt werden: ihre
-  // Bauteile liegen im Zwischenspeicher, und der weiss von der Karte nichts.
-  let letzteDrehung = 0;
-  function pruefeDrehungswechsel() {
-    const jetzt = kartenDrehung();
-    if (jetzt === letzteDrehung) return;
-    letzteDrehung = jetzt;
-    scheduleDraw(true);
-  }
-
   function updateMapControls() {
     const info = window.isoView && window.isoView.gameMapInfo ? window.isoView.gameMapInfo() : null;
-    pruefeDrehungswechsel();
     if (karteZurueck) karteZurueck.hidden = !info;
     if (karteArt) {
       karteArt.hidden = !info;
@@ -3529,7 +3488,6 @@
       // Kopieren bleibt auf '5' und Strg+C.
       event.preventDefault();
       const wert = window.isoView.turnView(key === 'c' ? -1 : 1);
-      pruefeDrehungswechsel();
       setStatus('View turned' + (wert ? ' by ' + (wert / 2) + ' quarter turn' + (wert === 2 ? '' : 's') : ' back to the file'));
     } else if (shortcutTool) {
       event.preventDefault();

@@ -24,6 +24,17 @@ test('the renderer has a restrictive content security policy', () => {
   assert.match(html, /object-src 'none'/);
   assert.match(html, /base-uri 'none'/);
   assert.match(html, /form-action 'none'/);
+  assert.doesNotMatch(html, /\son[a-z]+\s*=/i,
+    'controls must use external listeners because script-src blocks inline handlers');
+});
+
+test('Character file controls are wired without blocked inline scripts', () => {
+  const html = read('src/index.html');
+  const editor = read('src/js/character-editor.js');
+  for (const id of ['characterOpenBtn', 'saveBtn', 'saveAsBtn']) {
+    assert.match(html, new RegExp(`id="${id}"`));
+    assert.match(editor, new RegExp(`getElementById\\('${id}'\\)\\.addEventListener\\('click'`));
+  }
 });
 
 test('Character search and help text do not inject configuration or JSON as HTML', () => {

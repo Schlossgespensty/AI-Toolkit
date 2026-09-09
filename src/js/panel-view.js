@@ -100,6 +100,9 @@
 
   function fillTabs(el, node) {
     const strip = el.querySelector('.areaTabs');
+    if (els.isoControls && els.isoControls.parentElement === strip) {
+      els.store.appendChild(els.isoControls);
+    }
     strip.textContent = '';
     for (const win of node.tabs) {
       const tab = document.createElement('button');
@@ -111,6 +114,7 @@
       tab.title = 'Click to show, drag to move it somewhere else';
       strip.appendChild(tab);
     }
+    if (node.active === 'iso' && els.isoControls) strip.appendChild(els.isoControls);
     const fill = document.createElement('span');
     fill.className = 'areaFill';
     strip.appendChild(fill);
@@ -175,6 +179,9 @@
   function render() {
     const seen = new Set(M.areas(current.root).map(a => a.id));
     const tree = buildNode(current.root, '');
+    // An area reused from one half of a split still carries that half's
+    // inline flex share. As the root it must grow to the whole view again.
+    tree.style.removeProperty('flex');
     if (els.root.firstChild !== tree) {
       els.root.textContent = '';
       els.root.appendChild(tree);
@@ -183,6 +190,10 @@
     // forgotten, or the map would grow one dead box per drag.
     for (const [id, el] of Array.from(built)) {
       if (seen.has(id)) continue;
+      const controlsParent = els.isoControls && els.isoControls.parentElement;
+      if (controlsParent && controlsParent.parentElement === el) {
+        els.store.appendChild(els.isoControls);
+      }
       for (const child of Array.from(el.querySelector('.areaBody').children)) {
         els.store.appendChild(child);
       }
@@ -415,6 +426,7 @@
     els.ghost = need('castleDragGhost');
     els.windows = {};
     for (const [win, info] of Object.entries(WINDOWS)) els.windows[win] = need(info.el);
+    els.isoControls = need('castleIsoControls');
     els.buttons = { map: document.getElementById('castleMapBtn'),
                     iso: document.getElementById('castleIsoBtn') };
 

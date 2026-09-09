@@ -39,12 +39,13 @@ const WINDOW_ELEMENT = { map: 'castleMapWindow', iso: 'castleIsoWindow' };
 
 const IDS = ['castleViewRoot', 'castleWindowStore', 'castleDockOverlay', 'castleDockPreview',
              'castleDockHint', 'castleDragGhost', 'castleMapWindow', 'castleIsoWindow',
-             'castleMapBtn', 'castleIsoBtn'];
+             'castleIsoControls', 'castleMapBtn', 'castleIsoBtn'];
 
 function boot(saved) {
   const doc = makeDocument();
   const els = {};
   for (const id of IDS) els[id] = doc.put(id, doc.createElement('div'));
+  els.castleWindowStore.appendChild(els.castleIsoControls);
   els.castleDockOverlay.rect = { left: BOX.x, top: BOX.y, width: BOX.w, height: BOX.h };
 
   const calls = [];
@@ -205,6 +206,8 @@ test('the 2.5D button opens the view beside the map and mounts it', () => {
   assert.ok(app.calls.includes('mountDock'), 'the slanted view was told to take its canvas');
   assert.ok(app.calls.includes('editorResize'), 'and the map was told to measure again');
   assert.equal(app.els.castleIsoBtn.getAttribute('aria-pressed'), 'true');
+  assert.equal(app.els.castleIsoControls.parentElement, app.areaOf('iso').querySelector('.areaTabs'),
+    'the view-specific controls live in the 2.5D title bar');
 });
 
 test('closing it through the tab bar unmounts it', () => {
@@ -216,6 +219,18 @@ test('closing it through the tab bar unmounts it', () => {
   close.fire('click', {});
   assert.match(app.shape(), /^a\d+: map\*$/, 'the box is gone and the map has the room');
   assert.ok(app.calls.includes('unmount'), 'the slanted view let its canvas go');
+});
+
+test('the surviving window forgets its old split share and fills the root again', () => {
+  const app = boot();
+  app.els.castleIsoBtn.fire('click', {});
+  const mapArea = app.areaOf('map');
+  assert.equal(mapArea.style.flex, '0.6 1 0', 'the split gives the map its adjustable share');
+
+  app.els.castleIsoBtn.fire('click', {});
+  assert.equal(app.view.getState().root.kind, 'area');
+  assert.equal(app.els.castleViewRoot.firstChild, mapArea, 'the surviving area is reused');
+  assert.equal(mapArea.style.flex, undefined, 'but its stale split share is cleared');
 });
 
 // --------------------------------------------------------- dragging tabs

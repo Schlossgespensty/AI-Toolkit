@@ -22,6 +22,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
   loadMapTiles: (filePath) => ipcRenderer.invoke('load-map-tiles', filePath),
   scanUcpAiLibrary: (gameRoot) => ipcRenderer.invoke('scan-ucp-ai-library', gameRoot),
   loadUcpAiProject: (request) => ipcRenderer.invoke('load-ucp-ai-project', request),
+  chooseAiDocumentAction: (request) => ipcRenderer.invoke('choose-ai-document-action', request),
+  addAiDocument: (request) => ipcRenderer.invoke('add-ai-document', request),
   updateAiCastleMapping: (request) => ipcRenderer.invoke('update-ai-castle-mapping', request),
   cloneUcpAi: (request) => ipcRenderer.invoke('clone-ucp-ai', request),
   createUcpAi: (request) => ipcRenderer.invoke('create-ucp-ai', request),

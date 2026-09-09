@@ -926,19 +926,6 @@ button:disabled { cursor: default; }
 .castleMapDialog .castleMapList button:hover .castleMapSource,
 .castleMapDialog .castleMapList button:focus .castleMapSource { color: inherit; }
 .castleMapList .castleMapEmpty { padding: 10px; color: var(--text-muted); font-size: 12px; }
-/* Der Startplatz-Waehler steht zwischen den Knoepfen der Werkzeugleiste und
-   soll aussehen wie die Auswahlbox daneben, nicht wie ein Systemfeld. */
-#castleIsoMapKeep {
-  width: 150px;
-  min-height: 30px;
-  padding: 3px 7px;
-  border: 1px solid var(--line);
-  border-radius: var(--radius-sm);
-  background: var(--surface-3);
-  color: var(--text-main);
-  font: 1.2rem var(--font-ui);
-}
-
 .castleMain {
   min-width: 0;
   min-height: 0;
@@ -1144,6 +1131,44 @@ button:disabled { cursor: default; }
   background: var(--surface-2);
 }
 .areaFill { flex: 1; }
+.isoViewControls {
+  min-width: 0;
+  max-width: min(620px, calc(100% - 105px));
+  display: flex;
+  flex: 0 1 auto;
+  align-items: center;
+  gap: 3px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: thin;
+}
+.isoViewControls button {
+  flex: none;
+  width: auto;
+  min-width: 0;
+  min-height: 24px;
+  margin: 0;
+  padding: 1px 7px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface-3);
+  color: var(--text-main);
+  font: 600 11px/1.2 var(--font-ui);
+}
+.isoViewControls button:hover { border-color: #6a797f; background: var(--surface-raised); }
+.isoViewControls button[aria-pressed="true"] { border-color: var(--accent-strong); background: var(--accent-soft); }
+.isoViewControls .isoViewReset { width: 24px; padding-inline: 0; }
+.isoViewControls #castleIsoMapKeep {
+  flex: none;
+  width: 128px;
+  min-height: 24px;
+  padding: 1px 5px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface-3);
+  color: var(--text-main);
+  font: 11px var(--font-ui);
+}
 .areaTab {
   padding: 2px 10px;
   border: 1px solid transparent;

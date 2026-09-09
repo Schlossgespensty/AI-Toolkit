@@ -369,6 +369,64 @@ function castleFiles(aiRoot, diagnostics) {
   return { mappingPath, mappingExists: fs.existsSync(mappingPath), castles };
 }
 
+function writableAiRoot(gameRoot, aiRoot) {
+  const layout = installationLayout(gameRoot);
+  const root = requireWithin(layout.pluginsRoot, path.resolve(String(aiRoot || '')), 'AI');
+  if (!fs.existsSync(root) || !fs.statSync(root).isDirectory() || !fs.existsSync(path.join(root, 'meta.json'))) {
+    throw new Error('The loaded AI project no longer exists.');
+  }
+  return root;
+}
+
+function replaceAiCharacter({ gameRoot, aiRoot, content }) {
+  const root = writableAiRoot(gameRoot, aiRoot);
+  const character = String(content || '').trim();
+  if (!character) throw new Error('The Character file is empty.');
+  JSON.parse(character);
+  const destination = path.join(root, 'character.json');
+  atomicWriteFile(destination, `${character}\n`, 'utf8');
+  return { path: destination };
+}
+
+async function addAiCastle({
+  gameRoot,
+  aiRoot,
+  fileName,
+  document,
+  sourcePath = null,
+  sourceBytes = null,
+  unchanged = true,
+  overwrite = false,
+  writeAivDocument
+}) {
+  const root = writableAiRoot(gameRoot, aiRoot);
+  const safeName = path.basename(String(fileName || ''));
+  if (!safeName || safeName !== fileName || !/\.aiv$/i.test(safeName)) {
+    throw new Error('The castle filename must be a plain .aiv filename.');
+  }
+  if (!document || typeof document !== 'object' || Array.isArray(document)) {
+    throw new Error('The castle document is invalid.');
+  }
+  if (typeof writeAivDocument !== 'function') throw new Error('The native AIV writer is unavailable.');
+
+  const aivRoot = path.join(root, 'aiv');
+  fs.mkdirSync(aivRoot, { recursive: true });
+  const destination = path.join(aivRoot, safeName);
+  if (fs.existsSync(destination) && !overwrite) {
+    throw new Error(`Castle file '${safeName}' already exists in this AI.`);
+  }
+  const saved = await writeAivDocument(document, destination, {
+    sourcePath,
+    sourceBytes,
+    unchanged: Boolean(unchanged)
+  });
+  return {
+    path: destination,
+    fileName: safeName,
+    sourceBytes: saved?.sourceBytes || null
+  };
+}
+
 function updateAiCastleMapping({ gameRoot, aiRoot, slots }) {
   const layout = installationLayout(gameRoot);
   const root = requireWithin(layout.pluginsRoot, aiRoot, 'AI');
@@ -790,6 +848,8 @@ module.exports = {
   readAiProject,
   readAiMedia,
   resolveAiMediaEntry,
+  replaceAiCharacter,
+  addAiCastle,
   updateAiCastleMapping,
   updateManagedAi,
   replaceDirectoryTransaction,

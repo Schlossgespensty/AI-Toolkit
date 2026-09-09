@@ -9,6 +9,8 @@ const {
   createManagedAi,
   readAiProject,
   resolveAiMediaEntry,
+  replaceAiCharacter,
+  addAiCastle,
   updateAiCastleMapping,
   updateManagedAi,
   atomicWriteFile,
@@ -372,6 +374,30 @@ ipcMain.handle('confirm-unsaved', async (event, { documentName = 'document', act
   return ['save', 'discard', 'cancel'][result.response] || 'cancel';
 });
 
+ipcMain.handle('choose-ai-document-action', async (event, {
+  kind = 'character',
+  operation = 'open',
+  aiName = 'the loaded AI'
+} = {}) => {
+  const win = BrowserWindow.fromWebContents(event.sender);
+  const isCastle = kind === 'castle';
+  const creating = operation === 'new';
+  const documentName = isCastle ? 'castle' : 'Character';
+  const result = await dialog.showMessageBox(win, {
+    type: isCastle ? 'question' : 'warning',
+    title: `Add ${documentName} to ${aiName}?`,
+    message: `${creating ? 'Create' : 'Open'} this ${documentName} as part of ${aiName}?`,
+    detail: isCastle
+      ? `Add to AI copies the castle into ${aiName}'s aiv folder and keeps the AI project open. Edit separately leaves the AI project and saves the castle wherever you choose.`
+      : `Add to AI replaces ${aiName}'s current character.json. The old Character file will be permanently lost. Edit separately leaves the AI project and saves this Character wherever you choose.`,
+    buttons: ['Add to AI', 'Edit separately', 'Cancel'],
+    defaultId: 1,
+    cancelId: 2,
+    noLink: true
+  });
+  return ['project', 'separate', 'cancel'][result.response] || 'cancel';
+});
+
 ipcMain.on('confirm-window-close', event => {
   const win = BrowserWindow.fromWebContents(event.sender);
   if (!win || win.isDestroyed()) return;
@@ -496,6 +522,66 @@ ipcMain.handle('load-ucp-ai-project', (_event, request) => readAiProject({
   ...request,
   readAivDocument
 }));
+
+ipcMain.handle('add-ai-document', async (event, request = {}) => {
+  if (request.kind === 'character') {
+    return replaceAiCharacter(request);
+  }
+  if (request.kind !== 'castle') throw new Error('Only Character and castle files can be added to an AI.');
+
+  const layout = installationLayout(request.gameRoot);
+  const root = path.resolve(String(request.aiRoot || ''));
+  if (!isWithin(layout.pluginsRoot, root)) throw new Error('The selected AI is outside ucp/plugins.');
+  const aivRoot = path.join(root, 'aiv');
+  let fileName = '';
+
+  if (request.suggestedFileName || request.sourcePath) {
+    const sourceName = path.basename(String(request.suggestedFileName || request.sourcePath));
+    fileName = sourceName.replace(/\.aivjson$/i, '.aiv');
+    if (!/\.aiv$/i.test(fileName)) throw new Error('The selected castle does not have an AIV filename.');
+  } else {
+    fs.mkdirSync(aivRoot, { recursive: true });
+    const win = BrowserWindow.fromWebContents(event.sender);
+    const selection = await dialog.showSaveDialog(win, {
+      title: 'Name the castle in the loaded AI',
+      defaultPath: path.join(aivRoot, 'New Castle.aiv'),
+      filters: [{ name: 'Stronghold AIV Castle', extensions: ['aiv'] }]
+    });
+    if (selection.canceled || !selection.filePath) return null;
+    const selectedPath = selection.filePath.toLowerCase().endsWith('.aiv')
+      ? selection.filePath
+      : `${selection.filePath}.aiv`;
+    if (path.resolve(path.dirname(selectedPath)).toLowerCase() !== path.resolve(aivRoot).toLowerCase()) {
+      throw new Error(`Choose a filename directly inside ${aivRoot}.`);
+    }
+    fileName = path.basename(selectedPath);
+  }
+
+  const destination = path.join(aivRoot, fileName);
+  const sameFile = request.sourcePath &&
+    path.resolve(request.sourcePath).toLowerCase() === path.resolve(destination).toLowerCase();
+  if (fs.existsSync(destination) && !sameFile) {
+    const win = BrowserWindow.fromWebContents(event.sender);
+    const confirmation = await dialog.showMessageBox(win, {
+      type: 'warning',
+      title: 'Replace castle file?',
+      message: `${fileName} already exists in this AI.`,
+      detail: 'Replacing it permanently removes the existing castle file.',
+      buttons: ['Replace', 'Cancel'],
+      defaultId: 1,
+      cancelId: 1,
+      noLink: true
+    });
+    if (confirmation.response !== 0) return null;
+  }
+
+  return addAiCastle({
+    ...request,
+    fileName,
+    overwrite: true,
+    writeAivDocument
+  });
+});
 
 ipcMain.handle('update-ai-castle-mapping', (_event, request) => updateAiCastleMapping(request));
 

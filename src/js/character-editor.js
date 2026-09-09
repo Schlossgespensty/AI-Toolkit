@@ -441,7 +441,9 @@ function loadFromContent(content, path, options = {}) {
   mergeDefaults(data, activeTemplate);
 
   currentFilePath = path || null;
-  currentFileReadOnly = false;
+  currentFileReadOnly = Boolean(options.readOnly);
+
+  if (!options.projectManaged) window.ucpLibrary?.detachCastleProject?.();
 
   const parts = String(currentFilePath || '').split(/[\\/]/);
   AIName = parts[parts.length - 2] || "";
@@ -461,11 +463,18 @@ async function loadFile() {
   const { content, path } = result;
 
   try {
-  loadFromContent(content, path);
-  } 
-  
-  catch (err) {
-    alert("Invalid JSON");
+    JSON.parse(content);
+    const disposition = await window.ucpLibrary?.chooseDocumentDisposition?.('character', 'open') || 'separate';
+    if (disposition === 'cancel') return false;
+    if (disposition === 'project') {
+      const added = await window.ucpLibrary.addCharacterDocument(content);
+      if (!added) return false;
+      loadFromContent(content, added.path, { projectManaged: true });
+    } else {
+      loadFromContent(content, path);
+    }
+  } catch (err) {
+    alert(`Could not open Character file:\n\n${err.message}`);
     console.error(err);
     return false;
   }
@@ -476,23 +485,31 @@ async function loadFile() {
 async function newCharacterFile() {
   if (!isInitialized) return false;
   if (!await window.unsavedChanges?.confirmEditor('character', 'creating a new Character')) return false;
+  const disposition = await window.ucpLibrary?.chooseDocumentDisposition?.('character', 'new') || 'separate';
+  if (disposition === 'cancel') return false;
+  let projectPath = null;
+  if (disposition === 'project') {
+    const added = await window.ucpLibrary.addCharacterDocument(JSON.stringify(template, null, 2));
+    if (!added) return false;
+    projectPath = added.path;
+  }
   activeTemplate = template;
   activeGroupBreaks = groupBreaks;
   activeSections = sections;
   data = JSON.parse(JSON.stringify(template));
-  currentFilePath = null;
+  currentFilePath = projectPath;
   currentFileReadOnly = false;
-  AIName = '';
+  AIName = projectPath ? projectPath.split(/[\\/]/).slice(-2, -1)[0] || '' : '';
   searchQuery = '';
   document.getElementById('search').value = '';
   document.getElementById('toggleOx').checked = true;
   document.getElementById('toggleRun').checked = true;
-  document.getElementById('aiName').textContent = 'No Character Loaded';
+  document.getElementById('aiName').textContent = AIName || 'No Character Loaded';
   setActiveTemplateButton('standard');
-  window.ucpLibrary?.detachCastleProject?.();
+  if (disposition !== 'project') window.ucpLibrary?.detachCastleProject?.();
   render();
   markCharacterSaved();
-  window.appWorkspace?.setStatus('New Character');
+  window.appWorkspace?.setStatus(projectPath ? 'New Character added to the loaded AI' : 'New Character');
   return true;
 }
 
@@ -1092,6 +1109,14 @@ const characterWorkspace = document.getElementById("characterWorkspace");
 const refreshCharacterDirtyDisplay = () => queueMicrotask(updateFilePathDisplay);
 characterWorkspace.addEventListener("input", refreshCharacterDirtyDisplay);
 characterWorkspace.addEventListener("change", refreshCharacterDirtyDisplay);
+
+document.getElementById('characterOpenBtn').addEventListener('click', loadFile);
+document.getElementById('saveBtn').addEventListener('click', quickSaveFile);
+document.getElementById('saveAsBtn').addEventListener('click', saveFile);
+document.getElementById('characterExpandAllBtn').addEventListener('click', expandAll);
+document.getElementById('characterCollapseAllBtn').addEventListener('click', collapseAll);
+document.getElementById('btnStandard').addEventListener('click', standardTemplate);
+document.getElementById('btnOrdered').addEventListener('click', orderedTemplate);
 
 toggleOx.onchange=render;
 toggleRun.onchange=render;

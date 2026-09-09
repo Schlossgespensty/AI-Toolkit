@@ -28,9 +28,9 @@
           <div id="filePath" class="workspacePath">Open a character.json file or choose an AI from the Library.</div>
         </div>
         <div class="workspaceHeaderActions characterHeaderActions">
-          <button type="button" onclick="loadFile()">Open character</button>
-          <button id="saveBtn" class="primaryAction" type="button" onclick="quickSaveFile()">Save character</button>
-          <button id="saveAsBtn" type="button" onclick="saveFile()">Save as</button>
+          <button id="characterOpenBtn" type="button">Open character</button>
+          <button id="saveBtn" class="primaryAction" type="button">Save character</button>
+          <button id="saveAsBtn" type="button">Save as</button>
         </div>
       </header>
 
@@ -101,12 +101,12 @@
             </label>
             <div class="characterControlActions">
               <div class="segmentedControl" aria-label="Section visibility">
-                <button class="sectionBtn" type="button" onclick="expandAll()">Expand all</button>
-                <button class="sectionBtn" type="button" onclick="collapseAll()">Collapse all</button>
+                <button id="characterExpandAllBtn" class="sectionBtn" type="button">Expand all</button>
+                <button id="characterCollapseAllBtn" class="sectionBtn" type="button">Collapse all</button>
               </div>
               <div class="segmentedControl templateButtons" aria-label="Character field order">
-                <button id="btnStandard" class="templateBtn" type="button" onclick="standardTemplate()">Standard template</button>
-                <button id="btnOrdered" class="templateBtn" type="button" onclick="orderedTemplate()">Ordered template</button>
+                <button id="btnStandard" class="templateBtn" type="button">Standard template</button>
+                <button id="btnOrdered" class="templateBtn" type="button">Ordered template</button>
               </div>
             </div>
           </div>
@@ -129,13 +129,6 @@
           <button id="castleSaveAsBtn" type="button">Save as</button>
           <button id="castleMapBtn" type="button" aria-pressed="true" title="Show or close the map seen from above">Map</button>
           <button id="castleIsoBtn" type="button" aria-pressed="false" title="Show or close the slanted view - drag a tab to move a window">2.5D view</button>
-          <button id="castleIsoGroundBtn" type="button" title="Pick your own ground for the slanted view - any picture, laid out tile by tile">Ground</button>
-          <button id="castleIsoGroundFit" type="button" aria-pressed="false" title="Lay the picture out tile by tile, or spread it once over the whole map" hidden>Tiled</button>
-          <button id="castleIsoGroundReset" type="button" title="Back to the ground that comes with the app" hidden>&times;</button>
-          <button id="castleIsoMapBtn" type="button" title="Lay a map of the game under the slanted view - to scale, one field of the map on one field of the editor">Game map</button>
-          <select id="castleIsoMapKeep" title="Which starting place of the map the castle is built on" hidden></select>
-          <button id="castleIsoMapMode" type="button" aria-pressed="false" title="Quick preview - one colour per field - or the real terrain of the game, drawn from its own tiles" hidden>Preview</button>
-          <button id="castleIsoMapReset" type="button" title="Take the map of the game away" hidden>&times;</button>
         </div>
         <div class="toolbarGroup castleProjectGroup">
           <label class="castleProjectChoice" for="ucpCastleSelect">
@@ -194,7 +187,7 @@
           <div id="castleBuildList" class="castleBuildList"></div>
           <section id="castlePopulationOverview" class="castlePopulationOverview castleOverviewPanel" data-overview="population" aria-label="Population up to the selected build step">
             <div class="populationOverviewTitle castleOverviewTitle">
-              <span>Population</span>
+              <span>Population at current step</span>
               <span class="castleOverviewTitleActions">
                 <strong id="castlePopulationStep">-</strong>
                 <button type="button" class="castleOverviewInfoButton" data-info-target="castlePopulationInfo" aria-label="About the population overview" aria-expanded="false">i</button>
@@ -222,6 +215,15 @@
                area: out of the page they cost nothing, and no ResizeObserver
                measures a canvas of no size. -->
           <div id="castleWindowStore" class="windowStore" hidden>
+            <div id="castleIsoControls" class="isoViewControls" role="toolbar" aria-label="2.5D view controls">
+              <button id="castleIsoGroundBtn" type="button" title="Pick your own ground for the slanted view - any picture, laid out tile by tile">Ground</button>
+              <button id="castleIsoGroundFit" type="button" aria-pressed="false" title="Lay the picture out tile by tile, or spread it once over the whole map" hidden>Tiled</button>
+              <button id="castleIsoGroundReset" class="isoViewReset" type="button" title="Back to the ground that comes with the app" aria-label="Reset ground" hidden>&times;</button>
+              <button id="castleIsoMapBtn" type="button" title="Lay a map of the game under the slanted view - to scale, one field of the map on one field of the editor">Game map</button>
+              <select id="castleIsoMapKeep" title="Which starting place of the map the castle is built on" aria-label="Map starting place" hidden></select>
+              <button id="castleIsoMapMode" type="button" aria-pressed="false" title="Quick preview - one colour per field - or the real terrain of the game, drawn from its own tiles" hidden>Preview</button>
+              <button id="castleIsoMapReset" class="isoViewReset" type="button" title="Take the map of the game away" aria-label="Remove game map" hidden>&times;</button>
+            </div>
             <div id="castleMapWindow" class="viewWindow" data-window="map">
               <div id="castleCanvasHost" class="castleCanvasHost">
                 <canvas id="castleCanvas" tabindex="0" aria-label="100 by 100 tile castle map"></canvas>

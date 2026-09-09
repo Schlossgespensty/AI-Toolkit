@@ -15,6 +15,8 @@ const {
   readAiProject,
   readAiMedia,
   resolveAiMediaEntry,
+  replaceAiCharacter,
+  addAiCastle,
   updateAiCastleMapping,
   updateManagedAi,
   replaceDirectoryTransaction,
@@ -232,6 +234,63 @@ test('updates all eight castle mapping slots and permits repeated castle files',
   }), /does not exist/);
 });
 
+test('adds Character and castle files directly to the loaded AI project', async t => {
+  const fixture = makeFixture();
+  t.after(() => fs.rmSync(fixture.gameRoot, { recursive: true, force: true }));
+
+  const replacement = JSON.stringify({ aic: { WallDecoration: 7 } }, null, 2);
+  const character = replaceAiCharacter({
+    gameRoot: fixture.gameRoot,
+    aiRoot: fixture.aiRoot,
+    content: replacement
+  });
+  assert.equal(character.path, path.join(fixture.aiRoot, 'character.json'));
+  assert.deepEqual(JSON.parse(fs.readFileSync(character.path, 'utf8')), JSON.parse(replacement));
+
+  const castleDocument = { pauseDelayAmount: 100, frames: [], miscItems: [] };
+  const savedBytes = Uint8Array.from([7, 8, 9]);
+  const castle = await addAiCastle({
+    gameRoot: fixture.gameRoot,
+    aiRoot: fixture.aiRoot,
+    fileName: 'imported.aiv',
+    document: castleDocument,
+    sourcePath: 'C:\\Castles\\imported.aiv',
+    sourceBytes: Uint8Array.from([1, 2, 3]),
+    writeAivDocument: async (document, destination, options) => {
+      assert.deepEqual(document, castleDocument);
+      assert.equal(destination, path.join(fixture.aiRoot, 'aiv', 'imported.aiv'));
+      assert.equal(options.sourcePath, 'C:\\Castles\\imported.aiv');
+      fs.writeFileSync(destination, Buffer.from('imported castle'));
+      return { path: destination, sourceBytes: savedBytes };
+    }
+  });
+  assert.equal(castle.fileName, 'imported.aiv');
+  assert.deepEqual(castle.sourceBytes, savedBytes);
+  assert.equal(fs.readFileSync(castle.path, 'utf8'), 'imported castle');
+  assert.ok(scanUcpInstallation(fixture.gameRoot).ais[0].castles.some(item => item.fileName === 'imported.aiv'));
+});
+
+test('project imports reject invalid Character JSON and accidental castle overwrites', async t => {
+  const fixture = makeFixture();
+  t.after(() => fs.rmSync(fixture.gameRoot, { recursive: true, force: true }));
+  const originalCharacter = fs.readFileSync(path.join(fixture.aiRoot, 'character.json'), 'utf8');
+
+  assert.throws(() => replaceAiCharacter({
+    gameRoot: fixture.gameRoot,
+    aiRoot: fixture.aiRoot,
+    content: '{broken'
+  }), /JSON/);
+  assert.equal(fs.readFileSync(path.join(fixture.aiRoot, 'character.json'), 'utf8'), originalCharacter);
+
+  await assert.rejects(addAiCastle({
+    gameRoot: fixture.gameRoot,
+    aiRoot: fixture.aiRoot,
+    fileName: 'sample1.aiv',
+    document: { frames: [], miscItems: [] },
+    writeAivDocument: async () => assert.fail('writer must not run before overwrite is approved')
+  }), /already exists/);
+});
+
 test('resolves only mapped WAV and Bink files inside the selected AI', t => {
   const fixture = makeFixture();
   t.after(() => fs.rmSync(fixture.gameRoot, { recursive: true, force: true }));
@@ -349,9 +408,32 @@ test('Electron shell exposes the Library and AI Content workspaces', () => {
   assert.match(preload, /createUcpAi/);
   assert.match(preload, /chooseAiPortrait/);
   assert.match(preload, /loadAiMediaData/);
+  assert.match(preload, /chooseAiDocumentAction/);
+  assert.match(preload, /addAiDocument/);
   assert.match(preload, /replaceAiMedia/);
   assert.match(preload, /openAiMedia/);
   assert.match(shell, /ucp:\s*document\.getElementById\('ucpWorkspace'\)/);
   assert.match(shell, /content:\s*document\.getElementById\('aiContentWorkspace'\)/);
   assert.match(shell, /let active = 'ucp'/);
+});
+
+test('new and opened documents can join the loaded AI or detach for standalone editing', () => {
+  const root = path.resolve(__dirname, '..');
+  const main = fs.readFileSync(path.join(root, 'main.js'), 'utf8');
+  const library = fs.readFileSync(path.join(root, 'src', 'js', 'ucp-library.js'), 'utf8');
+  const character = fs.readFileSync(path.join(root, 'src', 'js', 'character-editor.js'), 'utf8');
+  const castle = fs.readFileSync(path.join(root, 'src', 'js', 'castle-editor.js'), 'utf8');
+
+  assert.match(main, /buttons: \['Add to AI', 'Edit separately', 'Cancel'\]/);
+  assert.match(main, /old Character file will be permanently lost/);
+  assert.match(main, /copies the castle into .*aiv folder/);
+  assert.match(library, /function chooseDocumentDisposition\(kind, operation\)/);
+  assert.match(library, /function addCharacterDocument\(content\)/);
+  assert.match(library, /function addCastleDocument\(/);
+  assert.match(character, /chooseDocumentDisposition\?\.\('character', 'open'\)/);
+  assert.match(character, /chooseDocumentDisposition\?\.\('character', 'new'\)/);
+  assert.match(character, /loadFromContent\(content, added\.path, \{ projectManaged: true \}\)/);
+  assert.match(castle, /chooseDocumentDisposition\?\.\('castle', 'open'\)/);
+  assert.match(castle, /chooseDocumentDisposition\?\.\('castle', 'new'\)/);
+  assert.match(castle, /projectManaged: true/);
 });

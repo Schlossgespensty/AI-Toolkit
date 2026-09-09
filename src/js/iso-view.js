@@ -42,7 +42,8 @@
     panning: false,
     panStart: null,
     drawing: false,
-    hover: null
+    hover: null,
+    controls: null
   };
 
   // ---------------------------------------------------------- sprites
@@ -809,8 +810,9 @@
     ecken.forEach(([px, py], i) => { if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py); });
     ctx.closePath();
     const loeschen = box.kind === 'delete-marquee';
-    ctx.fillStyle = loeschen ? 'rgba(220,90,80,.18)' : 'rgba(120,190,255,.16)';
-    ctx.strokeStyle = loeschen ? 'rgba(240,120,110,.95)' : 'rgba(150,205,255,.95)';
+    const ersetzen = box.kind === 'replace-marquee';
+    ctx.fillStyle = loeschen ? 'rgba(220,90,80,.18)' : ersetzen ? 'rgba(221,169,75,.18)' : 'rgba(120,190,255,.16)';
+    ctx.strokeStyle = loeschen ? 'rgba(240,120,110,.95)' : ersetzen ? 'rgba(221,169,75,.95)' : 'rgba(150,205,255,.95)';
     ctx.lineWidth = 2;
     ctx.fill();
     ctx.stroke();
@@ -946,6 +948,7 @@
       // fires this after the panel has taken over, and clearing the host
       // then would leave the panel blank.
       if (state.host !== host) return;
+      parkControls();
       state.host = null;
       state.panning = false;
       state.panStart = null;
@@ -965,6 +968,13 @@
   }
 
   // ------------------------------------------------------------- hosts
+
+  function parkControls() {
+    const store = document.getElementById('castleWindowStore');
+    if (state.controls && store && state.controls.parentElement !== store) {
+      store.appendChild(state.controls);
+    }
+  }
 
   function isMounted() { return Boolean(state.host) && !hostIsGone(); }
 
@@ -1018,13 +1028,32 @@
     win.document.body.style.cssText =
       'margin:0;background:#171a14;overflow:hidden;font:12px/1.4 system-ui,sans-serif;color:#cfd6c8';
     win.document.body.innerHTML =
-      '<div id="isoWindowHost" style="position:fixed;inset:0">' +
+      '<div id="isoWindowChrome"><strong>2.5D</strong><div id="isoWindowControlSlot"></div>' +
+      '<span class="isoWindowFill"></span><button id="isoWindowDockBtn" type="button">Dock</button></div>' +
+      '<div id="isoWindowHost">' +
       '<canvas id="isoWindowCanvas" style="display:block;width:100%;height:100%;cursor:crosshair"></canvas>' +
       '</div>' +
-      '<button id="isoWindowDockBtn" type="button" style="position:fixed;top:8px;right:8px;padding:4px 10px;' +
-      'border:1px solid #4a5346;border-radius:4px;background:#232a1c;color:#cfd6c8;cursor:pointer">Dock</button>' +
       '<div id="isoWindowStatus" style="position:fixed;left:0;right:0;bottom:0;padding:5px 10px;' +
       'background:rgba(0,0,0,.55);pointer-events:none"></div>';
+    const chromeStyle = win.document.createElement('style');
+    chromeStyle.textContent =
+      '[hidden]{display:none!important}' +
+      '#isoWindowChrome{position:fixed;inset:0 0 auto 0;height:34px;display:flex;align-items:center;gap:5px;' +
+      'padding:3px 6px;box-sizing:border-box;background:#20262a;border-bottom:1px solid #465158}' +
+      '#isoWindowChrome>strong{padding:0 4px;color:#eef1f6;font-size:11px}' +
+      '#isoWindowControlSlot{min-width:0;display:flex;flex:0 1 auto;overflow-x:auto;overflow-y:hidden}' +
+      '.isoWindowFill{flex:1}' +
+      '#isoWindowHost{position:fixed;inset:34px 0 0}' +
+      '.isoViewControls{min-width:0;display:flex;align-items:center;gap:3px}' +
+      '.isoViewControls button,#isoWindowDockBtn{flex:none;min-height:24px;padding:1px 7px;border:1px solid #465158;' +
+      'border-radius:4px;background:#2a3237;color:#eef1f6;font:600 11px system-ui,sans-serif;cursor:pointer}' +
+      '.isoViewControls button[aria-pressed="true"]{border-color:#b98542;background:#463722}' +
+      '.isoViewControls .isoViewReset{width:24px;padding:0}' +
+      '.isoViewControls select{flex:none;width:128px;min-height:24px;border:1px solid #465158;border-radius:4px;' +
+      'background:#2a3237;color:#eef1f6;font:11px system-ui,sans-serif}';
+    win.document.head.appendChild(chromeStyle);
+    const controlSlot = win.document.getElementById('isoWindowControlSlot');
+    if (controlSlot && state.controls) controlSlot.appendChild(state.controls);
     state.host = {
       kind: 'window',
       win,
@@ -1048,6 +1077,7 @@
     // The toolbar button belongs to panel-view.js: it decides where this
     // view is shown, this file only knows how to be shown.
     bindSurface(document.getElementById('isoDockCanvas'));
+    state.controls = document.getElementById('castleIsoControls');
     window.castleEditor?.addChangeListener?.(refresh);
     loadCatalogue();
   }

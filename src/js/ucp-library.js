@@ -144,6 +144,87 @@
     return state.library?.ais.find(ai => ai.key === state.loadedProject.aiKey) || state.loadedProject.ai || null;
   }
 
+  async function chooseDocumentDisposition(kind, operation) {
+    const ai = loadedAi();
+    if (!state.loadedProject || !ai) return 'separate';
+    if (state.busy) return 'cancel';
+    return window.electronAPI.chooseAiDocumentAction({
+      kind,
+      operation,
+      aiName: ai.name
+    });
+  }
+
+  async function addCharacterDocument(content) {
+    const ai = loadedAi();
+    if (!state.loadedProject || !ai || state.busy) return null;
+    setBusy(true);
+    setStatus(`Replacing ${ai.name}'s Character…`);
+    try {
+      const result = await window.electronAPI.addAiDocument({
+        kind: 'character',
+        gameRoot: state.gameRoot,
+        aiRoot: state.loadedProject.aiRoot,
+        content
+      });
+      if (!result) return null;
+      state.loadedProject.characterPath = result.path;
+      renderDetails();
+      setStatus(`${ai.name}'s Character was replaced.`, 'success');
+      return result;
+    } catch (error) {
+      setStatus(`Could not add Character to ${ai.name}: ${error.message}`, 'error');
+      return null;
+    } finally {
+      setBusy(false);
+      renderDetails();
+    }
+  }
+
+  async function addCastleDocument({
+    document,
+    suggestedFileName = null,
+    sourcePath = null,
+    sourceBytes = null,
+    unchanged = true
+  } = {}) {
+    const ai = loadedAi();
+    if (!state.loadedProject || !ai || state.busy) return null;
+    const projectState = state.loadedProject;
+    setBusy(true);
+    setStatus(`Adding castle to ${ai.name}…`);
+    try {
+      const result = await window.electronAPI.addAiDocument({
+        kind: 'castle',
+        gameRoot: state.gameRoot,
+        aiRoot: projectState.aiRoot,
+        document,
+        suggestedFileName,
+        sourcePath,
+        sourceBytes,
+        unchanged
+      });
+      if (!result) {
+        setStatus('Adding the castle was cancelled.');
+        return null;
+      }
+      projectState.castleFile = result.fileName;
+      projectState.castlePath = result.path;
+      await scan({ selectKey: projectState.aiKey, quiet: true });
+      projectState.ai = loadedAi();
+      populateCastleSwitcher(projectState.ai, result.fileName);
+      renderDetails();
+      setStatus(`${result.fileName} was added to ${ai.name}.`, 'success');
+      return result;
+    } catch (error) {
+      setStatus(`Could not add castle to ${ai.name}: ${error.message}`, 'error');
+      return null;
+    } finally {
+      setBusy(false);
+      renderDetails();
+    }
+  }
+
   function resetCastleSwitcher() {
     els.castle.innerHTML = '';
     const option = document.createElement('option');
@@ -447,7 +528,10 @@
         aiRoot: ai.rootPath,
         castleFile: castle?.fileName || null
       });
-      window.characterEditor.loadFromContent(project.character.content, project.character.path, { readOnly: false });
+      window.characterEditor.loadFromContent(project.character.content, project.character.path, {
+        readOnly: false,
+        projectManaged: true
+      });
       if (project.castle) {
         window.castleEditor.loadDocument(project.castle.document, project.castle.path, {
           readOnly: false,
@@ -715,6 +799,9 @@
     switchCastle,
     showCastleMapping,
     detachCastleProject,
+    chooseDocumentDisposition,
+    addCharacterDocument,
+    addCastleDocument,
     updateSelected,
     onWorkspaceShown: initialize,
     getState: () => ({ ...state })
