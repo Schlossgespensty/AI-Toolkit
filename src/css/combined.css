@@ -1015,7 +1015,8 @@ button:disabled { cursor: default; }
   scrollbar-color: #4c5a60 #151a1d;
   scrollbar-width: thin;
 }
-.castlePalette { flex: 1 1 auto; }
+/* Lists use the space left by the docked overviews, regardless of item count. */
+.castlePalette { flex: 1 1 0; }
 .paletteCategoryButtons {
   position: sticky;
   top: 0;
@@ -1406,7 +1407,7 @@ button:disabled { cursor: default; }
 
 
 /* Castle population overview */
-.castleBuildList { flex: 1 1 auto; }
+.castleBuildList { flex: 1 1 0; }
 .castleOverviewPanel[hidden] { display: none; }
 .castleOverviewTitle {
   display: flex;
