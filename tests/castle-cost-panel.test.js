@@ -284,6 +284,6 @@ test('Kosten und Schritt-Bevoelkerung haben getrennte, verschiebbare Oberflaeche
   assert.match(editor, /onTriggerCastleOverview/);
   const css = fs.readFileSync(path.join(root, 'src', 'css', 'combined.css'), 'utf8');
   assert.match(css, /castleOverviewInfoButton/);
-  assert.match(css, /\.castlePalette \{ flex: 1 1 auto; \}/,
+  assert.match(css, /\.castlePalette \{ flex: 1 1 0; \}/,
     'die Kosten bleiben am unteren Rand und die Gegenstandsliste nimmt den freien Platz');
 });
