@@ -25,6 +25,8 @@ const { transferableBytes, writeNativeAiv } = require('./src/node/aiv-file');
 
 const aivCodecPromise = import('./src/node/aiv-codec.mjs');
 let aivTemplatesCache = null;
+let settingsCache;
+const configCache = new Map();
 
 function projectRoot() {
   return app.isPackaged ? path.dirname(app.getPath('exe')) : __dirname;
@@ -48,15 +50,29 @@ function settingsPath() {
 }
 
 function readSettings() {
+  if (settingsCache !== undefined) return settingsCache;
   try {
-    return JSON.parse(fs.readFileSync(settingsPath(), 'utf8'));
+    settingsCache = JSON.parse(fs.readFileSync(settingsPath(), 'utf8'));
   } catch (_) {
-    return {};
+    settingsCache = {};
   }
+  return settingsCache;
 }
 
 function writeSettings(settings) {
   atomicWriteFile(settingsPath(), `${JSON.stringify(settings, null, 2)}\n`, 'utf8');
+  settingsCache = settings;
+}
+
+function loadRuntimeConfig(file) {
+  const safeName = path.basename(String(file));
+  const filePath = path.join(runtimeConfigDir(), safeName);
+  const stat = fs.statSync(filePath);
+  const cached = configCache.get(safeName);
+  if (cached && cached.mtimeMs === stat.mtimeMs && cached.size === stat.size) return cached.value;
+  const value = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+  configCache.set(safeName, { mtimeMs: stat.mtimeMs, size: stat.size, value });
+  return value;
 }
 
 function savedUcpInstallation() {
@@ -672,10 +688,7 @@ ipcMain.handle('open-ai-media', async (_event, request = {}) => {
 });
 
 ipcMain.handle('load-config', async (_event, file) => {
-  const safeName = path.basename(String(file));
-  const filePath = path.join(runtimeConfigDir(), safeName);
-  const content = fs.readFileSync(filePath, 'utf-8');
-  return JSON.parse(content);
+  return loadRuntimeConfig(file);
 });
 
 ipcMain.handle('load-file-in-new-window', async (_event, kind = 'json') => {
