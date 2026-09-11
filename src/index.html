@@ -178,6 +178,8 @@
           <label class="compactToggle"><input id="castleShowNames" type="checkbox"> Item names</label>
           <label class="compactToggle"><input id="castleShowUnitNumbers" type="checkbox"> Unit Order</label>
           <label class="compactToggle"><input id="castleShowCompatibility" type="checkbox"> Guide lines</label>
+          <label class="compactToggle" title="Relative fire exposure from Crusader 1.41 spread offsets; not an ignition probability or safety guarantee"><input id="castleShowFire" type="checkbox"> Fire spread</label>
+          <label class="compactToggle" title="Estimated ground routes to stockpiles using game entrance candidates"><input id="castleShowRoutes" type="checkbox"> Worker routes</label>
         </div>
       </header>
 
@@ -196,6 +198,7 @@
           </div>
           <div class="buildHint">Drag steps to reorder. Use Ctrl+click or Shift+click to select several steps.</div>
           <button id="castleMergeSteps" type="button" disabled title="Select two or more unlocked steps of exactly the same wall, moat or pitch type. Merges at the earliest selected step; any pause is kept at the end.">Merge selected steps</button>
+          <div id="castleAnalysisInfo" class="buildHint" hidden></div>
           <div id="castleBuildList" class="castleBuildList"></div>
           <section id="castlePopulationOverview" class="castlePopulationOverview castleOverviewPanel" data-overview="population" aria-label="Population up to the selected build step">
             <div class="populationOverviewTitle castleOverviewTitle">
@@ -577,6 +580,8 @@
 <script src="js/castle-geometry.js"></script>
 <script src="js/castle-camera.js"></script>
 <script src="js/castle-palette.js"></script>
+<script src="js/castle-game-data.js"></script>
+<script src="js/castle-analysis.js"></script>
 <script src="js/castle-editor.js"></script>
 
 <script src="js/character-editor.js"></script>

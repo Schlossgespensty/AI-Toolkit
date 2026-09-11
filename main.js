@@ -493,6 +493,7 @@ ipcMain.handle('quick-save-file', async (_event, { path: filePath, content, kind
 });
 
 ipcMain.handle('get-ucp-installation', () => savedUcpInstallation());
+ipcMain.handle('read-installed-balance', () => require('./src/node/castle-balance').readInstalledBalance(savedUcpInstallation()));
 
 ipcMain.handle('choose-ucp-installation', async event => {
   const win = BrowserWindow.fromWebContents(event.sender);

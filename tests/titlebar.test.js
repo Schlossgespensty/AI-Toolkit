@@ -72,7 +72,8 @@ test('titlebar menu opens once, restores editor focus, and follows fullscreen sa
   // A newly opened dialog must retain focus when the popup closes.
   app.document.activeElement = input;
   app.finish();
-  await Promise.resolve();
+  // The popup promise crosses the VM realm; drain promise adoption as well.
+  await new Promise(resolve => setImmediate(resolve));
   assert.equal(app.document.activeElement, input);
   assert.equal(app.buttons[0].attributes['aria-expanded'], 'false');
 });

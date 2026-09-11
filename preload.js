@@ -17,6 +17,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   confirmUnsaved: (details) => ipcRenderer.invoke('confirm-unsaved', details),
   confirmWindowClose: () => ipcRenderer.send('confirm-window-close'),
   getUcpInstallation: () => ipcRenderer.invoke('get-ucp-installation'),
+  readInstalledBalance: () => ipcRenderer.invoke('read-installed-balance'),
   chooseUcpInstallation: () => ipcRenderer.invoke('choose-ucp-installation'),
   chooseCastleBackground: () => ipcRenderer.invoke('choose-castle-background'),
   listGameMaps: () => ipcRenderer.invoke('list-game-maps'),

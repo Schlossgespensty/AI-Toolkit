@@ -20,7 +20,9 @@
     choice: 'vanilla',
     letzte: null,        // letzter Aufruf von update(), fuers Neuzeichnen
     aufgeklappt: false,
-    collapsed: false
+    collapsed: false,
+    production: window.castleProduction.settings(),
+    balanceSource: ''
   };
   const els = {};
 
@@ -35,6 +37,7 @@
       const wahl = window.localStorage.getItem(SPEICHER_WAHL);
       if (wahl) state.choice = wahl;
       state.collapsed = window.localStorage.getItem(COLLAPSE_STORAGE) === 'true';
+      state.production = window.castleProduction.settings(JSON.parse(window.localStorage.getItem('aiv.production.v1') || '{}'));
     } catch { /* ohne Gedaechtnis weiterarbeiten ist besser als gar nicht */ }
   }
 
@@ -63,11 +66,26 @@
         <label for="castleCostBalance">Balance</label>
         <select id="castleCostBalance"></select>
         <button type="button" id="castleCostLoadBalance" title="Load a balance JSON (Ascension, Team League, ...)">Load…</button>
+        <button type="button" id="castleCostUcpBalance">Use UCP balance</button>
       </div>
       <input type="file" id="castleCostBalanceFile" accept="application/json,.json" hidden>
 
       <div class="costSectionTitle" id="castleCostScope">Cumulative through selected step</div>
       <div class="costGrid" id="castleCostGrid"></div>
+      <div class="costSectionTitle">Estimated gross production through this step</div>
+      <div class="costHint" id="castleProductionTotals"></div>
+      <div class="costHint" id="castleProductionComparison"></div>
+      <details class="costProductionSettings"><summary>Production assumptions</summary>
+        <p class="costHint">Potential AIC production, assuming full staffing as housing becomes available. Timings below are planning defaults, not measured game rates. Excludes construction delays, pauses, input shortages, consumption, trade, transport bottlenecks and fear/rest effects. These goods are not your stockpile balance.</p>
+        <label>Resource distance <input id="productionDistance" type="number" min="0" max="1000"></label>
+        <label>Per extra building <input id="productionExtraDistance" type="number" min="0" max="1000"></label>
+        <label>Walking ticks / tile <input id="productionWalkTicks" type="number" min="0.01" max="1000" step="0.1"></label>
+        <label>Delivery productivity % <input id="productionProductivity" type="number" min="100" max="1000"></label>
+        <label><input id="productionSkirmish" type="checkbox"> Skirmish delivery bonus where enabled by balance</label>
+        <div id="productionWorkTicks"></div>
+        <p class="costHint">Work ticks exclude the return journey: cycle = work ticks + 2 × distance × walking ticks. Each producer keeps its own progress and fractional delivery bonus. Stone is quarry output; ox transport is not simulated. Route overlay distances are separate layout diagnostics, not measured external-resource distances.</p>
+      </details>
+      <div class="costHint" id="castleBalanceSource"></div>
       <div class="costCastleTotal"><span>Entire castle total</span><strong id="castleCostWholeTotal"></strong></div>
 
       <div class="costNote" id="castleCostWarning" hidden></div>
@@ -92,6 +110,47 @@
     els.body = wurzel.querySelector('#castleCostBody');
     els.scope = wurzel.querySelector('#castleCostScope');
     els.wholeTotal = wurzel.querySelector('#castleCostWholeTotal');
+    els.productionTotals = wurzel.querySelector('#castleProductionTotals');
+    els.productionComparison = wurzel.querySelector('#castleProductionComparison');
+    els.balanceSource = wurzel.querySelector('#castleBalanceSource');
+    const numericSettings = { productionDistance: 'distance', productionExtraDistance: 'extraDistance', productionWalkTicks: 'walkTicks', productionProductivity: 'productivity' };
+    const saveProduction = () => {
+      try { window.localStorage.setItem('aiv.production.v1', JSON.stringify(state.production)); } catch { /* session only */ }
+      zeichne();
+    };
+    for (const [id, key] of Object.entries(numericSettings)) {
+      const input = wurzel.querySelector(`#${id}`);
+      input.value = state.production[key];
+      input.addEventListener('change', () => {
+        state.production = window.castleProduction.settings({ ...state.production, [key]: input.value });
+        input.value = state.production[key]; saveProduction();
+      });
+    }
+    const skirmish = wurzel.querySelector('#productionSkirmish');
+    skirmish.checked = state.production.skirmish;
+    skirmish.addEventListener('change', () => { state.production.skirmish = skirmish.checked; saveProduction(); });
+    for (const good of Object.keys(window.castleProduction.GOODS)) {
+      const label = document.createElement('label');
+      label.textContent = `${good} work ticks / delivery`;
+      const input = document.createElement('input'); input.type = 'number'; input.min = '1'; input.max = '1000000';
+      input.value = state.production.workTicks[good];
+      input.addEventListener('change', () => {
+        state.production = window.castleProduction.settings({ ...state.production, workTicks: { ...state.production.workTicks, [good]: input.value } });
+        input.value = state.production.workTicks[good]; saveProduction();
+      });
+      label.appendChild(input); wurzel.querySelector('#productionWorkTicks').appendChild(label);
+    }
+    wurzel.querySelector('#castleCostUcpBalance').addEventListener('click', async event => {
+      const button = event.currentTarget; button.disabled = true;
+      try {
+        const loaded = await window.electronAPI.readInstalledBalance();
+        const name = `UCP: ${loaded.name}`;
+        state.balances[name] = window.castleBalance.validate(loaded.profile);
+        state.choice = name; state.balanceSource = loaded.filePath;
+        sichere(); fuelleBalanceListe(); zeichne();
+      } catch (error) { meldeFehler(error.message); }
+      finally { button.disabled = false; }
+    });
     els.step = wurzel.querySelector('#castleCostStep');
     els.populationStep = bevoelkerung.querySelector('#castlePopulationStep');
     els.balance = wurzel.querySelector('#castleCostBalance');
@@ -120,6 +179,7 @@
 
     els.balance.addEventListener('change', () => {
       state.choice = els.balance.value;
+      state.balanceSource = '';
       sichere();
       zeichne();
     });
@@ -198,12 +258,11 @@
       let inhalt;
       try { inhalt = JSON.parse(String(leser.result)); }
       catch (fehler) { meldeFehler(`${datei.name} is not valid JSON.`); return; }
-      if (!inhalt || typeof inhalt.buildings !== 'object' || !inhalt.buildings) {
-        meldeFehler(`${datei.name} has no "buildings" section - that is where the costs live.`);
-        return;
-      }
+      try { inhalt = window.castleBalance.validate(inhalt); }
+      catch (error) { meldeFehler(error.message); return; }
       const name = datei.name.replace(/\.json$/i, '');
-      state.balances[name] = { buildings: inhalt.buildings };
+      state.balances[name] = inhalt;
+      state.balanceSource = datei.name;
       state.choice = name;
       sichere();
       fuelleBalanceListe();
@@ -250,6 +309,16 @@
       frames, stepIndex, data: daten, balance: aktiveBalance(),
       populationData, aicAt: aicRechner(), aic: aicFelder()
     });
+    const production = window.castleProduction.estimate({ frames, stepIndex, populationData,
+      aicAt: aicRechner(), aic: aicFelder(), balance: aktiveBalance(), options: state.production, costModel: modell, data: daten });
+    els.productionTotals.textContent = production
+      ? Object.entries(production).map(([good, result]) => `${zahl(result.produced)} ${good.toLowerCase()}`).join(' · ')
+      : 'Open a character to estimate production from its AIC.';
+    els.productionComparison.textContent = production
+      ? ['wood', 'stone', 'iron', 'pitch'].map(good => `${good}: ${zahl(ergebnis.cost[good])} construction / ${zahl(production[good[0].toUpperCase() + good.slice(1)].produced)} potential output`).join(' · ')
+      : '';
+    els.balanceSource.textContent = state.balanceSource ? `Loaded snapshot: ${state.balanceSource}. Reload after UCP changes.`
+      : state.choice === 'vanilla' ? 'Bundled vanilla prices. Use UCP balance to read your configured profile.' : 'Saved balance snapshot. Reload after UCP changes.';
 
     const schrittText = ergebnis.totalSteps
       ? `${ergebnis.steps} of ${ergebnis.totalSteps}`

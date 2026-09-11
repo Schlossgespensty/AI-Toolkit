@@ -19,7 +19,9 @@
   const leereKosten = () => ({ wood: 0, stone: 0, iron: 0, pitch: 0, gold: 0 });
 
   const alsKosten = liste => {
-    if (!Array.isArray(liste) || liste.length < 5) return null;
+    if (!Array.isArray(liste) || liste.length !== 5 || !liste.every(value =>
+      (typeof value === 'number' || (typeof value === 'string' && /^\d+$/.test(value)))
+      && Number.isSafeInteger(Number(value)) && Number(value) >= 0 && Number(value) <= 2147483647)) return null;
     const out = leereKosten();
     RESSOURCEN.forEach((name, i) => { out[name] = Number(liste[i]) || 0; });
     return out;
@@ -37,6 +39,7 @@
     if (balance && eintrag.balance) {
       const b = balance.buildings && balance.buildings[eintrag.balance];
       const ausBalance = b ? alsKosten(b.cost) : null;
+      if (b?.cost !== undefined && !ausBalance) return { kosten: null, quelle: 'unknown', name: eintrag.name };
       if (ausBalance) return { kosten: ausBalance, quelle: 'balance', name: eintrag.name };
     }
     return { kosten: vanilla, quelle: vanilla ? 'vanilla' : 'unknown', name: eintrag.name };
@@ -118,7 +121,13 @@
   // Bevoelkerung bis zum gewaehlten Schritt.
   // provides/requires stammen aus config/aiv_gamedata.json: Bergfried gibt 10,
   // Huette gibt 8, und eine Reihe von Bauten braucht je einen Arbeiter.
-  function bevoelkerungBis(frames, bisIndex, popDaten) {
+  function housingFor(type, popDaten, data, balance) {
+    const name = data?.buildings?.[type]?.balance;
+    const housing = name ? balance?.buildings?.[name]?.housing : undefined;
+    return housing !== undefined && Number.isSafeInteger(Number(housing)) && Number(housing) >= 0
+      ? Number(housing) : (Number(popDaten?.population_effects?.provides?.[type]) || 0);
+  }
+  function bevoelkerungBis(frames, bisIndex, popDaten, data, balance) {
     const provides = (popDaten && popDaten.population_effects && popDaten.population_effects.provides) || {};
     const requires = (popDaten && popDaten.population_effects && popDaten.population_effects.requires) || {};
     let provided = 0;
@@ -129,7 +138,7 @@
       if (!frame) continue;
       const key = String(Number(frame.itemType));
       const anzahl = Array.isArray(frame.tilePositionOfsets) ? frame.tilePositionOfsets.length : 0;
-      provided += (Number(provides[key]) || 0) * anzahl;
+      provided += housingFor(key, popDaten, data, balance) * anzahl;
       required += (Number(requires[key]) || 0) * anzahl;
     }
     return { provided, required, left: provided - required };
@@ -161,7 +170,7 @@
     const kosten = kostenBis(frames, bisIndex, daten, options.balance || null);
     const wholeCastle = bisIndex == null || bisIndex >= frames.length - 1
       ? kosten : kostenBis(frames, null, daten, options.balance || null);
-    const bevoelkerung = bevoelkerungBis(frames, bisIndex, options.populationData);
+    const bevoelkerung = bevoelkerungBis(frames, bisIndex, options.populationData, daten, options.balance);
     const aicStats = typeof options.aicAt === 'function' ? options.aicAt(Math.max(0, bevoelkerung.provided)) : null;
     const aicBedarf = aicStats ? (Number(aicStats.population) || 0) : null;
     return {
@@ -181,7 +190,7 @@
     };
   }
 
-  const API = { auswerten, kostenBis, zeitBis, bevoelkerungBis, farmAufteilung, preisFuer, RESSOURCEN, TICKS_JE_SCHRITT, TAGE_JE_MONAT, MONATE_JE_JAHR };
+  const API = { auswerten, kostenBis, zeitBis, bevoelkerungBis, housingFor, farmAufteilung, preisFuer, RESSOURCEN, TICKS_JE_SCHRITT, TAGE_JE_MONAT, MONATE_JE_JAHR };
   if (typeof window !== 'undefined') window.castleCostModel = API;
   if (typeof module !== 'undefined' && module.exports) module.exports = API;
 })();
