@@ -559,6 +559,8 @@
   }
 
   function stableColor(type) {
+    const category = Object.entries(state.categories).find(([, ids]) => ids.some(id => Number(id) === Number(type)))?.[0];
+    if (category) return window.castlePalette.categoryStyle(category).background;
     const hue = (Number(type) * 47) % 360;
     return `hsl(${hue} 45% 62%)`;
   }
@@ -3039,6 +3041,20 @@
   function beginSelectGesture(tile, event) {
     const hit = topmostRefAtTile(tile);
     if (hit) {
+      if (event.ctrlKey || event.metaKey) {
+        if (state.selected.has(hit)) state.selected.delete(hit);
+        else state.selected.add(hit);
+        activateBuildStepForRefs(state.selected);
+        state.currentItemType = null;
+        state.gesture = null;
+        updateToolAvailability();
+        renderPalette();
+        updateSelectedItemInfo();
+        renderBuildList();
+        scheduleDraw();
+        setStatus(`Selected ${state.selected.size} placement${state.selected.size === 1 ? '' : 's'}`);
+        return;
+      }
       if (!state.selected.has(hit)) {
         if (!event.shiftKey) state.selected.clear();
         state.selected.add(hit);
@@ -3070,7 +3086,7 @@
       scheduleDraw();
       return;
     }
-    if (!event.shiftKey) state.selected.clear();
+    if (!event.shiftKey && !event.ctrlKey && !event.metaKey) state.selected.clear();
     state.gesture = 'select-marquee';
     renderBuildList();
     scheduleDraw();
@@ -3168,7 +3184,8 @@
       commitBrush('Line');
     } else if (state.gesture === 'select-marquee') {
       const refs = refsInMarquee();
-      if (event.shiftKey) refs.forEach(ref => state.selected.add(ref));
+      if (event.ctrlKey || event.metaKey) refs.forEach(ref => state.selected.has(ref) ? state.selected.delete(ref) : state.selected.add(ref));
+      else if (event.shiftKey) refs.forEach(ref => state.selected.add(ref));
       else state.selected = refs;
       activateBuildStepForRefs(state.selected);
       renderBuildList();

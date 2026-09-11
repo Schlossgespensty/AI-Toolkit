@@ -696,6 +696,9 @@
 
     let missing = 0;
     for (const item of items.sort(geo.byDepth)) {
+      // Farms reserve a much larger field than their 3x3 building sprite.
+      // Keep the complete placement area visible without inventing crop state.
+      if (item.entry?.fieldFootprint) drawDiamond(ctx, item.gx, item.gy, item.tiles, 'rgba(248,248,192,.12)', 'rgba(248,248,192,.55)');
       if (item.entry && drawSprite(ctx, item.entry, item.gx, item.gy, item.tiles, mauerAn, hoeheAn)) continue;
       drawDiamond(ctx, item.gx, item.gy, item.tiles, 'rgba(210,170,90,.55)');
       missing++;
@@ -886,6 +889,7 @@
       pointerId: event.pointerId || 1,
       shiftKey: event.shiftKey,
       ctrlKey: event.ctrlKey,
+      metaKey: event.metaKey,
       altKey: event.altKey,
       tileFromOutside: tile,
       preventDefault() {},

@@ -729,5 +729,55 @@
             4,
             4
         ]
+    },
+    "56": {
+        "name": "Quarry",
+        "size": [
+            6,
+            6
+        ]
+    },
+    "70": {
+        "name": "Wheat Farm",
+        "size": [
+            9,
+            9
+        ]
+    },
+    "71": {
+        "name": "Hop Farm",
+        "size": [
+            9,
+            9
+        ]
+    },
+    "72": {
+        "name": "Apple Farm",
+        "size": [
+            11,
+            11
+        ]
+    },
+    "73": {
+        "name": "Dairy Farm",
+        "size": [
+            10,
+            10
+        ]
+    },
+    "90": {
+        "name": "Iron Mine",
+        "size": [
+            4,
+            4
+        ]
+    },
+    "91": {
+        "name": "Pitch Rig",
+        "size": [
+            4,
+            4
+        ]
     }
+
 }

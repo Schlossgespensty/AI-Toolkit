@@ -1290,6 +1290,42 @@
    "breite": 190,
    "hoehe": 158
   },
+  "70": {
+   "name": "Wheat Farm",
+   "aiv": 73,
+   "kacheln": 9,
+   "bild": "farm_70.png",
+   "breite": 286,
+   "hoehe": 196,
+   "fieldFootprint": true
+  },
+  "71": {
+   "name": "Hop Farm",
+   "aiv": 75,
+   "kacheln": 9,
+   "bild": "farm_71.png",
+   "breite": 286,
+   "hoehe": 195,
+   "fieldFootprint": true
+  },
+  "72": {
+   "name": "Apple Farm",
+   "aiv": 71,
+   "kacheln": 11,
+   "bild": "farm_72.png",
+   "breite": 350,
+   "hoehe": 231,
+   "fieldFootprint": true
+  },
+  "73": {
+   "name": "Dairy Farm",
+   "aiv": 72,
+   "kacheln": 10,
+   "bild": "farm_73.png",
+   "breite": 318,
+   "hoehe": 206,
+   "fieldFootprint": true
+  },
   "74": {
    "name": "Muehle",
    "aiv": 76,
