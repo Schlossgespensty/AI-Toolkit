@@ -63,6 +63,14 @@ test('cost overview collapses independently of the breakdown and preserves a cum
 // nicht in zwei unabhaengig gepflegten Dateien vollstaendig wiederzufinden.
 const BALANCE_PROBEN = {
   ascension: {
+    // Resource-building cost samples refreshed 2026-09-12 from the same profiles.
+    "Quarry": { cost: [15, 0, 0, 0, 0] },
+    "Wheat farm": { cost: [15, 0, 0, 0, 0] },
+    "Hop farm": { cost: [15, 0, 0, 0, 20] },
+    "Apple farm": { cost: [5, 0, 0, 0, 0] },
+    "Dairy farm": { cost: [10, 0, 0, 0, 0] },
+    "Iron mine": { cost: [15, 4, 0, 0, 0] },
+    "Pitch rig": { cost: [20, 0, 0, 0, 0] },
     "Fletcher": {},
     "Woodcutter hut": { cost: [3, 0, 0, 0, 0] },
     "Hovel": { cost: [5, 0, 0, 0, 0] },
@@ -114,6 +122,13 @@ const BALANCE_PROBEN = {
     "Water pot": {}
   },
   liga: {
+    "Quarry": { cost: [25, 0, 0, 0, 0] },
+    "Wheat farm": { cost: [13, 0, 0, 0, 15] },
+    "Hop farm": { cost: [10, 0, 0, 0, 35] },
+    "Apple farm": { cost: [3, 0, 0, 0, 15] },
+    "Dairy farm": { cost: [7, 0, 0, 0, 15] },
+    "Iron mine": { cost: [20, 6, 0, 0, 0] },
+    "Pitch rig": { cost: [25, 0, 0, 0, 0] },
     "Fletcher": { cost: [18, 0, 0, 0, 100] },
     "Woodcutter hut": { cost: [5, 0, 0, 0, 0] },
     "Hovel": { cost: [5, 0, 0, 0, 0] },
