@@ -16,7 +16,7 @@
   const OVERVIEW_STORAGE_KEY = 'aiv.castleOverviewLayout.v1';
   const DEFAULT_OVERVIEW_LAYOUT = {
     population: { visible: true, side: 'left' },
-    costs: { visible: true, side: 'right' }
+    costs: { visible: true, side: 'left' }
   };
   const DEFAULT_TOOL_SHORTCUTS = {
     single: ['1', 's'],

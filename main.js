@@ -153,6 +153,10 @@ function createWindow() {
     minWidth: 900,
     minHeight: 600,
     backgroundColor: '#101416',
+    ...(process.platform === 'win32' ? {
+      titleBarStyle: 'hidden',
+      titleBarOverlay: { color: '#101416', symbolColor: '#e8eceb', height: 42 }
+    } : {}),
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,
@@ -164,6 +168,20 @@ function createWindow() {
   if (fs.existsSync(iconPath)) options.icon = iconPath;
 
   const win = new BrowserWindow(options);
+  win.__integratedTitlebar = process.platform === 'win32';
+  if (win.__integratedTitlebar) {
+    win.setAutoHideMenuBar(false);
+    win.setMenuBarVisibility(false);
+    win.webContents.on('before-input-event', (event, input) => {
+      if (input.type !== 'keyDown' || input.control || input.meta) return;
+      const key = input.key.toLowerCase();
+      const menu = input.alt && !input.shift ? { f: 'file', e: 'edit', v: 'view' }[key] : null;
+      if (menu || (key === 'f10' && !input.shift && !input.alt)) {
+        event.preventDefault();
+        win.webContents.send('focus-titlebar-menu', { menu: menu || 'file', open: Boolean(menu) });
+      }
+    });
+  }
   win.webContents.setWindowOpenHandler(({ url }) => (
     url === 'about:blank' ? { action: 'allow' } : { action: 'deny' }
   ));
@@ -203,7 +221,7 @@ const WORKSPACES = new Set(['ucp', 'character', 'castle', 'content']);
 function defaultCastleOverviewPreferences() {
   return {
     population: { visible: true, side: 'left' },
-    costs: { visible: true, side: 'right' }
+    costs: { visible: true, side: 'left' }
   };
 }
 
@@ -317,7 +335,33 @@ function installApplicationMenu(workspace = 'ucp', win = BrowserWindow.getFocuse
     ? win.__castleOverviewPreferences
     : defaultCastleOverviewPreferences();
   Menu.setApplicationMenu(Menu.buildFromTemplate(menuTemplateForWorkspace(selected, overview)));
+  // Keep native accelerators registered without restoring a second menu row.
+  for (const window of BrowserWindow.getAllWindows()) {
+    if (window.__integratedTitlebar) window.setMenuBarVisibility(false);
+  }
 }
+
+ipcMain.handle('get-window-chrome', event => ({
+  integrated: Boolean(BrowserWindow.fromWebContents(event.sender)?.__integratedTitlebar)
+}));
+
+ipcMain.handle('show-titlebar-menu', (event, request) => {
+  const win = BrowserWindow.fromWebContents(event.sender);
+  if (!win?.__integratedTitlebar || event.senderFrame !== event.sender.mainFrame) return;
+  const index = { file: 0, edit: 2, view: 3 }[request?.menu];
+  if (!Number.isInteger(index) || !Number.isFinite(request?.x) || !Number.isFinite(request?.y)) return;
+  const menu = Menu.buildFromTemplate(menuTemplateForWorkspace(win.__activeWorkspace, win.__castleOverviewPreferences));
+  const popup = menu.items[index]?.submenu;
+  if (!popup) return;
+  const [width, height] = win.getContentSize();
+  const zoom = win.webContents.getZoomFactor();
+  return new Promise(resolve => popup.popup({
+    window: win,
+    x: Math.round(Math.max(0, Math.min(width - 1, request.x * zoom))),
+    y: Math.round(Math.max(0, Math.min(height - 1, request.y * zoom))),
+    callback: () => resolve(true)
+  }));
+});
 
 ipcMain.on('set-active-workspace', (event, workspace) => {
   if (!WORKSPACES.has(workspace)) return;

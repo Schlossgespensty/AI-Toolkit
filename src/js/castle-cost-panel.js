@@ -6,6 +6,7 @@
 (() => {
   const SPEICHER = 'aiv.castleCostBalances.v1';
   const SPEICHER_WAHL = 'aiv.castleCostBalanceChoice.v1';
+  const COLLAPSE_STORAGE = 'aiv.castleCostPanelCollapsed.v1';
   const RESSOURCEN = [
     { key: 'wood', label: 'Wood' },
     { key: 'stone', label: 'Stone' },
@@ -18,7 +19,8 @@
     balances: {},        // Name -> { buildings: {...} }
     choice: 'vanilla',
     letzte: null,        // letzter Aufruf von update(), fuers Neuzeichnen
-    aufgeklappt: false
+    aufgeklappt: false,
+    collapsed: false
   };
   const els = {};
 
@@ -32,6 +34,7 @@
       if (roh) state.balances = JSON.parse(roh) || {};
       const wahl = window.localStorage.getItem(SPEICHER_WAHL);
       if (wahl) state.choice = wahl;
+      state.collapsed = window.localStorage.getItem(COLLAPSE_STORAGE) === 'true';
     } catch { /* ohne Gedaechtnis weiterarbeiten ist besser als gar nicht */ }
   }
 
@@ -48,13 +51,14 @@
     if (!wurzel || !bevoelkerung) return false;
     wurzel.innerHTML = `
       <div class="costOverviewTitle castleOverviewTitle">
-        <span>Castle costs</span>
+        <button type="button" id="castleCostCollapse" class="costCollapse" aria-controls="castleCostBody" aria-expanded="true">Castle costs ▾</button>
         <span class="castleOverviewTitleActions">
           <strong id="castleCostStep">-</strong>
           <button type="button" class="castleOverviewInfoButton" data-info-target="castleCostInfo" aria-label="About the castle cost overview" aria-expanded="false">i</button>
         </span>
       </div>
 
+      <div id="castleCostBody">
       <div class="costBalanceRow">
         <label for="castleCostBalance">Balance</label>
         <select id="castleCostBalance"></select>
@@ -62,7 +66,9 @@
       </div>
       <input type="file" id="castleCostBalanceFile" accept="application/json,.json" hidden>
 
+      <div class="costSectionTitle" id="castleCostScope">Cumulative through selected step</div>
       <div class="costGrid" id="castleCostGrid"></div>
+      <div class="costCastleTotal"><span>Entire castle total</span><strong id="castleCostWholeTotal"></strong></div>
 
       <div class="costNote" id="castleCostWarning" hidden></div>
 
@@ -78,9 +84,14 @@
         <p class="costHint" id="castleCostTimeHint"></p>
         <p class="costHint costProvenance" id="castleCostProvenance"></p>
       </div>
+      </div>
     `;
 
     els.wurzel = wurzel;
+    els.collapse = wurzel.querySelector('#castleCostCollapse');
+    els.body = wurzel.querySelector('#castleCostBody');
+    els.scope = wurzel.querySelector('#castleCostScope');
+    els.wholeTotal = wurzel.querySelector('#castleCostWholeTotal');
     els.step = wurzel.querySelector('#castleCostStep');
     els.populationStep = bevoelkerung.querySelector('#castlePopulationStep');
     els.balance = wurzel.querySelector('#castleCostBalance');
@@ -112,6 +123,12 @@
       sichere();
       zeichne();
     });
+    els.collapse.addEventListener('click', () => {
+      state.collapsed = !state.collapsed;
+      applyCollapsed();
+      try { window.localStorage.setItem(COLLAPSE_STORAGE, String(state.collapsed)); } catch { /* session still works */ }
+    });
+    applyCollapsed();
     els.loadBtn.addEventListener('click', () => els.file.click());
     els.file.addEventListener('change', onBalanceDatei);
     els.toggle.addEventListener('click', () => {
@@ -125,6 +142,11 @@
       button.addEventListener('click', () => {
         const info = document.getElementById(button.dataset.infoTarget || '');
         if (!info) return;
+        if (button.dataset.infoTarget === 'castleCostInfo' && state.collapsed) {
+          state.collapsed = false;
+          applyCollapsed();
+          try { window.localStorage.setItem(COLLAPSE_STORAGE, 'false'); } catch { /* session still works */ }
+        }
         const expanded = info.hidden;
         info.hidden = !expanded;
         button.setAttribute('aria-expanded', String(expanded));
@@ -134,7 +156,7 @@
     fuelleBalanceListe();
     const daten = window.castleCostData;
     els.provenance.textContent = daten
-      ? `Vanilla prices read from the game exe at ${daten._quelle && daten._quelle.kosten ? '0x005C21D0' : 'the build cost table'}. One build step = 50 ticks = one game day (measured, 445 of 445 steps).`
+      ? `Bundled vanilla prices were extracted from the game exe at ${daten._quelle && daten._quelle.kosten ? '0x005C21D0' : 'the build cost table'}. Load a plugin balance JSON to override building prices; missing overrides retain vanilla prices. This does not read the currently running game. One build step = 50 ticks = one game day (measured, 445 of 445 steps).`
       : 'Cost table not loaded.';
     if (window.castleEditor && typeof window.castleEditor.refreshOverviewLayout === 'function') {
       window.castleEditor.refreshOverviewLayout();
@@ -154,6 +176,17 @@
     }
     if (!eintraege.some(([w]) => w === state.choice)) state.choice = 'vanilla';
     els.balance.value = state.choice;
+  }
+
+  function applyCollapsed() {
+    els.body.hidden = state.collapsed;
+    els.wurzel.classList.toggle('costCollapsed', state.collapsed);
+    els.collapse.setAttribute('aria-expanded', String(!state.collapsed));
+    els.collapse.textContent = state.collapsed ? 'Castle costs ▸' : 'Castle costs ▾';
+  }
+
+  function costSummary(cost) {
+    return RESSOURCEN.map(r => `${zahl(cost[r.key])} ${r.label.toLowerCase()}`).join(' · ');
   }
 
   function onBalanceDatei(event) {
@@ -222,6 +255,11 @@
       ? `${ergebnis.steps} of ${ergebnis.totalSteps}`
       : 'no steps';
     els.step.textContent = schrittText;
+    els.scope.textContent = ergebnis.steps ? `Cumulative total · steps 1–${ergebnis.steps}` : 'Cumulative total · no steps';
+    els.wholeTotal.textContent = costSummary(ergebnis.wholeCastleCost)
+      + (ergebnis.wholeCastleUnknown.length ? ' (partial: unknown prices)' : '');
+    els.collapse.title = `Through step ${ergebnis.steps}: ${costSummary(ergebnis.cost)}`
+      + (ergebnis.unknown.length ? ' (partial: unknown prices)' : '');
     if (els.populationStep) els.populationStep.textContent = schrittText;
 
     for (const r of RESSOURCEN) {
@@ -279,8 +317,7 @@
   function zeichneTabelle(ergebnis) {
     els.table.innerHTML = '';
     if (!ergebnis.rows.length) {
-      els.table.textContent = 'Nothing with a price up to this step.';
-      return;
+      els.table.textContent = 'Nothing with a known price up to this step.';
     }
     for (const zeile of ergebnis.rows) {
       const teile = RESSOURCEN.filter(r => zeile.total[r.key]).map(r => `${zahl(zeile.total[r.key])} ${r.label.toLowerCase()}`);
@@ -300,6 +337,14 @@
         : 'Price from the game exe (vanilla)';
       els.table.appendChild(div);
     }
+    const total = document.createElement('div');
+    total.className = 'costTableRow costTableTotal';
+    const label = document.createElement('strong');
+    label.textContent = `Cumulative total through step ${ergebnis.steps}`;
+    const value = document.createElement('span');
+    value.textContent = costSummary(ergebnis.cost) + (ergebnis.unknown.length ? ' (partial)' : '');
+    total.append(label, value);
+    els.table.appendChild(total);
   }
 
   const API = {

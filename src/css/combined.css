@@ -143,6 +143,55 @@ button:disabled { cursor: default; }
 }
 .appIdentity span { color: var(--accent-strong); }
 
+/* Windows: one row for menus, workspaces, drag space and native captions. */
+.integratedTitlebar #appRoot {
+  grid-template-rows: max(42px, env(titlebar-area-height, 42px)) minmax(0, 1fr);
+}
+.integratedTitlebar .workspaceTabs {
+  -webkit-app-region: drag;
+  background: #101416;
+  padding: 0 6px;
+  gap: 2px;
+  min-width: 0;
+}
+.integratedTitlebar.windowControlsVisible .workspaceTabs {
+  margin-left: env(titlebar-area-x, 0px);
+  width: env(titlebar-area-width, calc(100% - 140px));
+}
+.integratedTitlebar .workspaceTabs button {
+  -webkit-app-region: no-drag;
+}
+.integratedTitlebar .workspaceTab {
+  min-width: 0;
+  flex: 0 0 auto;
+  padding: 0 12px;
+  border-radius: 0;
+  font-size: 13px;
+}
+.integratedTitlebar .workspaceSpacer { min-width: 80px; }
+.integratedTitlebar .workspaceStatus { min-width: 0; max-width: 22vw; }
+.titlebarMenus { display: flex; align-items: stretch; margin-right: 10px; }
+.titlebarMenus button {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--text-soft);
+  padding: 0 9px;
+  font: 13px var(--font-ui);
+}
+.titlebarMenus button:hover, .titlebarMenus button[aria-expanded="true"] {
+  background: var(--surface-2);
+  color: var(--text-main);
+}
+.titlebarMenus button:focus-visible, .workspaceTab:focus-visible {
+  outline: 2px solid var(--accent-strong);
+  outline-offset: -3px;
+}
+@media (max-width: 1150px) {
+  .integratedTitlebar .workspaceStatus, .integratedTitlebar .appIdentity { display: none; }
+  .integratedTitlebar .workspaceTab { padding-inline: 9px; }
+}
+
 .workspace { display: none; min-width: 0; min-height: 0; overflow: hidden; }
 .workspace.active { display: block; }
 #characterWorkspace.active { height: 100%; }

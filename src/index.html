@@ -11,6 +11,11 @@
 <body>
 <div id="appRoot">
   <nav class="workspaceTabs" aria-label="Editor workspace">
+    <div id="titlebarMenus" class="titlebarMenus" role="group" aria-label="Application menus" hidden>
+      <button type="button" data-app-menu="file" aria-haspopup="menu" aria-expanded="false" title="File (Alt+F)">File</button>
+      <button type="button" data-app-menu="edit" aria-haspopup="menu" aria-expanded="false" title="Edit (Alt+E)">Edit</button>
+      <button type="button" data-app-menu="view" aria-haspopup="menu" aria-expanded="false" title="View (Alt+V)">View</button>
+    </div>
     <button id="tabUcp" class="workspaceTab active" type="button" data-workspace="ucp">UCP AI Library</button>
     <button id="tabCharacter" class="workspaceTab" type="button" data-workspace="character">Character</button>
     <button id="tabCastle" class="workspaceTab" type="button" data-workspace="castle">Castle</button>
@@ -568,6 +573,7 @@
 
 
 <script src="js/app-shell.js"></script>
+<script src="js/titlebar.js"></script>
 <script src="js/castle-geometry.js"></script>
 <script src="js/castle-camera.js"></script>
 <script src="js/castle-palette.js"></script>

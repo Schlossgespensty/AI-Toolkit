@@ -41,3 +41,34 @@ Hovering any placement additionally shows its full name, including units,
 one-tile walls and other items too small for readable in-sprite text. Native
 hover tooltips are also available in both the plan and 2.5D views, even when
 the overlay is off. Unknown or blank custom names fall back to `Item <ID>`.
+
+## Window and workspace navigation
+
+On Windows, File/Edit/View and the four workspace tabs share a single title
+bar. Drag its empty area to move the window. Windows still draws the native
+minimize/maximize/close controls; closing retains the unsaved-document prompt.
+Menus reuse the existing commands and shortcuts. Alt+F/E/V opens a menu; F10
+focuses the menu buttons, Left/Right selects one, and Down/Enter opens it.
+Ctrl+1 through Ctrl+4 still switches workspaces. Other platforms retain their
+native menu/title bar. Smaller windows hide status/branding before sacrificing
+tabs or drag space.
+
+## Castle costs
+
+Castle costs now defaults to the bottom of the build-order column. Existing
+saved side/visibility preferences are respected; use **Edit → Castle Overviews**
+to show it or move it between sides. Click **Castle costs** to collapse/expand
+the whole panel. That choice is remembered separately from the building-detail
+toggle.
+
+The resource grid is cumulative through the selected step. **Entire castle
+total** shows the final resource totals using the same balance. The per-building
+breakdown ends with an additional cumulative total row. Wood, stone, iron,
+pitch and gold remain separate resource amounts; they are not added into an
+arbitrary gold equivalent. Unknown prices mark totals as partial.
+
+Vanilla prices come from the bundled table previously extracted from the game
+executable. **Balance → Load…** imports a plugin's balance JSON (for example
+Liga or Ascension); fields without cost overrides retain vanilla prices. The
+chosen balance and loaded tables are remembered locally. This is not live
+inspection of a running game or automatic resolution of the UCP load order.

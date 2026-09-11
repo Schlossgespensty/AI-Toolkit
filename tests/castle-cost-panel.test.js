@@ -14,6 +14,43 @@ const root = path.resolve(__dirname, '..');
 const daten = require(path.join(root, 'src', 'js', 'castle-cost-data.js'));
 const modell = require(path.join(root, 'src', 'js', 'castle-cost-model.js'));
 
+test('cumulative and entire-castle totals use the same balance but different step limits', () => {
+  const frames = [
+    { itemType: 61, tilePositionOfsets: [5643] },
+    { itemType: 54, tilePositionOfsets: [100, 200] },
+    { itemType: 95, tilePositionOfsets: [500] }
+  ];
+  const balance = { buildings: { Hovel: { cost: [5, 0, 0, 0, 2] }, Chapel: { cost: [0, 8, 0, 0, 75] } } };
+  const result = modell.auswerten({ frames, stepIndex: 1, data: daten, balance });
+  assert.deepEqual(result.cost, { wood: 10, stone: 0, iron: 0, pitch: 0, gold: 4 });
+  assert.deepEqual(result.wholeCastleCost, { wood: 10, stone: 8, iron: 0, pitch: 0, gold: 79 });
+  const end = modell.auswerten({ frames, stepIndex: null, data: daten, balance });
+  assert.deepEqual(end.cost, end.wholeCastleCost);
+  assert.deepEqual(result.rows.reduce((sum, row) => {
+    for (const key of modell.RESSOURCEN) sum[key] += row.total[key];
+    return sum;
+  }, { wood: 0, stone: 0, iron: 0, pitch: 0, gold: 0 }), result.cost);
+});
+
+test('unknown future prices mark the whole total as partial without contaminating the selected-step total', () => {
+  const frames = [{ itemType: 54, tilePositionOfsets: [100] }, { itemType: 999999, tilePositionOfsets: [200] }];
+  const result = modell.auswerten({ frames, stepIndex: 0, data: daten });
+  assert.equal(result.unknown.length, 0);
+  assert.equal(result.wholeCastleUnknown.length, 1);
+  const empty = modell.auswerten({ frames: [], stepIndex: null, data: daten });
+  assert.deepEqual(empty.cost, empty.wholeCastleCost);
+});
+
+test('cost overview collapses independently of the breakdown and preserves a cumulative footer', () => {
+  const panel = fs.readFileSync(path.join(root, 'src/js/castle-cost-panel.js'), 'utf8');
+  assert.match(panel, /aria-controls="castleCostBody"/);
+  assert.match(panel, /els\.body\.hidden = state\.collapsed/);
+  assert.match(panel, /setItem\(COLLAPSE_STORAGE/);
+  assert.match(panel, /costTableRow costTableTotal/);
+  assert.match(panel, /Cumulative total through step/);
+  assert.match(panel, /Entire castle total/);
+});
+
 // Vergleichsproben aus den beiden echten Balance-Dateien, am 07.09.2026 geholt:
 //   ascension = Krarilotus/Ascension, Zweig ucp3-ascension,
 //               extension-Ascension-Balance/resources/balance/ascension.json
