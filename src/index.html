@@ -152,6 +152,12 @@
           <button type="button" class="castleTool" data-tool="copy" title="Shortcut: 5 or C &#8212; Ctrl+C copies what is selected, Ctrl+V places it at the cursor">Copy<kbd>5</kbd></button>
           <button type="button" class="castleTool" data-tool="replace" title="Draw a box, then choose replacements by item type. Shortcut: 8 or R">Replace<kbd>8</kbd></button>
           <button type="button" class="castleTool" data-tool="delete" title="Shortcut: 4 or D">Delete<kbd>4</kbd></button>
+          <label id="castleDeleteModeLabel" hidden>Delete mode
+            <select id="castleDeleteMode">
+              <option value="area">Area</option>
+              <option value="flood">Flood fill (same type)</option>
+            </select>
+          </label>
         </div>
         <div id="castleBlueprintControls" class="toolbarGroup castleBlueprintControls" aria-label="Temporary castle blueprint" hidden>
           <label class="hidden" title="Show or hide the temporary blueprint">
@@ -184,6 +190,7 @@
             <input id="castleBuildSlider" type="range" min="1" max="1" value="1" step="1" disabled aria-label="Select and scroll to a build step">
           </div>
           <div class="buildHint">Drag steps to reorder. Use Ctrl+click or Shift+click to select several steps.</div>
+          <button id="castleMergeSteps" type="button" disabled title="Select two or more unlocked steps of exactly the same wall, moat or pitch type. Merges at the earliest selected step; any pause is kept at the end.">Merge selected steps</button>
           <div id="castleBuildList" class="castleBuildList"></div>
           <section id="castlePopulationOverview" class="castlePopulationOverview castleOverviewPanel" data-overview="population" aria-label="Population up to the selected build step">
             <div class="populationOverviewTitle castleOverviewTitle">
@@ -500,6 +507,23 @@
       <span>Fill</span><input class="castleShortcutKey" data-tool="bucket" data-slot="0" value="7" readonly><input class="castleShortcutKey" data-tool="bucket" data-slot="1" value="F" readonly>
       <span>Replace</span><input class="castleShortcutKey" data-tool="replace" data-slot="0" value="8" readonly><input class="castleShortcutKey" data-tool="replace" data-slot="1" value="R" readonly>
     </div>
+    <fieldset class="castleCameraSettings">
+      <legend>Camera</legend>
+      <div><button id="castleCameraLegacy" type="button">Photoshop controls</button>
+        <button id="castleCameraArrows" type="button">Arrow keys + wheel zoom</button></div>
+      <label>Mouse wheel <select id="castleCameraWheel">
+        <option value="legacy">Original (plan: scroll pans, Alt+scroll zooms)</option>
+        <option value="zoom">Scroll zooms, Shift+scroll pans</option>
+      </select></label>
+      <p>Ctrl+scroll pans horizontally. Middle-drag pans. Camera keys accept letters, numbers or arrows; Backspace clears. Hold Shift to pan faster. C and X are reserved for rotation.</p>
+      <div class="castleCameraKeyGrid">
+        <label>Left <input class="castleCameraKey" data-direction="left" readonly></label>
+        <label>Right <input class="castleCameraKey" data-direction="right" readonly></label>
+        <label>Up <input class="castleCameraKey" data-direction="up" readonly></label>
+        <label>Down <input class="castleCameraKey" data-direction="down" readonly></label>
+      </div>
+      <label>Pan speed (pixels per keypress) <input id="castleCameraSpeed" type="number" min="1" max="200" value="40"></label>
+    </fieldset>
     <div id="castleShortcutError" class="castleShortcutError" role="alert"></div>
     <div class="ucpCreateActions castleShortcutActions">
       <button id="castleShortcutDefaultsBtn" type="button">Restore defaults</button>
@@ -545,6 +569,7 @@
 
 <script src="js/app-shell.js"></script>
 <script src="js/castle-geometry.js"></script>
+<script src="js/castle-camera.js"></script>
 <script src="js/castle-editor.js"></script>
 
 <script src="js/character-editor.js"></script>

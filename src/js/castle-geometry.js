@@ -272,8 +272,68 @@
     return out;
   }
 
+  // Return a proposal, leaving the document untouched until the caller has
+  // saved its undo snapshot. Exact item types must match, not just categories.
+  function mergeBuildSteps(frames, indexes, allowedTypes) {
+    const selected = [...new Set(indexes)].sort((a, b) => a - b);
+    if (selected.length < 2) throw new Error('Select at least two complete build steps.');
+    if (selected.some(index => !Number.isInteger(index) || !frames[index])) {
+      throw new Error('The build-step selection is invalid.');
+    }
+    const first = frames[selected[0]];
+    if (!allowedTypes.map(Number).includes(Number(first.itemType))) {
+      throw new Error('Only wall, moat or pitch steps can be merged.');
+    }
+    if (selected.some(index => Number(frames[index].itemType) !== Number(first.itemType))) {
+      throw new Error('Select steps of exactly the same item type.');
+    }
+    if (selected.some(index => frames[index].locked)) throw new Error('Unlock the selected steps before merging.');
+    const merged = {
+      ...first,
+      tilePositionOfsets: [...new Set(selected.flatMap(index => frames[index].tilePositionOfsets))],
+      shouldPause: selected.some(index => frames[index].shouldPause)
+    };
+    const removed = new Set(selected.slice(1));
+    return {
+      frames: frames.map((frame, index) => index === selected[0] ? merged : frame)
+        .filter((_frame, index) => !removed.has(index)),
+      index: selected[0]
+    };
+  }
+
+  // Flood through touching footprints of the clicked type. Locked objects
+  // and the Keep are barriers. Other item types never join the deletion.
+  function floodPlacementRefs(start, placements, rectsFor, isLocked, gridSize = 100) {
+    if (!start || isLocked(start.ref) || Number(start.type) === KEEP_ITEM_TYPE) return new Set();
+    const cells = new Map();
+    const barriers = new Set();
+    for (const placement of placements) {
+      const blocked = isLocked(placement.ref) || Number(placement.type) === KEEP_ITEM_TYPE;
+      if (!blocked && Number(placement.type) !== Number(start.type)) continue;
+      for (const rect of rectsFor(placement)) {
+        for (let y = Math.max(0, rect.bottom); y <= Math.min(gridSize - 1, rect.top); y++) {
+          for (let x = Math.max(0, rect.left); x <= Math.min(gridSize - 1, rect.right); x++) {
+            const key = y * gridSize + x;
+            if (blocked) barriers.add(key);
+            else {
+              if (!cells.has(key)) cells.set(key, new Set());
+              cells.get(key).add(placement.ref);
+            }
+          }
+        }
+      }
+    }
+    const startCell = [...cells].find(([key, refs]) => !barriers.has(key) && refs.has(start.ref));
+    if (!startCell) return new Set();
+    const tiles = floodTiles({ x: startCell[0] % gridSize, y: Math.floor(startCell[0] / gridSize) },
+      (x, y) => !cells.has(y * gridSize + x) || barriers.has(y * gridSize + x), gridSize, gridSize * gridSize);
+    return new Set(tiles.flatMap(tile => [...cells.get(tile.y * gridSize + tile.x)]));
+  }
+
   return {
     KEEP_ITEM_TYPE,
+    mergeBuildSteps,
+    floodPlacementRefs,
     // Die Kantenlaenge der Karte. Stand bisher als 100 in jeder
     // Vorgabe; wer sie braucht, soll sie hier holen.
     GRID_SIZE: 100,

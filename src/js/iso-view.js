@@ -868,10 +868,12 @@
   function bindSurface(canvas) {
     if (!canvas || state.bound.has(canvas)) return;
     state.bound.add(canvas);
+    canvas.tabIndex = 0;
 
     canvas.addEventListener('contextmenu', e => e.preventDefault());
 
     canvas.addEventListener('pointerdown', event => {
+      canvas.focus({ preventScroll: true });
       // In a narrow docked panel the pointer leaves the canvas mid-stroke.
       // Without capture the matching pointerup goes to another element and
       // state.drawing would stay stuck on.
@@ -921,6 +923,14 @@
 
     canvas.addEventListener('wheel', event => {
       event.preventDefault();
+      const preferences = window.castleEditor?.getCameraPreferences?.() || window.castleCamera.defaults;
+      const action = window.castleCamera.wheelAction(event, preferences, true);
+      if (action !== 'zoom') {
+        state.view[action] -= event.deltaY || event.deltaX;
+        refresh();
+        return;
+      }
+      if (!event.deltaY) return;
       const before = state.view.zoom;
       const next = Math.max(0.15, Math.min(8, before * (event.deltaY < 0 ? 1.15 : 1 / 1.15)));
       const p = pointOf(canvas, event);
@@ -977,6 +987,20 @@
   }
 
   function isMounted() { return Boolean(state.host) && !hostIsGone(); }
+
+  function panFromKey(event, delta) {
+    if (!isMounted()) return false;
+    const host = state.host;
+    const target = event.target;
+    const belongs = host.kind === 'window'
+      ? target?.ownerDocument === host.win.document || event.view === host.win
+      : Boolean(target?.nodeType && host.box.contains(target));
+    if (!belongs) return false;
+    state.view.panX += delta.x;
+    state.view.panY += delta.y;
+    refresh();
+    return true;
+  }
 
   function closeWindow() {
     const host = state.host;
@@ -1082,7 +1106,7 @@
     loadCatalogue();
   }
 
-  window.isoView = { init, openWindow, closeWindow, mountDock, unmount, refresh, paint, fit, isMounted,
+  window.isoView = { init, openWindow, closeWindow, mountDock, unmount, refresh, paint, fit, isMounted, panFromKey,
                      setGround, hasOwnGround, setGroundFit, groundIsStretched,
                      setGameMap, setGameMapKeep, hasGameMap, gameMapInfo,
                      mapMode, setMapMode, setTerrain, terrainKey, terrainReady,

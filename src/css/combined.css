@@ -825,7 +825,14 @@ button:disabled { cursor: default; }
 }
 .blueprintOpacity input:disabled { opacity: .45; }
 
-.castleShortcutDialog { width: min(560px, calc(100vw - 40px)); }
+.castleShortcutDialog { width: min(620px, calc(100vw - 40px)); max-height: calc(100vh - 40px); overflow-y: auto; }
+.castleCameraSettings { margin: 12px 0; border: 1px solid var(--line-strong); }
+.castleCameraSettings > label { display: block; margin-top: 8px; }
+.castleCameraSettings p { font-size: 12px; color: var(--text-muted); }
+.castleCameraKeyGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.castleCameraKeyGrid label { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.castleCameraKey { width: 110px; text-align: center; }
+#castleMergeSteps { margin: 0 10px 8px; }
 .castleShortcutGrid {
   display: grid;
   grid-template-columns: minmax(120px, 1fr) 110px 110px;

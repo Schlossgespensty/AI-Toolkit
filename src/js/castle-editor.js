@@ -11,6 +11,8 @@
   const FUTURE_FILTER = 'grayscale(1) brightness(.42)';
   const FUTURE_TINT = 'rgba(144, 176, 221, .13)';
   const SHORTCUT_STORAGE_KEY = 'aiv.castleToolShortcuts.v1';
+  const CAMERA_STORAGE_KEY = 'aiv.castleCamera.v1';
+  const camera = window.castleCamera;
   const OVERVIEW_STORAGE_KEY = 'aiv.castleOverviewLayout.v1';
   const DEFAULT_OVERVIEW_LAYOUT = {
     population: { visible: true, side: 'left' },
@@ -137,6 +139,7 @@
     brushReplacements: new Set(),
     brushLastTile: null,
     brushSize: 1,
+    camera: { ...camera.defaults },
     panning: false,
     panStart: null,
     skins: {},
@@ -1105,6 +1108,36 @@
             (gesperrt ? ` (${gesperrt} locked and left alone)` : ''));
   }
 
+  function floodDelete(tile) {
+    const placements = placementRefs();
+    const ref = topmostRefAtTile(tile);
+    const start = placements.find(placement => placement.ref === ref);
+    const refs = geometry.floodPlacementRefs(start, placements,
+      placement => footprintRects(placement.type, placement.off), refIsLocked, GRID);
+    if (!refs.size) return setStatus('Click an unlocked placement to flood delete its connected type. The Keep is protected.');
+    pushUndo();
+    deleteRefs(refs);
+    state.selected.clear();
+    changed(`Flood deleted ${refs.size} connected ${itemName(start.type)} placements`);
+  }
+
+  function mergeSelectedSteps() {
+    try {
+      const indexes = selectedBuildFrameIndexes();
+      const proposal = geometry.mergeBuildSteps(frames(), indexes, mergeableTypes());
+      pushUndo();
+      state.document.frames = proposal.frames;
+      selectBuildFrame(proposal.index);
+      changed(`Merged ${indexes.length} steps at step ${proposal.index + 1}; any pause follows the merged step`);
+    } catch (error) {
+      setStatus(error.message);
+    }
+  }
+
+  function mergeableTypes() {
+    return [...(state.categories.Walls || []), ...(state.categories.Moat || []), 99]; // Pitch
+  }
+
   function placeSingle(tile) {
     if (state.currentItemType == null) return setStatus('Choose an item first.');
     const type = state.currentItemType;
@@ -1626,9 +1659,7 @@
   // Ein gesperrtes Werkzeug darf nicht aktiv stehen bleiben. Wer das Gebaeude
   // abwaehlt - mit Esc oder durch Anklicken eines Bauwerks - landet deshalb
   // beim Auswaehlen, dem einzigen Werkzeug, das ohne Gebaeude etwas tut.
-  // Die Pinselgroesse: eine Zahl zwischen 1 und der Kartenbreite. Sie steht
-  // nur beim Pinsel zur Verfuegung - die anderen Werkzeuge setzen genau ein
-  // Bauwerk, da waere sie eine Zahl ohne Wirkung.
+  // Brush size is a shared preference and can be adjusted from any tool.
   function setBrushSize(size) {
     const grenze = geometry.GRID_SIZE || 100;
     state.brushSize = Math.max(1, Math.min(Math.round(size) || 1, grenze));
@@ -1640,11 +1671,10 @@
     if (!els.brushSizeOut) return;
     const grenze = geometry.GRID_SIZE || 100;
     els.brushSizeOut.textContent = String(state.brushSize);
-    const nutzbar = state.tool === 'brush';
-    if (els.brushMinus) els.brushMinus.disabled = !nutzbar || state.brushSize <= 1;
-    if (els.brushPlus) els.brushPlus.disabled = !nutzbar || state.brushSize >= grenze;
+    if (els.brushMinus) els.brushMinus.disabled = state.brushSize <= 1;
+    if (els.brushPlus) els.brushPlus.disabled = state.brushSize >= grenze;
     const kasten = els.brushSizeOut.parentElement;
-    if (kasten) kasten.classList.toggle('off', !nutzbar);
+    if (kasten) kasten.classList.remove('off');
   }
 
   function leavePlacementToolIfDisabled() {
@@ -1666,6 +1696,7 @@
     const lineOnly = state.currentItemType != null && isLineSequence(state.currentItemType);
     if (lineOnly && isPlacementTool(tool)) tool = 'line';
     state.tool = tool;
+    document.getElementById('castleDeleteModeLabel').hidden = tool !== 'delete';
     if (remember && isPlacementTool(tool) && !lineOnly) state.lastPlacementTool = tool;
     if (tool !== 'copy') state.copyBuffer = null;
     if (tool === 'copy' || tool === 'replace') state.currentItemType = null;
@@ -1719,6 +1750,9 @@
       console.warn('Ignoring invalid saved Castle shortcuts:', error);
       state.toolShortcuts = deepClone(DEFAULT_TOOL_SHORTCUTS);
     }
+    try {
+      state.camera = camera.validate(JSON.parse(localStorage.getItem(CAMERA_STORAGE_KEY) || 'null') || camera.defaults, state.toolShortcuts);
+    } catch { state.camera = { ...camera.defaults }; }
     updateToolShortcutHints();
   }
 
@@ -1777,7 +1811,16 @@
     saveOverviewLayout();
   }
 
-  function populateShortcutDialog(shortcuts = state.toolShortcuts) {
+  function populateCameraDialog(preferences = state.camera) {
+    document.getElementById('castleCameraWheel').value = preferences.wheel;
+    document.getElementById('castleCameraSpeed').value = preferences.panSpeed;
+    for (const input of els.shortcutForm.querySelectorAll('.castleCameraKey')) {
+      input.value = preferences[input.dataset.direction].toUpperCase();
+    }
+  }
+
+  function populateShortcutDialog(shortcuts = state.toolShortcuts, preferences = state.camera) {
+    populateCameraDialog(preferences);
     for (const input of els.shortcutForm.querySelectorAll('.castleShortcutKey')) {
       const key = shortcuts[input.dataset.tool]?.[Number(input.dataset.slot)] || '';
       input.value = key.toUpperCase();
@@ -1803,8 +1846,17 @@
   function saveShortcutDialog(event) {
     event.preventDefault();
     try {
-      state.toolShortcuts = validateToolShortcuts(shortcutDraft());
-      localStorage.setItem(SHORTCUT_STORAGE_KEY, JSON.stringify(state.toolShortcuts));
+      const shortcuts = validateToolShortcuts(shortcutDraft());
+      const draft = {
+        wheel: document.getElementById('castleCameraWheel').value,
+        panSpeed: document.getElementById('castleCameraSpeed').value
+      };
+      for (const input of els.shortcutForm.querySelectorAll('.castleCameraKey')) draft[input.dataset.direction] = input.value;
+      const preferences = camera.validate(draft, shortcuts);
+      localStorage.setItem(SHORTCUT_STORAGE_KEY, JSON.stringify(shortcuts));
+      localStorage.setItem(CAMERA_STORAGE_KEY, JSON.stringify(preferences));
+      state.toolShortcuts = shortcuts;
+      state.camera = preferences;
       updateToolShortcutHints();
       els.shortcutDialog.close();
       setStatus('Castle shortcuts saved');
@@ -1983,6 +2035,11 @@
   }
 
   function renderBuildList() {
+    const mergeButton = document.getElementById('castleMergeSteps');
+    try {
+      geometry.mergeBuildSteps(frames(), selectedBuildFrameIndexes(), mergeableTypes());
+      mergeButton.disabled = false;
+    } catch { mergeButton.disabled = true; }
     updatePopulationPanel();
     updateCostPanel();
     els.buildList.innerHTML = '';
@@ -2870,6 +2927,11 @@
       return;
     }
     if (state.tool === 'delete') {
+      if (document.getElementById('castleDeleteMode').value === 'flood') {
+        floodDelete(tile);
+        state.gesture = null;
+        return;
+      }
       state.gesture = 'delete-marquee';
       scheduleDraw();
       return;
@@ -3072,14 +3134,16 @@
   function onWheel(event) {
     event.preventDefault();
     const pos = pointerPosition(event);
-    if (event.ctrlKey) {
+    const action = camera.wheelAction(event, state.camera);
+    if (action === 'panX') {
       const delta = event.deltaY !== 0 ? event.deltaY : event.deltaX;
       state.panX -= delta;
       clampPan();
       scheduleDraw();
       return;
     }
-    if (event.altKey) {
+    if (action === 'zoom') {
+      if (!event.deltaY) return;
       const old = state.cell;
       const direction = event.deltaY < 0 ? 1 : -1;
       const next = Math.max(MIN_CELL, Math.min(MAX_CELL, old + direction));
@@ -3432,7 +3496,24 @@
       els.shortcutError.textContent = '';
     });
   }
-  els.shortcutDefaults.addEventListener('click', () => populateShortcutDialog(DEFAULT_TOOL_SHORTCUTS));
+  els.shortcutDefaults.addEventListener('click', () => populateShortcutDialog(DEFAULT_TOOL_SHORTCUTS, camera.defaults));
+  document.getElementById('castleCameraLegacy').addEventListener('click', () => populateCameraDialog(camera.defaults));
+  document.getElementById('castleCameraArrows').addEventListener('click', () => populateCameraDialog(camera.arrows));
+  document.getElementById('castleMergeSteps').addEventListener('click', mergeSelectedSteps);
+  for (const input of els.shortcutForm.querySelectorAll('.castleCameraKey')) {
+    input.addEventListener('keydown', event => {
+      if (event.key === 'Tab' || event.key === 'Escape') return;
+      event.preventDefault();
+      if (event.key === 'Backspace' || event.key === 'Delete') { input.value = ''; return; }
+      const key = camera.normalizeKey(event.key);
+      if (!key || event.ctrlKey || event.metaKey || event.altKey || event.shiftKey) {
+        els.shortcutError.textContent = 'Use a letter, number or arrow key without modifiers.';
+        return;
+      }
+      input.value = key.toUpperCase();
+      els.shortcutError.textContent = '';
+    });
+  }
   els.shortcutCancel.addEventListener('click', () => els.shortcutDialog.close());
   els.shortcutForm.addEventListener('submit', saveShortcutDialog);
   els.replaceCancel.addEventListener('click', () => els.replaceDialog.close());
@@ -3465,8 +3546,21 @@
   // den Hoerer hier nie, weil es ein anderes window ist.
   function handleCastleKey(event) {
     if (window.appWorkspace?.getActive() !== 'castle') return;
-    const editing = ['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName);
+    if (event.defaultPrevented || document.querySelector('dialog[open]')) return;
+    const target = event.target || document.activeElement;
+    const editing = ['INPUT', 'TEXTAREA', 'SELECT'].includes(target?.tagName) || target?.isContentEditable;
     if (editing) return;
+    const delta = camera.keyDelta(event, state.camera);
+    if (delta) {
+      event.preventDefault();
+      if (!window.isoView?.panFromKey?.(event, delta)) {
+        state.panX += delta.x;
+        state.panY += delta.y;
+        clampPan();
+        scheduleDraw();
+      }
+      return;
+    }
     const key = event.key.toLowerCase();
     const shortcutTool = !event.ctrlKey && !event.metaKey && !event.altKey ? toolForShortcut(key) : null;
     if ((event.ctrlKey || event.metaKey) && key === 'z') {
@@ -3539,6 +3633,7 @@
     undo,
     redo,
     deleteSelected,
+    getCameraPreferences: () => ({ ...state.camera }),
     chooseBlueprint,
     clearBlueprint,
     showShortcutDialog,
