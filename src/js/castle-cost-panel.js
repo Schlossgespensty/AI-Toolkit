@@ -404,6 +404,7 @@
       div.title = zeile.source === 'balance'
         ? 'Price from the selected balance file'
         : 'Price from the game exe (vanilla)';
+      if (zeile.pitchGroup) div.title += `; 1 pitch per ${zeile.pitchGroup} tiles, grouped across steps; assumes a fresh placement counter`;
       els.table.appendChild(div);
     }
     const total = document.createElement('div');

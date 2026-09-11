@@ -28,6 +28,15 @@ patches applied after rebalancer cannot be inferred from this file. Resource
 buy/sell prices do not change the physical construction quantities. No gold
 conversion of goods is implied.
 
+Pitch is a special payment rule, not a normal per-building table price:
+`0x0041BFD0` charges one pitch and retains a per-player placement counter.
+The ordinary default is four tiles per pitch. Rebalancer's `castle.ditch_per_pitch`
+changes that to 1–4 (Team Liga uses 2). The panel rounds the cumulative pitch
+tile count across steps, assuming a fresh counter, rather than charging or
+rounding separately at each step. Merging pitch steps therefore cannot change
+the estimated total. The map-editor mode's free-pitch branch is not used for
+the AI castle construction estimate.
+
 Reference: [CIO61/rebalancer, init.lua at 8d5b47e](https://github.com/CIO61/rebalancer/blob/8d5b47e1d61cab8c0f4b1f301669d2541788facd/init.lua),
 `edit_buildings` (lines 624–651), production patch offsets (458–477),
 `edit_resources` (881–920), and `apply_rebalance`/`enable`.

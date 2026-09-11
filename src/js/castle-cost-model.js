@@ -34,6 +34,15 @@
   function preisFuer(typ, daten, balance) {
     const eintrag = daten.buildings[String(typ)];
     if (!eintrag) return { kosten: null, quelle: 'unknown', name: null };
+    if (Number(typ) === 99) {
+      const configured = balance?.castle?.ditch_per_pitch;
+      const pitchGroup = configured === undefined ? 4 : Number(configured);
+      if (![1,2,3,4].includes(pitchGroup)) return { kosten: null, quelle: 'unknown', name: eintrag.name };
+      // 0x0041BFD0 charges once when the player's ditch counter is zero.
+      // rebalancer changes the reset value, giving 1..4 tiles per pitch.
+      return { kosten: { ...leereKosten(), pitch: 1 }, name: eintrag.name,
+        quelle: configured === undefined ? 'vanilla' : 'balance', pitchGroup };
+    }
     if (eintrag.free) return { kosten: leereKosten(), quelle: 'free', name: eintrag.name, grund: eintrag.free };
     const vanilla = alsKosten(eintrag.cost);
     if (balance && eintrag.balance) {
@@ -66,12 +75,15 @@
         unbekannt.set(typ, (unbekannt.get(typ) || 0) + anzahl);
         continue;
       }
-      const zeile = jeTyp.get(typ) || { type: typ, name: preis.name, count: 0, unit: preis.kosten, source: preis.quelle, reason: preis.grund || null };
+      const zeile = jeTyp.get(typ) || { type: typ, name: preis.name, count: 0, unit: preis.kosten, source: preis.quelle, reason: preis.grund || null, pitchGroup: preis.pitchGroup };
+      const vorher = zeile.count;
       zeile.count += anzahl;
       zeile.unit = preis.kosten;
       zeile.source = preis.quelle;
       jeTyp.set(typ, zeile);
-      for (const r of RESSOURCEN) summe[r] += preis.kosten[r] * anzahl;
+      for (const r of RESSOURCEN) summe[r] += r === 'pitch' && preis.pitchGroup
+        ? Math.ceil(zeile.count / preis.pitchGroup) - Math.ceil(vorher / preis.pitchGroup)
+        : preis.kosten[r] * anzahl;
     }
 
     // Was nachweislich nichts kostet (Mauern, Treppen, Bergfried), bleibt aus
@@ -80,7 +92,8 @@
     // Liste und niemand sieht, dass die Balance sie verschenkt.
     const zeilen = [...jeTyp.values()]
       .filter(z => z.source !== 'free')
-      .map(z => ({ ...z, total: Object.fromEntries(RESSOURCEN.map(r => [r, z.unit[r] * z.count])) }))
+      .map(z => ({ ...z, total: Object.fromEntries(RESSOURCEN.map(r => [r,
+        r === 'pitch' && z.pitchGroup ? Math.ceil(z.count / z.pitchGroup) : z.unit[r] * z.count])) }))
       .sort((a, b) => (b.total.gold + b.total.wood * 10 + b.total.stone * 10) - (a.total.gold + a.total.wood * 10 + a.total.stone * 10));
 
     return {

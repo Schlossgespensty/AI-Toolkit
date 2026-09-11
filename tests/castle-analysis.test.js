@@ -98,6 +98,22 @@ test('housing overrides affect the population supplied to AIC thresholds', () =>
   assert.equal(result.population.aic.population, 16);
 });
 
+test('pitch placement credit survives step boundaries and respects every rebalancer ratio', () => {
+  const frames = Array.from({ length:9 }, (_,i) => ({ itemType:99,tilePositionOfsets:[i] }));
+  for (const ratio of [1,2,3,4]) {
+    const profile = { castle: { ditch_per_pitch:ratio } };
+    for (let step = 0; step < frames.length; step++) {
+      const result = model.kostenBis(frames,step,data,profile);
+      assert.equal(result.cost.pitch,Math.ceil((step+1)/ratio));
+      assert.equal(result.rows[0].total.pitch,result.cost.pitch);
+    }
+    const merged = [{ itemType:99,tilePositionOfsets:frames.map((_,i) => i) }];
+    assert.equal(model.kostenBis(merged,null,data,profile).cost.pitch, model.kostenBis(frames,null,data,profile).cost.pitch);
+  }
+  assert.equal(model.kostenBis(frames,null,data,null).cost.pitch,3);
+  assert.throws(() => balance.validate({ castle:{ ditch_per_pitch:5 } }));
+});
+
 test('entrance tables retain game order and are transformed to upward editor coordinates', () => {
   const entries = analysis.entranceCandidates({ left: 10, right: 12, top: 12, bottom: 10 });
   assert.equal(entries.length, 12);

@@ -23,6 +23,9 @@
       if (stats.baseDelivery !== undefined && !integer(stats.baseDelivery, 255)) throw new Error(`${name}: delivery must fit a byte (0–255).`);
       if (stats.skirmishBonus !== undefined && typeof stats.skirmishBonus !== 'boolean') throw new Error(`${name}: skirmishBonus must be true or false.`);
     }
+    if (profile.castle?.ditch_per_pitch !== undefined && ![1,2,3,4].includes(Number(profile.castle.ditch_per_pitch))) {
+      throw new Error('castle.ditch_per_pitch must be 1, 2, 3 or 4.');
+    }
     // Preserve ALL sections: production, movement, fear and population matter too.
     return JSON.parse(JSON.stringify(profile));
   }
