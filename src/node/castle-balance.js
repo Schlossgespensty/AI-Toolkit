@@ -31,6 +31,9 @@ function readInstalledBalance(gameRoot) {
   if (config?.active === false) throw new Error('The selected UCP configuration is inactive.');
   const full = config?.['config-full'] || config?.config;
   const sparse = config?.['config-sparse'];
+  if (Array.isArray(full?.['load-order']) && !full['load-order'].some(entry => entry?.extension === 'rebalancer')) {
+    throw new Error('Rebalancer is not enabled in the resolved UCP load order.');
+  }
   const section = full?.modules?.rebalancer || sparse?.modules?.rebalancer;
   const leaf = section?.config?.balance_config_file_selector;
   const contents = leaf?.contents || leaf;

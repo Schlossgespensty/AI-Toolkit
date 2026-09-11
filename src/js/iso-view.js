@@ -240,6 +240,13 @@
   // eine Burg ueber einem flachen Boden schweben zu lassen waere schlimmer als
   // sie flach zu lassen.
   function bodenHoehe(gx, gy) {
+    // The full-map atlas takes precedence over paintGround. It already lifts
+    // terrain tiles; sprites and picking must use those same heights, not the
+    // previous cropped image's height buffer (or zero on first load).
+    const atlas = vorrat();
+    if (atlas?.plaetze && atlas.bild?.complete && atlas.bild?.naturalWidth && gameMap()) {
+      return geo.mapTileHeight(gx, gy, currentKeep(), atlas.hoehen);
+    }
     const feld = state.hoehenFeld;
     if (!feld) return 0;
     if (gx < 0 || gy < 0 || gx >= geo.GRID || gy >= geo.GRID) return 0;
@@ -568,14 +575,14 @@
       return;
     }
 
-    const scale = ((geo.HALF_W * 2) / GAME_TILE_WIDTH) * state.view.zoom;
+    const scale = geo.groundTextureScale(state.view.zoom, GAME_TILE_WIDTH, 16);
     ctx.save();
     ctx.clip();
     ctx.translate(state.view.panX, state.view.panY);
-    ctx.scale(scale, scale);
+    ctx.scale(scale.x, scale.y);
     ctx.fillStyle = pattern;
-    ctx.fillRect(-state.view.panX / scale, -state.view.panY / scale,
-                 width / scale, height / scale);
+    ctx.fillRect(-state.view.panX / scale.x, -state.view.panY / scale.y,
+                 width / scale.x, height / scale.y);
     ctx.restore();
   }
 

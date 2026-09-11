@@ -260,7 +260,7 @@
       catch (fehler) { meldeFehler(`${datei.name} is not valid JSON.`); return; }
       try { inhalt = window.castleBalance.validate(inhalt); }
       catch (error) { meldeFehler(error.message); return; }
-      const name = datei.name.replace(/\.json$/i, '');
+      const name = `File: ${datei.name.replace(/\.json$/i, '')}`;
       state.balances[name] = inhalt;
       state.balanceSource = datei.name;
       state.choice = name;

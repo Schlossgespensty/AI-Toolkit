@@ -20,6 +20,12 @@
   const HALF_W = 16;          // half a tile in game points
   const HALF_H = 8;
 
+  // GM1 ground is 30x16; the village grid is 32x16. Scaling both axes by
+  // 32/30 made the ground drift vertically relative to sprites and picking.
+  function groundTextureScale(zoom, width = 30, height = 16) {
+    return { x: HALF_W * 2 / width * zoom, y: HALF_H * 2 / height * zoom };
+  }
+
   // Editor offset -> grid coordinates of the item's top-left tile
   function gridFromOffset(offset) {
     const x = offset % GRID;
@@ -537,6 +543,13 @@
     return { mx: keep.x - anker.gx + gx, my: keep.y - anker.gy + gy };
   }
 
+  function mapTileHeight(gx, gy, keep, heights) {
+    if (!keep || !heights) return 0;
+    const { mx, my } = mapTileForGrid(gx, gy, keep);
+    if (!Number.isInteger(mx) || !Number.isInteger(my) || mx < 0 || my < 0 || mx >= 400 || my >= 400) return 0;
+    return Number(heights[my * 400 + mx]) || 0;
+  }
+
   // Und welchen Punkt der Vorschau ein Kartenfeld belegt. Nur Felder mit
   // ungeradem mx+my haben einen eigenen Punkt; die anderen liegen dazwischen.
   function previewPointForMapTile(mx, my) {
@@ -626,9 +639,9 @@
   return { GRID, HALF_W, HALF_H, MAP_PREVIEW_EDGE, KEEP_TILE,
            gridFromOffset, offsetFromGrid, isoPoint,
            tileFromPoint, editorTileFromPoint,
-           depth, byDepth, spriteRect, variantFor, wallLookup, hoehenLookup,
+           depth, byDepth, spriteRect, groundTextureScale, variantFor, wallLookup, hoehenLookup,
            collectItems, collectPlates, marqueeOutline, fitView,
            rotateGrid, unrotateGrid, keepOrientation,
-           mapTileForGrid, keepAnchor, previewPointForMapTile, centreKeep,
+           mapTileForGrid, mapTileHeight, keepAnchor, previewPointForMapTile, centreKeep,
            mapPreviewRect, mapImageRect, villageWindow };
 });

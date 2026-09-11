@@ -519,7 +519,7 @@ test('the ground is tiled at the same scale as the map, not stretched', () => {
   const grund = iso.slice(iso.indexOf('function paintGround'), iso.indexOf('function drawSprite'));
   assert.match(grund, /createPattern\(img, 'repeat'\)/, 'wiederholt, nicht gestreckt');
   // Ein Feld im Bild muss ein Feld im Editor sein: Spielkachel 30, unsere 32.
-  assert.match(grund, /\(\(geo\.HALF_W \* 2\) \/ GAME_TILE_WIDTH\) \* state\.view\.zoom/);
+  assert.match(grund, /geo\.groundTextureScale\(state\.view\.zoom, GAME_TILE_WIDTH, 16\)/);
   assert.equal(geometry.HALF_W * 2, 32, 'unsere Kachel ist 32 Punkte breit');
   assert.match(iso, /const GAME_TILE_WIDTH = 30/, 'die des Spiels 30');
   // Mitwandern beim Schieben, und am Kartenrand ist Schluss.

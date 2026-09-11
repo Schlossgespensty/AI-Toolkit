@@ -12,6 +12,43 @@ const production = require('../src/js/castle-production');
 const model = require('../src/js/castle-cost-model');
 const data = require('../src/js/castle-cost-data');
 
+test('ground repeats and building footprints retain identical dimensions across zoom levels', () => {
+  const iso = require('../src/js/iso-geometry');
+  for (const zoom of [.25, .73, 1, 2.5]) {
+    const scale = iso.groundTextureScale(zoom);
+    assert.equal(30 * scale.x, 32 * zoom);
+    assert.equal(16 * scale.y, 16 * zoom);
+    const sprite = iso.spriteRect({ breite: 126, hoehe: 111 }, 12, 15, 4, { zoom, panX: 0, panY: 0 });
+    const bottom = iso.isoPoint(16, 19, { zoom, panX: 0, panY: 0 });
+    assert.ok(Math.abs(sprite.x + sprite.w / 2 - bottom[0]) < 1e-8);
+    assert.ok(Math.abs(sprite.y + sprite.h - bottom[1]) < 1e-8);
+  }
+});
+
+test('full-map atlas elevations anchor sprites and picking to the same map tile at every rotation', () => {
+  const iso = require('../src/js/iso-geometry');
+  const heights = new Uint8Array(400 * 400);
+  const view = { zoom: .75, panX: 311, panY: -85 };
+  for (const orientation of [0,2,4,6]) {
+    const keep = { x: 120, y: 210, orientation };
+    const tile = iso.rotateGrid(43,43,1,orientation);
+    const map = iso.mapTileForGrid(tile.gx,tile.gy,keep);
+    heights[map.my * 400 + map.mx] = 8; // half a tile vertically
+    const lift = iso.mapTileHeight(tile.gx,tile.gy,keep,heights);
+    assert.equal(lift,8);
+    const rect = iso.spriteRect({ breite: 30,hoehe:16 },tile.gx,tile.gy,1,view,lift);
+    const corner = iso.isoPoint(tile.gx,tile.gy,view,8);
+    assert.equal(rect.y,corner[1]);
+    const centre = iso.isoPoint(tile.gx+.5,tile.gy+.5,view,8);
+    const picked = iso.tileFromPoint(...centre,view,(x,y) => iso.mapTileHeight(x,y,keep,heights));
+    assert.deepEqual(picked,tile);
+  }
+  assert.equal(iso.mapTileHeight(1000,1000,{x:120,y:210},heights),0);
+  const source = fs.readFileSync(path.join(__dirname,'../src/js/iso-view.js'),'utf8');
+  const heightFunction = source.slice(source.indexOf('function bodenHoehe'),source.indexOf('function terrainReady'));
+  assert.match(heightFunction,/geo\.mapTileHeight\(gx, gy, currentKeep\(\), atlas\.hoehen\)/);
+});
+
 test('balance import retains production and rejects invalid integer/boolean patches', () => {
   const input = { buildings: { Hovel: { cost: ['5',0,0,0,0], housing: 12 } }, resources: { Wood: { baseDelivery: 10, skirmishBonus: false } }, fear_factor: { productivity: 20 } };
   assert.deepEqual(balance.validate(input), input);
