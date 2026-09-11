@@ -99,17 +99,6 @@
     return state.library?.ais.find(ai => ai.key === state.selectedKey) || null;
   }
 
-  const aiSearchCache = new WeakMap();
-  function aiSearchText(ai) {
-    if (aiSearchCache.has(ai)) return aiSearchCache.get(ai);
-    const text = [
-      ai.name, ai.id, ai.folderName, ai.author, ai.description, ai.version,
-      ai.plugin?.name, ai.plugin?.displayName, ai.plugin?.version
-    ].join(' ').normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
-    aiSearchCache.set(ai, text);
-    return text;
-  }
-
   function filteredAis() {
     let ais = state.library?.ais || [];
     if (els.filter.value === 'active') ais = ais.filter(ai => ai.active);
@@ -123,7 +112,17 @@
       .filter(Boolean);
     if (!terms.length) return ais;
     return ais.filter(ai => {
-      const searchable = aiSearchText(ai);
+      const searchable = [
+        ai.name,
+        ai.id,
+        ai.folderName,
+        ai.author,
+        ai.description,
+        ai.version,
+        ai.plugin?.name,
+        ai.plugin?.displayName,
+        ai.plugin?.version
+      ].join(' ').normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
       return terms.every(term => searchable.includes(term));
     });
   }
@@ -351,12 +350,10 @@
       els.list.appendChild(empty);
       return;
     }
-    const fragment = document.createDocumentFragment();
     for (const ai of ais) {
       const button = document.createElement('button');
       button.type = 'button';
       button.className = 'ucpAiListItem';
-      button.dataset.aiKey = ai.key;
       button.classList.toggle('selected', ai.key === state.selectedKey);
 
       const portrait = document.createElement('img');
@@ -375,9 +372,8 @@
       text.append(name, source);
       button.append(portrait, text);
       button.addEventListener('click', () => selectAi(ai.key));
-      fragment.appendChild(button);
+      els.list.appendChild(button);
     }
-    els.list.appendChild(fragment);
   }
 
   function renderCastleSummary() {
@@ -452,9 +448,7 @@
 
   function selectAi(key) {
     state.selectedKey = key;
-    for (const button of els.list.querySelectorAll('.ucpAiListItem')) {
-      button.classList.toggle('selected', button.dataset.aiKey === key);
-    }
+    renderList();
     renderDetails();
   }
 
@@ -764,17 +758,7 @@
   els.create.addEventListener('click', showCreateDialog);
   els.refresh.addEventListener('click', () => scan());
   els.openPlugins.addEventListener('click', () => openPath());
-  let filterRenderPending = false;
   function applyListFilters() {
-    if (filterRenderPending) return;
-    filterRenderPending = true;
-    requestAnimationFrame(() => {
-      filterRenderPending = false;
-      applyListFiltersNow();
-    });
-  }
-
-  function applyListFiltersNow() {
     const visible = filteredAis();
     if (!visible.some(ai => ai.key === state.selectedKey)) state.selectedKey = visible[0]?.key || null;
     renderList();

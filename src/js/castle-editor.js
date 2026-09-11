@@ -135,7 +135,6 @@
     brushError: '',
     brushSeen: new Set(),
     brushReplacements: new Set(),
-    brushOccupied: new Uint8Array(GRID * GRID),
     brushLastTile: null,
     brushSize: 1,
     panning: false,
@@ -143,20 +142,12 @@
     skins: {},
     customSkinTypes: new Set(),
     skinImages: {},
-    skinImageUrls: {},
     dragFrameIndexes: [],
     buildSelectionAnchor: null,
     renderPending: false,
     renderDpr: 1,
     staticCacheDirty: true,
     placementCache: null,
-    placementIndex: null,
-    populationSummaryCache: null,
-    lastPopulationEventSummary: null,
-    buildListStructureDirty: true,
-    buildRows: [],
-    pendingStaticChanged: false,
-    labelLayoutCache: new Map(),
     blueprintImage: null,
     blueprintFileName: '',
     blueprintOpacity: 0.5,
@@ -167,7 +158,6 @@
   };
   let saveNoticeTimer = null;
   let blueprintDialogOpen = false;
-  const cssValueCache = new Map();
 
   function frames() {
     if (!Array.isArray(state.document.frames)) state.document.frames = [];
@@ -434,79 +424,7 @@
     return state.placementCache;
   }
 
-  // Most editor interactions ask about only one or a handful of map cells.
-  // Index placements once per document change so hover, collision, line and
-  // fill checks do not repeatedly walk a castle with hundreds of steps.
-  function placementIndex() {
-    if (state.placementIndex) return state.placementIndex;
-    const byCell = new Array(GRID * GRID);
-    const byRef = new Map();
-    const counts = new Map();
-    const obstacles = new Uint8Array(GRID * GRID);
-    placementRefs().forEach((placement, order) => {
-      placement.order = order;
-      placement.footprint = footprintRects(placement.type, placement.off);
-      byRef.set(placement.ref, placement);
-      counts.set(placement.type, (counts.get(placement.type) || 0) + 1);
-      for (const rect of placement.footprint) {
-        const left = Math.max(0, rect.left);
-        const right = Math.min(GRID - 1, rect.right);
-        const bottom = Math.max(0, rect.bottom);
-        const top = Math.min(GRID - 1, rect.top);
-        for (let y = bottom; y <= top; y++) {
-          for (let x = left; x <= right; x++) {
-            const offset = y * GRID + x;
-            (byCell[offset] ||= []).push(placement);
-            if (placement.kind !== 'unit') obstacles[offset] = 1;
-          }
-        }
-      }
-    });
-    state.placementIndex = { byCell, byRef, counts, obstacles };
-    return state.placementIndex;
-  }
-
-  function placementsIntersecting(footprint) {
-    const { byCell } = placementIndex();
-    const found = new Set();
-    for (const rect of footprint) {
-      const left = Math.max(0, rect.left);
-      const right = Math.min(GRID - 1, rect.right);
-      const bottom = Math.max(0, rect.bottom);
-      const top = Math.min(GRID - 1, rect.top);
-      for (let y = bottom; y <= top; y++) {
-        for (let x = left; x <= right; x++) {
-          for (const placement of byCell[y * GRID + x] || []) found.add(placement);
-        }
-      }
-    }
-    return Array.from(found).sort((one, two) => one.order - two.order);
-  }
-
-  function footprintTouches(footprint, occupied) {
-    if (!occupied) return false;
-    for (const rect of footprint) {
-      for (let y = rect.bottom; y <= rect.top; y++) {
-        for (let x = rect.left; x <= rect.right; x++) {
-          if (x >= 0 && x < GRID && y >= 0 && y < GRID && occupied[y * GRID + x]) return true;
-        }
-      }
-    }
-    return false;
-  }
-
-  function markFootprint(footprint, occupied) {
-    for (const rect of footprint) {
-      for (let y = Math.max(0, rect.bottom); y <= Math.min(GRID - 1, rect.top); y++) {
-        for (let x = Math.max(0, rect.left); x <= Math.min(GRID - 1, rect.right); x++) {
-          occupied[y * GRID + x] = 1;
-        }
-      }
-    }
-  }
-
   function calculatePopulationSummary() {
-    if (state.populationSummaryCache) return state.populationSummaryCache;
     const effects = state.populationData?.population_effects || {};
     const provides = effects.provides || {};
     const requires = effects.requires || {};
@@ -514,24 +432,22 @@
     let required = 0;
     const counts = {};
 
-    for (const [type, count] of placementIndex().counts) {
-      const key = String(type);
-      counts[key] = count;
-      provided += (Number(provides[key]) || 0) * count;
-      required += (Number(requires[key]) || 0) * count;
+    for (const placement of placementRefs()) {
+      const key = String(placement.type);
+      counts[key] = (counts[key] || 0) + 1;
+      provided += Number(provides[key]) || 0;
+      required += Number(requires[key]) || 0;
     }
 
-    state.populationSummaryCache = { provided, required, left: provided - required, counts };
-    return state.populationSummaryCache;
+    return { provided, required, left: provided - required, counts };
   }
 
   function updatePopulationPanel(emitCastleEvent = true) {
     const summary = calculatePopulationSummary();
     // The complete-castle counter is no longer shown here, but Character and
     // other workspaces still consume this event and the public summary API.
-    if (emitCastleEvent && state.lastPopulationEventSummary !== summary) {
+    if (emitCastleEvent) {
       window.dispatchEvent(new CustomEvent('castle-population-changed', { detail: summary }));
-      state.lastPopulationEventSummary = summary;
     }
     return summary;
   }
@@ -550,9 +466,8 @@
   }
 
   function countType(type, ignore = new Set()) {
-    const index = placementIndex();
-    let count = index.counts.get(type) || 0;
-    for (const ref of ignore) if (index.byRef.get(ref)?.type === type) count--;
+    let count = 0;
+    for (const p of placementRefs()) if (p.type === type && !ignore.has(p.ref)) count++;
     return count;
   }
 
@@ -566,7 +481,6 @@
   function validatePlacement(type, offset, options = {}) {
     const ignore = options.ignoreRefs || new Set();
     const extraNew = options.extraNew || [];
-    const extraOccupied = options.extraOccupied || null;
     const checkMax = options.checkMax !== false;
     const { x, y } = offsetToXY(offset);
     const outside = boundsError(type, x, y);
@@ -583,8 +497,9 @@
 
     const proposedFootprint = footprintRects(type, offset);
     const replacements = new Set();
-    for (const p of placementsIntersecting(proposedFootprint)) {
+    for (const p of placementRefs()) {
       if (ignore.has(p.ref)) continue;
+      if (!geometry.footprintsIntersect(proposedFootprint, footprintRects(p.type, p.off))) continue;
       const existingMode = overlapMode(p.type);
       if (existingMode === 'allow') continue;
       if (existingMode === 'replace') {
@@ -594,10 +509,6 @@
         continue;
       }
       return { ok: false, reason: `Blocked by ${itemName(p.type)}.`, replacements: new Set() };
-    }
-
-    if (footprintTouches(proposedFootprint, extraOccupied)) {
-      return { ok: false, reason: 'Overlaps another item in this brush stroke.', replacements: new Set() };
     }
 
     for (const other of extraNew) {
@@ -610,7 +521,20 @@
   }
 
   function lineObstacleMap() {
-    return placementIndex().obstacles;
+    const occupied = new Uint8Array(GRID * GRID);
+    for (const placement of placementRefs()) {
+      if (placement.kind === 'unit') continue;
+      for (const rect of footprintRects(placement.type, placement.off)) {
+        const left = Math.max(0, rect.left);
+        const right = Math.min(GRID - 1, rect.right);
+        const bottom = Math.max(0, rect.bottom);
+        const top = Math.min(GRID - 1, rect.top);
+        for (let y = bottom; y <= top; y++) {
+          for (let x = left; x <= right; x++) occupied[y * GRID + x] = 1;
+        }
+      }
+    }
+    return occupied;
   }
 
   function routedLineTiles(start, end) {
@@ -1129,7 +1053,6 @@
       const f = frames()[index];
       if (f) f.locked = wert;
     }
-    state.buildListStructureDirty = true;
     renderBuildList();
     scheduleDraw();
     setStatus(betroffen.length === 1
@@ -1222,9 +1145,10 @@
     if (state.brushSeen.has(off)) return;
     state.brushSeen.add(off);
 
+    const pending = state.brushOffsets.map(p => ({ type, off: p }));
     const result = validatePlacement(type, off, {
       ignoreRefs: state.brushReplacements,
-      extraOccupied: state.brushOccupied,
+      extraNew: pending,
       checkMax: false
     });
     if (!result.ok) {
@@ -1243,7 +1167,6 @@
 
     state.brushOffsets.push(off);
     state.brushTypes.push(type);
-    markFootprint(footprintRects(type, off), state.brushOccupied);
     for (const ref of result.replacements) state.brushReplacements.add(ref);
     scheduleDraw(false);
   }
@@ -1320,8 +1243,20 @@
   }
 
   function topmostRefAtTile(tile) {
-    if (!tile || tile.x < 0 || tile.x >= GRID || tile.y < 0 || tile.y >= GRID) return null;
-    return placementIndex().byCell[xyToOffset(tile.x, tile.y)]?.at(-1)?.ref || null;
+    for (let mi = state.document.miscItems.length - 1; mi >= 0; mi--) {
+      const item = state.document.miscItems[mi];
+      if (!isUnitType(item.itemType)) continue;
+      if (geometry.footprintContainsTile(footprintRects(Number(item.itemType), Number(item.positionOfset)), tile)) return unitRefKey(mi);
+    }
+    for (let fi = frames().length - 1; fi >= 0; fi--) {
+      const frame = frames()[fi];
+      const type = Number(frame.itemType);
+      const offsets = frame.tilePositionOfsets || [];
+      for (let oi = offsets.length - 1; oi >= 0; oi--) {
+        if (geometry.footprintContainsTile(footprintRects(type, Number(offsets[oi])), tile)) return frameRefKey(fi, oi);
+      }
+    }
+    return null;
   }
 
   // The flat editor is the file-oriented plan. Map/start-position rotation
@@ -1455,10 +1390,12 @@
       }
     }
 
+    const existing = placementRefs();
     for (const entry of proposal.entries) {
       if (overlapMode(entry.type) === 'allow') continue;
       const entryFootprint = footprintRectsAtXY(entry.type, entry.x, entry.y);
-      for (const other of placementsIntersecting(entryFootprint)) {
+      for (const other of existing) {
+        if (!geometry.footprintsIntersect(entryFootprint, footprintRects(other.type, other.off))) continue;
         const mode = overlapMode(other.type);
         if (mode === 'allow') continue;
         if (mode === 'replace') {
@@ -1559,8 +1496,7 @@
     if (state.currentItemType == null) return setStatus('Choose an item first.');
     const type = state.currentItemType;
     if (isLineSequence(type)) return setStatus('This item is drawn as a line, not poured.');
-    const belegung = placementIndex().byCell;
-    const besetzt = (x, y) => Boolean(belegung[xyToOffset(x, y)]?.length);
+    const besetzt = (x, y) => Boolean(topmostRefAtTile({ x, y }));
     const felder = geometry.floodTiles(tile, besetzt);
     if (!felder.length) return setStatus('Nothing to fill here - that tile is taken.');
 
@@ -1569,7 +1505,6 @@
     state.brushError = '';
     state.brushSeen = new Set();
     state.brushReplacements = new Set();
-    state.brushOccupied.fill(0);
     for (const feld of felder) brushAddOne(feld);
     if (!state.brushOffsets.length) return setStatus('Nothing could be placed there.');
     const gesetzt = state.brushOffsets.length;
@@ -1592,8 +1527,9 @@
       if (outside) return { ok: false, reason: outside, replacements: new Set() };
       if (overlapMode(type) === 'allow') continue;
       const movedFootprint = footprintRectsAtXY(type, x, y);
-      for (const other of placementsIntersecting(movedFootprint)) {
+      for (const other of placementRefs()) {
         if (selectedRefs.has(other.ref)) continue;
+        if (!geometry.footprintsIntersect(movedFootprint, footprintRects(other.type, other.off))) continue;
         const mode = overlapMode(other.type);
         if (mode === 'allow') continue;
         if (mode === 'replace') {
@@ -1655,7 +1591,6 @@
     state.brushError = '';
     state.brushSeen.clear();
     state.brushReplacements.clear();
-    state.brushOccupied.fill(0);
     updateToolAvailability();
     leavePlacementToolIfDisabled();
     renderPalette();
@@ -2047,24 +1982,10 @@
     });
   }
 
-  function updateBuildRowStates(activeStep) {
-    for (const row of state.buildRows) {
-      const fi = Number(row.dataset.index);
-      const frame = frames()[fi];
-      if (!frame) continue;
-      const count = (frame.tilePositionOfsets || []).length;
-      const allSelected = count > 0 && frame.tilePositionOfsets.every((_off, oi) => state.selected.has(frameRefKey(fi, oi)));
-      row.classList.toggle('selected', allSelected || fi === state.insertionFrameIndex);
-      row.classList.toggle('future', activeStep != null && fi > activeStep);
-      row.classList.toggle('current', fi === activeStep);
-      if (fi === activeStep) row.setAttribute('aria-current', 'step');
-      else row.removeAttribute('aria-current');
-    }
-  }
-
   function renderBuildList() {
     updatePopulationPanel();
     updateCostPanel();
+    els.buildList.innerHTML = '';
     const activeStep = Number.isInteger(state.insertionFrameIndex) && state.insertionFrameIndex >= 0 && state.insertionFrameIndex < frames().length
       ? state.insertionFrameIndex
       : null;
@@ -2075,13 +1996,6 @@
     els.buildSliderValue.textContent = activeStep == null ? 'No step selected' : `Step ${activeStep + 1}`;
     const rallypointCount = state.document.miscItems.filter(item => isUnitType(item.itemType)).length;
     els.buildCount.textContent = `${frames().length} step${frames().length === 1 ? '' : 's'}`;
-    if (!state.buildListStructureDirty && state.buildRows.length === frames().length) {
-      updateBuildRowStates(activeStep);
-      return;
-    }
-
-    const fragment = document.createDocumentFragment();
-    const rows = [];
     frames().forEach((frame, fi) => {
       const type = Number(frame.itemType);
       const count = (frame.tilePositionOfsets || []).length;
@@ -2160,12 +2074,8 @@
           : String(e.dataTransfer.getData('text/plain')).split(',').map(Number);
         moveBuildSteps(dragged, fi);
       });
-      rows.push(row);
-      fragment.appendChild(row);
+      els.buildList.appendChild(row);
     });
-    els.buildList.replaceChildren(fragment);
-    state.buildRows = rows;
-    state.buildListStructureDirty = false;
   }
 
   function selectBuildStepFromSlider() {
@@ -2231,22 +2141,13 @@
   }
 
   function loadSkinImages() {
-    const images = {};
-    const urls = {};
+    state.skinImages = {};
     for (const [id, url] of Object.entries(state.skins)) {
-      if (state.skinImageUrls[id] === url && state.skinImages[id]) {
-        images[id] = state.skinImages[id];
-        urls[id] = url;
-        continue;
-      }
       const img = new Image();
-      img.onload = () => scheduleDraw();
+      img.onload = scheduleDraw;
       img.src = url;
-      images[id] = img;
-      urls[id] = url;
+      state.skinImages[id] = img;
     }
-    state.skinImages = images;
-    state.skinImageUrls = urls;
   }
 
   function applyLoadedSkins(loaded) {
@@ -2328,9 +2229,6 @@
 
   function invalidatePlacementCache() {
     state.placementCache = null;
-    state.placementIndex = null;
-    state.populationSummaryCache = null;
-    state.buildListStructureDirty = true;
     state.staticCacheDirty = true;
   }
 
@@ -2344,19 +2242,14 @@
   }
 
   function scheduleDraw(staticChanged = true) {
-    if (staticChanged) {
-      state.staticCacheDirty = true;
-      state.pendingStaticChanged = true;
-    }
+    if (staticChanged) state.staticCacheDirty = true;
     if (state.renderPending) return;
     state.renderPending = true;
     requestAnimationFrame(() => {
       state.renderPending = false;
-      const changedStatic = state.pendingStaticChanged;
-      state.pendingStaticChanged = false;
       draw();
       for (const listener of changeListeners) {
-        try { listener(changedStatic); } catch { /* a watcher must not stop the map */ }
+        try { listener(staticChanged); } catch { /* a watcher must not stop the map */ }
       }
     });
   }
@@ -2651,7 +2544,6 @@
     ctx.strokeStyle = color;
     ctx.lineWidth = 3;
     for (const rect of screenRectsForPlacement(type, off)) {
-      if (!screenRectVisible(rect)) continue;
       ctx.strokeRect(rect.x + .5, rect.y + .5, Math.max(0, rect.w - 1), Math.max(0, rect.h - 1));
     }
     ctx.restore();
@@ -2664,11 +2556,6 @@
       w: (rect.right - rect.left + 1) * state.cell,
       h: (rect.top - rect.bottom + 1) * state.cell
     };
-  }
-
-  function screenRectVisible(rect) {
-    return rect.x + rect.w >= 0 && rect.y + rect.h >= 0 &&
-      rect.x <= state.canvasWidth && rect.y <= state.canvasHeight;
   }
 
   function imageReady(image) {
@@ -2685,38 +2572,30 @@
   function drawSkinLabel(label, rect, minReadableFontSize = 0, padding = 2) {
     const maxWidth = Math.max(1, rect.w - padding * 2);
     const maxHeight = Math.max(1, rect.h - padding * 2);
-    const cacheKey = `${label}\0${maxWidth}\0${maxHeight}`;
-    let layout = state.labelLayoutCache.get(cacheKey);
-    if (!layout) {
-      let fontSize = Math.max(6, Math.min(16, state.cell * 1.4));
-      let lines;
-      let widest;
-      ctx.save();
-      // Wrap full words, then shrink further for small tiles or long names.
-      while (true) {
-        ctx.font = `bold ${fontSize}px sans-serif`;
-        lines = [''];
-        for (const word of label.split(/\s+/)) {
-          const last = lines.length - 1;
-          const candidate = lines[last] ? `${lines[last]} ${word}` : word;
-          if (lines[last] && ctx.measureText(candidate).width > maxWidth) lines.push(word);
-          else lines[last] = candidate;
-        }
-        widest = Math.max(...lines.map(line => ctx.measureText(line).width));
-        if ((widest <= maxWidth && lines.length * fontSize * 1.15 <= maxHeight) || fontSize <= 6) break;
-        fontSize = Math.max(6, fontSize - 1);
+    let fontSize = Math.max(6, Math.min(16, state.cell * 1.4));
+    let lines;
+    let widest;
+
+    ctx.save();
+    // Wrap full words, then shrink further for small tiles or long names.
+    while (true) {
+      ctx.font = `bold ${fontSize}px sans-serif`;
+      lines = [''];
+      for (const word of label.split(/\s+/)) {
+        const last = lines.length - 1;
+        const candidate = lines[last] ? `${lines[last]} ${word}` : word;
+        if (lines[last] && ctx.measureText(candidate).width > maxWidth) lines.push(word);
+        else lines[last] = candidate;
       }
-      fontSize *= Math.min(1, maxWidth / Math.max(1, widest), maxHeight / (lines.length * fontSize * 1.15));
-      layout = { fontSize, lines };
-      ctx.restore();
-      if (state.labelLayoutCache.size > 2048) state.labelLayoutCache.clear();
-      state.labelLayoutCache.set(cacheKey, layout);
+      widest = Math.max(...lines.map(line => ctx.measureText(line).width));
+      if ((widest <= maxWidth && lines.length * fontSize * 1.15 <= maxHeight) || fontSize <= 6) break;
+      fontSize = Math.max(6, fontSize - 1);
     }
-    const { fontSize, lines } = layout;
+    fontSize *= Math.min(1, maxWidth / Math.max(1, widest), maxHeight / (lines.length * fontSize * 1.15));
     if (fontSize < minReadableFontSize) {
+      ctx.restore();
       return;
     }
-    ctx.save();
     const lineHeight = fontSize * 1.15;
     const centerX = rect.x + rect.w / 2;
     const firstY = rect.y + rect.h / 2 - (lines.length - 1) * lineHeight / 2;
@@ -2782,7 +2661,6 @@
     const keepArtRect = screenRectForXY(geometry.KEEP_ITEM_TYPE, x, y);
     const stockpileRect = screenRectForFootprintRect(stockpilePart);
     const screenParts = footprint.map(screenRectForFootprintRect);
-    if (!screenParts.some(screenRectVisible)) return;
 
     ctx.save();
     ctx.globalAlpha = alpha;
@@ -2833,7 +2711,6 @@
       return;
     }
     const r = screenRectForXY(type, x, y);
-    if (!screenRectVisible(r)) return;
     const img = state.skinImages[String(type)];
     ctx.save();
     ctx.globalAlpha = alpha;
@@ -2862,10 +2739,7 @@
   }
 
   function css(name, fallback) {
-    if (!cssValueCache.has(name)) {
-      cssValueCache.set(name, getComputedStyle(document.documentElement).getPropertyValue(name).trim());
-    }
-    return cssValueCache.get(name) || fallback;
+    return getComputedStyle(document.documentElement).getPropertyValue(name).trim() || fallback;
   }
 
   function pointerPosition(event) {
@@ -2953,7 +2827,6 @@
       state.brushError = '';
       state.brushSeen = new Set();
       state.brushReplacements = new Set();
-      state.brushOccupied.fill(0);
       state.brushLastTile = tile;
       brushAdd(tile);
       return;
@@ -2966,7 +2839,6 @@
       state.brushError = '';
       state.brushSeen = new Set();
       state.brushReplacements = new Set();
-      state.brushOccupied.fill(0);
       state.brushLastTile = tile;
       if (isLineSequence(state.currentItemType)) {
         updateLineSequencePreview(tile, tile);
@@ -3101,7 +2973,6 @@
         state.brushError = '';
         state.brushSeen = new Set();
         state.brushReplacements = new Set();
-        state.brushOccupied.fill(0);
         const route = routedLineTiles(state.dragStartTile, tile);
         if (!route.length) setStatus('No unobstructed route to that tile.');
         for (const p of route) brushAdd(p);
@@ -3193,7 +3064,6 @@
     state.brushError = '';
     state.brushSeen = new Set();
     state.brushReplacements = new Set();
-    state.brushOccupied.fill(0);
     state.brushLastTile = null;
     if (!fromOutside(event)) { try { els.canvas.releasePointerCapture(event.pointerId); } catch (_) {} }
     scheduleDraw();

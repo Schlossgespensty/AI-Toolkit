@@ -30,14 +30,17 @@ let availablePopulation = 10;
 
 async function init() {
   try {
-    [template, helpTexts, fieldPools, optionPools, groupBreaks,
-      numericBooleanFields, legacyKeyMap, sections, templateOrdered,
-      groupBreaksOrdered, sectionsOrdered] = await Promise.all([
-      "template.json", "helpTexts.json", "fieldPools.json", "optionPools.json",
-      "groupBreaks.json", "numericBooleanFields.json", "legacyKeyMap.json",
-      "sections.json", "templateOrdered.json", "groupBreaksOrdered.json",
-      "sectionsOrdered.json"
-    ].map(loadConfig));
+    template = await loadConfig("template.json");
+    helpTexts = await loadConfig("helpTexts.json");
+    fieldPools = await loadConfig("fieldPools.json");
+    optionPools = await loadConfig("optionPools.json");
+    groupBreaks = await loadConfig("groupBreaks.json");
+    numericBooleanFields = await loadConfig("numericBooleanFields.json");
+    legacyKeyMap = await loadConfig("legacyKeyMap.json");
+    sections = await loadConfig("sections.json");
+    templateOrdered = await loadConfig("templateOrdered.json");
+    groupBreaksOrdered = await loadConfig("groupBreaksOrdered.json");
+    sectionsOrdered = await loadConfig("sectionsOrdered.json");
 
     data = JSON.parse(JSON.stringify(template));
 
@@ -110,15 +113,9 @@ function setActiveTemplateButton(type) {
 }
 
 let searchQuery = "";
-let searchRenderPending = false;
 document.getElementById("search").oninput = (e)=>{
   searchQuery = e.target.value.toLowerCase();
-  if (searchRenderPending) return;
-  searchRenderPending = true;
-  requestAnimationFrame(() => {
-    searchRenderPending = false;
-    render();
-  });
+  render();
 };
 
 let currentFilePath = null;
@@ -765,14 +762,8 @@ function toggleSections() {
   }
 
 //for actual pop needed calc
-let headerUpdatePending = false;
 document.getElementById("availablePopulation").addEventListener("input", () => {
-    if (headerUpdatePending) return;
-    headerUpdatePending = true;
-    requestAnimationFrame(() => {
-        headerUpdatePending = false;
-        updateHeaderInfo();
-    });
+    updateHeaderInfo();
 });
 
 document.getElementById("availablePopulation").addEventListener("change", event => {
@@ -807,7 +798,7 @@ function updateHeaderInfo() {
     document.getElementById("farmCount").textContent =
         stats.farms;
 
-    updateCharacterCastlePopulationInfo(undefined, stats);
+    updateCharacterCastlePopulationInfo();
     window.dispatchEvent(new CustomEvent("character-population-changed", {
       detail: {
         availablePopulation: getAvailablePopulationValue(),
@@ -979,12 +970,12 @@ function getCastlePopulationSummary() {
     return window.castleEditor?.getPopulationSummary?.() || { provided: 0, required: 0, left: 0 };
 }
 
-function updateCharacterCastlePopulationInfo(summary = getCastlePopulationSummary(), currentStats = null) {
+function updateCharacterCastlePopulationInfo(summary = getCastlePopulationSummary()) {
     const provided = Number(summary?.provided) || 0;
     const left = Number(summary?.left) || 0;
     const castleRequired = Number(summary?.required) || 0;
     const availablePopulation = getAvailablePopulationValue();
-    const characterNeeded = Number((currentStats || calculateActualPopNeededAt(availablePopulation)).population) || 0;
+    const characterNeeded = Number(calculateActualPopNeededAt(availablePopulation).population) || 0;
     const afterCastleAndCharacter = availablePopulation - castleRequired - characterNeeded;
     const providedEl = document.getElementById("castleProvidedForCharacter");
     const leftEl = document.getElementById("characterCastlePopulationLeft");

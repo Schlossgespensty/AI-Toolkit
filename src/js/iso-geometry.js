@@ -560,12 +560,6 @@
   // py0+cells) der Vorschau abdeckt. Groesse und Ecke, fertig fuer
   // ctx.drawImage. Ein Vorschaupunkt ist genau eine Kachel breit und hoch,
   // also 2*hw mal 2*hh gross - px0 und py0 verschieben nur die Ecke.
-  //
-  // Wichtig ist die HALBE Kachel nach oben: die Punkte der .map bezeichnen
-  // die Mitte einer Gelaendekachel, waehrend isoPoint eine Ecke des
-  // Editorfeldes bezeichnet. Ohne diesen halben Schritt kreuzt das sichtbare
-  // Gelaenderaster genau in der Mitte eines Editorfeldes; Bauwerke und der
-  // Mausrahmen stehen dann auf den Fugen statt in den Kacheln.
   // Das gilt fuer die Vorschau wie fuer das echte Gelaende: beide sind
   // Ausschnitte DESSELBEN Rasters, nur verschieden fein gemalt. Zwei Rechnungen
   // waeren zwei Rechnungen, und eine davon laege irgendwann schief.
@@ -587,7 +581,7 @@
       // auf einem anderen Dorffeld, und das Bild muss mitwandern. Bei (43,43)
       // ist ax-ay = 0 und ax+ay = 86 - dann steht hier wieder das Alte.
       x: view.panX - hw * (keep.x - keep.y + MAP_PREVIEW_EDGE - (anker.gx - anker.gy)) + left * 2 * hw,
-      y: view.panY - hh * (keep.x + keep.y - (MAP_PREVIEW_EDGE - 1 + anker.gx + anker.gy)) + top * 2 * hh - hh - luft,
+      y: view.panY - hh * (keep.x + keep.y - (MAP_PREVIEW_EDGE - 1 + anker.gx + anker.gy)) + top * 2 * hh - luft,
       w: edge * 2 * hw,
       h: edge * 2 * hh + luft
     };

@@ -625,17 +625,16 @@ test('das Kartenbild wird nur verschoben und 2:1 gestreckt, nie gedreht', () => 
     assert.equal(rect.h / geometry.MAP_PREVIEW_EDGE, 2 * geometry.HALF_H * view.zoom);
     const punktBreite = rect.w / geometry.MAP_PREVIEW_EDGE;
     const punktHoehe = rect.h / geometry.MAP_PREVIEW_EDGE;
-    // Die Mitte eines Kartenpunktes trifft eine Ecke des Editorrasters. Die
-    // Kartenkoordinate benennt die Kachelmitte; ohne die halbe Kachel nach
-    // oben laege diese Mitte stattdessen in der Mitte eines Editorfeldes und
-    // Bauwerke stuenden sichtbar auf den Fugen.
+    // Und jede Feldmitte trifft die Mitte ihres Punktes - das ist der Beweis,
+    // dass keine Drehung fehlt: waere eine noetig, ginge das nur fuer eine
+    // einzige Richtung auf.
     let geprueft = 0;
     for (let gx = 0; gx < 100; gx += 7) {
       for (let gy = 0; gy < 100; gy += 7) {
         const { mx, my } = geometry.mapTileForGrid(gx, gy, keep);
         if (((mx + my) % 2 + 2) % 2 === 0) continue;   // kein eigener Punkt
         const { px, py } = geometry.previewPointForMapTile(mx, my);
-        const [sx, sy] = geometry.isoPoint(gx, gy, view);
+        const [sx, sy] = geometry.isoPoint(gx + 0.5, gy + 0.5, view);
         assert.ok(Math.abs(rect.x + (px + 0.5) * punktBreite - sx) < 1e-9,
                   `Punkt ${px},${py} liegt in x nicht unter Feld ${gx},${gy}`);
         assert.ok(Math.abs(rect.y + (py + 0.5) * punktHoehe - sy) < 1e-9,
@@ -662,10 +661,6 @@ test('die Ansicht legt die Karte mit der Rechnung hin, nicht nach Augenmass', ()
   assert.match(malen, /ctx\.drawImage\(picture\.img, rect\.x, rect\.y, rect\.w, rect\.h\)/);
   assert.match(malen, /ctx\.clip\(\)/, 'die Karte endet an der Raute des Dorfes');
   assert.match(malen, /ctx\.imageSmoothingEnabled = picture\.smooth/);
-  assert.match(iso, /function mapLatticePoint\(gx, gy, hebung\)/,
-    'alle Kartenwege benutzen denselben um eine halbe Kachel korrigierten Ursprung');
-  assert.match(iso, /const \[px, py\] = mapLatticePoint\(gx, gy, 0\)/,
-    'auch der Kachelvorrat benutzt den korrigierten Ursprung');
   // Die Vorschau bleibt hart: ein Vorschaupunkt ist ein ganzes Feld und darf
   // nicht ins Nachbarfeld verlaufen. Nur das echte Gelaende wird geglaettet.
   const waehlen = iso.slice(iso.indexOf('function groundPicture'), iso.indexOf('function paintGameMap'));
@@ -913,13 +908,13 @@ test('die Ansicht dreht die Burg und rechnet die Maus zurueck', () => {
   const iso = fs.readFileSync(path.join(root, 'src', 'js', 'iso-view.js'), 'utf8');
   // Erst einsammeln, dann drehen - sonst landen die Bodenplatten neben ihrem
   // Gebaeude, weil sie aus dessen Ecke gerechnet werden.
-  const scene = iso.slice(iso.indexOf('function currentScene'), iso.indexOf('function editorTileAt'));
-  assert.match(scene, /turnedTiles\(geo\.collectItems\(currentDocument\(\), state\.catalogue\)\)/);
+  assert.match(iso, /const gerade = geo\.collectItems\(currentDocument\(\), state\.catalogue\);/);
+  assert.match(iso, /const items = turnedTiles\(gerade\);/);
   // Die Platten haengen an der GEDREHTEN Ecke, ihr eigener Versatz wird nicht
   // mitgedreht. Gemessen an 201 Startplaetzen aus 60 Karten: 194 davon tragen
   // den Lagerplatz genau 7 rechts und 2 unter der Bergfriedecke, und zwar bei
   // jeder Drehung - der Startaufbau der Karte dreht sich nicht mit.
-  assert.match(scene, /const plates = geo\.collectPlates\(items\)/);
+  assert.match(iso, /const plates = geo\.collectPlates\(items\)/);
   // Ein Klick trifft das Feld, das man sieht - also zurueckgedreht.
   assert.match(iso, /geo\.unrotateGrid\(grid\.gx, grid\.gy, currentRotation\(\)\)/);
   assert.match(iso, /const tile = editorTileAt\(p\.x, p\.y\)/);
@@ -929,18 +924,6 @@ test('die Ansicht dreht die Burg und rechnet die Maus zurueck', () => {
   // anders liegt.
   assert.match(iso, /turned '/);
   assert.match(iso, /game value/);
-});
-
-test('2.5D repaints reuse scene analysis and cull off-screen artwork', () => {
-  const iso = fs.readFileSync(path.join(root, 'src', 'js', 'iso-view.js'), 'utf8');
-  const scene = iso.slice(iso.indexOf('function currentScene'), iso.indexOf('function editorTileAt'));
-  const sprite = iso.slice(iso.indexOf('function drawSprite'), iso.indexOf('function drawDiamond'));
-  const refresh = iso.slice(iso.indexOf('function refresh'), iso.indexOf('function setStatus'));
-  assert.match(scene, /if \(!state\.sceneDirty && state\.scene\) return state\.scene/);
-  assert.match(scene, /items\.sort\(geo\.byDepth\)/);
-  assert.match(sprite, /state\.viewportWidth/);
-  assert.match(sprite, /state\.viewportHeight/);
-  assert.match(refresh, /if \(staticChanged\) state\.sceneDirty = true/);
 });
 
 // ------------------------------------------- der Bergfried auf der Karte
@@ -1307,8 +1290,8 @@ test('die Hoehe kommt aus derselben Quelle wie der Boden', () => {
   const waehlen = iso.slice(iso.indexOf('function groundPicture'), iso.indexOf('function paintGameMap'));
   assert.match(waehlen, /hoehen: null, smooth: false/, 'die Vorschau bringt keine Hoehen mit');
   const grund = iso.slice(iso.indexOf('function paintGround'), iso.indexOf('function bauHoehe'));
-  assert.match(grund, /setHeightField\(picture \? picture\.hoehen : null\)/);
-  assert.match(grund, /setHeightField\(null\)/, 'ohne Karte gibt es keine Hoehen');
+  assert.match(grund, /state\.hoehenFeld = picture \? picture\.hoehen : null/);
+  assert.match(grund, /state\.hoehenFeld = null/, 'ohne Karte gibt es keine Hoehen');
   // Ein Bauwerk haengt an seiner vorderen Ecke - dieselbe Ecke, auf der auch
   // sein Bild sitzt (spriteRect).
   const bau = iso.slice(iso.indexOf('function bauHoehe'), iso.indexOf('function drawDiamond'));

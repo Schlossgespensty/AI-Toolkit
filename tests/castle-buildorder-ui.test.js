@@ -53,15 +53,6 @@ test('Castle canvas caches static rendering and avoids per-item compositor filte
   assert.match(script, /if \(state\.placementCache\) return state\.placementCache/);
 });
 
-test('high-frequency castle interactions reuse spatial, label, and build-list caches', () => {
-  const script = fs.readFileSync(path.join(root, 'src', 'js', 'castle-editor.js'), 'utf8');
-  assert.match(functionBody(script, 'placementIndex'), /if \(state\.placementIndex\) return state\.placementIndex/);
-  assert.match(functionBody(script, 'validatePlacement'), /placementsIntersecting\(proposedFootprint\)/);
-  assert.match(functionBody(script, 'brushAddOne'), /extraOccupied:\s*state\.brushOccupied/);
-  assert.match(functionBody(script, 'renderBuildList'), /!state\.buildListStructureDirty/);
-  assert.match(functionBody(script, 'drawSkinLabel'), /state\.labelLayoutCache\.get\(cacheKey\)/);
-});
-
 test('Temporary canvas and item selections cannot clear or replace the active build step', () => {
   const script = fs.readFileSync(path.join(root, 'src', 'js', 'castle-editor.js'), 'utf8');
   const functionBody = name => {
@@ -115,10 +106,9 @@ test('Temporary blueprint controls render an in-memory image beneath castle obje
 test('Castle line tool routes around non-unit placements and ignores unit rallypoints', () => {
   const script = fs.readFileSync(path.join(root, 'src', 'js', 'castle-editor.js'), 'utf8');
   const obstacleMap = functionBody(script, 'lineObstacleMap');
-  const index = functionBody(script, 'placementIndex');
   const pointerMove = functionBody(script, 'onPointerMove');
-  assert.match(obstacleMap, /placementIndex\(\)\.obstacles/);
-  assert.match(index, /placement\.kind\s*!==\s*'unit'/);
+  assert.match(obstacleMap, /placement\.kind\s*===\s*'unit'/);
+  assert.match(obstacleMap, /continue/);
   assert.match(pointerMove, /routedLineTiles\(state\.dragStartTile,\s*tile\)/);
 });
 
@@ -346,7 +336,7 @@ test('the bucket fills through the brush, so it obeys the same rules', () => {
   assert.match(eimer, /geometry\.floodTiles\(tile, besetzt\)/);
   assert.match(eimer, /brushAddOne\(feld\)/, 'gefuellt wird ueber denselben Weg wie ein Pinselzug');
   assert.match(eimer, /commitBrush\(\)/, 'und alles landet als EIN Bauschritt');
-  assert.match(eimer, /placementIndex\(\)\.byCell/, 'begrenzt von dem, was schon steht');
+  assert.match(eimer, /topmostRefAtTile/, 'begrenzt von dem, was schon steht');
   assert.doesNotMatch(eimer, /state\.document\.frames\.push/,
     'der Eimer schreibt nicht selbst in die Burg');
 });
