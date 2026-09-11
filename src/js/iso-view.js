@@ -902,6 +902,7 @@
       }
       const tile = editorTileAt(p.x, p.y);
       const grid = geo.tileFromPoint(p.x, p.y, state.view, bodenHoehe);
+      canvas.title = window.castleEditor?.itemLabelAtTile?.(tile) || '';
       const moved = !state.hover || !grid || state.hover.gx !== grid.gx || state.hover.gy !== grid.gy;
       state.hover = grid;
       if (tile && (state.drawing || moved)) toEditor('move', event, tile);

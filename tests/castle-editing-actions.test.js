@@ -6,6 +6,7 @@ const path = require('node:path');
 const vm = require('node:vm');
 const geometry = require('../src/js/castle-geometry');
 const camera = require('../src/js/castle-camera');
+const palette = require('../src/js/castle-palette');
 const categories = require('../config/aiv_categories.json').categories;
 const allowed = [...categories.Walls, ...categories.Moat, 99];
 const step = (itemType, offsets, shouldPause = false) => ({ itemType, tilePositionOfsets: offsets, shouldPause });
@@ -103,4 +104,40 @@ test('brush size controls work for every tool, retaining size limits', () => {
   state.brushSize = 100;
   vm.runInContext('updateBrushSizeUI()', context);
   assert.equal(els.brushPlus.disabled, true);
+});
+
+test('every configured item has a readable name and every category has a persistent color', () => {
+  const constants = require('../config/aiv_constants.json');
+  for (const [type, info] of Object.entries(constants)) {
+    assert.ok(typeof info.name === 'string' && info.name.trim(), `missing name for ${type}`);
+    assert.equal(palette.itemName(constants, type), info.name.trim());
+  }
+  for (const category of Object.keys(categories)) {
+    assert.match(palette.colors[category], /^#[0-9a-f]{6}$/i, category);
+  }
+  assert.equal(palette.itemName({ 25: { name: '  ' } }, 25), 'Item 25');
+  assert.equal(palette.itemName({}, 123456), 'Item 123456');
+  assert.equal(palette.itemName({ 25: { name: ' Wall ' } }, 25), 'Wall');
+  assert.equal(palette.categoryStyle('Food').background, '#f8f8c0');
+  assert.equal(palette.categoryStyle('Bad Things').background, '#f88080');
+  assert.equal(palette.categoryStyle('Military').background, palette.categoryStyle('Weapons').background);
+});
+
+test('hover names include units and one-tile items, with a safe fallback for unknown types', () => {
+  const source = fs.readFileSync(path.join(__dirname, '../src/js/castle-editor.js'), 'utf8');
+  const start = source.indexOf('  function itemLabelAtTile(');
+  const end = source.indexOf('\n  function ', start + 10);
+  const constants = require('../config/aiv_constants.json');
+  const context = vm.createContext({
+    topmostRefAtTile: tile => tile.x === 0 ? null : 'placement',
+    refType: () => 25,
+    itemName: type => palette.itemName(constants, type)
+  });
+  vm.runInContext(source.slice(start, end), context);
+  assert.equal(vm.runInContext('itemLabelAtTile(null)', context), '');
+  assert.equal(vm.runInContext('itemLabelAtTile({x: 0, y: 0})', context), '');
+  for (const type of [25, 106, 1, 123456]) {
+    context.refType = () => type;
+    assert.equal(vm.runInContext('itemLabelAtTile({x: 1, y: 1})', context), `${palette.itemName(constants, type)} [${type}]`);
+  }
 });

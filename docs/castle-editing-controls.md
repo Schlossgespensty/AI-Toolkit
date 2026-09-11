@@ -30,3 +30,14 @@ occupies the earliest selected step, contains each tile once, and pauses after
 that step if any selected step paused. Unselected steps retain their order.
 Merging therefore brings later selected placements forward in the build order
 and collapses their pauses to one. Undo restores the original steps.
+
+The **Building Categories** sidebar uses the original Village Editor castle
+background and category colors. Selection adds an inset outline without
+replacing the category color. Item names wrap rather than being truncated,
+and each row has its full name and ID as a tooltip and accessible label.
+
+The **Item names** overlay keeps large-building labels inside their artwork.
+Hovering any placement additionally shows its full name, including units,
+one-tile walls and other items too small for readable in-sprite text. Native
+hover tooltips are also available in both the plan and 2.5D views, even when
+the overlay is off. Unknown or blank custom names fall back to `Item <ID>`.

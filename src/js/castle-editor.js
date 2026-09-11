@@ -312,7 +312,7 @@
   }
 
   function itemInfo(type) { return state.constants[String(type)] || {}; }
-  function itemName(type) { return itemInfo(type).name || `Item ${type}`; }
+  function itemName(type) { return window.castlePalette.itemName(state.constants, type); }
   function itemSize(type) {
     const size = itemInfo(type).size;
     if (!Array.isArray(size) || size.length < 2) return [1, 1];
@@ -1935,6 +1935,10 @@
       const button = document.createElement('button');
       button.type = 'button';
       button.className = 'paletteCategoryButton';
+      const colors = window.castlePalette.categoryStyle(category);
+      button.style.setProperty('--category-color', colors.background);
+      button.style.setProperty('--category-text', colors.foreground);
+      button.setAttribute('aria-pressed', String(category === state.activeCategory));
       if (category === state.activeCategory) button.classList.add('active');
       button.textContent = category;
       button.title = `${category} (${ids.length})`;
@@ -1959,12 +1963,13 @@
     }
 
     for (const id of visible) {
-      const info = state.constants[id];
       const row = document.createElement('button');
       row.type = 'button';
       row.className = 'paletteItem';
       if (state.currentItemType === Number(id)) row.classList.add('selected');
       row.dataset.itemType = id;
+      row.title = `${itemName(id)} [${id}]`;
+      row.setAttribute('aria-label', row.title);
 
       const thumb = document.createElement('span');
       thumb.className = 'paletteThumb';
@@ -1983,7 +1988,7 @@
 
       const name = document.createElement('span');
       name.className = 'paletteItemName';
-      name.textContent = info.name || `Item ${id}`;
+      name.textContent = itemName(id);
       const meta = document.createElement('span');
       meta.className = 'paletteItemMeta';
       const size = itemSize(Number(id));
@@ -2524,6 +2529,33 @@
       ctx.restore();
     }
     if (els.showCompatibility.checked) drawCompatibilityOriginMarker();
+    drawHoveredItemName();
+  }
+
+  function itemLabelAtTile(tile) {
+    const ref = tile && topmostRefAtTile(tile);
+    return ref ? `${itemName(refType(ref))} [${refType(ref)}]` : '';
+  }
+
+  // Tiny footprints and long names cannot fit an in-sprite label. A hover
+  // label provides their full name without printing thousands of wall labels.
+  function drawHoveredItemName() {
+    if (!els.showNames.checked || state.gesture || state.panning) return;
+    const label = itemLabelAtTile(state.hoverTile);
+    if (!label) return;
+    const pos = tileToScreenPos(state.hoverTile);
+    ctx.save();
+    ctx.font = 'bold 12px sans-serif';
+    const width = Math.min(state.canvasWidth, ctx.measureText(label).width + 16);
+    const x = Math.max(0, Math.min(state.canvasWidth - width, pos.x + 12));
+    const y = Math.max(0, Math.min(state.canvasHeight - 26, pos.y - 30));
+    ctx.fillStyle = 'rgba(16,20,24,.95)';
+    ctx.fillRect(x, y, width, 26);
+    ctx.fillStyle = '#fff';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(label, x + 8, y + 13, Math.max(1, width - 16));
+    ctx.restore();
   }
 
   function drawCompatibilityGuide(mapSize) {
@@ -3001,6 +3033,7 @@
       (state.tool === 'copy' && state.copyBuffer)
     );
     state.hoverTile = tile;
+    if (tileChanged && !fromOutside(event)) els.canvas.title = itemLabelAtTile(tile);
     if (tileChanged && tile) {
       const off = xyToOffset(tile.x, tile.y);
       if (state.currentItemType != null && isPlacementTool(state.tool)) {
@@ -3054,7 +3087,7 @@
         (state.currentItemType != null && isPlacementTool(state.tool)) ||
         (state.tool === 'copy' && state.copyBuffer)
       );
-      if (hadHoverPreview || hasHoverPreview) scheduleDraw(false);
+      if (hadHoverPreview || hasHoverPreview || els.showNames.checked) scheduleDraw(false);
     }
   }
 
@@ -3538,7 +3571,8 @@
       (state.tool === 'copy' && state.copyBuffer)
     );
     state.hoverTile = null;
-    if (hadPreview) scheduleDraw(false);
+    els.canvas.title = '';
+    if (hadPreview || els.showNames.checked) scheduleDraw(false);
   });
 
   // Aus dem window-Hoerer herausgeloest, damit ein eigenes Fenster (die
@@ -3634,6 +3668,7 @@
     redo,
     deleteSelected,
     getCameraPreferences: () => ({ ...state.camera }),
+    itemLabelAtTile,
     chooseBlueprint,
     clearBlueprint,
     showShortcutDialog,

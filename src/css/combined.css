@@ -1011,6 +1011,10 @@ button:disabled { cursor: default; }
 }
 /* Lists use the space left by the docked overviews, regardless of item count. */
 .castlePalette { flex: 1 1 0; }
+.castlePalettePanel {
+  background: #20221c url('../../assets/aiv/village-sidebar.png') center top / 100% auto no-repeat;
+}
+.castlePalettePanel .panelHeader { background: rgba(20, 24, 24, .88); }
 .paletteCategoryButtons {
   position: sticky;
   top: 0;
@@ -1020,7 +1024,7 @@ button:disabled { cursor: default; }
   gap: 6px;
   padding: 8px;
   border-bottom: 1px solid var(--line);
-  background: var(--surface-2);
+  background: rgba(20, 24, 24, .88);
   box-shadow: 0 5px 12px rgba(0,0,0,.12);
 }
 .castlePanel .paletteCategoryButton {
@@ -1029,22 +1033,27 @@ button:disabled { cursor: default; }
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  color: #ffffff;
+  background: var(--category-color, #505050);
+  border-color: var(--category-color, #505050);
+  color: var(--category-text, #ffffff);
   font-size: 14px;
   font-weight: 650;
 }
 .castlePanel .paletteCategoryButton.active {
-  background: var(--accent);
-  border-color: var(--accent-strong);
-  color: #fff;
+  background: var(--category-color, #505050);
+  border-color: var(--category-text, #ffffff);
+  color: var(--category-text, #ffffff);
+  box-shadow: inset 0 0 0 2px var(--category-text, #ffffff);
 }
-.paletteItems { min-height: 0; }
+.castlePanel .paletteCategoryButton:hover { filter: brightness(1.12); }
+.castlePanel .paletteCategoryButton:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+.paletteItems { min-height: 0; background: rgba(16, 20, 24, .88); }
 .paletteEmpty { padding: 12px 10px; color: var(--text-muted); font-size: 12px; }
 .paletteItem {
   width: 100%;
   display: grid;
-  grid-template-columns: 46px minmax(0, 1fr) auto;
-  gap: 9px;
+  grid-template-columns: 46px minmax(0, 1fr);
+  gap: 2px 9px;
   align-items: center;
   min-height: 54px;
   padding: 5px 8px;
@@ -1058,6 +1067,7 @@ button:disabled { cursor: default; }
 .paletteItem:hover { background: rgba(255,255,255,.035); }
 .paletteItem.selected { background: var(--accent-soft); box-shadow: inset 3px 0 0 var(--accent-strong); }
 .paletteThumb {
+  grid-row: span 2;
   width: 44px;
   height: 44px;
   display: grid;
@@ -1069,8 +1079,8 @@ button:disabled { cursor: default; }
   font-size: 11px;
 }
 .paletteThumb img { width: 100%; height: 100%; object-fit: contain; image-rendering: auto; }
-.paletteItemName { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14px; }
-.paletteItemMeta { color: var(--text-muted); font: 11px var(--font-data); white-space: nowrap; }
+.paletteItemName { min-width: 0; overflow-wrap: anywhere; white-space: normal; font-size: 14px; }
+.paletteItemMeta { grid-column: 2; color: var(--text-muted); font: 11px var(--font-data); white-space: normal; }
 .selectedItemCard { padding: 9px; border-top: 1px solid var(--line); background: var(--surface-2); }
 .selectedItemInfo { min-height: 34px; color: var(--text-soft); }
 
