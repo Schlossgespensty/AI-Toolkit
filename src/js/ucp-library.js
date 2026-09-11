@@ -434,7 +434,7 @@
     setButtonAvailable(els.open, ai.characterExists);
     setButtonAvailable(els.openFolder, true);
 
-    els.cloneCard.hidden = ai.owned;
+    els.cloneCard.hidden = ai.owned || Boolean(ai.vanilla);
     els.updateCard.hidden = !ai.owned;
     if (!ai.owned) {
       els.cloneName.value = `${ai.name} (Custom)`;
@@ -534,14 +534,18 @@
         aiRoot: ai.rootPath,
         castleFile: castle?.fileName || null
       });
-      window.characterEditor.loadFromContent(project.character.content, project.character.path, {
-        readOnly: false,
-        projectManaged: true
-      });
+      // Eine Vanilla-KI hat keine Figur und darf nicht beschrieben werden -
+      // ihre Burgen gehoeren dem Spielordner (siehe vanillaCastles).
+      if (project.character) {
+        window.characterEditor.loadFromContent(project.character.content, project.character.path, {
+          readOnly: false,
+          projectManaged: true
+        });
+      }
       if (project.castle) {
         window.castleEditor.loadDocument(project.castle.document, project.castle.path, {
-          readOnly: false,
-          projectManaged: true,
+          readOnly: Boolean(project.readOnly),
+          projectManaged: !project.readOnly,
           source: project.castle.source,
           sourceBytes: project.castle.sourceBytes
         });
@@ -552,14 +556,14 @@
           { readOnly: false, projectManaged: true }
         );
       }
-      window.aiContentEditor?.loadProject(project, ai, state.gameRoot);
+      if (!project.vanilla) window.aiContentEditor?.loadProject(project, ai, state.gameRoot);
       state.loadedProject = {
         aiKey: ai.key,
         ai,
         aiId: ai.id,
         aiRoot: ai.rootPath,
         owned: ai.owned,
-        characterPath: project.character.path,
+        characterPath: project.character?.path || null,
         castleFile: project.castle?.fileName || null,
         castlePath: project.castle?.path || null
       };
@@ -601,8 +605,8 @@
       });
       if (!project.castle) throw new Error(`Castle '${castle.fileName}' could not be loaded.`);
       window.castleEditor.loadDocument(project.castle.document, project.castle.path, {
-        readOnly: false,
-        projectManaged: true,
+        readOnly: Boolean(project.readOnly),
+        projectManaged: !project.readOnly,
         source: project.castle.source,
         sourceBytes: project.castle.sourceBytes
       });

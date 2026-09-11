@@ -557,6 +557,11 @@ function scanUcpInstallation(selectedPath) {
     plugins.push(plugin);
   }
 
+  // Die Burgen des Spiels selbst. Sie liegen nicht bei den Plugins, sondern im
+  // aiv-Ordner des angezeigten Spielordners. Ohne diesen Teil fehlte der
+  // vanilla Abbot in der Liste - und mit ihm alle anderen 15 Lords.
+  ais.push(...vanillaCastles(path.join(layout.gameRoot, 'aiv')));
+
   ais.sort((one, two) => one.name.localeCompare(two.name) || one.plugin.displayName.localeCompare(two.plugin.displayName));
   plugins.sort((one, two) => one.displayName.localeCompare(two.displayName));
   return {
@@ -568,6 +573,88 @@ function scanUcpInstallation(selectedPath) {
     diagnostics,
     managedPlugin: plugins.find(plugin => plugin.owned) || null
   };
+}
+
+// Die Burgen des Spiels, gruppiert nach Lord.
+//
+// GEMESSEN am 11.09.2026 im Spielordner: 128 Dateien, 16 Lords mit je acht
+// Burgen, Schema <Lord><Zahl>.aiv. Die Schreibweise ist gemischt (Abbot1,
+// aber caliph1), deshalb wird der Name klein verglichen und fuer die Anzeige
+// gross geschrieben.
+//
+// NUR ZUM LESEN. Die Dateien gehoeren dem Spiel; jede Schreibfunktion dieser
+// Bibliothek prueft gegen den Plugin-Ordner und weist den Spielordner ab.
+const VANILLA_PLUGIN = { name: 'vanilla', displayName: 'Vanilla (game folder)', version: '', folderName: 'aiv', active: true, owned: false };
+
+function vanillaCastles(aivRoot) {
+  let entries = [];
+  try { entries = fs.readdirSync(aivRoot, { withFileTypes: true }); } catch { return []; }
+  const lords = new Map();
+  for (const entry of entries) {
+    if (!entry.isFile()) continue;
+    const match = entry.name.match(/^([a-z]+)(\d+)\.aiv$/i);
+    if (!match) continue;
+    const lord = match[1].toLowerCase();
+    if (!lords.has(lord)) lords.set(lord, []);
+    lords.get(lord).push({ slot: Number(match[2]), fileName: entry.name });
+  }
+  const out = [];
+  for (const [lord, files] of lords) {
+    files.sort((a, b) => a.slot - b.slot);
+    const name = lord.charAt(0).toUpperCase() + lord.slice(1);
+    out.push({
+      key: `vanilla:${lord}`,
+      id: lord,
+      folderName: 'aiv',
+      rootPath: aivRoot,
+      metaPath: null,
+      meta: {},
+      name: `${name} (Vanilla)`,
+      author: 'Stronghold Crusader',
+      version: '',
+      description: 'The original castles from the game folder. Read only.',
+      defaultLang: '',
+      supportedLang: [],
+      characterPath: null,
+      characterExists: false,
+      linesPath: null,
+      linesExists: false,
+      mappingPath: null,
+      mappingExists: false,
+      castles: files.map(file => {
+        const filePath = path.join(aivRoot, file.fileName);
+        return { slot: file.slot, fileName: file.fileName, filePath, exists: true,
+                 jsonPath: filePath.replace(/\.aiv$/i, '.aivjson'), jsonExists: false, valid: true };
+      }),
+      portraitPath: null,
+      portraitDataUrl: null,
+      portraitSmallPath: null,
+      portraitSmallDataUrl: null,
+      active: true,
+      owned: false,
+      vanilla: true,
+      plugin: { ...VANILLA_PLUGIN, rootPath: aivRoot },
+      diagnostics: []
+    });
+  }
+  return out;
+}
+
+// Eine Vanilla-Burg lesen. Keine Figur, keine Zeilen - nur die Burg, und die
+// ausdruecklich schreibgeschuetzt.
+async function readVanillaCastle({ vanillaRoot, castleFile, readAivDocument }) {
+  const result = { aiRoot: vanillaRoot, owned: false, vanilla: true, readOnly: true,
+                   character: null, lines: null, media: null, castle: null };
+  if (!castleFile) return result;
+  const fileName = path.basename(String(castleFile));
+  if (fileName !== castleFile || !/\.aiv$/i.test(fileName)) throw new Error('The castle filename is invalid.');
+  const filePath = requireWithin(vanillaRoot, path.join(vanillaRoot, fileName), 'Castle');
+  if (!fs.existsSync(filePath)) throw new Error(`Castle file '${fileName}' is missing.`);
+  if (typeof readAivDocument !== 'function') throw new Error('The native AIV reader is unavailable.');
+  const loaded = await readAivDocument(filePath);
+  result.castle = { path: filePath, fileName, document: loaded.document, source: 'aiv',
+                    sourceBytes: loaded.sourceBytes || null };
+  return result;
 }
 
 function managedDefinition() {
@@ -734,6 +821,10 @@ async function createManagedAi({
 
 async function readAiProject({ gameRoot, aiRoot, castleFile, readAivDocument }) {
   const layout = installationLayout(gameRoot);
+  const vanillaRoot = path.join(layout.gameRoot, 'aiv');
+  if (path.resolve(String(aiRoot || '')) === path.resolve(vanillaRoot)) {
+    return readVanillaCastle({ vanillaRoot, castleFile, readAivDocument });
+  }
   const root = requireWithin(layout.pluginsRoot, aiRoot, 'AI');
   const characterPath = path.join(root, 'character.json');
   if (!fs.existsSync(characterPath)) throw new Error('This AI has no character.json.');
