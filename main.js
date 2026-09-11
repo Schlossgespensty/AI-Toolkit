@@ -146,7 +146,7 @@ function ensureRuntimeFiles() {
   if (!fs.existsSync(skinDir())) fs.mkdirSync(skinDir(), { recursive: true });
 }
 
-function createWindow() {
+function createWindow({ restoreProject = false } = {}) {
   const options = {
     width: 1500,
     height: 950,
@@ -207,7 +207,7 @@ function createWindow() {
   win.webContents.once('did-finish-load', () => { win.__closeProtectionReady = true; });
   win.webContents.once('render-process-gone', () => { win.__closeApproved = true; });
   win.on('focus', () => installApplicationMenu(win.__activeWorkspace, win));
-  win.loadFile(path.join(__dirname, 'src', 'index.html'));
+  win.loadFile(path.join(__dirname, 'src', 'index.html'), { query: { restoreProject: restoreProject ? '1' : '0' } });
   return win;
 }
 
@@ -383,7 +383,7 @@ ipcMain.on('set-castle-overview-preferences', (event, preferences) => {
 app.whenReady().then(() => {
   ensureRuntimeFiles();
   installApplicationMenu('ucp');
-  createWindow();
+  createWindow({ restoreProject: true });
 
   globalShortcut.register('CommandOrControl+=', () => {
     const win = BrowserWindow.getFocusedWindow();
@@ -391,7 +391,7 @@ app.whenReady().then(() => {
   });
 
   app.on('activate', () => {
-    if (BrowserWindow.getAllWindows().length === 0) createWindow();
+    if (BrowserWindow.getAllWindows().length === 0) createWindow({ restoreProject: true });
   });
 });
 

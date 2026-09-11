@@ -1,5 +1,23 @@
 # Castle editing controls
 
+## Two castles side by side
+
+With the Castle workspace active, use **File > Load In New Window**
+(**Ctrl+Shift+O**) to open the second castle without replacing the first.
+Snap one editor window left and the other right using Windows+Left/Right.
+Select placements in the source and press **Ctrl+C**. In the destination,
+move the pointer to the desired position and press **Ctrl+V**, or click
+**Clipboard**, then click the map. The newest copied group is shared between
+windows; the existing placement checks and undo still apply. The Keep and
+unit rally points are excluded from this building-copy operation.
+
+The main startup window automatically reopens the last successfully opened
+AI project, its selected castle and workspace. This stores file references,
+not unsaved edits. Explicit new windows remain independent. Missing projects
+or castles are reported without silently opening a different castle, and
+interacting during startup cancels automatic restoration. On the first run
+after upgrading, open your project once so it can be remembered.
+
 In **Customize Castle Shortcuts**, choose **Arrow keys + wheel zoom** to pan
 with the arrow keys and zoom at the pointer with the mouse wheel. Individual
 camera keys and pan speed can be edited in the same dialog. Shift accelerates

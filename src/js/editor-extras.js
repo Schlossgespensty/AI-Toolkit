@@ -176,6 +176,7 @@
   let groups = [];       // deren Gruppen
   let active = null;     // zuletzt geholte Gruppe - sie folgt einem Verschieben
   let clipboard = null;  // Kopie, die den Burgenwechsel ueberlebt
+  let rememberedBuffer = null;
   const els = {};
 
   function readStore(key, fallback) {
@@ -378,11 +379,12 @@
   // Speicher. Das laeuft nach seinem eigenen Kopieren - mit der Maus wie mit
   // Strg+C -, damit es genau dieselbe Kopie ist und keine zweite Bauart.
   function rememberClipboard() {
+    if (ex.state.copyBuffer === rememberedBuffer) return;
     const buffer = sanitizeClipboard(ex.state.copyBuffer);
     if (!buffer) return;
-    if (clipboard && JSON.stringify(clipboard) === JSON.stringify(buffer)) return;
+    rememberedBuffer = ex.state.copyBuffer;
     clipboard = buffer;
-    writeStore(CLIP_STORE, clipboard);
+    if (JSON.stringify(readStore(CLIP_STORE, null)) !== JSON.stringify(buffer)) writeStore(CLIP_STORE, clipboard);
     updateClipboardButton();
   }
 
@@ -390,15 +392,22 @@
   // Speicher zurueckgelegt. Eingefuegt wird danach von ihm - mit seinen
   // Pruefungen, nicht mit eigenen.
   function armClipboard() {
-    if (sanitizeClipboard(ex.state.copyBuffer)) return true;
+    // Another castle window may have copied since this window last had focus.
+    // Read at paste time as well as on storage events, which can arrive later.
+    clipboard = sanitizeClipboard(readStore(CLIP_STORE, null));
+    updateClipboardButton();
+    ex.state.copyBuffer = null;
+    rememberedBuffer = null;
     if (!clipboard) return false;
     ex.state.copyBuffer = JSON.parse(JSON.stringify(clipboard));
+    rememberedBuffer = ex.state.copyBuffer;
     return true;
   }
 
   function clearClipboard() {
     clipboard = null;
     ex.state.copyBuffer = null;
+    rememberedBuffer = null;
     writeStore(CLIP_STORE, null);
     updateClipboardButton();
     ex.setStatus('Clipboard emptied');
@@ -584,6 +593,11 @@
   }
 
   function watchKeys() {
+    global.addEventListener('storage', event => {
+      if (event.key !== CLIP_STORE && event.key !== null) return;
+      loadClipboard();
+      updateClipboardButton();
+    });
     // In der Anfassphase - damit der Speicher zurueckliegt, BEVOR der Editor
     // sein Ctrl+V abarbeitet. Sein eigener Hoerer haengt am Fenster und kommt
     // erst danach dran.
@@ -617,6 +631,17 @@
     // am selben Element als der des Editors und kommt deshalb danach dran.
     const canvas = doc.getElementById('castleCanvas');
     canvas?.addEventListener('pointerup', () => global.setTimeout(rememberClipboard, 0));
+    // The detached 2.5D view forwards gestures instead of DOM pointer events.
+    const originalPointer = ed.pointerFromOutside;
+    if (typeof originalPointer === 'function' && !originalPointer.castleExtrasWrapped) {
+      const wrappedPointer = function (phase, event) {
+        const result = originalPointer.call(ed, phase, event);
+        if (phase === 'up') global.setTimeout(rememberClipboard, 0);
+        return result;
+      };
+      wrappedPointer.castleExtrasWrapped = true;
+      ed.pointerFromOutside = wrappedPointer;
+    }
   }
 
   function start() {

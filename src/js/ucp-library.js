@@ -60,6 +60,35 @@
     busy: false
   };
 
+  const LAST_PROJECT = 'aiv.lastProject.v1';
+  function rememberProject() {
+    const project = state.loadedProject;
+    if (!project || !state.gameRoot) return;
+    try {
+      window.localStorage.setItem(LAST_PROJECT, JSON.stringify({
+        gameRoot: state.gameRoot, aiRoot: project.aiRoot,
+        castleFile: project.castleFile, workspace: window.appWorkspace?.getActive() || 'castle'
+      }));
+    } catch (error) { console.warn('Could not remember the AI project:', error); }
+  }
+
+  function previousProject() {
+    try {
+      const value = JSON.parse(window.localStorage.getItem(LAST_PROJECT));
+      if (!value || typeof value.gameRoot !== 'string' || typeof value.aiRoot !== 'string') return null;
+      if (value.castleFile != null && (typeof value.castleFile !== 'string' || /[\\/]/.test(value.castleFile))) return null;
+      return value;
+    } catch (_) { return null; }
+  }
+
+  function projectInLibrary(saved) {
+    const normalized = value => String(value || '').replace(/\\/g, '/').replace(/\/+$/, '').toLowerCase();
+    if (!saved || normalized(saved.gameRoot) !== normalized(state.gameRoot)) return null;
+    return state.library?.ais.find(ai => normalized(ai.rootPath) === normalized(saved.aiRoot)) || null;
+  }
+
+  window.addEventListener('focus', rememberProject);
+
   const placeholderPortrait = `data:image/svg+xml,${encodeURIComponent(`
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
       <rect width="128" height="128" fill="#242830"/>
@@ -210,6 +239,7 @@
       }
       projectState.castleFile = result.fileName;
       projectState.castlePath = result.path;
+      rememberProject();
       await scan({ selectKey: projectState.aiKey, quiet: true });
       projectState.ai = loadedAi();
       populateCastleSwitcher(projectState.ai, result.fileName);
@@ -509,17 +539,21 @@
     }
   }
 
-  async function openSelected() {
+  async function openSelected(options = {}) {
     const ai = selectedAi();
     if (!ai || !state.gameRoot || state.busy) return false;
-    const mappedCastleOne = ai.castles.find(castle => castle.slot === 1);
-    if (mappedCastleOne?.requiresFileAccess) {
+    const requestedCastle = typeof options.castleFile === 'string' ? options.castleFile : null;
+    const castle = requestedCastle ? ai.castles.find(candidate => candidate.fileName === requestedCastle) : castleOne(ai);
+    if (requestedCastle && !castle) {
+      setStatus(`The last castle '${requestedCastle}' is no longer in this project. Choose a castle to open.`, 'error');
+      return false;
+    }
+    if (castle?.requiresFileAccess) {
       setStatus('Castle 1 is mapped but UCP cannot read its binary file yet. Click Enable castles, audio & all AIs and select the ucp/plugins folder.', 'error');
       els.choose.focus();
       return false;
     }
     if (!await window.unsavedChanges?.confirmAll('opening this AI project')) return false;
-    const castle = castleOne(ai);
     setBusy(true);
     setStatus(`Opening ${ai.name}…`);
     try {
@@ -528,6 +562,7 @@
         aiRoot: ai.rootPath,
         castleFile: castle?.fileName || null
       });
+      if (options.shouldAbort?.()) return false;
       // Eine Vanilla-KI hat keine Figur und darf nicht beschrieben werden -
       // ihre Burgen gehoeren dem Spielordner (siehe vanillaCastles).
       if (project.character) {
@@ -564,6 +599,7 @@
       populateCastleSwitcher(ai, project.castle?.fileName || null);
       renderDetails();
       window.appWorkspace?.setActive('castle');
+      rememberProject();
       setStatus(`${ai.name} opened for editing${project.castle ? ` with ${project.castle.fileName}` : ''}.`, 'success');
       return true;
     } catch (error) {
@@ -606,6 +642,7 @@
       });
       projectState.castleFile = project.castle.fileName;
       projectState.castlePath = project.castle.path;
+      rememberProject();
       populateCastleSwitcher(ai, project.castle.fileName);
       renderDetails();
       setStatus(`${ai.name} — ${castle.slot == null ? castle.fileName : `Castle ${castle.slot}`} opened.`, 'success');
@@ -786,11 +823,34 @@
   async function initialize() {
     if (state.initialized) return;
     state.initialized = true;
+    let interrupted = false;
+    const interrupt = () => { interrupted = true; };
+    window.addEventListener('pointerdown', interrupt, true);
+    window.addEventListener('keydown', interrupt, true);
     try {
       state.gameRoot = await window.electronAPI.getUcpInstallation();
       if (state.gameRoot) await scan();
+      // Only the application's startup window restores a project. Explicit
+      // Add Window / Load In New Window must never have its document replaced.
+      if (!interrupted && new URLSearchParams(window.location.search).get('restoreProject') === '1') {
+        const saved = previousProject();
+        const ai = projectInLibrary(saved);
+        if (ai) {
+          state.selectedKey = ai.key;
+          renderList();
+          renderDetails();
+          if (await openSelected({ castleFile: saved.castleFile, shouldAbort: () => interrupted })) {
+            window.appWorkspace?.setActive(['castle', 'character', 'content', 'ucp'].includes(saved.workspace) ? saved.workspace : 'castle');
+          }
+        } else if (saved) {
+          setStatus('The last AI project is unavailable in this installation. Choose a project to continue.');
+        }
+      }
     } catch (error) {
       setStatus(`Could not restore the UCP installation: ${error.message}`, 'error');
+    } finally {
+      window.removeEventListener('pointerdown', interrupt, true);
+      window.removeEventListener('keydown', interrupt, true);
     }
   }
 
@@ -799,6 +859,7 @@
     refresh: scan,
     refreshCurrent,
     openSelected,
+    rememberProject,
     createNewAi,
     switchCastle,
     showCastleMapping,
