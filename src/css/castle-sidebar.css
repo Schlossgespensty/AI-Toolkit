@@ -65,3 +65,17 @@
 .costResourceTable th { text-align: left; font-weight: 500; }
 .costResourceTable td, .costResourceTable thead th:not(:first-child) { text-align: right; }
 #castleBalanceSource { overflow-wrap: anywhere; }
+/* Camera options use the same controls and spacing in both shipped themes. */
+.castleCameraSettings { margin: 12px 0; padding: 12px; border: 1px solid var(--line-strong); min-width: 0; }
+.castleCameraSettings > label { display: grid; grid-template-columns: minmax(90px, 1fr) minmax(0, 2fr); gap: 8px; align-items: center; margin-top: 8px; }
+.castleCameraSettings p { font-size: 12px; color: var(--text-muted); }
+.castleCameraKeyGrid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 8px 16px; }
+.castleCameraKeyGrid label { display: grid; grid-template-columns: 1fr minmax(60px,110px); align-items: center; gap: 8px; }
+.castleCameraSettings input, .castleCameraSettings select, .costProductionSettings input, .costProductionSettings select {
+  box-sizing: border-box; min-width: 0; max-width: 100%; width: 100%; padding: 6px 8px;
+  border: 1px solid var(--line); border-radius: var(--radius-sm);
+  background: var(--surface-1); color: var(--text-main); font: inherit; color-scheme: dark;
+}
+.castleCameraSettings input:focus, .castleCameraSettings select:focus { border-color: var(--accent); outline: 1px solid var(--accent); }
+.castleCameraSettings .castleCameraKey { text-align: center; width: 100%; }
+.costProductionSettings input[type="checkbox"] { width: auto; }

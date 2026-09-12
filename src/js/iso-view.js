@@ -230,6 +230,7 @@
           px0: Number(terrain.px0) || 0, py0: Number(terrain.py0) || 0,
           cells: Number(terrain.cells) || geo.MAP_PREVIEW_EDGE,
           top: Number(terrain.top) || 0,
+          floor: Number(terrain.floor) || 0,
           village: dorfHoehen(terrain.village) }
       : null;
     paint();

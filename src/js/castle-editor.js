@@ -1816,6 +1816,7 @@
   }
 
   function populateCameraDialog(preferences = state.camera) {
+    els.shortcutError.textContent = '';
     document.getElementById('castleCameraWheel').value = preferences.wheel;
     document.getElementById('castleCameraSpeed').value = preferences.panSpeed;
     for (const input of els.shortcutForm.querySelectorAll('.castleCameraKey')) {

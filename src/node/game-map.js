@@ -621,8 +621,9 @@ function renderTerrain(buffer, directory, gameRoot, keep) {
   //   gx = P + Q - (keep.x - 43)      gy = Q - P + 199 - (keep.y - 43)
   // und beide muessen zwischen 0 und 100 liegen. Nach P aufgeloest ergibt das
   // je Zeile genau ein Stueck.
-  const anchorX = keep.x - geometry.KEEP_TILE;
-  const anchorY = keep.y - geometry.KEEP_TILE;
+  const anchor = geometry.keepAnchor(keep);
+  const anchorX = keep.x - anchor.gx;
+  const anchorY = keep.y - anchor.gy;
   const low = new Int32Array(flatHeight);
   const high = new Int32Array(flatHeight);
   for (let y = 0; y < flatHeight; y += 1) {
@@ -1037,7 +1038,7 @@ function readMapTerrain(filePath, gameRoot, keep) {
   const preview = readPreview(buffer);
   const directory = findDirectory(buffer, preview.end);
   if (!directory) throw new Error('That map has no section directory.');
-  const terrain = renderTerrain(buffer, directory, root, { x, y });
+  const terrain = renderTerrain(buffer, directory, root, { x, y, orientation: keep.orientation });
   return {
     name: known.name,
     path: known.path,
