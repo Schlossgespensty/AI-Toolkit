@@ -48,7 +48,8 @@ test('cost overview collapses independently of the breakdown and preserves a cum
   assert.match(panel, /setItem\(COLLAPSE_STORAGE/);
   assert.match(panel, /costTableRow costTableTotal/);
   assert.match(panel, /Cumulative total through step/);
-  assert.match(panel, /Entire castle total/);
+  assert.match(panel, /Total through current step/);
+  assert.doesNotMatch(panel, /Entire castle total/);
 });
 
 // Vergleichsproben aus den beiden echten Balance-Dateien, am 07.09.2026 geholt:
