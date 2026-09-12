@@ -3576,6 +3576,7 @@
   window.addEventListener('DOMContentLoaded', () => {
     updateGroundControls();
     updateMapControls();
+    ensureMapTiles();
     ensureTerrain();
   });
 

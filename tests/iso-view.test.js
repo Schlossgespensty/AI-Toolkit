@@ -659,7 +659,7 @@ test('die Ansicht legt die Karte mit der Rechnung hin, nicht nach Augenmass', ()
   const malen = iso.slice(iso.indexOf('function paintGameMap'), iso.indexOf('function paintGround'));
   assert.match(malen, /geo\.mapImageRect\(currentKeep\(\), state\.view, picture\.px0, picture\.py0, picture\.cells, picture\.top\)/);
   assert.match(malen, /ctx\.drawImage\(picture\.img, rect\.x, rect\.y, rect\.w, rect\.h\)/);
-  assert.match(malen, /ctx\.clip\(\)/, 'die Karte endet an der Raute des Dorfes');
+  assert.doesNotMatch(malen, /ctx\.clip\(\)/, 'the map extends beyond the editable village');
   assert.match(malen, /ctx\.imageSmoothingEnabled = picture\.smooth/);
   // Die Vorschau bleibt hart: ein Vorschaupunkt ist ein ganzes Feld und darf
   // nicht ins Nachbarfeld verlaufen. Nur das echte Gelaende wird geglaettet.
