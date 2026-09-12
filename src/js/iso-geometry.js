@@ -347,6 +347,7 @@
 
   function collectItems(document_, catalogue) {
     const out = [];
+    const counts = new Map();
     if (!document_ || !Array.isArray(document_.frames)) return out;
     const items = (catalogue && catalogue.gegenstaende) || {};
     document_.frames.forEach((frame, frameIndex) => {
@@ -354,8 +355,10 @@
       const offsets = Array.isArray(frame.tilePositionOfsets) ? frame.tilePositionOfsets : [];
       offsets.forEach((offset, offsetIndex) => {
         const { gx, gy } = gridFromOffset(offset);
+        const layoutIndex = counts.get(frame.itemType) || 0;
+        counts.set(frame.itemType, layoutIndex + 1);
         out.push({
-          gx, gy, entry, frameIndex, offsetIndex,
+          gx, gy, entry, frameIndex, offsetIndex, layoutIndex,
           // Derselbe Schluessel, den castle-editor.js fuer die Auswahl
           // vergibt (frameRefKey). Ohne ihn koennte die Ansicht nicht sagen,
           // welcher Gegenstand ausgewaehlt ist.
@@ -366,6 +369,42 @@
       });
     });
     return out;
+  }
+
+  // checkDrawbridgePlacement (0x004FA2D0) uses an exact gatehouse edge,
+  // not a nearest-building search. Offsets are exported from 0x00B4AE20.
+  // This resolves the visual attachment only; terrain/buildability remains
+  // the running game's responsibility.
+  function attachDrawbridges(items) {
+    const gates = new Map();
+    for (const item of items) {
+      if (![144, 145, 146, 147].includes(Number(item.itemType))) continue;
+      for (let y = 0; y < item.tiles; y++) for (let x = 0; x < item.tiles; x++)
+        gates.set(`${item.gx + x},${item.gy + y}`, item);
+    }
+    return items.map(item => {
+      if (Number(item.itemType) !== 105 || !item.entry?.attachmentOffsets) return item;
+      for (let side = 0; side < 4; side++) {
+        const edge = item.entry.attachmentOffsets[side];
+        const at = ([x, y]) => gates.get(`${item.gx + x},${item.gy + y}`);
+        const gate = at(edge[0]);
+        if (!gate) continue;
+        const alongY = [144, 146].includes(Number(gate.itemType));
+        if ((side % 2 === 0) !== alongY) continue;
+        if (!edge.slice(0, gate.tiles).every(offset => at(offset) === gate)) continue;
+        const variant = item.entry.directions?.[side];
+        return { ...item, bridgeDirection: side * 2, gateRef: gate.ref,
+          entry: variant ? { ...item.entry, ...variant } : item.entry };
+      }
+      return { ...item, entry: null, unattachedBridge: true };
+    });
+  }
+
+  function buildingParts(item) {
+    const layouts = item.entry?.partsLayouts;
+    if (!layouts?.length) return null;
+    const parts = layouts[(item.layoutIndex || 0) % layouts.length];
+    return parts.map(part => ({ ...part, gx: item.gx + part.gx, gy: item.gy + part.gy, tiles: 1 }));
   }
 
   // Ground plates that belong next to an item (keep courtyard, training
@@ -388,6 +427,9 @@
   }
 
   function byDepth(a, b) { return depth(a) - depth(b); }
+  function renderOrder(a, b) {
+    return byDepth(a, b) || a.gx - b.gx || (a.layer ?? 2) - (b.layer ?? 2);
+  }
 
   // ------------------------------------------------- eine Karte des Spiels
   //
@@ -639,8 +681,8 @@
   return { GRID, HALF_W, HALF_H, MAP_PREVIEW_EDGE, KEEP_TILE,
            gridFromOffset, offsetFromGrid, isoPoint,
            tileFromPoint, editorTileFromPoint,
-           depth, byDepth, spriteRect, groundTextureScale, variantFor, wallLookup, hoehenLookup,
-           collectItems, collectPlates, marqueeOutline, fitView,
+           depth, byDepth, renderOrder, spriteRect, groundTextureScale, variantFor, wallLookup, hoehenLookup,
+           collectItems, collectPlates, attachDrawbridges, buildingParts, marqueeOutline, fitView,
            rotateGrid, unrotateGrid, keepOrientation,
            mapTileForGrid, mapTileHeight, keepAnchor, previewPointForMapTile, centreKeep,
            mapPreviewRect, mapImageRect, villageWindow };

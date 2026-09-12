@@ -363,7 +363,12 @@
     if (!rotation) return list;
     return list.map(item => {
       const turned = geo.rotateGrid(item.gx, item.gy, item.tiles, rotation);
-      return { ...item, gx: turned.gx, gy: turned.gy };
+      // A quarter turn changes a gate's passage axis. Resolve drawbridge
+      // attachment after this swap, in the same coordinates as the map.
+      const gateType = [144, 145, 146, 147].includes(Number(item.itemType)) && rotation % 4 === 2
+        ? (Number(item.itemType) ^ 1) : item.itemType;
+      return { ...item, gx: turned.gx, gy: turned.gy, itemType: gateType,
+        entry: state.catalogue?.gegenstaende[gateType] || item.entry };
     });
   }
 
@@ -524,6 +529,7 @@
         const tileWidth = kw * state.view.zoom;
         const tileLeft = px - tileWidth / 2;
         const cliff = v.upperEntries[(v.cliffSprites?.[feld] || 0) - 1];
+        state.mapScenery.push({ gx, gy, tiles: 1, layer: 0, draw: () => {
         if (cliff && v.upperImage?.complete && v.upperImage.naturalWidth) {
           const lift = v.hoehen[feld];
           for (let row = 0; row < lift; row += cliff.height) {
@@ -536,6 +542,7 @@
         ctx.drawImage(v.bild,
           (platz % v.spalten) * kw, Math.floor(platz / v.spalten) * kh, kw, kh,
           tileLeft, py - hebung, tileWidth, kh * state.view.zoom);
+        }});
         const upper = v.upperEntries[platz];
         if (upper && v.upperImage?.complete && v.upperImage.naturalWidth) {
           state.mapScenery.push({ gx, gy, tiles: 1, draw: () => {
@@ -707,10 +714,8 @@
     // das Spiel setzt ihn immer gleich hin. Genau diese 7/2 stehen auch im
     // Katalog. Wer die Platten mitdreht, schiebt den Lagerplatz von der Karte.
     const gerade = geo.collectItems(currentDocument(), state.catalogue);
-    const items = turnedTiles(gerade);
+    const items = geo.attachDrawbridges(turnedTiles(gerade));
     const plates = geo.collectPlates(items);
-    for (const plate of plates.sort(geo.byDepth))
-      drawSprite(ctx, plate.sprite, plate.gx, plate.gy, plate.tiles);
 
     // Welche Felder Mauer tragen. Ein Mauerfeld waehlt sein Bild nach seinen
     // Nachbarn - laeuft die Mauer durch, wird sie eine durchgehende Flaeche
@@ -724,13 +729,23 @@
     state.hoeheAn = hoeheAn;
 
     let missing = 0;
+    const buildingSprites = [...plates.map(plate => ({ ...plate, entry: plate.sprite, layer: 1 })), ...items].flatMap(item => {
+      const parts = geo.buildingParts(item);
+      if (!parts) return [item];
+      // Load all components before switching away from the complete fallback.
+      const loaded = parts.map(part => image(part.bild));
+      if (!loaded.every(img => img?.complete && img.naturalWidth)) return [item];
+      const lift = bauHoehe(item.gx, item.gy, item.tiles);
+      return parts.map((part, index) => ({ ...part, layer: item.layer ?? 2, draw: () => {
+        const [x, y] = geo.isoPoint(part.gx, part.gy, state.view, lift);
+        const z = state.view.zoom;
+        ctx.drawImage(loaded[index], x + part.dx * z, y + part.dy * z, part.breite * z, part.hoehe * z);
+      }}));
+    });
     // Scenery is no longer flattened underneath every building. Each upper
     // tile participates in the same depth order as the castle sprites.
-    for (const item of [...items, ...(state.mapScenery || [])].sort(geo.byDepth)) {
+    for (const item of [...(state.mapScenery || []), ...buildingSprites].sort(geo.renderOrder)) {
       if (item.draw) { item.draw(); continue; }
-      // Farms reserve a much larger field than their 3x3 building sprite.
-      // Keep the complete placement area visible without inventing crop state.
-      if (item.entry?.fieldFootprint) drawDiamond(ctx, item.gx, item.gy, item.tiles, 'rgba(248,248,192,.12)', 'rgba(248,248,192,.55)');
       if (item.entry && drawSprite(ctx, item.entry, item.gx, item.gy, item.tiles, mauerAn, hoeheAn)) continue;
       drawDiamond(ctx, item.gx, item.gy, item.tiles, 'rgba(210,170,90,.55)');
       missing++;
