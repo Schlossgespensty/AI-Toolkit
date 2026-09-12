@@ -40,6 +40,16 @@ flood deletion.
 
 The brush-size +/- buttons are available with any active tool, just like the
 existing `[` and `]` shortcuts. Changing size does not switch tools.
+The displayed width is remembered when selecting a building. Area painting
+applies only to single-tile objects, including walls, moat and pitch; larger
+buildings preview and place once per brush position. Stair sequences retain
+their Line tool behavior. Objects that cannot share a build step are still
+committed as separate steps.
+
+The 2.5D scene stops at the selected build step, including ground plates and
+wall/stair/bridge connections. Use the step slider or build list to move the
+cutoff; returning to the last step shows the entire castle. The flat plan
+retains its subdued future-step preview.
 
 Ctrl-click or Shift-click complete build steps, then choose **Merge selected
 steps**. At least two unlocked wall, moat or pitch steps of exactly the same
@@ -79,9 +89,8 @@ to show it or move it between sides. Click **Castle costs** to collapse/expand
 the whole panel. That choice is remembered separately from the building-detail
 toggle.
 
-The resource grid is cumulative through the selected step. **Entire castle
-total** shows the final resource totals using the same balance. The per-building
-breakdown ends with an additional cumulative total row. Wood, stone, iron,
+The resource grid and per-building breakdown are cumulative through the
+selected step, with an additional cumulative total row. Wood, stone, iron,
 pitch and gold remain separate resource amounts; they are not added into an
 arbitrary gold equivalent. Unknown prices mark totals as partial.
 
