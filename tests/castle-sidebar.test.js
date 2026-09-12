@@ -71,10 +71,10 @@ test('sidebar controls resize, collapse, restore and survive moving overviews be
 test('cost total UI reads the selected-step aggregate, excluding future unknown prices', () => {
   const source=fs.readFileSync(path.join(__dirname,'../src/js/castle-cost-panel.js'),'utf8');
   const start=source.indexOf('    els.totalLabel.textContent =');
-  const end=source.indexOf('\n',source.indexOf("' (partial: unknown prices)'",start));
+  const end=source.indexOf('    els.collapse.title',start);
   const statement=source.slice(start,end);
   const els={totalLabel:{},stepTotal:{}};
-  vm.runInNewContext(statement,{els,ergebnis:{steps:2,cost:{wood:15},unknown:[],wholeCastleCost:{wood:999},wholeCastleUnknown:[999]},costSummary:c=>`${c.wood} wood`});
+  vm.runInNewContext(statement,{els,ergebnis:{steps:2,cost:{wood:15},unknown:[],wholeCastleCost:{wood:999},wholeCastleUnknown:[999]},renderCostChips:(element,cost,partial)=>{element.textContent=`${cost.wood} wood`;assert.equal(partial,false);}});
   assert.equal(els.totalLabel.textContent,'Total through step 2');
   assert.equal(els.stepTotal.textContent,'15 wood');
   assert.ok(source.indexOf('id="castleCostStepTotal"')<source.indexOf('id="castleProductionTotals"'));

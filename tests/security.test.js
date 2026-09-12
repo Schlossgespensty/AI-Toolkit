@@ -49,5 +49,5 @@ test('Castle cost rows render data as text instead of markup', () => {
   const panel = read('src/js/castle-cost-panel.js');
   assert.doesNotMatch(panel, /innerHTML\s*=\s*`[^`]*zeile\./s);
   assert.match(panel, /name\.textContent/);
-  assert.match(panel, /value\.textContent/);
+  assert.match(panel, /document\.createTextNode\(zahl\(cost\[r\.key\]\)\)/);
 });
