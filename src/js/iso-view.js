@@ -284,6 +284,10 @@
       : null;
     // Das Gelaende der alten Karte zeigt die alte Karte. Es jetzt stehen zu
     // lassen hiesse, die neue Karte mit fremdem Boden zu zeigen.
+    if (state.kachelVorrat && state.kachelVorrat.path !== state.gameMap?.path) {
+      if (state.kachelVorrat.upperImage) state.images.delete(state.kachelVorrat.upperImage.src);
+      state.kachelVorrat = null;
+    }
     setTerrain(null);
     rememberGameMap();
     if (state.gameMap && state.ground) setGround(null);   // paints as well
@@ -438,12 +442,15 @@
   }
 
   function setMapTiles(daten) {
+    if (daten?.path && daten.path !== gameMap()?.path) return;
+    if (state.kachelVorrat?.upperImage) state.images.delete(state.kachelVorrat.upperImage.src);
     if (!daten) { state.kachelVorrat = null; paint(); return; }
     const bild = new Image();
     bild.onload = () => paint();
     bild.src = daten.atlas;
     const upperImage = daten.upper?.dataUrl ? image(daten.upper.dataUrl) : null;
     state.kachelVorrat = {
+      path: daten.path,
       bild,
       upperImage, upperEntries: daten.upper?.entries || [],
       treeSprites: new Map((daten.treeSprites || []).map(tree => [tree[1] * KARTE_FELDER + tree[0], tree])),
@@ -511,25 +518,30 @@
         if (platz === 0xffff) continue;
         const hebung = (v.hoehen ? v.hoehen[feld] : 0) * state.view.zoom;
         const [px, py] = geo.isoPoint(gx, gy, state.view, 0);
+        // The game advances 32 pixels between tiles on a screen row, but
+        // a GM1 diamond contains only 30 pixels. Do not stretch those pixels
+        // (or the attached scenery) to fill the grid pitch.
+        const tileWidth = kw * state.view.zoom;
+        const tileLeft = px - tileWidth / 2;
         const cliff = v.upperEntries[(v.cliffSprites?.[feld] || 0) - 1];
         if (cliff && v.upperImage?.complete && v.upperImage.naturalWidth) {
           const lift = v.hoehen[feld];
           for (let row = 0; row < lift; row += cliff.height) {
             const rows = Math.min(cliff.height, lift - row);
             ctx.drawImage(v.upperImage, cliff.x, cliff.y, cliff.width, rows,
-              px - hw, py - hebung + (cliff.dy + row) * state.view.zoom,
-              2 * hw, rows * state.view.zoom);
+              tileLeft, py - hebung + (cliff.dy + row) * state.view.zoom,
+              tileWidth, rows * state.view.zoom);
           }
         }
         ctx.drawImage(v.bild,
           (platz % v.spalten) * kw, Math.floor(platz / v.spalten) * kh, kw, kh,
-          px - hw, py - hebung, 2 * hw, 2 * hh);
+          tileLeft, py - hebung, tileWidth, kh * state.view.zoom);
         const upper = v.upperEntries[platz];
         if (upper && v.upperImage?.complete && v.upperImage.naturalWidth) {
           state.mapScenery.push({ gx, gy, tiles: 1, draw: () => {
-            const scaleX = 2 * hw / kw, scaleY = state.view.zoom;
+            const scaleX = state.view.zoom, scaleY = state.view.zoom;
             ctx.drawImage(v.upperImage, upper.x, upper.y, upper.width, upper.height,
-              px - hw + upper.dx * scaleX, py - hebung + upper.dy * scaleY,
+              tileLeft + upper.dx * scaleX, py - hebung + upper.dy * scaleY,
               upper.width * scaleX, upper.height * scaleY);
           }});
         }
@@ -537,9 +549,9 @@
         const treePicture = tree && v.upperEntries[tree[2]];
         if (treePicture && v.upperImage?.complete && v.upperImage.naturalWidth) {
           state.mapScenery.push({ gx, gy, tiles: 1, draw: () => {
-            const scaleX = 2 * hw / kw, scaleY = state.view.zoom;
+            const scaleX = state.view.zoom, scaleY = state.view.zoom;
             ctx.drawImage(v.upperImage, treePicture.x, treePicture.y, treePicture.width, treePicture.height,
-              px - hw + tree[3] * scaleX, py - hebung + tree[4] * scaleY,
+              tileLeft + tree[3] * scaleX, py - hebung + tree[4] * scaleY,
               treePicture.width * scaleX, treePicture.height * scaleY);
           }});
         }
