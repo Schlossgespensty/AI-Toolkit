@@ -8,14 +8,22 @@ function contained(root, candidate) {
   const relative = path.relative(root, candidate);
   return !path.isAbsolute(relative) && relative !== '..' && !relative.startsWith(`..${path.sep}`);
 }
-function resolveSelector(gameRoot, selector) {
+function resolveSelector(gameRoot, selector, loadOrder = null) {
   const root = fs.realpathSync(gameRoot);
   const parts = String(selector).replaceAll('\\', '/').split('/');
   if (parts.some(part => !part || part === '..' || part === '.' || /[:?\[\]]/.test(part))) throw new Error('Unsupported balance path.');
   let candidates = [root];
-  for (const part of parts) {
+  for (const [index, part] of parts.entries()) {
     const pattern = new RegExp(`^${part.split('*').map(s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('.*')}$`, 'i');
-    candidates = candidates.flatMap(dir => fs.readdirSync(dir).filter(name => pattern.test(name)).map(name => {
+    // UCP selects extension versions via its resolved load order. Other
+    // installed versions are not competing balance profiles for this session.
+    const extensionWildcard = index === 2 && parts[0].toLowerCase() === 'ucp'
+      && ['plugins','modules'].includes(parts[1].toLowerCase()) && part.includes('*');
+    const selected = extensionWildcard && Array.isArray(loadOrder)
+      ? new Set(loadOrder.filter(e => typeof e?.extension === 'string' && e.version != null)
+        .map(e => `${e.extension}-${e.version}`.toLowerCase())) : null;
+    candidates = candidates.flatMap(dir => fs.readdirSync(dir)
+      .filter(name => pattern.test(name) && (!selected || selected.has(name.toLowerCase()))).map(name => {
       const resolved = fs.realpathSync(path.join(dir, name));
       if (!contained(root, resolved)) throw new Error('Balance path escapes the game installation.');
       return resolved;
@@ -39,7 +47,7 @@ function readInstalledBalance(gameRoot) {
   const contents = leaf?.contents || leaf;
   const selector = typeof contents === 'string' ? contents : contents?.value;
   if (typeof selector !== 'string' || !selector.trim()) throw new Error('No resolved rebalancer profile in ucp-config.yml. Load the balance JSON explicitly.');
-  const filePath = resolveSelector(gameRoot, selector);
+  const filePath = resolveSelector(gameRoot, selector, full?.['load-order']);
   if (fs.statSync(filePath).size > 4 * 1024 * 1024) throw new Error('Balance profile is too large.');
   const profile = validate(yaml.load(fs.readFileSync(filePath, 'utf8'), { schema: yaml.JSON_SCHEMA }));
   return { profile, name: path.basename(filePath), filePath, configPath };

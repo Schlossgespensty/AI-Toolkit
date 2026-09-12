@@ -1,16 +1,30 @@
 # Castle costs and planning overlays
 
 The collapsible **Castle costs** panel defaults to the left dock. Its resource
-line totals all placements through the selected step; the entire-castle line
-and building breakdown use the same price source. Quantities of different
+line and overall total include only placements through the selected step,
+using the same scope and price source as the per-building breakdown. Future
+steps and their unknown prices do not contribute. Quantities of different
 resources are kept separate. Unknown prices mark the total as partial.
+
+## Sidebar space
+
+The divider between the main list and overviews can be dragged vertically.
+Drag it to either end to collapse that section, or use the labelled **Steps**
+/**Overview** buttons on the divider. The same controls remain visible to
+restore it. The middle grip supports Arrow Up/Down, Home/End to collapse and
+Enter to restore. Split proportions and collapsed state persist per sidebar.
+Moving overviews through the existing View menu preserves the split, and a
+side with no visible overview gives all space back to its main list. Population
+and costs share one overview scroll area rather than competing percentage caps.
 
 ## Balance selection
 
 **Use UCP balance** reads the installation selected in Library, its
 `ucp-config.yml`, and the resolved `rebalancer.config.balance_config_file_selector`.
-It resolves the plugin wildcard only if exactly one file matches. Ambiguous
-versions, paths outside the installation, missing profiles and malformed
+For an extension-directory wildcard, it uses the version selected in the
+resolved UCP load order; older installed versions do not compete. The remaining
+path must resolve to exactly one file. Without a resolved load order, ambiguous
+versions are rejected. Paths outside the installation, missing profiles and malformed
 values produce an error, without replacing the selected profile. Nothing is
 executed from a plugin. **Load…** also accepts standalone balance JSON files.
 

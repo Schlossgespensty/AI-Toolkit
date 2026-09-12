@@ -1,0 +1,57 @@
+/* Shared theme variables and ordinary castle buttons, for either colour scheme. */
+.castlePanel.castleSidebarSplit { display: grid; overflow: hidden; }
+.castleSidebarMain {
+  grid-row: 1;
+  min-height: 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.castleSidebarMain > :not(.castleBuildList):not(.castlePalette) { flex-shrink: 0; }
+.castleSidebarMain > .castleBuildList,
+.castleSidebarMain > .castlePalette { flex: 1 1 0; min-height: 0; }
+.castleSidebarOverviews {
+  grid-row: 3;
+  min-height: 0;
+  min-width: 0;
+  overflow: auto;
+  scrollbar-color: var(--line-strong) var(--surface-1);
+  scrollbar-width: thin;
+  background: var(--surface-2);
+}
+.castleSidebarOverviews > .castleOverviewPanel {
+  max-height: none;
+  overflow: visible;
+}
+.castleSidebarDivider {
+  grid-row: 2;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 5px;
+  border-block: 1px solid var(--line-strong);
+  background: var(--surface-2);
+}
+.castlePanel .castleSidebarDivider button {
+  min-height: 24px;
+  padding: 2px 6px;
+  font: 11px var(--font-ui);
+}
+.castleSidebarGrip {
+  flex: 1;
+  align-self: stretch;
+  min-width: 18px;
+  cursor: row-resize;
+  touch-action: none;
+  user-select: none;
+  display: grid;
+  place-items: center;
+}
+.castleSidebarGrip::after {
+  content: '';
+  width: 18px;
+  height: 4px;
+  border-block: 1px solid var(--text-muted);
+}
+.castleSidebarGrip:focus-visible { outline: 2px solid var(--accent-strong); outline-offset: -2px; }

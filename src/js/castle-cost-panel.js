@@ -72,6 +72,7 @@
 
       <div class="costSectionTitle" id="castleCostScope">Cumulative through selected step</div>
       <div class="costGrid" id="castleCostGrid"></div>
+      <div class="costCastleTotal"><span id="castleCostTotalLabel">Total through current step</span><strong id="castleCostStepTotal"></strong></div>
       <div class="costSectionTitle">Estimated gross production through this step</div>
       <div class="costHint" id="castleProductionTotals"></div>
       <div class="costHint" id="castleProductionComparison"></div>
@@ -86,7 +87,6 @@
         <p class="costHint">Work ticks exclude the return journey: cycle = work ticks + 2 × distance × walking ticks. Each producer keeps its own progress and fractional delivery bonus. Stone is quarry output; ox transport is not simulated. Route overlay distances are separate layout diagnostics, not measured external-resource distances.</p>
       </details>
       <div class="costHint" id="castleBalanceSource"></div>
-      <div class="costCastleTotal"><span>Entire castle total</span><strong id="castleCostWholeTotal"></strong></div>
 
       <div class="costNote" id="castleCostWarning" hidden></div>
 
@@ -109,7 +109,8 @@
     els.collapse = wurzel.querySelector('#castleCostCollapse');
     els.body = wurzel.querySelector('#castleCostBody');
     els.scope = wurzel.querySelector('#castleCostScope');
-    els.wholeTotal = wurzel.querySelector('#castleCostWholeTotal');
+    els.stepTotal = wurzel.querySelector('#castleCostStepTotal');
+    els.totalLabel = wurzel.querySelector('#castleCostTotalLabel');
     els.productionTotals = wurzel.querySelector('#castleProductionTotals');
     els.productionComparison = wurzel.querySelector('#castleProductionComparison');
     els.balanceSource = wurzel.querySelector('#castleBalanceSource');
@@ -325,8 +326,9 @@
       : 'no steps';
     els.step.textContent = schrittText;
     els.scope.textContent = ergebnis.steps ? `Cumulative total · steps 1–${ergebnis.steps}` : 'Cumulative total · no steps';
-    els.wholeTotal.textContent = costSummary(ergebnis.wholeCastleCost)
-      + (ergebnis.wholeCastleUnknown.length ? ' (partial: unknown prices)' : '');
+    els.totalLabel.textContent = `Total through step ${ergebnis.steps}`;
+    els.stepTotal.textContent = costSummary(ergebnis.cost)
+      + (ergebnis.unknown.length ? ' (partial: unknown prices)' : '');
     els.collapse.title = `Through step ${ergebnis.steps}: ${costSummary(ergebnis.cost)}`
       + (ergebnis.unknown.length ? ' (partial: unknown prices)' : '');
     if (els.populationStep) els.populationStep.textContent = schrittText;

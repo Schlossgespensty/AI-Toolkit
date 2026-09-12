@@ -75,6 +75,27 @@ test('resolved UCP configuration selects one full profile, never guesses between
   assert.throws(() => installed.readInstalledBalance(root), /matched 2/);
 });
 
+test('UCP balance import follows the active extension version among six installed Liga versions', t => {
+  const root=fs.mkdtempSync(path.join(os.tmpdir(),'castle-active-balance-'));
+  t.after(()=>fs.rmSync(root,{recursive:true,force:true}));
+  for(const version of ['1.0.7','1.0.8','1.0.9','1.1.0','2.0.0','2.0.2']) {
+    const dir=path.join(root,`ucp/plugins/Mod-KI-Team-Liga-${version}/resources/balance`);
+    fs.mkdirSync(dir,{recursive:true});
+    fs.writeFileSync(path.join(dir,'liga_ai.json'),JSON.stringify({buildings:{Hovel:{cost:[version==='2.0.2'?7:99,0,0,0,0]}}}));
+  }
+  const config={active:true,'config-full':{
+    'load-order':[{extension:'rebalancer',version:'1.1.3'},{extension:'Mod-KI-Team-Liga',version:'2.0.2'}],
+    modules:{rebalancer:{config:{balance_config_file_selector:{contents:{value:'ucp/plugins/Mod-KI-Team-Liga-*/resources/balance/liga_ai.json'}}}}}
+  }};
+  fs.writeFileSync(path.join(root,'ucp-config.yml'),JSON.stringify(config));
+  const loaded=installed.readInstalledBalance(root);
+  assert.equal(loaded.profile.buildings.Hovel.cost[0],7);
+  assert.ok(loaded.filePath.includes('Mod-KI-Team-Liga-2.0.2'));
+  config['config-full']['load-order'][1].version='3.0.0';
+  fs.writeFileSync(path.join(root,'ucp-config.yml'),JSON.stringify(config));
+  assert.throws(()=>installed.readInstalledBalance(root),/matched 0/);
+});
+
 test('production integrates housing intervals, per-producer travel and fractional deliveries', () => {
   const populationData = { population_effects: { provides: { 54: 8 } } };
   const frames = [ { itemType: 54, tilePositionOfsets: [0] }, { itemType: 25, tilePositionOfsets: [1] },

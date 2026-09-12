@@ -1777,11 +1777,13 @@
     for (const [key, panel] of entries) {
       if (!panel) continue;
       const preference = state.overviewLayout[key];
-      const parent = preference.side === 'right' ? els.palettePanel : els.buildPanel;
+      const side = preference.side === 'right' ? els.palettePanel : els.buildPanel;
+      const parent = window.castleSidebarLayout?.containerFor(side) || side;
       if (parent && panel.parentElement !== parent) parent.appendChild(panel);
       panel.hidden = !preference.visible;
       panel.dataset.side = preference.side;
     }
+    window.castleSidebarLayout?.refresh();
   }
 
   function saveOverviewLayout() {
