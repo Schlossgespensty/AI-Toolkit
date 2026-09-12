@@ -5,7 +5,7 @@ transitions, production and fire. The Toolkit's capture viewer plots positions
 read after actual simulation ticks. It does not run another pathfinder or assume
 that an unsaved AIV is identical to the recorded world.
 
-1. Install UCP Recorder 0.37.1–0.39.x and the supplied
+1. Install UCP Recorder 0.51.x (tick-observer API v1) and the supplied
    `integrations/ai-toolkit-observer` module in a classic Crusader 1.41 profile.
    The observer is a diagnostic integration and still needs an in-game
    performance/compatibility pass before release.
