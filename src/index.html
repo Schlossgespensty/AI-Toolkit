@@ -178,8 +178,9 @@
           <label class="compactToggle"><input id="castleShowNames" type="checkbox"> Item names</label>
           <label class="compactToggle"><input id="castleShowUnitNumbers" type="checkbox"> Unit Order</label>
           <label class="compactToggle"><input id="castleShowCompatibility" type="checkbox"> Guide lines</label>
-          <label class="compactToggle" title="Relative fire exposure from Crusader 1.41 spread offsets; not an ignition probability or safety guarantee"><input id="castleShowFire" type="checkbox"> Fire spread</label>
-          <label class="compactToggle" title="Estimated ground routes to stockpiles using game entrance candidates"><input id="castleShowRoutes" type="checkbox"> Worker routes</label>
+          <label class="compactToggle" title="Unobstructed fire reach from Crusader 1.41; choose initial spread or a conservative reheated envelope"><input id="castleShowFire" type="checkbox"> Fire spread</label>
+          <select id="castleFireMode" class="castleProjectChoice" aria-label="Fire reach model" hidden><option value="initial">Initial fire spread</option><option value="reheated">Reheated upper bound</option></select>
+          <label class="compactToggle" title="Estimated ground and elevated routes to stockpiles using game entrance candidates"><input id="castleShowRoutes" type="checkbox"> Worker routes</label>
         </div>
       </header>
 

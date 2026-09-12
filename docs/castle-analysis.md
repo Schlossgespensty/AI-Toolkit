@@ -82,42 +82,104 @@ and delivery quantities are known.
 ## Worker routes
 
 **Worker routes** draws cyan entrance markers and paths in both views. It uses
-the first-pass entrance candidates from `setupBuildingEntrancesOffset`
-(`0x0040BA10`, arguments size, 1, attempt, 0), preserving their table order.
-Table coordinates are transformed into the editor's upward Y axis. The
-automatic stockpile attached to the Keep is included.
+first-pass entrance candidates from `setupBuildingEntrancesOffset`
+(`0x0040BA10`, arguments size, 1, attempt, 0), preserving table order and
+transforming coordinates into the editor's upward Y axis. The automatic
+stockpile attached to the Keep is included.
 
-The game routine `determineBuildingEntranceFromKeepArea` (`0x0041ADE0`) also
-checks live regions, terrain heights, a saved attempt index, worker-specific
-rings and fallback candidates. These cannot be reconstructed fully from AIV.
-The planner starts at attempt zero and accepts the first reachable first-pass
-candidate. A cardinal shortest-path search routes to stockpile tiles around
-the known footprints. The displayed efficiency is unobstructed Manhattan
-distance / routed distance, not a production percentage. Gates, elevations,
-granary journeys, traffic and external resources are outside this overlay.
-An enclosed or unsupported entrance is reported instead of drawing through a
-wall. This model does not feed invented route lengths into production.
+The topology now distinguishes ground passages from elevated surfaces:
+
+- Small/large gates have a central passage along their NS/EW axis. The roof is
+  a separate surface; walking through a gate does not give access to its roof.
+- Wall walks, tower decks and stairs connect. Stair 6 can enter an adjacent
+  tower directly. Ordinary ground cannot enter a tower or climb a high wall.
+- Stair segments use heights 80, 64, 48, 32, 16, 0 and the ordinary 16-height
+  neighbour threshold. High/low walls use 90/60. These values come from
+  `placeWalls` (`0x00502F30`, explicit-placement branch at `0x005034D1`).
+  Tower roof offsets come from `0x00409DB0`: 296/148/180/192/192.
+  Intact tower-to-wall/stair links bypass the ordinary height threshold.
+- Diagonally touching wall walks connect; diagonal edges cannot skip stairs or
+  enter a tower from ground. Cardinal ground paths remain conservative. Crenellations remain blocked
+  because their walkability also depends on world-tile parity and live flags.
+
+This is a static reconstruction for intact, same-owner structures on level
+terrain, not the live pathfinder. `updatePathLinkageLayerBasedOnBuildingsUnk`
+(`0x004999C0`) distinguishes stairs, walls and building-backed wall surfaces,
+checks +/-16 height differences for ordinary links, and permits intact tower
+connections using the damage layer (threshold 20). Gate linkage (`0x00499FA0`)
+uses the centre row/column and checks gate state, obstacles and terrain height.
+The planner assumes open gates; AIV does not store their live state. Closed
+passages can be represented by its internal `closed` flag.
+
+The game entrance routine also checks live regions, terrain, saved entrance
+attempts and worker-specific fallback rings. The planner accepts the first
+reachable ground-level first-pass candidate. Dijkstra search includes diagonal
+wall-walk length. Efficiency is straight-line distance / routed distance, not
+worker productivity. Damage, terrain, granary trips, traffic and external
+resources remain outside this model; route lengths do not feed production.
 
 ## Fire spread
 
-**Fire spread** shades relative direct exposure orange, with a rounded stroke
-on the red sampled-reach boundary. Only sources with a nonzero result in the
-game's flammability switch contribute. Stone defenses, stockpiles and other
-nonflammable sources do not generate a halo.
+The original overlay was incorrect: it started intensity 3 on every footprint
+tile, omitted ignition jitter and treated sustained burning as two fresh
+propagation generations. It also implied a spatial probability distribution
+without simulating the stateful game process. That model has been removed.
 
-The model retains the game's 64 microtile jitter entries and cardinal spread
-directions. It enumerates two generations of the sustained burning-building
-intensity (3 → 2 → 1), keeping microtile coordinates until tile conversion.
-Color intensity is normalized spatial exposure, under uniformly sampled RNG
-indices, with the strongest source winning where overlays overlap. The exact
-sampled contour is retained instead of inventing a circular radius.
+The toggle now offers two explicitly different views:
 
-This is **not an ignition probability**, a whole-fire simulation or a guarantee
-that a gap is fireproof. It excludes timing, seed jitter, terrain/height checks,
-firemen, damage/health, runtime fire flags and secondary burning buildings.
-Chain fires can travel beyond the displayed direct reach. The UI names these
-limits. A smooth decorative rectangle would imply probabilities the code does
-not establish, so the actual sampled boundary is drawn instead.
+- **Initial fire spread** enumerates the ignition seeds and their first spread.
+  `igniteBuilding` (`0x0041C810`) visits size-squared footprint tiles in row-major
+  order, requesting intensity **2** at `(tileX*8, tileY*8)`. The generated layout
+  table (`0x004F9590`, accessed by `0x004F9880`) uses offsets 0 through size-1;
+  there is no rounded-centre substitution. `0x00407130` forwards intensity 2
+  to `IgniteFireAtMiniTile` (`0x004052E0`), which adds a 64-entry random microtile
+  offset before retaining the fire position. The fire updater then attempts
+  four cardinal offsets of eight microtiles, each with another jitter sample,
+  reducing intensity **2 to 1**. Intensity 1 does not propagate.
+- **Reheated upper bound** allows all 8x8 microtile phases within each source
+  tile and two outgoing generations from intensity 3. It is a conservative
+  geometric envelope, **not a prediction that every displayed tile can burn**.
+  Burning buildings can sustain intensity 3, but that happens in a later
+  lifecycle phase. Propagation requires phase zero, animation frame one and
+  an unspent direction counter. Re-hitting an existing fire resets its phase
+  and animation and raises its intensity, but does not reset that counter.
+  The bound deliberately ignores these timing/coalescing restrictions.
+
+For an interior source on unobstructed, level terrain, the initial envelope's
+extrema relative to its occupied footprint are X **-3 to +3**, game Y **-3 to
++2** tiles (editor Y reverses the sign). These are axis extrema, not a filled
+rectangle: corners differ. For example, two (+8,-8) jitters plus a +8 X attempt
+reach (+24,-16) microtiles, or tile (+3,-2); the reflected tile (-3,+2) is not
+in that single-seed envelope. The reheated envelope has axis extrema -4 to +4.
+Building size expands the shape from the actual footprint corners. The inspected
+seed routine does not establish a special odd/even-size radius rule; collisions,
+seed order and available microtile phases can change a particular fire's outcome.
+
+Red outlines the selected envelope. Orange distinguishes seed and propagation
+bands, **not probability**. Enumeration includes independently possible jitter
+values; the game shares an RNG and coalesces fire entities on occupied tiles,
+so simultaneous reach and observed frequencies are not inferred. All sources
+must pass the game's flammability lookup. Its values 1/4/5 are **not radii**.
+
+Both views omit runtime terrain/obstacle flags, suppression and secondary
+ignition chains. The updater rejects a direction at a neighbour height difference
+of 25 or more; ignition applies additional tile flags and building-type filters.
+A static AIV alone cannot reproduce these live map layers. Pitch/weapon fires
+may start with other intensities. A newly ignited neighbouring building becomes
+a fresh source, so neither envelope is a whole-castle fireproofing guarantee.
+The rebalancer's `castle.fire_damage` changes unit fire damage tables, not this
+jitter table or propagation range; it must not scale the overlay radius.
+
+## Resource-building plan artwork
+
+Wheat (9x9), hops (9x9), apples (11x11), dairy (10x10), quarry (6x6), iron (4x4)
+and pitch (4x4) plan skins are assembled from the original Gremium village
+editor's `gm/colour tiles.gm1`, with one 32x32 source tile per AIV tile. The
+food/industry corners, edges and centres retain their native scale; the old
+4x4 placeholder is no longer stretched over the whole farm. This restores the
+classic schematic artwork, not crop growth or livestock. Existing 2.5D farm
+sprites remain the static 3x3 farm building anchored within the full field;
+variable field/fence layouts are not represented by these plan skins.
 
 ## Numerical source data
 
@@ -131,7 +193,9 @@ No executable or disassembly is distributed.
   `0x005C071C` through `0x005C10E0`.
 - `0x004052E0`: fire jitter selected by RNG & 63 from `0x005B6E70`.
 - `0x00405680`: directional propagation, intensity decay and sustained burning.
-- `0x0041C810`: ignition filters and per-building fire seeds.
+- `0x0041C810`: ignition filters and per-building intensity-2 fire seeds.
+- `0x004F9590` / `0x004F9880`: footprint offset table generation/access.
+- `0x004999C0` / `0x00499FA0`: wall/stair/tower and gate path linkage.
 - `0x00530D70`: resource-delivery bonus and fractional carry.
 
 Function names and addresses were cross-referenced against

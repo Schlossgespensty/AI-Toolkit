@@ -2465,21 +2465,24 @@
   function getAnalysisOverlay() {
     const showFire = document.getElementById('castleShowFire').checked;
     const showRoutes = document.getElementById('castleShowRoutes').checked;
+    document.getElementById('castleFireMode').hidden = !showFire;
     if (!showFire && !showRoutes) return { heat: [], routes: [] };
     const data = window.castleCostData;
     const placements = placementRefs().filter(p => p.kind !== 'unit'
       && (!Number.isInteger(state.insertionFrameIndex) || p.fi <= state.insertionFrameIndex)).flatMap(p => {
       const name = data?.buildings[p.type]?.balance;
       const rects = footprintRects(p.type, p.off);
-      const item = { ref: p.ref, name, rects, worker: !!state.populationData?.population_effects?.requires?.[p.type] };
+      const item = { ref: p.ref, type: Number(p.type), name, rects, worker: !!state.populationData?.population_effects?.requires?.[p.type] };
       // The keep forces an attached stockpile, encoded as a composite footprint.
       return p.type === geometry.KEEP_ITEM_TYPE && rects.length > 1
         ? [{ ...item, rects: rects.filter(r => r.part !== 'stockpile') }, { ref: `${p.ref}:stockpile`, name: 'Stockpile', rects: rects.filter(r => r.part === 'stockpile') }]
         : [item];
     });
-    const key = JSON.stringify([showFire, showRoutes, placements]);
+    const fireMode = document.getElementById('castleFireMode').value;
+    document.getElementById('castleFireMode').hidden = !showFire;
+    const key = JSON.stringify([showFire, showRoutes, fireMode, placements]);
     if (analysisCache?.key === key) return analysisCache.value;
-    const value = { heat: showFire ? window.castleAnalysis.fireExposure(placements) : [],
+    const value = { heat: showFire ? window.castleAnalysis.fireExposure(placements, GRID, fireMode) : [],
       routes: showRoutes ? window.castleAnalysis.routes(placements) : [] };
     analysisCache = { key, value };
     return value;
@@ -2489,11 +2492,13 @@
     const info = document.getElementById('castleAnalysisInfo');
     info.hidden = !document.getElementById('castleShowFire').checked && !document.getElementById('castleShowRoutes').checked;
     const notes = [];
-    if (document.getElementById('castleShowFire').checked) notes.push('Orange: relative direct fire exposure; red: sampled reach. Flammable buildings only. Terrain, suppression and chain fires are not simulated.');
+    if (document.getElementById('castleShowFire').checked) notes.push(document.getElementById('castleFireMode').value === 'reheated'
+      ? 'Red: conservative reheated-fire upper bound, not guaranteed reach. Orange bands show spread stages, not probability. Ignores terrain, occupied-fire timing, suppression and chain fires.'
+      : 'Red: initial building-fire reach (seed jitter, then intensity 2 to 1). Orange bands show seed/propagation stages, not probability. Reheating, terrain, occupied-fire timing and chain fires can change the result.');
     if (document.getElementById('castleShowRoutes').checked) {
       const reachable = overlay.routes.filter(r => r.path.length);
       const average = reachable.length ? Math.round(100 * reachable.reduce((sum, r) => sum + r.efficiency, 0) / reachable.length) : null;
-      notes.push(`Routes: ${reachable.length}/${overlay.routes.length} reachable; ${average == null ? '—' : average + '%'} direct-distance efficiency. AIV-only stockpile paths; ignores height, gate passages, traffic and terrain.`);
+      notes.push(`Routes: ${reachable.length}/${overlay.routes.length} reachable; ${average == null ? '—' : average + '%'} direct-distance efficiency. Intact castle paths with open gates, stairs and wall walks; terrain, damage and traffic are not simulated.`);
     }
     info.textContent = notes.join(' ');
     ctx.save();
@@ -3580,6 +3585,7 @@
   els.showUnitNumbers.addEventListener('change', scheduleDraw);
   els.showCompatibility.addEventListener('change', scheduleDraw);
   document.getElementById('castleShowFire').addEventListener('change', scheduleDraw);
+  document.getElementById('castleFireMode').addEventListener('change', scheduleDraw);
   document.getElementById('castleShowRoutes').addEventListener('change', scheduleDraw);
   els.showBlueprint.addEventListener('change', () => {
     state.blueprintVisible = els.showBlueprint.checked;

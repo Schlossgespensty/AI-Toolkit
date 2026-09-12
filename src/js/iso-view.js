@@ -733,7 +733,7 @@
       ctx.beginPath(); ctx.strokeStyle = '#64e8ef'; ctx.lineWidth = 1.5;
       route.path.forEach((tile, index) => {
         const p = turn(tile);
-        const [x,y] = geo.isoPoint(p.gx + .5, p.gy + .5, state.view, bauHoehe(p.gx,p.gy,1));
+        const [x,y] = geo.isoPoint(p.gx + .5, p.gy + .5, state.view, bauHoehe(p.gx,p.gy,1) + (tile.height || 0));
         if (index) ctx.lineTo(x,y); else ctx.moveTo(x,y);
       }); ctx.stroke();
       if (route.entry) { const p = turn(route.entry); drawDiamond(ctx,p.gx,p.gy,1,'rgba(100,232,239,.65)'); }
