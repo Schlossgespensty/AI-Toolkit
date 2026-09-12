@@ -252,4 +252,3 @@
 .costProductionSettings label { display: flex; align-items: center; justify-content: space-between; gap: 6px; margin: 5px 0; }
 .costProductionSettings input[type="number"] { width: 70px; min-width: 0; }
 .costBalanceRow { flex-wrap: wrap; }
-#castleAnalysisInfo { max-height: 100px; overflow-y: auto; }

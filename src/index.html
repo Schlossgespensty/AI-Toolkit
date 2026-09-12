@@ -181,11 +181,8 @@
           <label class="compactToggle"><input id="castleShowNames" type="checkbox"> Item names</label>
           <label class="compactToggle"><input id="castleShowUnitNumbers" type="checkbox"> Unit Order</label>
           <label class="compactToggle"><input id="castleShowCompatibility" type="checkbox"> Guide lines</label>
-          <label class="compactToggle" title="Unobstructed fire reach from Crusader 1.41; choose initial spread or a conservative reheated envelope"><input id="castleShowFire" type="checkbox"> Fire spread</label>
-          <label id="castleFireModeLabel" class="castleProjectChoice" hidden>Fire model
-            <select id="castleFireMode" aria-label="Fire reach model"><option value="initial">Initial fire spread</option><option value="reheated">Reheated upper bound</option></select>
-          </label>
-          <label class="compactToggle" title="Estimated ground and elevated routes to stockpiles using game entrance candidates"><input id="castleShowRoutes" type="checkbox"> Worker routes</label>
+          <button id="openGameSimulation" type="button">Game simulation</button>
+
         </div>
       </header>
 
@@ -204,7 +201,6 @@
           </div>
           <div class="buildHint">Drag steps to reorder. Use Ctrl+click or Shift+click to select several steps.</div>
           <button id="castleMergeSteps" type="button" disabled title="Select two or more unlocked steps of exactly the same wall, moat or pitch type. Merges at the earliest selected step; any pause is kept at the end.">Merge selected steps</button>
-          <div id="castleAnalysisInfo" class="buildHint" hidden></div>
           <div id="castleBuildList" class="castleBuildList"></div>
           <section id="castlePopulationOverview" class="castlePopulationOverview castleOverviewPanel" data-overview="population" aria-label="Population up to the selected build step">
             <div class="populationOverviewTitle castleOverviewTitle">
@@ -581,13 +577,33 @@
 </dialog>
 
 
+<dialog id="gameSimulationDialog" class="ucpCreateDialog gameSimulationDialog">
+  <div class="ucpCreateHeading">
+    <h2>Game simulation</h2>
+    <p>Inspect recorded worker routes, entrances and fire on their actual map. This view does not predict an unsaved castle.</p>
+  </div>
+  <div class="simulationControls">
+    <button id="simulationOpen" type="button">Open capture…</button>
+    <button id="simulationExport" type="button">Export observer…</button>
+    <button id="simulationFit" type="button">Fit map</button>
+    <label>Worker <select id="simulationWorker"><option value="">All workers</option></select></label>
+    <label><input id="simulationRoutes" type="checkbox" checked> Routes</label>
+    <label><input id="simulationFire" type="checkbox" checked> Fire coverage</label>
+    <label><input id="simulationSparks" type="checkbox" checked> Sparks</label>
+  </div>
+  <p id="simulationMessage" role="status">Export the observer and enable it with UCP Recorder in a single-player game. The capture and its starting save/settings stay together in the replay folder. The diagnostic observer still needs an in-game compatibility and performance pass.</p>
+  <canvas id="simulationCanvas" width="900" height="520" aria-label="Recorded map, worker paths and fire"></canvas>
+  <label class="simulationTimeline">Through tick <input id="simulationTick" type="range" min="0" max="0" value="0"><output id="simulationTickValue">—</output></label>
+  <p id="simulationDetails">Wheel to zoom; drag to pan. The map plane shows actual recorded positions; elevations are listed for the selected worker.</p>
+  <div class="ucpCreateActions"><button id="simulationClose" type="button">Close</button></div>
+</dialog>
+<script src="js/simulation-model.js"></script>
+<script src="js/simulation-view.js"></script>
 <script src="js/app-shell.js"></script>
 <script src="js/titlebar.js"></script>
 <script src="js/castle-geometry.js"></script>
 <script src="js/castle-camera.js"></script>
 <script src="js/castle-palette.js"></script>
-<script src="js/castle-game-data.js"></script>
-<script src="js/castle-analysis.js"></script>
 <script src="js/castle-sidebar-layout.js"></script>
 <script src="js/castle-editor.js"></script>
 

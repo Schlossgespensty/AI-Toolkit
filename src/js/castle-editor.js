@@ -2455,78 +2455,12 @@
     }
 
     ctx = staticCacheCtx;
-    drawAnalysisOverlay();
     for (const placement of unitPlacements) {
       drawPlacement(placement.type, placement.off, state.selected.has(placement.ref));
     }
 
     ctx = displayCtx;
     state.staticCacheDirty = false;
-  }
-
-  let analysisCache = null;
-  function getAnalysisOverlay() {
-    const showFire = document.getElementById('castleShowFire').checked;
-    const showRoutes = document.getElementById('castleShowRoutes').checked;
-    document.getElementById('castleFireModeLabel').hidden = !showFire;
-    if (!showFire && !showRoutes) return { heat: [], routes: [] };
-    const data = window.castleCostData;
-    const placements = placementRefs().filter(p => p.kind !== 'unit'
-      && (!Number.isInteger(state.insertionFrameIndex) || p.fi <= state.insertionFrameIndex)).flatMap(p => {
-      const name = data?.buildings[p.type]?.balance;
-      const rects = footprintRects(p.type, p.off);
-      const item = { ref: p.ref, type: Number(p.type), name, rects, worker: !!state.populationData?.population_effects?.requires?.[p.type] };
-      // The keep forces an attached stockpile, encoded as a composite footprint.
-      return p.type === geometry.KEEP_ITEM_TYPE && rects.length > 1
-        ? [{ ...item, rects: rects.filter(r => r.part !== 'stockpile') }, { ref: `${p.ref}:stockpile`, name: 'Stockpile', rects: rects.filter(r => r.part === 'stockpile') }]
-        : [item];
-    });
-    const fireMode = document.getElementById('castleFireMode').value;
-    document.getElementById('castleFireModeLabel').hidden = !showFire;
-    const key = JSON.stringify([showFire, showRoutes, fireMode, placements]);
-    if (analysisCache?.key === key) return analysisCache.value;
-    const value = { heat: showFire ? window.castleAnalysis.fireExposure(placements, GRID, fireMode) : [],
-      routes: showRoutes ? window.castleAnalysis.routes(placements) : [] };
-    analysisCache = { key, value };
-    return value;
-  }
-  function drawAnalysisOverlay() {
-    const overlay = getAnalysisOverlay();
-    const info = document.getElementById('castleAnalysisInfo');
-    info.hidden = !document.getElementById('castleShowFire').checked && !document.getElementById('castleShowRoutes').checked;
-    const notes = [];
-    if (document.getElementById('castleShowFire').checked) notes.push(document.getElementById('castleFireMode').value === 'reheated'
-      ? 'Red: conservative reheated-fire upper bound, not guaranteed reach. Orange bands show spread stages, not probability. Ignores terrain, occupied-fire timing, suppression and chain fires.'
-      : 'Red: initial building-fire reach (seed jitter, then intensity 2 to 1). Orange bands show seed/propagation stages, not probability. Reheating, terrain, occupied-fire timing and chain fires can change the result.');
-    if (document.getElementById('castleShowRoutes').checked) {
-      const reachable = overlay.routes.filter(r => r.path.length);
-      const average = reachable.length ? Math.round(100 * reachable.reduce((sum, r) => sum + r.efficiency, 0) / reachable.length) : null;
-      notes.push(`Routes: ${reachable.length}/${overlay.routes.length} reachable; ${average == null ? '—' : average + '%'} direct-distance efficiency. Intact castle paths with open gates, stairs and wall walks; terrain, damage and traffic are not simulated.`);
-    }
-    info.textContent = notes.join(' ');
-    ctx.save();
-    const cells = new Set(overlay.heat.map(c => c.y * GRID + c.x));
-    for (const c of overlay.heat) {
-      const x = state.panX + c.x * state.cell, y = state.panY + (99 - c.y) * state.cell;
-      ctx.fillStyle = `rgba(255,112,16,${0.035 + 0.34 * Math.sqrt(c.intensity)})`;
-      ctx.fillRect(x, y, state.cell, state.cell);
-      ctx.strokeStyle = 'rgba(235,45,38,0.85)'; ctx.lineWidth = 1.3; ctx.lineJoin = 'round'; ctx.lineCap = 'round';
-      for (const [dx, dy, ax, ay, bx, by] of [[-1,0,0,0,0,1],[1,0,1,0,1,1],[0,1,0,0,1,0],[0,-1,0,1,1,1]]) {
-        if (c.x + dx >= 0 && c.x + dx < GRID && c.y + dy >= 0 && c.y + dy < GRID && cells.has((c.y + dy) * GRID + c.x + dx)) continue;
-        ctx.beginPath(); ctx.moveTo(x + ax * state.cell, y + ay * state.cell); ctx.lineTo(x + bx * state.cell, y + by * state.cell); ctx.stroke();
-      }
-    }
-    for (const route of overlay.routes) {
-      if (!route.path.length) continue;
-      ctx.strokeStyle = '#64e8ef'; ctx.lineWidth = 1.5; ctx.beginPath();
-      route.path.forEach((tile, i) => {
-        const x = state.panX + (tile.x + .5) * state.cell, y = state.panY + (99 - tile.y + .5) * state.cell;
-        if (i) ctx.lineTo(x, y); else ctx.moveTo(x, y);
-      }); ctx.stroke();
-      const tile = route.entry;
-      ctx.fillStyle = '#64e8ef'; ctx.fillRect(state.panX + tile.x * state.cell, state.panY + (99 - tile.y) * state.cell, state.cell, state.cell);
-    }
-    ctx.restore();
   }
 
   function draw() {
@@ -3588,9 +3522,6 @@
   els.showNames.addEventListener('change', scheduleDraw);
   els.showUnitNumbers.addEventListener('change', scheduleDraw);
   els.showCompatibility.addEventListener('change', scheduleDraw);
-  document.getElementById('castleShowFire').addEventListener('change', scheduleDraw);
-  document.getElementById('castleFireMode').addEventListener('change', scheduleDraw);
-  document.getElementById('castleShowRoutes').addEventListener('change', scheduleDraw);
   els.showBlueprint.addEventListener('change', () => {
     state.blueprintVisible = els.showBlueprint.checked;
     scheduleDraw();
@@ -3759,7 +3690,6 @@
     deleteSelected,
     getCameraPreferences: () => ({ ...state.camera }),
     itemLabelAtTile,
-    getAnalysisOverlay,
     chooseBlueprint,
     clearBlueprint,
     showShortcutDialog,

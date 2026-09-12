@@ -93,96 +93,12 @@ balance sections for these effects are retained, but do not silently replace
 the explicit timing assumptions. Production is an estimate even when prices
 and delivery quantities are known.
 
-## Worker routes
+## Worker routes and fire
 
-**Worker routes** draws cyan entrance markers and paths in both views. It uses
-first-pass entrance candidates from `setupBuildingEntrancesOffset`
-(`0x0040BA10`, arguments size, 1, attempt, 0), preserving table order and
-transforming coordinates into the editor's upward Y axis. The automatic
-stockpile attached to the Keep is included.
-
-The topology now distinguishes ground passages from elevated surfaces:
-
-- Small/large gates have a central passage along their NS/EW axis. The roof is
-  a separate surface; walking through a gate does not give access to its roof.
-- Wall walks, tower decks and stairs connect. Stair 6 can enter an adjacent
-  tower directly. Ordinary ground cannot enter a tower or climb a high wall.
-- Stair segments use heights 80, 64, 48, 32, 16, 0 and the ordinary 16-height
-  neighbour threshold. High/low walls use 90/60. These values come from
-  `placeWalls` (`0x00502F30`, explicit-placement branch at `0x005034D1`).
-  Tower roof offsets come from `0x00409DB0`: 296/148/180/192/192.
-  Intact tower-to-wall/stair links bypass the ordinary height threshold.
-- Diagonally touching wall walks connect; diagonal edges cannot skip stairs or
-  enter a tower from ground. Cardinal ground paths remain conservative. Crenellations remain blocked
-  because their walkability also depends on world-tile parity and live flags.
-
-This is a static reconstruction for intact, same-owner structures on level
-terrain, not the live pathfinder. `updatePathLinkageLayerBasedOnBuildingsUnk`
-(`0x004999C0`) distinguishes stairs, walls and building-backed wall surfaces,
-checks +/-16 height differences for ordinary links, and permits intact tower
-connections using the damage layer (threshold 20). Gate linkage (`0x00499FA0`)
-uses the centre row/column and checks gate state, obstacles and terrain height.
-The planner assumes open gates; AIV does not store their live state. Closed
-passages can be represented by its internal `closed` flag.
-
-The game entrance routine also checks live regions, terrain, saved entrance
-attempts and worker-specific fallback rings. The planner accepts the first
-reachable ground-level first-pass candidate. Dijkstra search includes diagonal
-wall-walk length. Efficiency is straight-line distance / routed distance, not
-worker productivity. Damage, terrain, granary trips, traffic and external
-resources remain outside this model; route lengths do not feed production.
-
-## Fire spread
-
-The original overlay was incorrect: it started intensity 3 on every footprint
-tile, omitted ignition jitter and treated sustained burning as two fresh
-propagation generations. It also implied a spatial probability distribution
-without simulating the stateful game process. That model has been removed.
-
-The toggle now offers two explicitly different views:
-
-- **Initial fire spread** enumerates the ignition seeds and their first spread.
-  `igniteBuilding` (`0x0041C810`) visits size-squared footprint tiles in row-major
-  order, requesting intensity **2** at `(tileX*8, tileY*8)`. The generated layout
-  table (`0x004F9590`, accessed by `0x004F9880`) uses offsets 0 through size-1;
-  there is no rounded-centre substitution. `0x00407130` forwards intensity 2
-  to `IgniteFireAtMiniTile` (`0x004052E0`), which adds a 64-entry random microtile
-  offset before retaining the fire position. The fire updater then attempts
-  four cardinal offsets of eight microtiles, each with another jitter sample,
-  reducing intensity **2 to 1**. Intensity 1 does not propagate.
-- **Reheated upper bound** allows all 8x8 microtile phases within each source
-  tile and two outgoing generations from intensity 3. It is a conservative
-  geometric envelope, **not a prediction that every displayed tile can burn**.
-  Burning buildings can sustain intensity 3, but that happens in a later
-  lifecycle phase. Propagation requires phase zero, animation frame one and
-  an unspent direction counter. Re-hitting an existing fire resets its phase
-  and animation and raises its intensity, but does not reset that counter.
-  The bound deliberately ignores these timing/coalescing restrictions.
-
-For an interior source on unobstructed, level terrain, the initial envelope's
-extrema relative to its occupied footprint are X **-3 to +3**, game Y **-3 to
-+2** tiles (editor Y reverses the sign). These are axis extrema, not a filled
-rectangle: corners differ. For example, two (+8,-8) jitters plus a +8 X attempt
-reach (+24,-16) microtiles, or tile (+3,-2); the reflected tile (-3,+2) is not
-in that single-seed envelope. The reheated envelope has axis extrema -4 to +4.
-Building size expands the shape from the actual footprint corners. The inspected
-seed routine does not establish a special odd/even-size radius rule; collisions,
-seed order and available microtile phases can change a particular fire's outcome.
-
-Red outlines the selected envelope. Orange distinguishes seed and propagation
-bands, **not probability**. Enumeration includes independently possible jitter
-values; the game shares an RNG and coalesces fire entities on occupied tiles,
-so simultaneous reach and observed frequencies are not inferred. All sources
-must pass the game's flammability lookup. Its values 1/4/5 are **not radii**.
-
-Both views omit runtime terrain/obstacle flags, suppression and secondary
-ignition chains. The updater rejects a direction at a neighbour height difference
-of 25 or more; ignition applies additional tile flags and building-type filters.
-A static AIV alone cannot reproduce these live map layers. Pitch/weapon fires
-may start with other intensities. A newly ignited neighbouring building becomes
-a fresh source, so neither envelope is a whole-castle fireproofing guarantee.
-The rebalancer's `castle.fire_damage` changes unit fire damage tables, not this
-jitter table or propagation range; it must not scale the overlay radius.
+The previous static models have been removed. They did not have the runtime
+terrain, entrance, wall-linkage or staged spark state needed to match the game.
+See [Game simulation captures](game-simulation.md) for the observer, viewer,
+verified fire research and remaining in-game validation requirements.
 
 ## Resource-building plan artwork
 
@@ -191,36 +107,8 @@ and pitch (4x4) plan skins are assembled from the original Gremium village
 editor's `gm/colour tiles.gm1`, with one 32x32 source tile per AIV tile. The
 food/industry corners, edges and centres retain their native scale; the old
 4x4 placeholder is no longer stretched over the whole farm. This restores the
-classic schematic artwork, not crop growth or livestock. Existing 2.5D farm
-sprites remain the static 3x3 farm building anchored within the full field;
-variable field/fence layouts are not represented by these plan skins.
-
-## Numerical source data
-
-`src/js/castle-game-data.js` contains numerical tables inspected from the local
-Crusader 1.41 executable, SHA-256
-`0d3d0d0be90a41d0c07d02cb41e6edc3e399288d16039db5b666392660fbda34`.
-No executable or disassembly is distributed.
-
-- `0x00410920`: flammability switch, lookup at `0x00410978`.
-- `0x0040BA10`: entrance candidates; count table `0x005C06E0`, size tables
-  `0x005C071C` through `0x005C10E0`.
-- `0x004052E0`: fire jitter selected by RNG & 63 from `0x005B6E70`.
-- `0x00405680`: directional propagation, intensity decay and sustained burning.
-- `0x0041C810`: ignition filters and per-building intensity-2 fire seeds.
-- `0x004F9590` / `0x004F9880`: footprint offset table generation/access.
-- `0x004999C0` / `0x00499FA0`: wall/stair/tower and gate path linkage.
-- `0x00530D70`: resource-delivery bonus and fractional carry.
-
-Function names and addresses were cross-referenced against
-[OpenSHC's building declarations](https://github.com/sourcehold/OpenSHC/blob/main/src/OpenSHC/Map/Buildings/BuildingsState.func.hpp)
-and [entity declarations](https://github.com/sourcehold/OpenSHC/blob/main/src/OpenSHC/Map/Entities.func.hpp).
-Decompiler export failed for these functions; the numerical tables and branch
-behavior were inspected directly in the executable. Planning assumptions are
-kept separate from that evidence.
-
-Automated checks run on GitHub's Windows runners. No local interactive game or
-editor validation has been performed for these changes.
+classic schematic artwork, not crop growth or livestock. The 2.5D renderer now uses native hut and field components; see
+[Native building components](farm-graphics.md) for initial-state assumptions.
 
 ## 2.5D map alignment
 
@@ -242,7 +130,7 @@ comparison on the reported map remains pending.
 
 Opening an AI project refreshes its installation's resolved UCP balance. The loader
 reads the initialized-data cost table from the on-disk Stronghold Crusader.exe
-using rebalancer's unique Hovel/House signature, then overlays the selected
+using the cost initializer reference (with an unambiguous legacy signature fallback), then overlays the selected
 profile. Cost omissions preserve that EXE baseline; other patch sections remain
 available. This does not inspect live process memory or arbitrary later Lua
 patches. Unsupported/ambiguous tables fail explicitly; refresh failures remain

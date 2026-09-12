@@ -25,7 +25,8 @@
   },
   "devDependencies": {
     "electron": "^44.3.0",
-    "electron-builder": "^26.15.3"
+    "electron-builder": "^26.15.3",
+    "fengari": "0.1.5"
   },
   "build": {
     "appId": "de.schlossgespenst.aitoolkit",
@@ -40,7 +41,9 @@
       "package.json",
       "src/**/*",
       "assets/**/*",
-      "config/**/*"
+      "config/**/*",
+      "integrations/**/*",
+      "docs/game-simulation.md"
     ],
     "extraFiles": [
       {

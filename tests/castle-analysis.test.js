@@ -4,8 +4,6 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
-const analysis = require('../src/js/castle-analysis');
-const game = require('../src/js/castle-game-data');
 const balance = require('../src/js/castle-balance');
 const installed = require('../src/node/castle-balance');
 const production = require('../src/js/castle-production');
@@ -135,31 +133,3 @@ test('pitch placement credit survives step boundaries and respects every rebalan
   assert.throws(() => balance.validate({ castle:{ ditch_per_pitch:5 } }));
 });
 
-test('entrance tables retain game order and are transformed to upward editor coordinates', () => {
-  const entries = analysis.entranceCandidates({ left: 10, right: 12, top: 12, bottom: 10 });
-  assert.equal(entries.length, 12);
-  assert.deepEqual(entries.slice(0,3), [{ x: 11,y:13 }, { x:12,y:13 }, { x:13,y:12 }]);
-  for (const e of entries) assert.ok(e.x < 10 || e.x > 12 || e.y < 10 || e.y > 12);
-});
-
-test('worker routes avoid solid walls, use a reachable entrance, and report enclosure', () => {
-  const store = { name: 'Stockpile', rects: [{ left: 1, right: 1, top: 5, bottom: 5 }] };
-  const work = { name: 'Fletcher', ref: 'work', worker: true, rects: [{ left: 5,right:6,top:6,bottom:5 }] };
-  const wall = { name: null, rects: [{ left: 3,right:3,top:8,bottom:1 }] };
-  const route = analysis.routes([store,work,wall],10)[0];
-  assert.ok(route.path.length > 0);
-  assert.ok(route.efficiency < 1);
-  assert.ok(route.path.every(p => !(p.x === 3 && p.y >= 1 && p.y <= 8)));
-  const enclosed = { name: null, rects: [{ left: 0,right:9,top:9,bottom:0 }] };
-  assert.equal(analysis.routes([store,work,enclosed],10)[0].path.length,0);
-});
-
-test('fire exposure uses only burnable sources and clips at the village boundary', () => {
-  assert.equal(game.flammability['Stone keep'], undefined); // no invented name fallback
-  const rects = [{ left: 0,right:0,top:0,bottom:0 }];
-  assert.deepEqual(analysis.fireExposure([{ name:'Small gatehouse',rects }]), []);
-  const cells = analysis.fireExposure([{ name:'Hovel',rects }]);
-  assert.ok(cells.length > 1);
-  assert.ok(cells.every(c => c.x >= 0 && c.y >= 0 && c.intensity > 0 && c.intensity <= 1));
-  assert.ok(new Set(cells.map(c => c.intensity)).size > 1);
-});

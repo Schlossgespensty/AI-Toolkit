@@ -755,7 +755,6 @@
     // where the mouse is
     if (state.hover) drawDiamond(ctx, state.hover.gx, state.hover.gy, 1, null, 'rgba(255,255,255,.5)');
 
-    drawAnalysis(ctx);
     drawSelection(ctx, items);
     drawPreview(ctx);
     drawMarquee(ctx);
@@ -764,29 +763,6 @@
     const tool = editor && editor.getTool ? editor.getTool() : '—';
     setStatus(items.length + ' items' + (missing ? ', ' + missing + ' without a sprite' : '') +
               ' · tool: ' + tool + mapStatus() + ' · middle mouse pans, wheel zooms');
-  }
-
-  function drawAnalysis(ctx) {
-    const overlay = window.castleEditor?.getAnalysisOverlay?.();
-    if (!overlay) return;
-    const turn = tile => geo.rotateGrid(tile.x, 99 - tile.y, 1, currentRotation());
-    ctx.save();
-    const cells = new Set(overlay.heat.map(c => `${c.x},${c.y}`));
-    for (const c of overlay.heat) {
-      const p = turn(c);
-      const boundary = [[1,0],[-1,0],[0,1],[0,-1]].some(([dx,dy]) => !cells.has(`${c.x+dx},${c.y+dy}`));
-      drawDiamond(ctx, p.gx, p.gy, 1, `rgba(255,112,16,${0.035 + .34 * Math.sqrt(c.intensity)})`, boundary ? 'rgba(235,45,38,.8)' : null);
-    }
-    for (const route of overlay.routes) {
-      ctx.beginPath(); ctx.strokeStyle = '#64e8ef'; ctx.lineWidth = 1.5;
-      route.path.forEach((tile, index) => {
-        const p = turn(tile);
-        const [x,y] = geo.isoPoint(p.gx + .5, p.gy + .5, state.view, bauHoehe(p.gx,p.gy,1) + (tile.height || 0));
-        if (index) ctx.lineTo(x,y); else ctx.moveTo(x,y);
-      }); ctx.stroke();
-      if (route.entry) { const p = turn(route.entry); drawDiamond(ctx,p.gx,p.gy,1,'rgba(100,232,239,.65)'); }
-    }
-    ctx.restore();
   }
 
   // Was in der Statuszeile ueber die Karte steht. Die Drehung gehoert dorthin,

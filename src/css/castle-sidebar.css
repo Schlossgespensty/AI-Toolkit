@@ -79,3 +79,11 @@
 .castleCameraSettings input:focus, .castleCameraSettings select:focus { border-color: var(--accent); outline: 1px solid var(--accent); }
 .castleCameraSettings .castleCameraKey { text-align: center; width: 100%; }
 .costProductionSettings input[type="checkbox"] { width: auto; }
+.gameSimulationDialog { width: min(1000px, 94vw); max-height: 94vh; overflow: auto; }
+.simulationControls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.simulationControls label { display: inline-flex; align-items: center; gap: 5px; }
+.simulationControls select { background: var(--surface-1); color: var(--text-main); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 6px; }
+#simulationCanvas { width: 100%; height: auto; touch-action: none; border: 1px solid var(--line); cursor: grab; }
+.simulationTimeline { display: flex; align-items: center; gap: 10px; }
+.simulationTimeline input { flex: 1; }
+#simulationMessage, #simulationDetails { color: var(--text-muted); font-size: 12px; overflow-wrap: anywhere; }
