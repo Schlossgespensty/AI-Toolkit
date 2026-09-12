@@ -130,6 +130,15 @@ button:disabled { cursor: default; }
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+.appIcon {
+  width: 28px;
+  height: 28px;
+  flex: 0 0 28px;
+  align-self: center;
+  margin: 0 8px 0 2px;
+  object-fit: contain;
+  user-select: none;
+}
 .appIdentity {
   align-self: center;
   margin: 0 5px 5px 2px;
