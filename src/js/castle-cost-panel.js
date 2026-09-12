@@ -22,7 +22,9 @@
     aufgeklappt: false,
     collapsed: false,
     production: window.castleProduction.settings(),
-    balanceSource: ''
+    balanceSource: '',
+    balanceError: '',
+    icons: {}
   };
   const els = {};
 
@@ -71,11 +73,12 @@
       <input type="file" id="castleCostBalanceFile" accept="application/json,.json" hidden>
 
       <div class="costSectionTitle" id="castleCostScope">Cumulative through selected step</div>
-      <div class="costGrid" id="castleCostGrid"></div>
+      <div class="costGrid" id="castleCostGrid" hidden></div>
       <div class="costCastleTotal"><span id="castleCostTotalLabel">Total through current step</span><strong id="castleCostStepTotal"></strong></div>
-      <div class="costSectionTitle">Estimated gross production through this step</div>
+      <div class="costSectionTitle">Resources through this step</div>
       <div class="costHint" id="castleProductionTotals"></div>
-      <div class="costHint" id="castleProductionComparison"></div>
+      <div id="castleProductionComparison"></div>
+      <div class="costNote" id="castleBalanceError" hidden></div>
       <details class="costProductionSettings"><summary>Production assumptions</summary>
         <p class="costHint">Potential AIC production, assuming full staffing as housing becomes available. Timings below are planning defaults, not measured game rates. Excludes construction delays, pauses, input shortages, consumption, trade, transport bottlenecks and fear/rest effects. These goods are not your stockpile balance.</p>
         <label>Resource distance <input id="productionDistance" type="number" min="0" max="1000"></label>
@@ -114,6 +117,8 @@
     els.productionTotals = wurzel.querySelector('#castleProductionTotals');
     els.productionComparison = wurzel.querySelector('#castleProductionComparison');
     els.balanceSource = wurzel.querySelector('#castleBalanceSource');
+    els.balanceError = wurzel.querySelector('#castleBalanceError');
+    window.electronAPI.readResourceIcons?.().then(icons => { state.icons = icons; zeichne(); }).catch(() => {});
     const numericSettings = { productionDistance: 'distance', productionExtraDistance: 'extraDistance', productionWalkTicks: 'walkTicks', productionProductivity: 'productivity' };
     const saveProduction = () => {
       try { window.localStorage.setItem('aiv.production.v1', JSON.stringify(state.production)); } catch { /* session only */ }
@@ -141,17 +146,7 @@
       });
       label.appendChild(input); wurzel.querySelector('#productionWorkTicks').appendChild(label);
     }
-    wurzel.querySelector('#castleCostUcpBalance').addEventListener('click', async event => {
-      const button = event.currentTarget; button.disabled = true;
-      try {
-        const loaded = await window.electronAPI.readInstalledBalance();
-        const name = `UCP: ${loaded.name}`;
-        state.balances[name] = window.castleBalance.validate(loaded.profile);
-        state.choice = name; state.balanceSource = loaded.filePath;
-        sichere(); fuelleBalanceListe(); zeichne();
-      } catch (error) { meldeFehler(error.message); }
-      finally { button.disabled = false; }
-    });
+    wurzel.querySelector('#castleCostUcpBalance').addEventListener('click', loadProjectBalance);
     els.step = wurzel.querySelector('#castleCostStep');
     els.populationStep = bevoelkerung.querySelector('#castlePopulationStep');
     els.balance = wurzel.querySelector('#castleCostBalance');
@@ -174,13 +169,13 @@
     for (const r of RESSOURCEN) {
       const zelle = document.createElement('div');
       zelle.className = 'costCell';
-      zelle.innerHTML = `<span>${r.label}</span><strong data-res="${r.key}">0</strong>`;
+      zelle.innerHTML = `<span data-good="${r.key}">${r.label}</span><strong data-res="${r.key}">0</strong>`;
       els.grid.appendChild(zelle);
     }
 
     els.balance.addEventListener('change', () => {
       state.choice = els.balance.value;
-      state.balanceSource = '';
+      state.balanceSource = ''; state.balanceError = '';
       sichere();
       zeichne();
     });
@@ -190,8 +185,7 @@
       try { window.localStorage.setItem(COLLAPSE_STORAGE, String(state.collapsed)); } catch { /* session still works */ }
     });
     applyCollapsed();
-    els.loadBtn.addEventListener('click', () => els.file.click());
-    els.file.addEventListener('change', onBalanceDatei);
+    els.loadBtn.addEventListener('click', loadBalanceFile);
     els.toggle.addEventListener('click', () => {
       state.aufgeklappt = !state.aufgeklappt;
       els.toggle.setAttribute('aria-expanded', String(state.aufgeklappt));
@@ -250,27 +244,71 @@
     return RESSOURCEN.map(r => `${zahl(cost[r.key])} ${r.label.toLowerCase()}`).join(' · ');
   }
 
-  function onBalanceDatei(event) {
-    const datei = event.target.files && event.target.files[0];
-    event.target.value = '';
-    if (!datei) return;
-    const leser = new FileReader();
-    leser.onload = () => {
-      let inhalt;
-      try { inhalt = JSON.parse(String(leser.result)); }
-      catch (fehler) { meldeFehler(`${datei.name} is not valid JSON.`); return; }
-      try { inhalt = window.castleBalance.validate(inhalt); }
-      catch (error) { meldeFehler(error.message); return; }
-      const name = `File: ${datei.name.replace(/\.json$/i, '')}`;
-      state.balances[name] = inhalt;
-      state.balanceSource = datei.name;
+  async function loadBalanceFile() {
+    try {
+      const file = await window.electronAPI.openFile('balance');
+      if (!file) return;
+      const name = `File: ${file.path.split(/[\\/]/).pop()}`;
+      state.balances[name] = window.castleBalance.validate(JSON.parse(file.content));
+      state.balanceSource = file.path; state.balanceError = ''; state.choice = name;
+      sichere(); fuelleBalanceListe(); zeichne();
+    } catch (error) { state.balanceError = error.message; zeichne(); }
+  }
+  async function loadProjectBalance() {
+    if (!els.wurzel && !baueOberflaeche()) return;
+    const button = els.wurzel.querySelector('#castleCostUcpBalance');
+    if (button.disabled) return;
+    button.disabled = true;
+    try {
+      const loaded = await window.electronAPI.readInstalledBalance();
+      const name = `UCP: ${loaded.name}`;
+      state.balances[name] = window.castleBalance.validate(loaded.profile);
       state.choice = name;
-      sichere();
-      fuelleBalanceListe();
-      zeichne();
-    };
-    leser.onerror = () => meldeFehler(`${datei.name} could not be read.`);
-    leser.readAsText(datei);
+      state.balanceSource = `${loaded.exePath ? 'EXE + UCP' : 'Bundled base + UCP'}: ${loaded.filePath}`;
+      state.balanceError = ''; sichere(); fuelleBalanceListe();
+      state.icons = await window.electronAPI.readResourceIcons?.() || state.icons;
+    } catch (error) {
+      state.balanceError = `Balance not refreshed: ${error.message}`;
+    } finally { button.disabled = false; zeichne(); }
+  }
+  function goodSymbol(good) {
+    const label = good[0].toUpperCase() + good.slice(1);
+    const element = document.createElement(state.icons[good] ? 'img' : 'span');
+    if (state.icons[good]) { element.src = state.icons[good]; element.alt = label; element.className = 'costGoodIcon'; }
+    else element.textContent = label;
+    element.title = label;
+    return element;
+  }
+  function renderCostChips(element, cost, partial = false) {
+    element.replaceChildren(); element.classList.add('costChips');
+    for (const r of RESSOURCEN.filter(r => cost[r.key])) {
+      const chip = document.createElement('span'); chip.className = 'costChip';
+      chip.title = `${r.label}: ${zahl(cost[r.key])}`;
+      chip.append(goodSymbol(r.key), document.createTextNode(zahl(cost[r.key])));
+      element.appendChild(chip);
+    }
+    if (!element.childNodes.length) element.textContent = '0';
+    if (partial) element.appendChild(document.createTextNode(' (partial)'));
+  }
+  function renderResources(cost, production) {
+    els.productionTotals.textContent = production ? '' : 'Open a character for production estimates.';
+    const table = document.createElement('table'); table.className = 'costResourceTable';
+    table.innerHTML = '<thead><tr><th scope="col">Good</th><th scope="col">Cost</th><th scope="col" title="Estimated gross production, not stockpile inventory">Produced*</th></tr></thead>';
+    const body = document.createElement('tbody');
+    const goods = [...RESSOURCEN.map(r => r.key), 'meat', 'fruit', 'cheese', 'hop', 'wheat'];
+    for (const good of goods) {
+      const produced = production?.[good[0].toUpperCase() + good.slice(1)]?.produced;
+      if (!(good in cost) && !produced) continue;
+      const row = document.createElement('tr');
+      const label = document.createElement('th'); label.scope = 'row'; label.appendChild(goodSymbol(good));
+      const spent = document.createElement('td'); spent.textContent = zahl(cost[good]);
+      const output = document.createElement('td'); output.textContent = produced == null ? '\u2014' : zahl(produced);
+      row.append(label, spent, output); body.appendChild(row);
+    }
+    table.appendChild(body); els.productionComparison.replaceChildren(table);
+    for (const r of RESSOURCEN) {
+      els.grid.querySelector(`[data-good="${r.key}"]`)?.replaceChildren(goodSymbol(r.key));
+    }
   }
 
   function meldeFehler(text) {
@@ -312,14 +350,12 @@
     });
     const production = window.castleProduction.estimate({ frames, stepIndex, populationData,
       aicAt: aicRechner(), aic: aicFelder(), balance: aktiveBalance(), options: state.production, costModel: modell, data: daten });
-    els.productionTotals.textContent = production
-      ? Object.entries(production).map(([good, result]) => `${zahl(result.produced)} ${good.toLowerCase()}`).join(' · ')
-      : 'Open a character to estimate production from its AIC.';
-    els.productionComparison.textContent = production
-      ? ['wood', 'stone', 'iron', 'pitch'].map(good => `${good}: ${zahl(ergebnis.cost[good])} construction / ${zahl(production[good[0].toUpperCase() + good.slice(1)].produced)} potential output`).join(' · ')
-      : '';
-    els.balanceSource.textContent = state.balanceSource ? `Loaded snapshot: ${state.balanceSource}. Reload after UCP changes.`
-      : state.choice === 'vanilla' ? 'Bundled vanilla prices. Use UCP balance to read your configured profile.' : 'Saved balance snapshot. Reload after UCP changes.';
+    renderResources(ergebnis.cost, production);
+    els.balanceError.hidden = !state.balanceError;
+    els.balanceError.textContent = state.balanceError;
+    els.balanceSource.textContent = state.balanceSource ? state.balanceSource.split(/[\\/]/).pop()
+      : state.choice === 'vanilla' ? 'Bundled vanilla snapshot' : 'Saved balance snapshot';
+    els.balanceSource.title = state.balanceSource + '\n' + 'Use UCP balance to refresh the selected installation. EXE + UCP reads the on-disk game cost table and overlays the configured rebalancer profile; it does not read process memory.';
 
     const schrittText = ergebnis.totalSteps
       ? `${ergebnis.steps} of ${ergebnis.totalSteps}`
@@ -327,8 +363,7 @@
     els.step.textContent = schrittText;
     els.scope.textContent = ergebnis.steps ? `Cumulative total · steps 1–${ergebnis.steps}` : 'Cumulative total · no steps';
     els.totalLabel.textContent = `Total through step ${ergebnis.steps}`;
-    els.stepTotal.textContent = costSummary(ergebnis.cost)
-      + (ergebnis.unknown.length ? ' (partial: unknown prices)' : '');
+    renderCostChips(els.stepTotal, ergebnis.cost, ergebnis.unknown.length > 0);
     els.collapse.title = `Through step ${ergebnis.steps}: ${costSummary(ergebnis.cost)}`
       + (ergebnis.unknown.length ? ' (partial: unknown prices)' : '');
     if (els.populationStep) els.populationStep.textContent = schrittText;
@@ -400,7 +435,7 @@
       name.textContent = `${zeile.count}x ${zeile.name}`;
       const value = document.createElement('span');
       value.className = 'costTableValue';
-      value.textContent = teile.join(', ');
+      renderCostChips(value, zeile.total);
       div.append(name, value);
       if (zeile.source === 'balance') div.classList.add('costFromBalance');
       div.title = zeile.source === 'balance'
@@ -414,7 +449,7 @@
     const label = document.createElement('strong');
     label.textContent = `Cumulative total through step ${ergebnis.steps}`;
     const value = document.createElement('span');
-    value.textContent = costSummary(ergebnis.cost) + (ergebnis.unknown.length ? ' (partial)' : '');
+    renderCostChips(value, ergebnis.cost, ergebnis.unknown.length > 0);
     total.append(label, value);
     els.table.appendChild(total);
   }
@@ -431,6 +466,7 @@
       zeichne();
     },
     redraw: zeichne,
+    loadProjectBalance,
     getBalanceNames: () => Object.keys(state.balances),
     getChoice: () => state.choice
   };

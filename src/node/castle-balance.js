@@ -50,6 +50,15 @@ function readInstalledBalance(gameRoot) {
   const filePath = resolveSelector(gameRoot, selector, full?.['load-order']);
   if (fs.statSync(filePath).size > 4 * 1024 * 1024) throw new Error('Balance profile is too large.');
   const profile = validate(yaml.load(fs.readFileSync(filePath, 'utf8'), { schema: yaml.JSON_SCHEMA }));
-  return { profile, name: path.basename(filePath), filePath, configPath };
+  const baseline = require('./castle-exe-costs').readExeCosts(gameRoot);
+  if (baseline) {
+    const overrides = profile.buildings || {};
+    profile.buildings = { ...baseline.buildings };
+    for (const [name, patch] of Object.entries(overrides)) {
+      profile.buildings[name] = { ...profile.buildings[name], ...patch };
+    }
+  }
+  return { profile, name: path.basename(filePath), filePath, configPath,
+    exePath: baseline?.filePath || null };
 }
 module.exports = { readInstalledBalance, resolveSelector };

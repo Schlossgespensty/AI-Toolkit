@@ -696,8 +696,9 @@
     "169": {
       "name": "Town Garden",
       "aiv": 94,
-      "unknownPrice": "Die Laufzeit-Kostentabelle hat fuer diese AIV-Nummer keinen Eintrag - der Preis ist ungeklaert und wird nicht geraten.",
-      "balance": null
+      "cost": [0, 0, 0, 0, 30],
+      "balance": "Garden",
+      "via": "Mapper 169 and 166 both map to runtime Garden 66 at 0x00409370."
     },
     "175": {
       "name": "Maypole",

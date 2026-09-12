@@ -532,6 +532,7 @@
       state.gameRoot = selected;
       state.selectedKey = null;
       state.loadedProject = null;
+    window.electronAPI.setDialogProject?.(null);
       resetCastleSwitcher();
       await scan({ selectKey: null });
     } catch (error) {
@@ -596,6 +597,8 @@
         castleFile: project.castle?.fileName || null,
         castlePath: project.castle?.path || null
       };
+      await window.electronAPI.setDialogProject?.(ai.rootPath);
+      window.castleCostPanel?.loadProjectBalance?.();
       populateCastleSwitcher(ai, project.castle?.fileName || null);
       renderDetails();
       window.appWorkspace?.setActive('castle');
@@ -659,6 +662,7 @@
 
   function detachCastleProject() {
     state.loadedProject = null;
+    window.electronAPI.setDialogProject?.(null);
     resetCastleSwitcher();
     renderDetails();
   }

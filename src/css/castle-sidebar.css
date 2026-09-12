@@ -55,3 +55,13 @@
   border-block: 1px solid var(--text-muted);
 }
 .castleSidebarGrip:focus-visible { outline: 2px solid var(--accent-strong); outline-offset: -2px; }
+/* Compact resource comparison uses the installed game's original HUD symbols. */
+.costGoodIcon { width: 24px; height: 24px; object-fit: contain; vertical-align: middle; }
+.costChips { display: flex; flex-wrap: wrap; gap: 4px 10px; }
+.costChip { display: inline-flex; align-items: center; gap: 4px; font-variant-numeric: tabular-nums; }
+#castleCostGrid[hidden] { display: none; }
+.costResourceTable { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+.costResourceTable th, .costResourceTable td { padding: 3px 6px; border-bottom: 1px solid var(--line); }
+.costResourceTable th { text-align: left; font-weight: 500; }
+.costResourceTable td, .costResourceTable thead th:not(:first-child) { text-align: right; }
+#castleBalanceSource { overflow-wrap: anywhere; }

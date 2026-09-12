@@ -5,6 +5,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
   showTitlebarMenu: (request) => ipcRenderer.invoke('show-titlebar-menu', request),
   onFocusTitlebarMenu: (callback) => ipcRenderer.on('focus-titlebar-menu', (_event, request) => callback(request)),
   loadConfig: (file) => ipcRenderer.invoke('load-config', file),
+  setDialogProject: (root) => ipcRenderer.invoke('set-dialog-project', root),
+  readResourceIcons: () => ipcRenderer.invoke('read-resource-icons'),
   openFile: (kind) => ipcRenderer.invoke('open-file', kind),
   saveFile: (content, kind = 'json', defaultPath, options = {}) => ipcRenderer.invoke('save-file', { content, kind, defaultPath, ...options }),
   quickSaveFile: (data) => ipcRenderer.invoke('quick-save-file', data),

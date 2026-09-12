@@ -238,13 +238,14 @@ test('Jeder Balance-Name der Zuordnung steht in beiden echten Balance-Dateien', 
   assert.deepEqual(fehlt, { ascension: [], liga: [] });
 });
 
-test('T4: ein bekannter Preisfehler wird sichtbar statt still als null gerechnet', () => {
-  assert.equal(daten.buildings['169'].name, 'Town Garden');
-  assert.equal(typeof daten.buildings['169'].unknownPrice, 'string');
-
+test('Town Garden and Communal Garden share runtime Garden cost and balance overrides', () => {
   const frames = [{ itemType: 169, tilePositionOfsets: [1, 2, 3] }];
-  const ergebnis = modell.auswerten({ frames, stepIndex: 0, data: daten });
-  assert.deepEqual(ergebnis.unknown, [{ type: 169, count: 3 }]);
+  const result = modell.auswerten({ frames, stepIndex: 0, data: daten });
+  assert.deepEqual(result.unknown, []);
+  assert.equal(result.cost.gold, 90);
+  for (const type of [166,169]) {
+    assert.equal(modell.preisFuer(type, daten, {buildings:{Garden:{cost:[0,0,0,0,15]}}}).kosten.gold,15);
+  }
 });
 
 test('T5: eine Balance ohne "cost" laesst den Vanilla-Preis stehen', () => {

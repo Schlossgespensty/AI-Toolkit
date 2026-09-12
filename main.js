@@ -450,11 +450,22 @@ ipcMain.on('confirm-window-close', event => {
   win.close();
 });
 
+const dialogProjects = new WeakMap();
+function projectDialogPath(event, proposed) {
+  const root = dialogProjects.get(event.sender);
+  if (!root || !fs.existsSync(root)) return proposed;
+  return proposed ? path.join(root, path.basename(proposed)) : root;
+}
+ipcMain.handle('set-dialog-project', (event, root) => {
+  if (root == null) { dialogProjects.delete(event.sender); return; }
+  if (typeof root !== 'string' || !path.isAbsolute(root) || !fs.statSync(root).isDirectory()) throw new Error('Invalid project folder.');
+  dialogProjects.set(event.sender, fs.realpathSync(root));
+});
 ipcMain.handle('open-file', async (_event, kind = 'json') => {
   const filters = kind === 'aiv'
     ? [{ name: 'Stronghold AIV Castle', extensions: ['aiv', 'aivjson'] }]
     : [{ name: 'JSON', extensions: ['json'] }];
-  const result = await dialog.showOpenDialog({ properties: ['openFile'], filters });
+  const result = await dialog.showOpenDialog(BrowserWindow.fromWebContents(_event.sender), { properties: ['openFile'], filters, defaultPath: projectDialogPath(_event) });
   if (result.canceled || result.filePaths.length === 0) return null;
   const filePath = result.filePaths[0];
   if (kind === 'aiv') {
@@ -477,7 +488,7 @@ ipcMain.handle('save-file', async (_event, {
   const filters = kind === 'aiv'
     ? [{ name: 'Stronghold AIV Castle', extensions: ['aiv'] }]
     : [{ name: 'JSON', extensions: ['json'] }];
-  const result = await dialog.showSaveDialog({ filters, defaultPath });
+  const result = await dialog.showSaveDialog(BrowserWindow.fromWebContents(_event.sender), { filters, defaultPath: projectDialogPath(_event, defaultPath) });
   if (result.canceled || !result.filePath) return null;
   if (kind === 'aiv') {
     const filePath = result.filePath.toLowerCase().endsWith('.aiv') ? result.filePath : `${result.filePath}.aiv`;
@@ -494,6 +505,7 @@ ipcMain.handle('quick-save-file', async (_event, { path: filePath, content, kind
 });
 
 ipcMain.handle('get-ucp-installation', () => savedUcpInstallation());
+ipcMain.handle('read-resource-icons', () => require('./src/node/resource-icons').readResourceIcons(savedUcpInstallation()));
 ipcMain.handle('read-installed-balance', () => require('./src/node/castle-balance').readInstalledBalance(savedUcpInstallation()));
 
 ipcMain.handle('choose-ucp-installation', async event => {
@@ -513,6 +525,7 @@ ipcMain.handle('choose-castle-background', async event => {
   const win = BrowserWindow.fromWebContents(event.sender);
   const options = {
     title: 'Choose temporary castle background',
+    defaultPath: projectDialogPath(event),
     properties: ['openFile'],
     filters: [{ name: 'Image', extensions: ['png', 'jpg', 'jpeg', 'webp', 'bmp'] }]
   };
@@ -665,6 +678,7 @@ ipcMain.handle('choose-ai-portrait', async (event, { gameRoot, aiRoot, kind = 'p
   const win = BrowserWindow.fromWebContents(event.sender);
   const result = await dialog.showOpenDialog(win, {
     title: `Choose ${fileName}`,
+    defaultPath: projectDialogPath(event),
     properties: ['openFile'],
     filters: [{ name: 'Image', extensions: ['png', 'jpg', 'jpeg', 'bmp', 'webp'] }]
   });
@@ -697,6 +711,7 @@ ipcMain.handle('replace-ai-media', async (event, request = {}) => {
   const win = BrowserWindow.fromWebContents(event.sender);
   const result = await dialog.showOpenDialog(win, {
     title: `Replace ${media.fileName}`,
+    defaultPath: projectDialogPath(event),
     properties: ['openFile'],
     filters: [{ name: label, extensions: [extension] }]
   });
@@ -728,7 +743,7 @@ ipcMain.handle('load-file-in-new-window', async (_event, kind = 'json') => {
   const filters = kind === 'aiv'
     ? [{ name: 'Stronghold AIV Castle', extensions: ['aiv', 'aivjson'] }]
     : [{ name: 'JSON', extensions: ['json'] }];
-  const result = await dialog.showOpenDialog({ filters, properties: ['openFile'] });
+  const result = await dialog.showOpenDialog(BrowserWindow.fromWebContents(_event.sender), { filters, properties: ['openFile'], defaultPath: projectDialogPath(_event) });
   if (result.canceled || result.filePaths.length === 0) return null;
 
   const filePath = result.filePaths[0];
@@ -745,7 +760,8 @@ ipcMain.handle('load-file-in-new-window', async (_event, kind = 'json') => {
 });
 
 ipcMain.handle('choose-aiv-skin', async (_event, itemType) => {
-  const result = await dialog.showOpenDialog({
+  const result = await dialog.showOpenDialog(BrowserWindow.fromWebContents(_event.sender), {
+    defaultPath: projectDialogPath(_event),
     properties: ['openFile'],
     filters: [{ name: 'PNG Image', extensions: ['png'] }]
   });

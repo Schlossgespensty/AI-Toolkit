@@ -236,3 +236,33 @@ The regression checks cover atlas mapping, sprite anchoring and picking at all
 four rotations and multiple zoom levels. They do not establish that every
 artist-provided sprite or low-resolution map preview is pixel-perfect; visual
 comparison on the reported map remains pending.
+
+
+### Cost source, resource rows and legacy plan tiles (2026-09-12)
+
+Opening an AI project refreshes its installation's resolved UCP balance. The loader
+reads the initialized-data cost table from the on-disk Stronghold Crusader.exe
+using rebalancer's unique Hovel/House signature, then overlays the selected
+profile. Cost omissions preserve that EXE baseline; other patch sections remain
+available. This does not inspect live process memory or arbitrary later Lua
+patches. Unsupported/ambiguous tables fail explicitly; refresh failures remain
+visible when changing steps. The source tooltip contains the full path.
+
+Mapper 166 and mapper 169 both resolve to runtime Garden 66 in Crusader 1.41
+at 0x00409370 (both branch to 0x00409570). Runtime row 66 at 0x005C21D0 costs
+30 gold. Rebalancer's table starts one row later (Hovel), so Garden is its index
+65. Both garden variants now use Garden balance overrides.
+
+Resource rows show Cost and Produced through the selected step, using original
+HUD images loaded from the installation's gm/interface_icons2.gm1. No HUD archive
+is redistributed. Text labels remain available as fallback and image alt/title.
+Produced remains an estimate of gross output, not inventory.
+
+The original Village Editor's colour tiles are clockwise: corners TL/TR/BR/BL
+40/60/80/100, edges T/R/B/L 120/140/160/180, centre 200, plus colour index.
+Previously swapped side edges put the dark outside border inside the field.
+All seven added farm/resource previews now use the corrected original tiles.
+Regenerate via scripts/export-resource-skins.js and an original colour tiles.gm1;
+it reuses the existing GM1/TGX decoder. Full native footprints and AIV round trips
+remain covered by resource-building tests. This corrects plan textures; variable
+2.5D crops, livestock and fences remain outside the static sprite preview.

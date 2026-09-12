@@ -1068,7 +1068,7 @@ module.exports = {
   // fuer die Tests und fuer Werkzeuge, die eine Karte ohne Electron lesen
   internals: { readPreview, previewPng, findDirectory, readSection, findKeeps, nameKeeps, keepOrientation,
                rowBase, rowRange, tileIndex,
-               readPictureStock, pictureForValue, readGm1, renderTerrain, virtualToFile,
+               readPictureStock, pictureForValue, readGm1, tgxToRgba, renderTerrain, virtualToFile,
                buildTileAtlas, diamondToRgba, heldGm1, ATLAS_SPALTEN,
                PREVIEW_EDGE, MAP_TILES, BUILDING_SECTION, BUILDINGS_SECTION, STONE_KEEP, KEEP_EDGE,
                TILE_W, TILE_H, GFX_SECTION, ORGANISM_SECTION, TREES_SECTION,

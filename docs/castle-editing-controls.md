@@ -100,3 +100,10 @@ Farm 2.5D previews contain the actual static 3×3 farm building, anchored at the
 Ctrl-click (Command-click where supported) toggles one placement without starting a move; Shift-click remains additive. Ctrl-drag toggles placements covered by the selection rectangle. Delete mode uses the existing castleProjectChoice dropdown style in both themes.
 
 The new plan/palette skins reuse the existing Food (80.png) and Industry (52.png) category artwork, sized by the native footprint.
+
+
+File dialogs use the active AI project folder, independently for each window.
+This includes castle/character open, load in a new window, balance JSON, skins,
+backgrounds and media. Save As retains the suggested filename within that folder.
+Detaching a project restores the platform's default locations. Choosing a game
+installation still starts at the selected game folder.
