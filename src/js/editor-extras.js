@@ -608,7 +608,7 @@
       if (!event.ctrlKey && !event.metaKey) return;
       const key = String(event.key || '').toLowerCase();
       if (key === 'v') armClipboard();
-      else if (key === 'c') global.setTimeout(rememberClipboard, 0);
+      else if (key === 'c' || key === 'x') global.setTimeout(rememberClipboard, 0);
     }, true);
 
     // Die 2.5D-Ansicht ist ein eigenes Fenster; ihre Tasten erreichen den
@@ -619,7 +619,7 @@
         if (event?.ctrlKey || event?.metaKey) {
           const key = String(event.key || '').toLowerCase();
           if (key === 'v') armClipboard();
-          else if (key === 'c') global.setTimeout(rememberClipboard, 0);
+          else if (key === 'c' || key === 'x') global.setTimeout(rememberClipboard, 0);
         }
         return original(event);
       };

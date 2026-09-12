@@ -1522,6 +1522,20 @@
   // Where the cursor is, because that is where a paste is aimed in every
   // other program. With the cursor off the map there is no honest place to
   // put it, and guessing one would drop a copy somewhere nobody looked.
+  function cutSelection() {
+    const refs = new Set(placementRefs()
+      .filter(p => state.selected.has(p.ref) && p.kind === 'frame' &&
+        p.type !== geometry.KEEP_ITEM_TYPE && !refIsLocked(p.ref))
+      .map(p => p.ref));
+    if (!refs.size) return setStatus('Select unlocked building placements to cut. The Keep and rally points stay in place.');
+    if (!captureCopyBuffer(refs)) return;
+    pushUndo();
+    setTool('copy');
+    deleteRefs(refs);
+    state.selected.clear();
+    changed(`Cut ${refs.size} placement${refs.size === 1 ? '' : 's'} — Ctrl+V pastes at the cursor`);
+  }
+
   function pasteCopy() {
     if (!state.copyBuffer && !copySelection()) return;
     setTool('copy');
@@ -3651,6 +3665,9 @@
       setBrushSize(state.brushSize + (key === ']' ? 1 : -1));
     } else if ((event.ctrlKey || event.metaKey) && key === 'c') {
       event.preventDefault(); copySelection();
+    } else if ((event.ctrlKey || event.metaKey) && key === 'x') {
+      event.preventDefault();
+      if (!event.repeat) cutSelection();
     } else if ((event.ctrlKey || event.metaKey) && key === 'v') {
       event.preventDefault(); pasteCopy();
     } else if (!event.ctrlKey && !event.metaKey && !event.altKey

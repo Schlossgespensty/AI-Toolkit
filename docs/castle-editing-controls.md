@@ -18,6 +18,9 @@ move the pointer to the desired position and press **Ctrl+V**, or click
 **Clipboard**, then click the map. The newest copied group is shared between
 windows; the existing placement checks and undo still apply. The Keep and
 unit rally points are excluded from this building-copy operation.
+Use **Ctrl+X** to cut unlocked building placements to the same shared clipboard.
+The Keep, rally points and locked placements are left in place. Cutting is one
+undoable edit; Ctrl+V uses the usual placement checks in either castle window.
 
 The main startup window automatically reopens the last successfully opened
 AI project, its selected castle and workspace. This stores file references,
