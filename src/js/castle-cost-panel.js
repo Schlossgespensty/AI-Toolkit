@@ -25,6 +25,7 @@
     balanceSource: '',
     balanceError: '',
     balanceStatus: 'saved',
+    balanceLoadToken: 0,
     icons: {}
   };
   const els = {};
@@ -204,6 +205,7 @@
     }
 
     els.balance.addEventListener('change', () => {
+      cancelBalanceRefresh();
       state.choice = els.balance.value;
       state.balanceSource = ''; state.balanceError = ''; state.balanceStatus = 'saved';
       fuelleBalanceListe();
@@ -281,31 +283,44 @@
     try {
       const file = await window.electronAPI.openFile('balance');
       if (!file) return;
+      cancelBalanceRefresh();
       const name = `File: ${file.path.split(/[\\/]/).pop()}`;
       state.balances[name] = window.castleBalance.validate(JSON.parse(file.content));
       state.balanceSource = file.path; state.balanceError = ''; state.choice = name; state.balanceStatus = 'ready';
       sichere(); fuelleBalanceListe(); zeichne();
     } catch (error) { state.balanceError = error.message; zeichne(); }
   }
+  function cancelBalanceRefresh() {
+    state.balanceLoadToken++;
+    const button = els.wurzel?.querySelector('#castleCostUcpBalance');
+    if (button) button.disabled = false;
+  }
   async function loadProjectBalance() {
     if (!els.wurzel && !baueOberflaeche()) return;
     const button = els.wurzel.querySelector('#castleCostUcpBalance');
-    if (button.disabled) return;
+    const token = ++state.balanceLoadToken;
     button.disabled = true;
     state.balanceStatus = 'loading'; state.balanceError = '';
     fuelleBalanceListe(); zeichne();
     try {
       const loaded = await window.electronAPI.readInstalledBalance();
+      if (token !== state.balanceLoadToken) return;
       const name = `UCP: ${loaded.name}`;
       state.balances[name] = window.castleBalance.validate(loaded.profile);
       state.choice = name;
       state.balanceSource = `${loaded.exePath ? 'EXE + UCP' : 'Bundled base + UCP'}: ${loaded.filePath}`;
       state.balanceStatus = 'ready'; state.balanceError = ''; sichere(); fuelleBalanceListe();
-      try { state.icons = await window.electronAPI.readResourceIcons?.() || state.icons; } catch { /* icons do not invalidate a loaded balance */ }
+      try {
+        const icons = await window.electronAPI.readResourceIcons?.();
+        if (token === state.balanceLoadToken && icons) state.icons = icons;
+      } catch { /* icons do not invalidate a loaded balance */ }
     } catch (error) {
+      if (token !== state.balanceLoadToken) return;
       state.balanceStatus = 'failed';
       state.balanceError = `UCP balance could not be loaded. Still using ${state.choice === 'vanilla' ? 'bundled vanilla' : 'the saved snapshot of ' + state.choice}. ${error.message.replace(/^Error invoking remote method '[^']+': Error: /, '')}`;
-    } finally { button.disabled = false; fuelleBalanceListe(); zeichne(); }
+    } finally {
+      if (token === state.balanceLoadToken) { button.disabled = false; fuelleBalanceListe(); zeichne(); }
+    }
   }
   function goodSymbol(good) {
     const label = good[0].toUpperCase() + good.slice(1);
