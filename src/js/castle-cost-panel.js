@@ -24,6 +24,7 @@
     production: window.castleProduction.settings(),
     balanceSource: '',
     balanceError: '',
+    balanceStatus: 'saved',
     icons: {}
   };
   const els = {};
@@ -39,7 +40,7 @@
       const wahl = window.localStorage.getItem(SPEICHER_WAHL);
       if (wahl) state.choice = wahl;
       state.collapsed = window.localStorage.getItem(COLLAPSE_STORAGE) === 'true';
-      state.production = window.castleProduction.settings(JSON.parse(window.localStorage.getItem('aiv.production.v1') || '{}'));
+      state.production = window.castleProduction.settings(JSON.parse(window.localStorage.getItem('aiv.production.v2') || '{}'));
     } catch { /* ohne Gedaechtnis weiterarbeiten ist besser als gar nicht */ }
   }
 
@@ -80,13 +81,18 @@
       <div id="castleProductionComparison"></div>
       <div class="costNote" id="castleBalanceError" hidden></div>
       <details class="costProductionSettings"><summary>Production assumptions</summary>
-        <p class="costHint">Potential AIC production, assuming full staffing as housing becomes available. Timings below are planning defaults, not measured game rates. Excludes construction delays, pauses, input shortages, consumption, trade, transport bottlenecks and fear/rest effects. These goods are not your stockpile balance.</p>
+        <p class="costHint">Reference estimate from Stronghold Heaven (original Stronghold), assuming full staffing as housing becomes available. These approximate rates are not verified Crusader simulation timings. Excludes construction delays, pauses, input shortages, consumption, trade, transport bottlenecks and fear/rest effects. These goods are not your stockpile balance.</p>
         <label>Resource distance <input id="productionDistance" type="number" min="0" max="1000"></label>
         <label>Per extra building <input id="productionExtraDistance" type="number" min="0" max="1000"></label>
-        <label>Walking ticks / tile <input id="productionWalkTicks" type="number" min="0.01" max="1000" step="0.1"></label>
+        <label>Stockpile distance <input id="productionStockpileDistance" type="number" min="0" max="1000"></label>
+        <label>Delivery store distance <input id="productionDeliveryDistance" type="number" min="0" max="1000"></label>
+        <label>Between stores <input id="productionStoresDistance" type="number" min="0" max="1000"></label>
+        <label>Walking speed multiplier <input id="productionWalkSpeed" type="number" min="0.1" max="10" step="0.1"></label>
         <label>Delivery productivity % <input id="productionProductivity" type="number" min="100" max="1000"></label>
         <label><input id="productionSkirmish" type="checkbox"> Skirmish delivery bonus where enabled by balance</label>
         <div id="productionWorkTicks"></div>
+        <label>Workshop itinerary <select id="productionRecipe"></select></label>
+        <p class="costHint" id="productionRecipeSummary"></p>
         <p class="costHint">Work ticks exclude the return journey: cycle = work ticks + 2 × distance × walking ticks. Each producer keeps its own progress and fractional delivery bonus. Stone is quarry output; ox transport is not simulated. Route overlay distances are separate layout diagnostics, not measured external-resource distances.</p>
       </details>
       <div class="costHint" id="castleBalanceSource"></div>
@@ -119,11 +125,22 @@
     els.balanceSource = wurzel.querySelector('#castleBalanceSource');
     els.balanceError = wurzel.querySelector('#castleBalanceError');
     window.electronAPI.readResourceIcons?.().then(icons => { state.icons = icons; zeichne(); }).catch(() => {});
-    const numericSettings = { productionDistance: 'distance', productionExtraDistance: 'extraDistance', productionWalkTicks: 'walkTicks', productionProductivity: 'productivity' };
+    const numericSettings = { productionDistance: 'distance', productionExtraDistance: 'extraDistance', productionStockpileDistance: 'stockpileDistance', productionDeliveryDistance: 'deliveryDistance', productionStoresDistance: 'storesDistance', productionWalkSpeed: 'walkSpeedMultiplier', productionProductivity: 'productivity' };
     const saveProduction = () => {
-      try { window.localStorage.setItem('aiv.production.v1', JSON.stringify(state.production)); } catch { /* session only */ }
-      zeichne();
+      try { window.localStorage.setItem('aiv.production.v2', JSON.stringify(state.production)); } catch { /* session only */ }
+      renderRecipe(); zeichne();
     };
+    const recipeSelect = wurzel.querySelector('#productionRecipe');
+    for (const name of Object.keys(window.castleProduction.recipes)) {
+      const option=document.createElement('option'); option.value=name; option.textContent=name; recipeSelect.appendChild(option);
+    }
+    function renderRecipe() {
+      const cycle=window.castleProduction.recipeCycle(recipeSelect.value,state.production);
+      if (!cycle) return;
+      const places={W:'workshop',S:'stockpile',D:'delivery store',C:'dairy farm'};
+      wurzel.querySelector('#productionRecipeSummary').textContent = `${cycle.legs.map(l=>places[l.from]).concat(places[cycle.legs.at(-1).to]).join(' ? ')}. ${cycle.note}. ${zahl(cycle.tiles)} tiles; ${zahl(Math.round(cycle.travel))} walking ticks; ${cycle.ticks == null ? 'work duration unknown' : zahl(Math.round(cycle.ticks))+' ticks per reference cycle'}.`;
+    }
+    recipeSelect.addEventListener('change',renderRecipe); renderRecipe();
     for (const [id, key] of Object.entries(numericSettings)) {
       const input = wurzel.querySelector(`#${id}`);
       input.value = state.production[key];
@@ -137,12 +154,12 @@
     skirmish.addEventListener('change', () => { state.production.skirmish = skirmish.checked; saveProduction(); });
     for (const good of Object.keys(window.castleProduction.GOODS)) {
       const label = document.createElement('label');
-      label.textContent = `${good} work ticks / delivery`;
+      label.textContent = `${good} reference ticks / batch`;
       const input = document.createElement('input'); input.type = 'number'; input.min = '1'; input.max = '1000000';
-      input.value = state.production.workTicks[good];
+      input.value = state.production.workTicks[good] ?? ''; input.placeholder = 'Unknown';
       input.addEventListener('change', () => {
         state.production = window.castleProduction.settings({ ...state.production, workTicks: { ...state.production.workTicks, [good]: input.value } });
-        input.value = state.production.workTicks[good]; saveProduction();
+        input.value = state.production.workTicks[good] ?? ''; input.placeholder = 'Unknown'; saveProduction();
       });
       label.appendChild(input); wurzel.querySelector('#productionWorkTicks').appendChild(label);
     }
@@ -175,7 +192,8 @@
 
     els.balance.addEventListener('change', () => {
       state.choice = els.balance.value;
-      state.balanceSource = ''; state.balanceError = '';
+      state.balanceSource = ''; state.balanceError = ''; state.balanceStatus = 'saved';
+      fuelleBalanceListe();
       sichere();
       zeichne();
     });
@@ -222,7 +240,8 @@
   function fuelleBalanceListe() {
     if (!els.balance) return;
     els.balance.innerHTML = '';
-    const eintraege = [['vanilla', 'Vanilla (game exe)'], ...Object.keys(state.balances).map(n => [n, n])];
+    const eintraege = [['vanilla', 'Vanilla (bundled)'], ...Object.keys(state.balances).map(n => [n,
+      n === state.choice && state.balanceStatus === 'ready' ? n : `${n} (saved)`])];
     for (const [wert, text] of eintraege) {
       const opt = document.createElement('option');
       opt.value = wert;
@@ -231,6 +250,7 @@
     }
     if (!eintraege.some(([w]) => w === state.choice)) state.choice = 'vanilla';
     els.balance.value = state.choice;
+    els.balance.title = eintraege.find(([key]) => key === state.choice)?.[1] || state.choice;
   }
 
   function applyCollapsed() {
@@ -250,7 +270,7 @@
       if (!file) return;
       const name = `File: ${file.path.split(/[\\/]/).pop()}`;
       state.balances[name] = window.castleBalance.validate(JSON.parse(file.content));
-      state.balanceSource = file.path; state.balanceError = ''; state.choice = name;
+      state.balanceSource = file.path; state.balanceError = ''; state.choice = name; state.balanceStatus = 'ready';
       sichere(); fuelleBalanceListe(); zeichne();
     } catch (error) { state.balanceError = error.message; zeichne(); }
   }
@@ -259,17 +279,20 @@
     const button = els.wurzel.querySelector('#castleCostUcpBalance');
     if (button.disabled) return;
     button.disabled = true;
+    state.balanceStatus = 'loading'; state.balanceError = '';
+    fuelleBalanceListe(); zeichne();
     try {
       const loaded = await window.electronAPI.readInstalledBalance();
       const name = `UCP: ${loaded.name}`;
       state.balances[name] = window.castleBalance.validate(loaded.profile);
       state.choice = name;
       state.balanceSource = `${loaded.exePath ? 'EXE + UCP' : 'Bundled base + UCP'}: ${loaded.filePath}`;
-      state.balanceError = ''; sichere(); fuelleBalanceListe();
-      state.icons = await window.electronAPI.readResourceIcons?.() || state.icons;
+      state.balanceStatus = 'ready'; state.balanceError = ''; sichere(); fuelleBalanceListe();
+      try { state.icons = await window.electronAPI.readResourceIcons?.() || state.icons; } catch { /* icons do not invalidate a loaded balance */ }
     } catch (error) {
-      state.balanceError = `Balance not refreshed: ${error.message}`;
-    } finally { button.disabled = false; zeichne(); }
+      state.balanceStatus = 'failed';
+      state.balanceError = `UCP balance could not be loaded. Still using ${state.choice === 'vanilla' ? 'bundled vanilla' : 'the saved snapshot of ' + state.choice}. ${error.message.replace(/^Error invoking remote method '[^']+': Error: /, '')}`;
+    } finally { button.disabled = false; fuelleBalanceListe(); zeichne(); }
   }
   function goodSymbol(good) {
     const label = good[0].toUpperCase() + good.slice(1);
@@ -353,8 +376,9 @@
     renderResources(ergebnis.cost, production);
     els.balanceError.hidden = !state.balanceError;
     els.balanceError.textContent = state.balanceError;
-    els.balanceSource.textContent = state.balanceSource ? state.balanceSource.split(/[\\/]/).pop()
-      : state.choice === 'vanilla' ? 'Bundled vanilla snapshot' : 'Saved balance snapshot';
+    els.balanceSource.textContent = state.balanceStatus === 'loading' ? 'Reading selected installation…'
+      : state.balanceStatus === 'ready' ? `Loaded: ${state.balanceSource.split(/[\\/]/).pop()}`
+      : state.choice === 'vanilla' ? 'Using bundled vanilla prices' : `Using saved snapshot: ${state.choice}`;
     els.balanceSource.title = state.balanceSource + '\n' + 'Use UCP balance to refresh the selected installation. EXE + UCP reads the on-disk game cost table and overlays the configured rebalancer profile; it does not read process memory.';
 
     const schrittText = ergebnis.totalSteps
