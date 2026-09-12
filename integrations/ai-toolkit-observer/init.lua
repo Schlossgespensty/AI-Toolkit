@@ -23,7 +23,10 @@ local function verify()
 end
 local function snapshot(tick)
   local units,buildings,fires,sparks={},{},{},{}
-  assert(core.readInteger(0x1387f38)==2500,'Observer: expanded unit pool is not supported')
+  local unitLimit=core.readInteger(0x1387f38)
+  -- The native update narrows this high-water mark (e.g. 931 in a populated
+  -- save). It is not the fixed 2500-slot array capacity.
+  assert(unitLimit>=0 and unitLimit<=2500,'Observer: unsupported unit limit '..tostring(unitLimit))
   for id=1,2499 do
     local at=0x138854c+id*0x490
     local kind=short(at+0x8e)
