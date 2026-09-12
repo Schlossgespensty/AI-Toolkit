@@ -13,6 +13,22 @@ const worker = (uid=10,x=100,y=100,cargo=0) => [1,uid,4,1,x,y,90,90,2,2,cargo,1,
 const frame = (tick,workers=[worker()],extra={}) => ({kind:'frame',tick,workers,buildings:[],fires:[],sparks:[],resources:Array(200).fill(0),...extra});
 const encode = (frames,head=header) => [head,...frames].map(v=>JSON.stringify(v)+'\n').join('');
 
+test('delta traces reconstruct every tick without mutating earlier positions or losing removals',()=>{
+  const removed=()=>({workers:[],buildings:[],fires:[],sparks:[]});
+  const first=frame(1,[worker()],{removed:removed()});
+  const second={kind:'frame',tick:2,workers:[worker(10,101)],buildings:[],fires:[],sparks:[],removed:removed()};
+  const third={...second,tick:3,workers:[],removed:{...removed(),workers:[1]}};
+  const fourth={...second,tick:4,workers:[worker(11,105)]};
+  const head={...header,format:'ai-toolkit-simulation-v2'};
+  const trace=parseTrace(encode([first,second,third,fourth],head));
+  assert.deepEqual(trace.frames.map(f=>f.workers),[[worker()],[worker(10,101)],[],[worker(11,105)]]);
+  assert.deepEqual(trace.frames[3].resources,first.resources);
+  assert.equal(model.trails(trace.frames,'workers').length,2);
+  assert.throws(()=>parseTrace(encode([{...first,resources:undefined}],head)),/Invalid/);
+  assert.throws(()=>parseTrace(encode([first,{...third,removed:{...removed(),workers:[2]}}],head)),/Invalid simulation delta/);
+  assert.throws(()=>parseTrace(encode([first,{...second,removed:{...removed(),workers:[1]}}],head)),/Invalid simulation delta/);
+});
+
 test('trace loader keeps completed frames and ignores an interrupted final line',()=>{
   const result=parseTrace(encode([frame(5),frame(6)])+'{"kind":"frame"');
   assert.equal(result.frames.length,2);

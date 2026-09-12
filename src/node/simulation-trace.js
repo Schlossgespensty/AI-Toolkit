@@ -16,24 +16,45 @@ function parseTrace(text) {
   const partial=!!lines.at(-1).trim();
   lines.pop();
   const header=JSON.parse(lines.shift()||'null');
-  if (header?.format!=='ai-toolkit-simulation-v1' || header.variant!=='SHC'
+  if (!['ai-toolkit-simulation-v1','ai-toolkit-simulation-v2'].includes(header?.format) || header.variant!=='SHC'
     || header.sampleTicks!==1 || header.coordinates!=='map-tiles'
     || !/^[a-f0-9]{64}$/.test(header.snapshotHash||'')
     || !/^[a-f0-9]{64}$/.test(header.settingsHash||'')) throw new Error('Unsupported simulation trace header.');
-  const frames=[];let last=-1,end=null;
+  const frames=[];let last=-1,end=null,entries=0,resources;
+  const fields={workers:[13,2500],buildings:[13,2000],fires:[9,3000],sparks:[9,3000]};
+  const current=Object.fromEntries(Object.keys(fields).map(field=>[field,new Map()]));
   const tuples=(values,length,max)=>Array.isArray(values) && values.length<=max && values.every(v=>
     Array.isArray(v) && v.length===length && v.every(Number.isSafeInteger) && v[0]>0 && v[0]<max && v[1]>=0)
     && new Set(values.map(v=>v[0])).size===values.length;
   for (const line of lines) {
     if (!line.trim()) continue;
-    const frame=JSON.parse(line);
+    let frame=JSON.parse(line);
     if (frame.kind==='end') { end=String(frame.reason||'Capture ended').slice(0,160);continue; }
+    if (header.format==='ai-toolkit-simulation-v2') {
+      if (!frame.removed || typeof frame.removed!=='object') throw new Error('Invalid simulation delta.');
+      const expanded={...frame};
+      for (const [field,[length,max]] of Object.entries(fields)) {
+        const removed=frame.removed[field];
+        if (!tuples(frame[field],length,max) || !Array.isArray(removed) || removed.length>=max
+          || !removed.every(id=>Number.isSafeInteger(id)&&id>0&&id<max&&current[field].has(id))
+          || new Set(removed).size!==removed.length
+          || frame[field].some(row=>removed.includes(row[0]))) throw new Error('Invalid simulation delta.');
+        for (const id of removed) current[field].delete(id);
+        for (const row of frame[field]) current[field].set(row[0],row);
+        // Rows are immutable; share unchanged tuples between adjacent ticks.
+        expanded[field]=[...current[field].values()].sort((a,b)=>a[0]-b[0]);
+      }
+      if (frame.resources!==undefined) resources=frame.resources;
+      expanded.resources=resources;frame=expanded;
+    }
     if (end || frame.kind!=='frame' || !Number.isSafeInteger(frame.tick) || frame.tick<=last
       || !tuples(frame.workers,13,2500) || !tuples(frame.buildings,13,2000) || !tuples(frame.fires,9,3000) || !tuples(frame.sparks,9,3000)
       || !Array.isArray(frame.resources) || frame.resources.length!==200 || !frame.resources.every(Number.isSafeInteger)) throw new Error('Invalid or unordered simulation frame.');
     if (frame.workers.some(w=>w[4]<0||w[4]>399||w[5]<0||w[5]>399)
       || frame.buildings.some(b=>b[4]<0||b[4]>399||b[5]<0||b[5]>399||b[6]<1||b[6]>32)
       || [...frame.fires,...frame.sparks].some(f=>f[2]<0||f[2]>3199||f[3]<0||f[3]>3199)) throw new Error('Simulation coordinates exceed the game map.');
+    entries+=Object.keys(fields).reduce((sum,field)=>sum+frame[field].length,0);
+    if (entries>5000000) throw new Error('Simulation capture expands beyond the supported size.');
     last=frame.tick;frames.push(frame);
     if (frames.length>100000) throw new Error('Too many simulation frames.');
   }

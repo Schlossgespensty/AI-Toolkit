@@ -7,8 +7,9 @@ that an unsaved AIV is identical to the recorded world.
 
 1. Install UCP Recorder 0.51.x (tick-observer API v1) and the supplied
    `integrations/ai-toolkit-observer` module in a classic Crusader 1.41 profile.
-   The observer is a diagnostic integration and still needs an in-game
-   performance/compatibility pass before release.
+   The public API is supplied by [Recorder PR 49](https://github.com/Corax34/ucp_recorder/pull/49).
+   The observer is an optional diagnostic integration with measurable runtime
+   overhead; it is not a live route planner for an unsimulated AIV.
 2. Enable Recorder and the observer in UCP, then record a single-player game
    containing the castle and concrete map you want to inspect.
 3. In the Toolkit choose **Game simulation → Open capture**. Open
@@ -23,8 +24,10 @@ The observer subscribes to Recorder's public completed-tick API and reads memory
 UCP exposes other modules through read-only proxies; the observer never replaces
 Recorder's private callbacks. It installs no
 second native hook, calls no RNG or pathfinding routine, and changes no game
-state. It rejects incompatible layouts and expanded unit pools. Captures stop
-at 64 MiB; errors stop the observer without suppressing Recorder's callback.
+state. It rejects incompatible layouts and unit indices beyond the original
+2500-slot array. The native unit high-water mark can be smaller than that capacity.
+Captures stop at 64 MiB, 100,000 ticks or five million reconstructed entity rows;
+errors stop the observer without suppressing Recorder's callback.
 Recorded settings and the starting save are immutable provenance, not a request
 to load arbitrary paths from JSON. Loading a capture never starts the game.
 
@@ -32,6 +35,28 @@ Worker cargo unloads are observed counter transitions, not a claim that the
 entire stockpile increase was production: purchases, consumption and transfers
 can also change stock. Measured unload intervals include walking and waiting.
 Gaps and recycled unit IDs must not join unrelated routes.
+
+## Native verification and capture encoding
+
+On GamerGrill, the original classic Crusader simulation completed 1,000 ticks
+from a populated save: 279 workers (195 moved), 519 buildings, up to 717 fire
+entities and 30 travelling sparks. The Toolkit imported the capture with matching
+starting-save and settings hashes. Recorder's existing completed-tick hook
+delivered the observations; the test did not invoke an alternative pathfinder.
+
+Version 2 stores changed tuples and explicit removals instead of rewriting
+unchanged state. Every tick remains present. Reconstructing all 1,000 ticks from
+the original full capture preserved every tuple and resource value. The native
+delta capture was 2,029,049 bytes, versus 48,685,807 bytes for full frames.
+Time measured inside capture callbacks fell from 22.706 to 6.483 seconds across
+1,000 ticks on the test machine. This is a diagnostic overhead measurement, not
+a promise of that cost on every castle or PC. The reader also supports version 1.
+
+The SSH harness used a private game copy, enabled its background main loop and
+marked the loaded world active because the hidden test skips the rendering
+branch that normally does so. Those test-only changes are not part of Recorder
+or the observer. The test ignited a church through the game's own ignition call;
+the shipped observer only reads state.
 
 ## Fire findings
 

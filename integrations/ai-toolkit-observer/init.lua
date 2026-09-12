@@ -6,6 +6,28 @@ local workers = {[3]=true,[4]=true,[6]=true,[7]=true,[8]=true,[9]=true,
   [17]=true,[18]=true,[19]=true,[20]=true,[21]=true,[31]=true,[32]=true,
   [33]=true,[34]=true,[36]=true,[42]=true,[43]=true,[53]=true}
 local LIMIT = 64*1024*1024
+local function same(a,b)
+  if not a or #a~=#b then return false end
+  for i,value in ipairs(b) do if a[i]~=value then return false end end
+  return true
+end
+local function difference(frame,previous)
+  local result={kind='frame',tick=frame.tick,removed={}}
+  for _,field in ipairs({'workers','buildings','fires','sparks'}) do
+    local before=previous[field] or {}
+    local current,changed,removed={},{},{}
+    for _,row in ipairs(frame[field]) do
+      current[row[1]]=row
+      if not same(before[row[1]],row) then changed[#changed+1]=row end
+    end
+    for id in pairs(before) do if not current[id] then removed[#removed+1]=id end end
+    table.sort(removed)
+    result[field]=changed;result.removed[field]=removed;previous[field]=current
+  end
+  if not same(previous.resources,frame.resources) then result.resources=frame.resources end
+  previous.resources=frame.resources
+  return result
+end
 local function short(at)
   local n=core.readSmallInteger(at)
   return n>=32768 and n-65536 or n
@@ -62,7 +84,7 @@ function module:enable()
   local recorder=assert(modules.recorder,'Enable Recorder before the observer')
   assert(recorder.tickObserverApiVersion==1 and type(recorder.registerTickObserver)=='function',
     'This observer requires Recorder with the public tick-observer API')
-  local active,stream,bytes,lastTick,stopped,failed
+  local active,stream,bytes,lastTick,stopped,failed,previous,entries,frames
   local function close()
     if stream then stream:close();stream=nil end
   end
@@ -72,17 +94,17 @@ function module:enable()
     assert(manifest.variant=='SHC','Observer currently supports classic Crusader 1.41 only')
     local tick=r.tick
     if active~=manifest.id then
-      close();active=manifest.id;bytes=0;lastTick=nil;stopped=false
+      close();active=manifest.id;bytes=0;lastTick=nil;stopped=false;previous={};entries=0;frames=0
       assert(active:match('^[%w_-]+$') and #active<80,'Invalid replay identity')
       -- A fresh observer capture never overwrites an existing capture.
       local filename='ucp/replays/'..active..'/ai-toolkit-trace.jsonl'
       local exists=io.open(filename,'rb')
       if exists then exists:close();stopped=true;return end
       stream=assert(io.open(filename,'wb'))
-      local header={kind='header',format='ai-toolkit-simulation-v1',session=active,
+      local header={kind='header',format='ai-toolkit-simulation-v2',session=active,
         snapshotHash=manifest.snapshotHash,settingsHash=manifest.settingsHash,
         environmentHash=manifest.environmentHash,variant=manifest.variant,startTick=tick,
-        sampleTicks=1,coordinates='map-tiles',source='UCP Recorder simulation tick',captureVersion=1}
+        sampleTicks=1,coordinates='map-tiles',source='UCP Recorder simulation tick',captureVersion=2}
       header.runtimeCosts={}
       for building=0,109 do
         local cost={}
@@ -95,7 +117,14 @@ function module:enable()
     assert(not lastTick or tick>lastTick,'Observer simulation tick moved backwards')
     local frame=snapshot(tick)
     frame.resources=r.resources
-    local line=json:encode(frame)..'\n'
+    -- Bound reconstructed history too: compression must not turn a small file
+    -- into an unbounded set of per-tick arrays in the viewer.
+    local count=#frame.workers+#frame.buildings+#frame.fires+#frame.sparks
+    if entries+count>5000000 or frames>=100000 then
+      assert(stream:write(json:encode({kind='end',reason='Capture history limit reached',tick=lastTick})..'\n'))
+      close();stopped=true;return
+    end
+    local line=json:encode(difference(frame,previous))..'\n'
     if bytes+#line>LIMIT then
       assert(stream:write(json:encode({kind='end',reason='Capture size limit reached',tick=lastTick})..'\n'))
       close();stopped=true;return
@@ -104,7 +133,7 @@ function module:enable()
     -- Flush one second-sized batch; complete lines remain importable after an
     -- interrupted write. Do not force a filesystem sync for every game tick.
     if tick%20==0 then assert(stream:flush()) end
-    bytes=bytes+#line;lastTick=tick
+    bytes=bytes+#line;lastTick=tick;entries=entries+count;frames=frames+1
   end
   self.token=recorder:registerTickObserver(function(r)
     if failed then return end

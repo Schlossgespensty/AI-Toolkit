@@ -87,7 +87,7 @@
   $('simulationExport').addEventListener('click',async()=>{
     try {
       const folder=await window.electronAPI.exportSimulationObserver();
-      if (folder) $('simulationMessage').textContent=`Exported to ${folder}. Put this folder under ucp/modules and enable it with Recorder 0.51.x (tick-observer API v1). See its README; it has not yet had an in-game performance pass.`;
+      if (folder) $('simulationMessage').textContent=`Exported to ${folder}. Put this folder under ucp/modules and enable it with Recorder 0.51.x (tick-observer API v1). See its README for setup and measured capture overhead.`;
     } catch (error) { $('simulationMessage').textContent=error.message; }
   });
   const local=e=>{const r=canvas.getBoundingClientRect();return{x:(e.clientX-r.left)*canvas.width/r.width,y:(e.clientY-r.top)*canvas.height/r.height};};

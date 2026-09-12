@@ -39,8 +39,10 @@ test('observer Lua preserves Recorder, captures type-32 sparks and stops safely 
     assert(seen[2].sparks[1][2]==99 and seen[2].sparks[1][3]==160)
     nativeTick();assert(#seen==2 and calls==2)
     tick=2;mem[0x1387f38]=931;nativeTick();assert(calls==3 and #seen==3 and closed==0)
-    tick=3;mem[0x1387f38]=3000;nativeTick();assert(calls==4 and closed==1)
-    tick=4;nativeTick();assert(calls==5 and #seen==3)
+    assert(seen[1].format=='ai-toolkit-simulation-v2' and #seen[3].workers==0 and #seen[3].sparks==0)
+    tick=3;mem[unit+0x8c]=0;nativeTick();assert(seen[4].removed.workers[1]==1)
+    tick=4;mem[0x1387f38]=3000;nativeTick();assert(calls==5 and closed==1)
+    tick=5;nativeTick();assert(calls==6 and #seen==4)
     observer:disable();assert(callback==nil)
   `;
   const L=lauxlib.luaL_newstate();lualib.luaL_openlibs(L);
