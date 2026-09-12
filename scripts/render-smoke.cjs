@@ -83,10 +83,15 @@ require('../main');
       window.isoView.setMapTiles({path:'camera-fixture.map',nativeRenderer:true,cameras:mapAtlases.map(atlas=>({atlas,plaetze:encode(locations),spalten:4,kachelBreite:30,kachelHoehe:16}))});
       await pause();
       for(let turn=0;turn<=4;turn++){
-        if(turn)window.isoView.turnView(1);
-        await pause();mapDraws.length=0;window.isoView.paint();
+        mapDraws.length=0;
+        if(turn)window.isoView.turnView(1); else window.isoView.refresh();
+        await pause();window.isoView.paint();
         cameraFrames.push({orientation:window.isoView.viewRotation(),tiles:mapDraws.slice(),png:canvas.toDataURL('image/png')});
       }
+      mapDraws.length=0;
+      window.isoView.paint();
+      if(mapDraws.length)throw new Error('Cached redraw replayed terrain draws');
+      if(document.getElementById('gameSimulationDialog'))throw new Error('Rejected capture dialog is still present');
       box.removeAttribute('style');
       window.castleEditor.showShortcutDialog();
       await pause();

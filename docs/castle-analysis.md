@@ -1,4 +1,4 @@
-# Castle costs and game simulation
+# Castle costs and analysis
 
 The collapsible **Castle costs** panel defaults to the left dock. Its resource
 line and overall total include only placements through the selected step,
@@ -97,8 +97,11 @@ and delivery quantities are known.
 
 The previous static models have been removed. They did not have the runtime
 terrain, entrance, wall-linkage or staged spark state needed to match the game.
-See [Game simulation captures](game-simulation.md) for the observer, viewer,
-verified fire research and remaining in-game validation requirements.
+The capture/import dialog and its Recorder integration have also been removed: they
+required a recorded game instead of calculating the current edited castle. Offline
+Path map and Firespread overlays remain unfinished. Do not treat removal of the
+recorder UI or the renderer performance fix as completion of those calculations.
+See [Offline analysis work](offline-analysis.md) for the native verification boundary.
 
 ## Resource-building plan artwork
 

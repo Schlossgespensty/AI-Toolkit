@@ -109,8 +109,8 @@ Vanilla prices come from the bundled table previously extracted from the game
 executable. **Balance → Load…** imports a plugin's balance JSON (for example
 Liga or Ascension); fields without cost overrides retain vanilla prices. The
 chosen balance and loaded tables are remembered locally. Use UCP balance resolves the installation?s selected profile and overlays it on
-the executable?s initialized-data cost table. Game simulation captures separately
-record live state; importing a balance does not start or inspect a running game.
+the executable?s initialized-data cost table. Importing a balance does not start or inspect a running game. Offline worker
+routes and staged fire calculations are still in development.
 
 Resource-building and selection fixes (2026-09-12)
 

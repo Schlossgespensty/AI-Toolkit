@@ -42,8 +42,7 @@
       "src/**/*",
       "assets/**/*",
       "config/**/*",
-      "integrations/**/*",
-      "docs/game-simulation.md"
+      "integrations/**/*"
     ],
     "extraFiles": [
       {

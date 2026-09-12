@@ -20,8 +20,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
   confirmWindowClose: () => ipcRenderer.send('confirm-window-close'),
   getUcpInstallation: () => ipcRenderer.invoke('get-ucp-installation'),
   readInstalledBalance: () => ipcRenderer.invoke('read-installed-balance'),
-  openSimulationCapture: () => ipcRenderer.invoke('open-simulation-capture'),
-  exportSimulationObserver: () => ipcRenderer.invoke('export-simulation-observer'),
   chooseUcpInstallation: () => ipcRenderer.invoke('choose-ucp-installation'),
   chooseCastleBackground: () => ipcRenderer.invoke('choose-castle-background'),
   listGameMaps: () => ipcRenderer.invoke('list-game-maps'),

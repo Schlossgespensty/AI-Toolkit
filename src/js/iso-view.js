@@ -497,7 +497,7 @@
     if (!daten) { state.kachelVorrat = null; paint(); return; }
     function cameraStock(daten) {
       const bild = new Image();
-      bild.onload = () => paint();
+      bild.onload = () => refresh();
       bild.src = daten.atlas;
       const upperImage = daten.upper?.dataUrl ? image(daten.upper.dataUrl) : null;
       return {
@@ -751,26 +751,57 @@
     return { width, height, ctx };
   }
 
+  // Compose at native scale once. Pan and zoom transform this world image;
+  // they must not replay thousands of terrain draw calls on every frame.
   function paint() {
     state.paintPending = false;
-    const reuseScene = state.reuseScene;
-    state.reuseScene = false;
     if (!geo || hostIsGone()) return;
     const target = surface();
     if (!target) return;
     const { width, height, ctx } = target;
-
     if (!state.fitted) { state.view = geo.fitView(width, height); state.fitted = true; }
+    const key = [currentRotation(), terrainKey(), mapMode(), groundFit()].join('/');
+    const cache = state.sceneCache;
+    if (!cache || state.sceneDirty || cache.key !== key || cache.stock !== state.kachelVorrat
+        || cache.terrain !== state.terrain || cache.ground !== groundSource()) {
+      const sprites = Object.values(state.catalogue?.gegenstaende || {});
+      const scenery = vorrat()?.upperEntries || [];
+      const overhang = Math.ceil(Math.max(64,
+        ...sprites.map(e => Math.max(Number(e.breite) || 0, Number(e.hoehe) || 0)),
+        ...scenery.filter(Boolean).map(e => Math.max(Math.abs(Number(e.dx) || 0) + (Number(e.width) || 0), Math.abs(Number(e.dy) || 0) + (Number(e.height) || 0)))));
+      const extent = geo.GRID + 2 * MAP_MARGIN;
+      const worldWidth = extent * 32 + overhang * 2;
+      const worldHeight = extent * 16 + 255 + overhang * 2;
+      const canvas = cache?.canvas || document.createElement('canvas');
+      canvas.width = worldWidth; canvas.height = worldHeight;
+      const sceneView = { zoom: 1, panX: worldWidth / 2, panY: overhang + 255 + MAP_MARGIN * 16 };
+      const view = state.view;
+      let scene;
+      try {
+        state.view = sceneView;
+        const sceneContext = canvas.getContext('2d');
+        sceneContext.imageSmoothingEnabled = false;
+        scene = paintScene(sceneContext, worldWidth, worldHeight);
+      } finally { state.view = view; }
+      state.sceneCache = { key, canvas, view: sceneView, ...scene, stock: state.kachelVorrat,
+        terrain: state.terrain, ground: groundSource() };
+      state.sceneDirty = false;
+    }
+    const scene = state.sceneCache;
     ctx.clearRect(0, 0, width, height);
     ctx.imageSmoothingEnabled = state.view.zoom < 1;
+    const z = state.view.zoom;
+    ctx.drawImage(scene.canvas, state.view.panX - scene.view.panX * z,
+      state.view.panY - scene.view.panY * z, scene.canvas.width * z, scene.canvas.height * z);
+    paintInteraction(ctx, scene.items);
+    const { items, missing } = scene;
+    const editor = window.castleEditor;
+    const tool = editor && editor.getTool ? editor.getTool() : '—';
+    setStatus(items.length + ' items' + (missing ? ', ' + missing + ' without a sprite' : '') +
+              ' · tool: ' + tool + mapStatus() + ' · middle mouse pans, wheel zooms');
+  }
 
-    const sceneKey = [width, height, state.view.zoom, state.view.panX, state.view.panY, currentRotation()].join('/');
-    if (reuseScene && state.sceneCache?.key === sceneKey) {
-      ctx.drawImage(state.sceneCache.canvas, 0, 0, width, height);
-      paintInteraction(ctx, state.renderItems || []);
-      return;
-    }
-
+  function paintScene(ctx, width, height) {
     ctx.beginPath();
     [[0, 0], [geo.GRID, 0], [geo.GRID, geo.GRID], [0, geo.GRID]].forEach(([cx, cy], index) => {
       const [px, py] = geo.isoPoint(cx, cy, state.view);
@@ -827,17 +858,7 @@
       missing++;
     }
 
-    const cached = state.sceneCache?.canvas || document.createElement('canvas');
-    cached.width = ctx.canvas.width;
-    cached.height = ctx.canvas.height;
-    cached.getContext('2d').drawImage(ctx.canvas, 0, 0);
-    state.sceneCache = { key: sceneKey, canvas: cached };
-    paintInteraction(ctx, items);
-
-    const editor = window.castleEditor;
-    const tool = editor && editor.getTool ? editor.getTool() : '—';
-    setStatus(items.length + ' items' + (missing ? ', ' + missing + ' without a sprite' : '') +
-              ' · tool: ' + tool + mapStatus() + ' · middle mouse pans, wheel zooms');
+    return { items, missing };
   }
 
   function paintInteraction(ctx, items) {
@@ -968,9 +989,8 @@
   // One repaint per frame at most. The editor now tells the view about every
   // change it makes, and a build step can be a hundred of them in a row.
   function refresh(reuseScene = false) {
-    // A document/image update must win over a hover update queued this frame.
-    if (!state.paintPending) state.reuseScene = reuseScene === true;
-    else if (reuseScene !== true) state.reuseScene = false;
+    // A document/image update must win over a camera update queued this frame.
+    if (reuseScene !== true) state.sceneDirty = true;
     if (state.paintPending || hostIsGone()) return;
     state.paintPending = true;
     requestAnimationFrame(paint);
@@ -980,7 +1000,7 @@
     if (state.host && state.host.statusEl) state.host.statusEl.textContent = text;
   }
 
-  function fit() { state.fitted = false; refresh(); }
+  function fit() { state.fitted = false; refresh(true); }
 
   // ------------------------------------------------------------- input
 
@@ -1047,7 +1067,7 @@
       if (state.panning && state.panStart) {
         state.view.panX = state.panStart.panX + p.x - state.panStart.x;
         state.view.panY = state.panStart.panY + p.y - state.panStart.y;
-        refresh();
+        refresh(true);
         return;
       }
       const tile = editorTileAt(p.x, p.y);
@@ -1078,7 +1098,7 @@
       const action = window.castleCamera.wheelAction(event, preferences, true);
       if (action !== 'zoom') {
         state.view[action] -= event.deltaY || event.deltaX;
-        refresh();
+        refresh(true);
         return;
       }
       if (!event.deltaY) return;
@@ -1088,7 +1108,7 @@
       state.view.zoom = next;
       state.view.panX = p.x - (p.x - state.view.panX) * (next / before);
       state.view.panY = p.y - (p.y - state.view.panY) * (next / before);
-      refresh();
+      refresh(true);
     }, { passive: false });
   }
 
@@ -1097,13 +1117,13 @@
   // panel is watched by a ResizeObserver and shares the app's keyboard.
   function bindHostChrome(host) {
     if (host.kind === 'dock') {
-      if (!state.observer) state.observer = new ResizeObserver(() => refresh());
+      if (!state.observer) state.observer = new ResizeObserver(() => refresh(true));
       state.observer.disconnect();
       state.observer.observe(host.box);
       return;
     }
     const win = host.win;
-    win.addEventListener('resize', refresh);
+    win.addEventListener('resize', () => refresh(true));
     win.addEventListener('beforeunload', () => {
       // Only if this window is still the host. Closing it while docking
       // fires this after the panel has taken over, and clearing the host
@@ -1124,7 +1144,7 @@
       const editor = window.castleEditor;
       if (!editor || !editor.handleKey) return;
       editor.handleKey(event);
-      refresh();
+      refresh(true);
     });
   }
 
@@ -1149,7 +1169,7 @@
     if (!belongs) return false;
     state.view.panX += delta.x;
     state.view.panY += delta.y;
-    refresh();
+    refresh(true);
     return true;
   }
 
@@ -1248,12 +1268,22 @@
     return true;
   }
 
+  // A 2D pan or selection invalidates that canvas, but does not change the
+  // isometric scene. Compare content only on static editor notifications.
+  function editorChanged(staticChanged) {
+    if (!staticChanged) { refresh(true); return; }
+    const key = JSON.stringify([currentDocument(), window.castleEditor?.getActiveBuildStep?.()]);
+    const changed = key !== state.editorSceneKey;
+    state.editorSceneKey = key;
+    refresh(!changed);
+  }
+
   function init() {
     // The toolbar button belongs to panel-view.js: it decides where this
     // view is shown, this file only knows how to be shown.
     bindSurface(document.getElementById('isoDockCanvas'));
     state.controls = document.getElementById('castleIsoControls');
-    window.castleEditor?.addChangeListener?.(staticChanged => refresh(!staticChanged));
+    window.castleEditor?.addChangeListener?.(editorChanged);
     loadCatalogue();
   }
 

@@ -507,24 +507,6 @@ ipcMain.handle('quick-save-file', async (_event, { path: filePath, content, kind
 ipcMain.handle('get-ucp-installation', () => savedUcpInstallation());
 ipcMain.handle('read-resource-icons', () => require('./src/node/resource-icons').readResourceIcons(savedUcpInstallation()));
 ipcMain.handle('read-installed-balance', () => require('./src/node/castle-balance').readInstalledBalance(savedUcpInstallation()));
-ipcMain.handle('open-simulation-capture', async event => {
-  const result = await dialog.showOpenDialog(BrowserWindow.fromWebContents(event.sender), {
-    title: 'Open game simulation capture', properties: ['openFile'],
-    defaultPath: projectDialogPath(event),
-    filters: [{ name: 'AI Toolkit simulation capture', extensions: ['jsonl'] }]
-  });
-  if (result.canceled || !result.filePaths[0]) return null;
-  return require('./src/node/simulation-trace').readTrace(result.filePaths[0]);
-});
-ipcMain.handle('export-simulation-observer', async event => {
-  const result = await dialog.showOpenDialog(BrowserWindow.fromWebContents(event.sender), {
-    title: 'Export observer module into this folder', properties: ['openDirectory', 'createDirectory'],
-    defaultPath: projectDialogPath(event)
-  });
-  if (result.canceled || !result.filePaths[0]) return null;
-  return require('./src/node/simulation-observer').exportObserver(result.filePaths[0], __dirname);
-});
-
 ipcMain.handle('choose-ucp-installation', async event => {
   const win = BrowserWindow.fromWebContents(event.sender);
   const result = await dialog.showOpenDialog(win, {
