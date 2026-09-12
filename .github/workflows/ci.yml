@@ -2,6 +2,9 @@ name: CI
 
 on:
   push:
+    # Preview packaging already runs npm run check on its Windows runner.
+    branches-ignore:
+      - 'build/castle-controls-preview'
   pull_request:
 
 permissions:
