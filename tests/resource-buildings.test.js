@@ -45,7 +45,9 @@ test('farm sprites preserve the full field anchor without stretching the 3x3 bui
   for (const [type, size] of resources.filter(([type]) => type>=70 && type<=73)) {
     const sprite = catalogue.gegenstaende[type];
     const png = fs.readFileSync(path.join(root,'assets/aiv/iso',sprite.bild));
-    assert.equal(png.readUInt32BE(16), 32*size-2);
+    // Native orchard canopies may extend beyond the placement footprint.
+    assert.equal(png.readUInt32BE(16), sprite.breite);
+    assert.ok(sprite.breite >= 32*size-2);
     assert.equal(png.readUInt32BE(20), sprite.hoehe);
     const item = iso.collectItems({frames:[{itemType:type,tilePositionOfsets:[8070]}]},catalogue)[0];
     assert.equal(item.tiles,size);

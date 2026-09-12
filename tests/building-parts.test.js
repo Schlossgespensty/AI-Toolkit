@@ -50,8 +50,8 @@ test('native components retain their pixel dimensions and every referenced image
   const all = Object.values(entries).flatMap(e => [e, ...(e.platten || []), ...(e.directions || [])]);
   for (const entry of all) for (const layout of entry.partsLayouts || []) for (const part of layout) {
     const png = fs.readFileSync(path.join(__dirname, '../assets/aiv/iso', part.bild));
-    assert.equal(png.readUInt32BE(16), part.breite, part.bild);
-    assert.equal(png.readUInt32BE(20), part.hoehe, part.bild);
+    assert.ok(part.sx >= 0 && part.sx + part.breite <= png.readUInt32BE(16), part.bild);
+    assert.ok(part.sy >= 0 && part.sy + part.hoehe <= png.readUInt32BE(20), part.bild);
     assert.ok(Number.isInteger(part.dx) && Number.isInteger(part.dy));
   }
 });

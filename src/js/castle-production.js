@@ -55,7 +55,8 @@
     const opts = settings(options), r = reference[good];
     const ticksPerTile = r.speed ? MONTH / r.speed / opts.walkSpeedMultiplier : null;
     const source = opts.distance + opts.extraDistance*index;
-    const store = opts.stockpileDistance + opts.extraDistance*index;
+    const food = ['Meat', 'Fruit', 'Cheese'].includes(good);
+    const store = (food ? opts.deliveryDistance : opts.stockpileDistance) + opts.extraDistance*index;
     const tiles = 2*r.sourceTrips*source + 2*r.deliveryTrips*store;
     const work = opts.workTicks[good];
     const travel = ticksPerTile == null ? null : tiles*ticksPerTile;

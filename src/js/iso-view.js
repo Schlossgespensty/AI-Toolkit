@@ -739,7 +739,8 @@
       return parts.map((part, index) => ({ ...part, layer: item.layer ?? 2, draw: () => {
         const [x, y] = geo.isoPoint(part.gx, part.gy, state.view, lift);
         const z = state.view.zoom;
-        ctx.drawImage(loaded[index], x + part.dx * z, y + part.dy * z, part.breite * z, part.hoehe * z);
+        ctx.drawImage(loaded[index], part.sx, part.sy, part.breite, part.hoehe,
+          x + part.dx * z, y + part.dy * z, part.breite * z, part.hoehe * z);
       }}));
     });
     // Scenery is no longer flattened underneath every building. Each upper

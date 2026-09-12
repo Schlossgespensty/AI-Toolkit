@@ -6,6 +6,7 @@ const path = require('node:path');
 const gm = require('../src/node/gm1');
 const { virtualToFile } = require('../src/node/pe-addresses');
 const { encodeRgbaPng } = require('../src/node/pixel-image');
+const { packMapPictures } = require('../src/node/pixel-atlas');
 if (!process.argv[2]) throw new Error('Usage: node scripts/export-farm-parts.js GAME_FOLDER');
 const game = path.resolve(process.argv[2]);
 const output = path.join(__dirname, '../assets/aiv/iso');
@@ -23,7 +24,6 @@ const integer = va => {
   return exe.readInt32LE(at);
 };
 const stocks = new Map(), pictures = new Map();
-fs.mkdirSync(path.join(output, 'parts'), { recursive: true });
 function stock(name) {
   if (!stocks.has(name)) stocks.set(name, gm.readGm1(fs.readFileSync(path.join(game, 'gm', `${name}.gm1`))));
   return stocks.get(name);
@@ -58,7 +58,6 @@ function picture(name, index, palette = null) {
     if (upper) composite(rgba, width, height, upper.rgba, upper.width, upper.height, upper.dx, upper.dy - top);
   }
   const bild = `parts/${key}.png`;
-  fs.writeFileSync(path.join(output, bild), encodeRgbaPng(width, height, rgba));
   const part = { bild, breite: width, hoehe: height, dx, dy };
   pictures.set(key, { part, rgba });
   return part;
@@ -150,5 +149,18 @@ bridge.directions = Array.from({ length: 4 }, (_, d) => {
   fallback(variant, variant.partsLayouts[0]);
   return variant;
 });
+const values = [...pictures.values()];
+const atlas = packMapPictures(values.map(({ part, rgba }) => ({
+  width: part.breite, height: part.hoehe, dx: part.dx, dy: part.dy, rgba
+})));
+const locations = new Map(values.map(({ part }, i) => [part.bild, atlas.entries[i]]));
+fs.writeFileSync(path.join(output, 'building-parts.png'), Buffer.from(atlas.dataUrl.split(',')[1], 'base64'));
+for (const entry of Object.values(catalogue.gegenstaende).flatMap(e => [e, ...(e.platten || []), ...(e.directions || [])])) {
+  for (const layout of entry.partsLayouts || []) for (const part of layout) {
+    const location = locations.get(part.bild);
+    part.bild = 'building-parts.png';
+    part.sx = location.x; part.sy = location.y;
+  }
+}
 fs.writeFileSync(catalogueFile, JSON.stringify(catalogue, null, 1) + '\n');
 process.stdout.write(`Exported ${pictures.size} original building and farm components.\n`);
