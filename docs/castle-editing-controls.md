@@ -1,5 +1,13 @@
 # Castle editing controls
 
+**F1** saves the current castle; **F2** opens a castle using the existing file
+dialog and unsaved-change handling. Both actions can be reassigned under
+**Customize Castle Shortcuts**, with primary and alternative keys. Tool and
+file-action bindings accept letters, numbers and F1–F12 and are checked for
+conflicts with each other and camera controls. Existing customized bindings
+are preserved when the new defaults are added. Ctrl+S and Ctrl+O remain
+available through the File menu.
+
 ## Two castles side by side
 
 With the Castle workspace active, use **File > Load In New Window**

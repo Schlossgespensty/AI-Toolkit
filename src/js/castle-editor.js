@@ -26,7 +26,9 @@
     copy: ['5'],            // 'c' dreht jetzt die Ansicht, Kopieren bleibt auf 5 und Strg+C
     line: ['6', 'l'],
     bucket: ['7', 'f'],
-    replace: ['8', 'r']
+    replace: ['8', 'r'],
+    saveCastle: ['f1'],
+    openCastle: ['f2']
   };
   const deepClone = value => JSON.parse(JSON.stringify(value));
   const retainSourceBytes = value => {
@@ -1643,7 +1645,7 @@
   }
 
   function toolLabel(tool) {
-    return ({ single: 'Single', brush: 'Brush', line: 'Line', select: 'Select / Move', copy: 'Copy Selection', replace: 'Replace Area', delete: 'Delete Area' })[tool] || tool;
+    return ({ single: 'Single', brush: 'Brush', line: 'Line', select: 'Select / Move', copy: 'Copy Selection', replace: 'Replace Area', delete: 'Delete Area', saveCastle: 'Save castle', openCastle: 'Open castle' })[tool] || tool;
   }
 
   function isPlacementTool(tool) {
@@ -1721,18 +1723,20 @@
 
   function normalizeShortcutKey(value) {
     const key = String(value || '').trim().toLowerCase();
-    return /^[a-z0-9]$/.test(key) ? key : '';
+    return /^(?:[a-z0-9]|f(?:[1-9]|1[0-2]))$/.test(key) ? key : '';
   }
 
   function validateToolShortcuts(candidate) {
     const normalized = {};
     const used = new Set();
     for (const tool of Object.keys(DEFAULT_TOOL_SHORTCUTS)) {
-      const supplied = Array.isArray(candidate?.[tool]) ? candidate[tool] : [];
+      const supplied = Array.isArray(candidate?.[tool]) ? candidate[tool]
+        : ['saveCastle', 'openCastle'].includes(tool) ? DEFAULT_TOOL_SHORTCUTS[tool] : [];
       const keys = [normalizeShortcutKey(supplied[0]), normalizeShortcutKey(supplied[1])];
       if (!keys[0]) throw new Error(`${toolLabel(tool)} needs a primary shortcut.`);
       for (const key of keys) {
         if (!key) continue;
+        if (key === 'c' || key === 'x') throw new Error(`The key ${key.toUpperCase()} is reserved for rotation.`);
         if (used.has(key)) throw new Error(`The key ${key.toUpperCase()} is assigned more than once.`);
         used.add(key);
       }
@@ -1881,6 +1885,20 @@
     const normalized = normalizeShortcutKey(key);
     if (!normalized) return null;
     return Object.entries(state.toolShortcuts).find(([_tool, keys]) => keys.includes(normalized))?.[0] || null;
+  }
+
+  let fileShortcutPending = false;
+  async function runFileShortcut(action) {
+    if (fileShortcutPending) return;
+    fileShortcutPending = true;
+    try {
+      if (action === 'saveCastle') await saveFile();
+      else if (action === 'openCastle') await openFile();
+    } catch (error) {
+      setStatus(error.message);
+    } finally {
+      fileShortcutPending = false;
+    }
   }
 
   function selectItem(type) {
@@ -3548,7 +3566,7 @@
       }
       const key = normalizeShortcutKey(event.key);
       if (!key || event.ctrlKey || event.metaKey || event.altKey) {
-        els.shortcutError.textContent = 'Use one letter or number without modifier keys.';
+        els.shortcutError.textContent = 'Use a letter, number or F1–F12 without modifier keys.';
         return;
       }
       input.value = key.toUpperCase();
@@ -3645,7 +3663,9 @@
       setStatus('View turned' + (wert ? ' by ' + (wert / 2) + ' quarter turn' + (wert === 2 ? '' : 's') : ' back to the file'));
     } else if (shortcutTool) {
       event.preventDefault();
-      setTool(shortcutTool);
+      if (shortcutTool === 'saveCastle' || shortcutTool === 'openCastle') {
+        if (!event.repeat) void runFileShortcut(shortcutTool);
+      } else setTool(shortcutTool);
     } else if (event.key === 'Delete') {
       event.preventDefault(); deleteSelected();
     } else if (event.key === 'Escape') {

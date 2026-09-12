@@ -504,10 +504,12 @@
   <form id="castleShortcutForm">
     <div class="ucpCreateHeading">
       <h2>Castle shortcuts</h2>
-      <p>Select a field and press a letter or number. Each key can only be assigned once.</p>
+      <p>Select a field and press a letter, number or F1–F12. Each key can only be assigned once. C and X are reserved for rotation.</p>
     </div>
     <div class="castleShortcutGrid">
-      <strong>Tool</strong><strong>Primary</strong><strong>Alternative</strong>
+      <strong>Action</strong><strong>Primary</strong><strong>Alternative</strong>
+      <span>Save castle</span><input class="castleShortcutKey" data-tool="saveCastle" data-slot="0" value="F1" readonly><input class="castleShortcutKey" data-tool="saveCastle" data-slot="1" readonly>
+      <span>Open castle</span><input class="castleShortcutKey" data-tool="openCastle" data-slot="0" value="F2" readonly><input class="castleShortcutKey" data-tool="openCastle" data-slot="1" readonly>
       <span>Single</span><input class="castleShortcutKey" data-tool="single" data-slot="0" value="1" readonly><input class="castleShortcutKey" data-tool="single" data-slot="1" value="S" readonly>
       <span>Brush</span><input class="castleShortcutKey" data-tool="brush" data-slot="0" value="2" readonly><input class="castleShortcutKey" data-tool="brush" data-slot="1" value="B" readonly>
       <span>Move</span><input class="castleShortcutKey" data-tool="select" data-slot="0" value="3" readonly><input class="castleShortcutKey" data-tool="select" data-slot="1" value="V" readonly>
