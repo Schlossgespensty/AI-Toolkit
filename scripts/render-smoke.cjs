@@ -56,18 +56,53 @@ require('../main');
       slider.value=slider.max;slider.dispatchEvent(new Event('input',{bubbles:true}));
       await pause();window.isoView.paint();await pause();
       const lastStepStatus=document.getElementById('isoDockStatus').textContent;
+      const cameraFrames=[];
+      const atlas=document.createElement('canvas');atlas.width=120;atlas.height=16;
+      const atlasContext=atlas.getContext('2d');
+      ['#ff3030','#30ff30','#3030ff','#ffff30'].forEach((color,i)=>{
+        atlasContext.fillStyle=color;atlasContext.beginPath();
+        atlasContext.moveTo(i*30+15,0);atlasContext.lineTo(i*30+30,8);
+        atlasContext.lineTo(i*30+15,16);atlasContext.lineTo(i*30,8);atlasContext.fill();
+      });
+      const mapAtlas=atlas.toDataURL(), locations=new Uint16Array(400*400);locations.fill(65535);
+      [[22,31],[72,32],[21,69],[73,70]].forEach(([x,y],i)=>locations[(y+157)*400+x+157]=i);
+      const encode=array=>{let text='';for(const byte of new Uint8Array(array.buffer))text+=String.fromCharCode(byte);return btoa(text)};
+      const mapDraws=[];
+      CanvasRenderingContext2D.prototype.drawImage=function(image,...args){
+        if(image?.src===mapAtlas)mapDraws.push({tile:args[0]/30,x:args[4],y:args[5]});
+        return original.call(this,image,...args);
+      };
+      window.isoView.setGameMap({name:'Camera fixture',path:'camera-fixture.map',dataUrl:mapAtlas,keeps:[{x:200,y:200,orientation:0}]});
+      window.isoView.setMapTiles({path:'camera-fixture.map',atlas:mapAtlas,plaetze:encode(locations),spalten:4,kachelBreite:30,kachelHoehe:16});
+      await pause();
+      for(let turn=0;turn<=4;turn++){
+        if(turn)window.isoView.turnView(1);
+        await pause();mapDraws.length=0;window.isoView.paint();
+        cameraFrames.push({orientation:window.isoView.viewRotation(),tiles:mapDraws.slice(),png:canvas.toDataURL('image/png')});
+      }
       box.removeAttribute('style');
       window.castleEditor.showShortcutDialog();
       await pause();
       const camera=document.querySelector('.castleCameraKey');
       const style=getComputedStyle(camera);
-      return {png,atlasDraws,errors,firstStepStatus,lastStepStatus,cameraBackground:style.backgroundColor,cameraText:style.color,
+      return {png,atlasDraws,errors,firstStepStatus,lastStepStatus,cameraFrames,cameraBackground:style.backgroundColor,cameraText:style.color,
         status:document.getElementById('isoDockStatus').textContent};
     })()`,true);
     fs.writeFileSync(path.join(output,'native-building-components.png'),Buffer.from(result.png.split(',')[1],'base64'));
     const screenshot=await win.webContents.capturePage();
     fs.writeFileSync(path.join(output,'camera-controls.png'),screenshot.toPNG());
     delete result.png;
+    for(const [i,frame] of result.cameraFrames.entries()){
+      fs.writeFileSync(path.join(output,'camera-rotation-'+i+'.png'),Buffer.from(frame.png.split(',')[1],'base64'));
+      delete frame.png;
+      assert.equal(frame.tiles.length,4,'All four map markers must remain visible after rotation');
+    }
+    const first=result.cameraFrames[0],last=result.cameraFrames[4];
+    for(const tile of first.tiles){
+      const restored=last.tiles.find(p=>p.tile===tile.tile);
+      assert.ok(Math.abs(tile.x-restored.x)<.0001&&Math.abs(tile.y-restored.y)<.0001,'Four turns must restore map placement');
+    }
+    assert.notDeepEqual(first.tiles,result.cameraFrames[1].tiles,'The map must turn with the castle');
     fs.writeFileSync(path.join(output,'results.json'),JSON.stringify(result,null,2));
     assert.ok(result.atlasDraws>=300,'Native component atlas did not render');
     assert.deepEqual(result.errors,[],'Renderer errors');

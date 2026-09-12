@@ -241,17 +241,18 @@
   // eine Burg ueber einem flachen Boden schweben zu lassen waere schlimmer als
   // sie flach zu lassen.
   function bodenHoehe(gx, gy) {
+    const world = geo.unrotateGrid(gx, gy, viewRotation());
     // The full-map atlas takes precedence over paintGround. It already lifts
     // terrain tiles; sprites and picking must use those same heights, not the
     // previous cropped image's height buffer (or zero on first load).
     const atlas = vorrat();
     if (atlas?.plaetze && atlas.bild?.complete && atlas.bild?.naturalWidth && gameMap()) {
-      return geo.mapTileHeight(gx, gy, currentKeep(), atlas.hoehen);
+      return geo.mapTileHeight(world.gx, world.gy, currentKeep(), atlas.hoehen);
     }
     const feld = state.hoehenFeld;
     if (!feld) return 0;
-    if (gx < 0 || gy < 0 || gx >= geo.GRID || gy >= geo.GRID) return 0;
-    return feld[gy * geo.GRID + gx] || 0;
+    if (world.gx < 0 || world.gy < 0 || world.gx >= geo.GRID || world.gy >= geo.GRID) return 0;
+    return feld[world.gy * geo.GRID + world.gx] || 0;
   }
 
   function terrainReady() {
@@ -345,6 +346,13 @@
 
   function turnView(richtung) {
     const schritt = Number(richtung) < 0 ? -VIERTEL : VIERTEL;
+    const target = surface();
+    if (target) {
+      const focus = geo.tileFromPoint(target.width / 2, target.height / 2, state.view, bodenHoehe, false);
+      const height = focus ? bodenHoehe(focus.gx, focus.gy) : 0;
+      state.view = geo.turnCameraView(state.view, target.width, target.height, (schritt + 8) % 8, height);
+    }
+    if (state.hover) state.hover = geo.rotateGrid(state.hover.gx, state.hover.gy, 1, (schritt + 8) % 8);
     handDrehung = (((handDrehung + schritt) % 8) + 8) % 8;
     paint();
     return handDrehung;
@@ -360,15 +368,16 @@
   // Maus fragt, welches Feld sie gerade trifft.
   function turnedTiles(list) {
     const rotation = currentRotation();
-    if (!rotation) return list;
     return list.map(item => {
       const turned = geo.rotateGrid(item.gx, item.gy, item.tiles, rotation);
       // A quarter turn changes a gate's passage axis. Resolve drawbridge
       // attachment after this swap, in the same coordinates as the map.
       const gateType = [144, 145, 146, 147].includes(Number(item.itemType)) && rotation % 4 === 2
         ? (Number(item.itemType) ^ 1) : item.itemType;
-      return { ...item, gx: turned.gx, gy: turned.gy, itemType: gateType,
-        entry: state.catalogue?.gegenstaende[gateType] || item.entry };
+      const base = state.catalogue?.gegenstaende[gateType] || item.entry;
+      const layouts = base?.cameraPartsLayouts?.[viewRotation() / 2];
+      return { ...item, gx: turned.gx, gy: turned.gy, itemType: gateType, cameraRotation: viewRotation(),
+        entry: layouts ? { ...base, partsLayouts: layouts } : base };
     });
   }
 
@@ -394,7 +403,7 @@
   function groundPicture() {
     const map = gameMap();
     if (!map) return null;
-    if (mapMode() === 'terrain' && terrainReady()) {
+    if (!viewRotation() && mapMode() === 'terrain' && terrainReady()) {
       const terrain = state.terrain;
       const img = image(terrain.dataUrl);
       if (img && img.complete && img.naturalWidth) {
@@ -413,6 +422,7 @@
     // gemalt - dieselbe Rechnung legt sie an dieselbe Stelle.
     const rect = geo.mapImageRect(currentKeep(), state.view, picture.px0, picture.py0, picture.cells, picture.top);
     ctx.save();
+    if (viewRotation()) ctx.transform(...geo.cameraCanvasTransform(state.view, viewRotation()));
     // The canvas viewport clips the map. The editable village boundary is
     // not a terrain boundary: hills and scenery may extend beyond it.
     // Ein Vorschaupunkt ist ein ganzes Feld und muss ein hartes Quadrat bleiben
@@ -515,8 +525,9 @@
     for (let summe = gx0 + gy0; summe <= gx1 + gy1; summe += 1) {
       for (let gx = Math.max(gx0, summe - gy1); gx <= Math.min(gx1, summe - gy0); gx += 1) {
         const gy = summe - gx;
-        const mx = gx + keep.x - anker.gx;
-        const my = gy + keep.y - anker.gy;
+        const world = geo.unrotateGrid(gx, gy, viewRotation());
+        const mx = world.gx + keep.x - anker.gx;
+        const my = world.gy + keep.y - anker.gy;
         const feld = kartenFeld(mx, my);
         if (feld < 0) continue;
         const platz = v.plaetze[feld];

@@ -113,6 +113,15 @@ const definitions = [[70, 390, 4, 0xb49870, 36, 8], [71, 399, 2, 0xb49cf0, 24, 8
   [72, 408, 1, 0xb49e70, 8, 8], [73, 417, 4, 0xb49eb0, 27, 12]];
 for (const [type, first, variants, table, count, stride] of definitions) {
   const layouts = [];
+  const cameraLayouts = [[], [], [], []];
+  const entry = catalogue.gegenstaende[type];
+  const rotate = (x, y, n, orientation) => require('../src/js/iso-geometry').rotateGrid(x, y, n, orientation, entry.kacheln);
+  // getRubbleGraphicStageForDamageLevel (0x4fa460), used by the game's
+  // dairy-fence renderer. Each camera direction selects its own corner art.
+  const fenceStages = [
+    {81:0,80:1,1:2,3:3,5:4,7:5}, {80:0,81:1,1:5,7:4,3:2,5:3},
+    {81:0,80:1,1:4,7:3,3:5,5:2}, {80:0,81:1,1:3,7:2,3:4,5:5}
+  ];
   for (let variant = 0; variant < variants; variant++) {
     const parts = hut(first);
     const fields = offsets(table + variant * count * stride, count, stride);
@@ -131,9 +140,23 @@ for (const [type, first, variants, table, count, stride] of definitions) {
       parts.push({ gx, gy, ...asset });
     });
     layouts.push(parts);
+    for (let direction = 0; direction < 4; direction++) {
+      const orientation = direction * 2;
+      const origin = rotate(0, 0, 3, orientation);
+      // The hut is a 3x3 native GM1 group; rotate its anchor, not its pixels.
+      const turned = hut(first).map(part => ({ ...part, gx: origin.gx + part.gx, gy: origin.gy + part.gy }));
+      let fieldPart = 9;
+      fields.forEach(([gx, gy, property], index) => {
+        if (type === 73 && index < 4) return;
+        const part = parts[fieldPart++];
+        const asset = type === 73 ? picture('tile_farmland', 55 + fenceStages[direction][property]) : part;
+        turned.push({ ...asset, ...rotate(gx, gy, 1, orientation) });
+      });
+      cameraLayouts[direction].push(turned);
+    }
   }
-  const entry = catalogue.gegenstaende[type];
   entry.partsLayouts = layouts;
+  entry.cameraPartsLayouts = cameraLayouts;
   entry.previewState = 'Initial field state; layout sequence assumes a new castle. Growth and tile randomness come from the running game.';
   delete entry.fieldFootprint;
   // Keep a complete fallback image for consumers that do not support parts.
@@ -156,7 +179,7 @@ const atlas = packMapPictures(values.map(({ part, rgba }) => ({
 const locations = new Map(values.map(({ part }, i) => [part.bild, atlas.entries[i]]));
 fs.writeFileSync(path.join(output, 'building-parts.png'), Buffer.from(atlas.dataUrl.split(',')[1], 'base64'));
 for (const entry of Object.values(catalogue.gegenstaende).flatMap(e => [e, ...(e.platten || []), ...(e.directions || [])])) {
-  for (const layout of entry.partsLayouts || []) for (const part of layout) {
+  for (const layout of [...(entry.partsLayouts || []), ...(entry.cameraPartsLayouts || []).flat()]) for (const part of layout) {
     const location = locations.get(part.bild);
     part.bild = 'building-parts.png';
     part.sx = location.x; part.sy = location.y;

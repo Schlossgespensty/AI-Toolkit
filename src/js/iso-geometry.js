@@ -62,14 +62,14 @@
   // Bildschirm. Genommen wird, was ein Mensch dort sieht - das VORDERE, also
   // das mit dem groessten gx+gy; das Spiel malt aus demselben Grund von hinten
   // nach vorn.
-  function flatTileFromPoint(px, py, view) {
+  function flatTileFromPoint(px, py, view, bounded = true) {
     const hw = HALF_W * view.zoom;
     const hh = HALF_H * view.zoom;
     const a = (px - view.panX) / hw;      // gx - gy
     const b = (py - view.panY) / hh;      // gx + gy
     const gx = Math.floor((a + b) / 2);
     const gy = Math.floor((b - a) / 2);
-    if (gx < 0 || gx >= GRID || gy < 0 || gy >= GRID) return null;
+    if (bounded && (gx < 0 || gx >= GRID || gy < 0 || gy >= GRID)) return null;
     return { gx, gy };
   }
 
@@ -81,23 +81,23 @@
   // und kostet nichts. Passen mehrere, gewinnt das vorderste.
   const MAX_HOEHE = 255;
 
-  function tileFromPoint(px, py, view, hoeheAn) {
-    if (typeof hoeheAn !== 'function') return flatTileFromPoint(px, py, view);
+  function tileFromPoint(px, py, view, hoeheAn, bounded = true) {
+    if (typeof hoeheAn !== 'function') return flatTileFromPoint(px, py, view, bounded);
     let treffer = null;
     let letzt = null;
     for (let probe = 0; probe <= MAX_HOEHE; probe += 4) {
-      const feld = flatTileFromPoint(px, py + probe * view.zoom, view);
+      const feld = flatTileFromPoint(px, py + probe * view.zoom, view, bounded);
       if (!feld) continue;
       if (letzt && feld.gx === letzt.gx && feld.gy === letzt.gy) continue;
       letzt = feld;
       const hebung = Number(hoeheAn(feld.gx, feld.gy)) || 0;
-      const zurueck = flatTileFromPoint(px, py + hebung * view.zoom, view);
+      const zurueck = flatTileFromPoint(px, py + hebung * view.zoom, view, bounded);
       if (!zurueck || zurueck.gx !== feld.gx || zurueck.gy !== feld.gy) continue;
       if (!treffer || feld.gx + feld.gy > treffer.gx + treffer.gy) treffer = feld;
     }
     // Trifft gar nichts - etwa weil der Zeiger ueber einer Steilkante steht,
     // deren Oberkante zu keinem Feld gehoert -, gilt der flache Platz.
-    return treffer || flatTileFromPoint(px, py, view);
+    return treffer || flatTileFromPoint(px, py, view, bounded);
   }
 
   // A point on screen straight into the editor's own tile coordinates
@@ -326,11 +326,11 @@
   // von (gx,gy) bis (gx+1,gy+1). Ein Gitterpunkt dreht sich darum mit GRID-p
   // und nicht mit GRID-1-p - eine Eins Unterschied, aber sie verschoebe den
   // Kasten um ein ganzes Feld.
-  function rotateCorner(gx, gy, orientation) {
+  function rotateCorner(gx, gy, orientation, edge = GRID) {
     switch (Number(orientation) || 0) {
-      case 2: return [gy, GRID - gx];
-      case 4: return [GRID - gx, GRID - gy];
-      case 6: return [GRID - gy, gx];
+      case 2: return [gy, edge - gx];
+      case 4: return [edge - gx, edge - gy];
+      case 6: return [edge - gy, gx];
       default: return [gx, gy];
     }
   }
@@ -415,10 +415,13 @@
     const out = [];
     for (const item of items) {
       const plates = (item.entry && item.entry.platten) || [];
+      const camera = item.cameraRotation || 0;
+      const origin = rotateGrid(item.gx, item.gy, item.tiles, (8 - camera) % 8);
       for (const plate of plates) {
+        const position = rotateGrid(origin.gx + plate.dx, origin.gy + plate.dy, plate.kacheln, camera);
         out.push({
-          gx: item.gx + plate.dx,
-          gy: item.gy + plate.dy,
+          gx: position.gx,
+          gy: position.gy,
           tiles: plate.kacheln,
           sprite: plate
         });
@@ -539,9 +542,9 @@
   // ANDERE Ecke des Bauwerks, also muss der Ansatz um n-1 zurueckgesetzt
   // werden. Wer das vergisst, verschiebt jedes grosse Gebaeude um seine eigene
   // Groesse - beim Bergfried um sieben Felder.
-  function rotateGrid(gx, gy, tiles, orientation) {
+  function rotateGrid(gx, gy, tiles, orientation, edge = GRID) {
     const n = Math.max(1, Number(tiles) || 1);
-    const last = GRID - n;            // groesster Ansatz, den ein n-Feld-Bau hat
+    const last = edge - n;            // groesster Ansatz, den ein n-Feld-Bau hat
     switch (Number(orientation) || 0) {
       case 2: return { gx: gy, gy: last - gx };
       case 4: return { gx: last - gx, gy: last - gy };
@@ -560,6 +563,28 @@
       case 6: return { gx: gy, gy: last - gx };
       default: return { gx, gy };
     }
+  }
+
+  // changeMapOrientation (0x501b90) saves the viewport's focus tile before
+  // changing direction and restores it afterwards. Rotate the camera plane
+  // around the same world point, preserving its elevation and zoom.
+  function turnCameraView(view, width, height, orientationDelta, elevation = 0) {
+    const px = width / 2, py = height / 2;
+    const a = (px - view.panX) / (HALF_W * view.zoom);
+    const b = (py - view.panY + elevation * view.zoom) / (HALF_H * view.zoom);
+    const point = rotateCorner((a + b) / 2, (b - a) / 2, orientationDelta);
+    const [nextX, nextY] = isoPoint(...point, view, elevation);
+    return { ...view, panX: view.panX + px - nextX, panY: view.panY + py - nextY };
+  }
+
+  // A flat preview can use this affine transform. Elevated terrain cannot:
+  // its tiles must be projected separately so height continues to point up.
+  function cameraCanvasTransform(view, orientation) {
+    const matrices = { 0: [1, 0, 0, 1], 2: [0, -.5, 2, 0],
+      4: [-1, 0, 0, -1], 6: [0, .5, -2, 0] };
+    const [a,b,c,d] = matrices[orientation] || matrices[0];
+    const [x,y] = isoPoint(...rotateCorner(0, 0, orientation), view);
+    return [a,b,c,d,x-a*view.panX-c*view.panY,y-b*view.panX-d*view.panY];
   }
 
   // Welches Kartenfeld unter einem Dorffeld liegt.
@@ -684,7 +709,7 @@
            tileFromPoint, editorTileFromPoint,
            depth, byDepth, renderOrder, spriteRect, groundTextureScale, variantFor, wallLookup, hoehenLookup,
            collectItems, collectPlates, attachDrawbridges, buildingParts, marqueeOutline, fitView,
-           rotateGrid, unrotateGrid, keepOrientation,
+           rotateGrid, unrotateGrid, keepOrientation, turnCameraView, cameraCanvasTransform,
            mapTileForGrid, mapTileHeight, keepAnchor, previewPointForMapTile, centreKeep,
            mapPreviewRect, mapImageRect, villageWindow };
 });
