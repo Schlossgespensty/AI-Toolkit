@@ -7,7 +7,7 @@ const gm = require('../src/node/gm1');
 const { virtualToFile } = require('../src/node/pe-addresses');
 const { encodeRgbaPng } = require('../src/node/pixel-image');
 const { packMapPictures } = require('../src/node/pixel-atlas');
-if (!process.argv[2]) throw new Error('Usage: node scripts/export-farm-parts.js GAME_FOLDER');
+if (!process.argv[2]) throw new Error('Usage: node scripts/export-native-building-parts.js GAME_FOLDER');
 const game = path.resolve(process.argv[2]);
 const output = path.join(__dirname, '../assets/aiv/iso');
 const exe = fs.readFileSync(path.join(game, 'Stronghold Crusader.exe'));

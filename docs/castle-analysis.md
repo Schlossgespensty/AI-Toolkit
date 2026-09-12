@@ -1,4 +1,4 @@
-# Castle costs and planning overlays
+# Castle costs and game simulation
 
 The collapsible **Castle costs** panel defaults to the left dock. Its resource
 line and overall total include only placements through the selected step,

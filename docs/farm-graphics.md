@@ -4,7 +4,7 @@ The map renderer and the asset converter share `src/node/gm1.js`. GM1 diamonds
 contain 30×16 pixels on a grid with a 32-pixel horizontal pitch. Upper graphics
 retain their own lift and half-tile offset. They are not resized to the footprint.
 
-`scripts/export-farm-parts.js GAME_FOLDER` also splits existing building and
+`scripts/export-native-building-parts.js GAME_FOLDER` also splits existing building and
 ground-plate selections into their original GM1 components. Catalogue filenames
 already identify the source group. The exporter checks the GM1 group header
 against the footprint before reading its tiles. Terrain, cliffs, upper scenery
