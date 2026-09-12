@@ -629,7 +629,23 @@
     return bodenHoehe(gx + (tiles || 1) - 1, gy + (tiles || 1) - 1);
   }
 
-  function drawSprite(ctx, sprite, gx, gy, tiles, mauerAn, hoeheAn) {
+  function drawNativePart(ctx, part, img, lift) {
+    const [x, y] = geo.isoPoint(part.gx, part.gy, state.view, lift);
+    const z = state.view.zoom;
+    ctx.drawImage(img, part.sx, part.sy, part.breite, part.hoehe,
+      x + part.dx * z, y + part.dy * z, part.breite * z, part.hoehe * z);
+  }
+
+  function drawSprite(ctx, sprite, gx, gy, tiles, mauerAn, hoeheAn, layoutIndex = 0) {
+    const parts = geo.buildingParts({ entry: sprite, gx, gy, layoutIndex });
+    if (parts) {
+      const loaded = new Map(parts.map(part => [part.bild, image(part.bild)]));
+      if ([...loaded.values()].every(img => img?.complete && img.naturalWidth)) {
+        const lift = bauHoehe(gx, gy, tiles);
+        for (const part of parts.sort(geo.renderOrder)) drawNativePart(ctx, part, loaded.get(part.bild), lift);
+        return true;
+      }
+    }
     const variant = geo.variantFor(sprite, gx, gy, mauerAn, hoeheAn);
     const img = image(variant.bild);
     if (!img || !img.complete || !img.naturalWidth) return false;
@@ -715,6 +731,7 @@
     // Katalog. Wer die Platten mitdreht, schiebt den Lagerplatz von der Karte.
     const gerade = geo.collectItems(currentDocument(), state.catalogue);
     const items = geo.attachDrawbridges(turnedTiles(gerade));
+    state.renderItems = items;
     const plates = geo.collectPlates(items);
 
     // Welche Felder Mauer tragen. Ein Mauerfeld waehlt sein Bild nach seinen
@@ -737,10 +754,7 @@
       if (!loaded.every(img => img?.complete && img.naturalWidth)) return [item];
       const lift = bauHoehe(item.gx, item.gy, item.tiles);
       return parts.map((part, index) => ({ ...part, layer: item.layer ?? 2, draw: () => {
-        const [x, y] = geo.isoPoint(part.gx, part.gy, state.view, lift);
-        const z = state.view.zoom;
-        ctx.drawImage(loaded[index], part.sx, part.sy, part.breite, part.hoehe,
-          x + part.dx * z, y + part.dy * z, part.breite * z, part.hoehe * z);
+        drawNativePart(ctx, part, loaded[index], lift);
       }}));
     });
     // Scenery is no longer flattened underneath every building. Each upper
@@ -813,10 +827,16 @@
     // beim Loslassen zur durchgehenden Flaeche um.
     // Auch die Vorschau wird gedreht - sonst haengt am Zeiger ein Bauwerk,
     // das nach dem Loslassen woanders steht.
-    const kuenftig = turnedTiles(vorschau.tiles.map(feld => {
-      const entry = nachschlagen(feld.itemType != null ? feld.itemType : vorschau.itemType);
-      return { gx: feld.x, gy: geo.GRID - 1 - feld.y, entry, tiles: entry ? entry.kacheln : 1 };
+    const existing = state.renderItems || [];
+    const counts = new Map();
+    for (const item of existing) counts.set(item.itemType, (counts.get(item.itemType) || 0) + 1);
+    const pending = turnedTiles(vorschau.tiles.map(feld => {
+      const itemType = feld.itemType != null ? feld.itemType : vorschau.itemType;
+      const entry = nachschlagen(itemType), layoutIndex = counts.get(itemType) || 0;
+      counts.set(itemType, layoutIndex + 1);
+      return { gx: feld.x, gy: geo.GRID - 1 - feld.y, itemType, entry, layoutIndex, tiles: entry ? entry.kacheln : 1 };
     }));
+    const kuenftig = geo.attachDrawbridges([...existing, ...pending]).slice(existing.length);
     const neueMauern = geo.wallLookup(kuenftig);
     const mauerAn = (gx, gy) =>
       neueMauern(gx, gy) || (state.mauerAn ? state.mauerAn(gx, gy) : null);
@@ -834,7 +854,7 @@
     for (const feld of kuenftig) {
       const eintrag = feld.entry;
       const kacheln = feld.tiles;
-      if (!eintrag || !drawSprite(ctx, eintrag, feld.gx, feld.gy, kacheln, mauerAn, hoeheAn))
+      if (!eintrag || !drawSprite(ctx, eintrag, feld.gx, feld.gy, kacheln, mauerAn, hoeheAn, feld.layoutIndex))
         drawDiamond(ctx, feld.gx, feld.gy, kacheln, 'rgba(120,220,140,.45)', 'rgba(150,240,170,.9)');
     }
     ctx.restore();
