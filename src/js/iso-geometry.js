@@ -20,6 +20,12 @@
   const HALF_W = 16;          // half a tile in game points
   const HALF_H = 8;
 
+  // GM1 ground is 30x16; the village grid is 32x16. Scaling both axes by
+  // 32/30 made the ground drift vertically relative to sprites and picking.
+  function groundTextureScale(zoom, width = 30, height = 16) {
+    return { x: HALF_W * 2 / width * zoom, y: HALF_H * 2 / height * zoom };
+  }
+
   // Editor offset -> grid coordinates of the item's top-left tile
   function gridFromOffset(offset) {
     const x = offset % GRID;
@@ -56,14 +62,14 @@
   // Bildschirm. Genommen wird, was ein Mensch dort sieht - das VORDERE, also
   // das mit dem groessten gx+gy; das Spiel malt aus demselben Grund von hinten
   // nach vorn.
-  function flatTileFromPoint(px, py, view) {
+  function flatTileFromPoint(px, py, view, bounded = true) {
     const hw = HALF_W * view.zoom;
     const hh = HALF_H * view.zoom;
     const a = (px - view.panX) / hw;      // gx - gy
     const b = (py - view.panY) / hh;      // gx + gy
     const gx = Math.floor((a + b) / 2);
     const gy = Math.floor((b - a) / 2);
-    if (gx < 0 || gx >= GRID || gy < 0 || gy >= GRID) return null;
+    if (bounded && (gx < 0 || gx >= GRID || gy < 0 || gy >= GRID)) return null;
     return { gx, gy };
   }
 
@@ -75,23 +81,23 @@
   // und kostet nichts. Passen mehrere, gewinnt das vorderste.
   const MAX_HOEHE = 255;
 
-  function tileFromPoint(px, py, view, hoeheAn) {
-    if (typeof hoeheAn !== 'function') return flatTileFromPoint(px, py, view);
+  function tileFromPoint(px, py, view, hoeheAn, bounded = true) {
+    if (typeof hoeheAn !== 'function') return flatTileFromPoint(px, py, view, bounded);
     let treffer = null;
     let letzt = null;
     for (let probe = 0; probe <= MAX_HOEHE; probe += 4) {
-      const feld = flatTileFromPoint(px, py + probe * view.zoom, view);
+      const feld = flatTileFromPoint(px, py + probe * view.zoom, view, bounded);
       if (!feld) continue;
       if (letzt && feld.gx === letzt.gx && feld.gy === letzt.gy) continue;
       letzt = feld;
       const hebung = Number(hoeheAn(feld.gx, feld.gy)) || 0;
-      const zurueck = flatTileFromPoint(px, py + hebung * view.zoom, view);
+      const zurueck = flatTileFromPoint(px, py + hebung * view.zoom, view, bounded);
       if (!zurueck || zurueck.gx !== feld.gx || zurueck.gy !== feld.gy) continue;
       if (!treffer || feld.gx + feld.gy > treffer.gx + treffer.gy) treffer = feld;
     }
     // Trifft gar nichts - etwa weil der Zeiger ueber einer Steilkante steht,
     // deren Oberkante zu keinem Feld gehoert -, gilt der flache Platz.
-    return treffer || flatTileFromPoint(px, py, view);
+    return treffer || flatTileFromPoint(px, py, view, bounded);
   }
 
   // A point on screen straight into the editor's own tile coordinates
@@ -320,11 +326,11 @@
   // von (gx,gy) bis (gx+1,gy+1). Ein Gitterpunkt dreht sich darum mit GRID-p
   // und nicht mit GRID-1-p - eine Eins Unterschied, aber sie verschoebe den
   // Kasten um ein ganzes Feld.
-  function rotateCorner(gx, gy, orientation) {
+  function rotateCorner(gx, gy, orientation, edge = GRID) {
     switch (Number(orientation) || 0) {
-      case 2: return [gy, GRID - gx];
-      case 4: return [GRID - gx, GRID - gy];
-      case 6: return [GRID - gy, gx];
+      case 2: return [gy, edge - gx];
+      case 4: return [edge - gx, edge - gy];
+      case 6: return [edge - gy, gx];
       default: return [gx, gy];
     }
   }
@@ -339,17 +345,21 @@
       .map(([gx, gy]) => isoPoint(gx, gy, view));
   }
 
-  function collectItems(document_, catalogue) {
+  function collectItems(document_, catalogue, throughFrame = null) {
     const out = [];
+    const counts = new Map();
     if (!document_ || !Array.isArray(document_.frames)) return out;
     const items = (catalogue && catalogue.gegenstaende) || {};
     document_.frames.forEach((frame, frameIndex) => {
+      if (Number.isInteger(throughFrame) && frameIndex > throughFrame) return;
       const entry = items[String(frame.itemType)] || null;
       const offsets = Array.isArray(frame.tilePositionOfsets) ? frame.tilePositionOfsets : [];
       offsets.forEach((offset, offsetIndex) => {
         const { gx, gy } = gridFromOffset(offset);
+        const layoutIndex = counts.get(frame.itemType) || 0;
+        counts.set(frame.itemType, layoutIndex + 1);
         out.push({
-          gx, gy, entry, frameIndex, offsetIndex,
+          gx, gy, entry, frameIndex, offsetIndex, layoutIndex,
           // Derselbe Schluessel, den castle-editor.js fuer die Auswahl
           // vergibt (frameRefKey). Ohne ihn koennte die Ansicht nicht sagen,
           // welcher Gegenstand ausgewaehlt ist.
@@ -362,6 +372,42 @@
     return out;
   }
 
+  // checkDrawbridgePlacement (0x004FA2D0) uses an exact gatehouse edge,
+  // not a nearest-building search. Offsets are exported from 0x00B4AE20.
+  // This resolves the visual attachment only; terrain/buildability remains
+  // the running game's responsibility.
+  function attachDrawbridges(items) {
+    const gates = new Map();
+    for (const item of items) {
+      if (![144, 145, 146, 147].includes(Number(item.itemType))) continue;
+      for (let y = 0; y < item.tiles; y++) for (let x = 0; x < item.tiles; x++)
+        gates.set(`${item.gx + x},${item.gy + y}`, item);
+    }
+    return items.map(item => {
+      if (Number(item.itemType) !== 105 || !item.entry?.attachmentOffsets) return item;
+      for (let side = 0; side < 4; side++) {
+        const edge = item.entry.attachmentOffsets[side];
+        const at = ([x, y]) => gates.get(`${item.gx + x},${item.gy + y}`);
+        const gate = at(edge[0]);
+        if (!gate) continue;
+        const alongY = [144, 146].includes(Number(gate.itemType));
+        if ((side % 2 === 0) !== alongY) continue;
+        if (!edge.slice(0, gate.tiles).every(offset => at(offset) === gate)) continue;
+        const variant = item.entry.directions?.[side];
+        return { ...item, bridgeDirection: side * 2, gateRef: gate.ref,
+          entry: variant ? { ...item.entry, ...variant } : item.entry };
+      }
+      return { ...item, entry: null, unattachedBridge: true };
+    });
+  }
+
+  function buildingParts(item) {
+    const layouts = item.entry?.partsLayouts;
+    if (!layouts?.length) return null;
+    const parts = layouts[(item.layoutIndex || 0) % layouts.length];
+    return parts.map(part => ({ ...part, gx: item.gx + part.gx, gy: item.gy + part.gy, tiles: 1 }));
+  }
+
   // Ground plates that belong next to an item (keep courtyard, training
   // grounds, guild yards). Their offsets are counted from the item's
   // top-left tile, in the sprite coordinate system.
@@ -369,10 +415,13 @@
     const out = [];
     for (const item of items) {
       const plates = (item.entry && item.entry.platten) || [];
+      const camera = item.cameraRotation || 0;
+      const origin = rotateGrid(item.gx, item.gy, item.tiles, (8 - camera) % 8);
       for (const plate of plates) {
+        const position = rotateGrid(origin.gx + plate.dx, origin.gy + plate.dy, plate.kacheln, camera);
         out.push({
-          gx: item.gx + plate.dx,
-          gy: item.gy + plate.dy,
+          gx: position.gx,
+          gy: position.gy,
           tiles: plate.kacheln,
           sprite: plate
         });
@@ -382,6 +431,9 @@
   }
 
   function byDepth(a, b) { return depth(a) - depth(b); }
+  function renderOrder(a, b) {
+    return byDepth(a, b) || a.gx - b.gx || (a.layer ?? 2) - (b.layer ?? 2);
+  }
 
   // ------------------------------------------------- eine Karte des Spiels
   //
@@ -490,9 +542,9 @@
   // ANDERE Ecke des Bauwerks, also muss der Ansatz um n-1 zurueckgesetzt
   // werden. Wer das vergisst, verschiebt jedes grosse Gebaeude um seine eigene
   // Groesse - beim Bergfried um sieben Felder.
-  function rotateGrid(gx, gy, tiles, orientation) {
+  function rotateGrid(gx, gy, tiles, orientation, edge = GRID) {
     const n = Math.max(1, Number(tiles) || 1);
-    const last = GRID - n;            // groesster Ansatz, den ein n-Feld-Bau hat
+    const last = edge - n;            // groesster Ansatz, den ein n-Feld-Bau hat
     switch (Number(orientation) || 0) {
       case 2: return { gx: gy, gy: last - gx };
       case 4: return { gx: last - gx, gy: last - gy };
@@ -511,6 +563,28 @@
       case 6: return { gx: gy, gy: last - gx };
       default: return { gx, gy };
     }
+  }
+
+  // changeMapOrientation (0x501b90) saves the viewport's focus tile before
+  // changing direction and restores it afterwards. Rotate the camera plane
+  // around the same world point, preserving its elevation and zoom.
+  function turnCameraView(view, width, height, orientationDelta, elevation = 0) {
+    const px = width / 2, py = height / 2;
+    const a = (px - view.panX) / (HALF_W * view.zoom);
+    const b = (py - view.panY + elevation * view.zoom) / (HALF_H * view.zoom);
+    const point = rotateCorner((a + b) / 2, (b - a) / 2, orientationDelta);
+    const [nextX, nextY] = isoPoint(...point, view, elevation);
+    return { ...view, panX: view.panX + px - nextX, panY: view.panY + py - nextY };
+  }
+
+  // A flat preview can use this affine transform. Elevated terrain cannot:
+  // its tiles must be projected separately so height continues to point up.
+  function cameraCanvasTransform(view, orientation) {
+    const matrices = { 0: [1, 0, 0, 1], 2: [0, -.5, 2, 0],
+      4: [-1, 0, 0, -1], 6: [0, .5, -2, 0] };
+    const [a,b,c,d] = matrices[orientation] || matrices[0];
+    const [x,y] = isoPoint(...rotateCorner(0, 0, orientation), view);
+    return [a,b,c,d,x-a*view.panX-c*view.panY,y-b*view.panX-d*view.panY];
   }
 
   // Welches Kartenfeld unter einem Dorffeld liegt.
@@ -535,6 +609,13 @@
   function mapTileForGrid(gx, gy, keep) {
     const anker = keepAnchor(keep);
     return { mx: keep.x - anker.gx + gx, my: keep.y - anker.gy + gy };
+  }
+
+  function mapTileHeight(gx, gy, keep, heights) {
+    if (!keep || !heights) return 0;
+    const { mx, my } = mapTileForGrid(gx, gy, keep);
+    if (!Number.isInteger(mx) || !Number.isInteger(my) || mx < 0 || my < 0 || mx >= 400 || my >= 400) return 0;
+    return Number(heights[my * 400 + mx]) || 0;
   }
 
   // Und welchen Punkt der Vorschau ein Kartenfeld belegt. Nur Felder mit
@@ -626,9 +707,9 @@
   return { GRID, HALF_W, HALF_H, MAP_PREVIEW_EDGE, KEEP_TILE,
            gridFromOffset, offsetFromGrid, isoPoint,
            tileFromPoint, editorTileFromPoint,
-           depth, byDepth, spriteRect, variantFor, wallLookup, hoehenLookup,
-           collectItems, collectPlates, marqueeOutline, fitView,
-           rotateGrid, unrotateGrid, keepOrientation,
-           mapTileForGrid, keepAnchor, previewPointForMapTile, centreKeep,
+           depth, byDepth, renderOrder, spriteRect, groundTextureScale, variantFor, wallLookup, hoehenLookup,
+           collectItems, collectPlates, attachDrawbridges, buildingParts, marqueeOutline, fitView,
+           rotateGrid, unrotateGrid, keepOrientation, turnCameraView, cameraCanvasTransform,
+           mapTileForGrid, mapTileHeight, keepAnchor, previewPointForMapTile, centreKeep,
            mapPreviewRect, mapImageRect, villageWindow };
 });

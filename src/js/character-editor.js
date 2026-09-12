@@ -54,6 +54,7 @@ async function init() {
   } catch (e) {
     console.error("INIT FAILED:", e);
     alert("Failed to load config files.");
+    throw e;
   }
 
   if (pendingLoad) {
@@ -72,7 +73,9 @@ async function init() {
   isInitialized = true;
 }
 
-init();
+const characterReady = init();
+// Consumers await this promise; retain the initialization error for them.
+characterReady.catch(() => {});
 
 function standardTemplate() {
   activeTemplate = template;
@@ -1007,6 +1010,7 @@ window.characterPopulation = {
 };
 
 window.characterEditor = {
+    ready: characterReady,
     openFile: loadFile,
     newFile: newCharacterFile,
     saveFile: quickSaveFile,

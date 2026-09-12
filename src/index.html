@@ -5,12 +5,20 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' data: blob:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <title>AI Toolkit</title>
+<link rel="icon" href="../assets/icon.png" type="image/png">
 <link rel="stylesheet" href="css/combined.css">
+<link rel="stylesheet" href="css/castle-sidebar.css">
 </head>
 
 <body>
 <div id="appRoot">
   <nav class="workspaceTabs" aria-label="Editor workspace">
+    <img class="appIcon" src="../assets/icon.png" width="28" height="28" alt="AI Toolkit" draggable="false">
+    <div id="titlebarMenus" class="titlebarMenus" role="group" aria-label="Application menus" hidden>
+      <button type="button" data-app-menu="file" aria-haspopup="menu" aria-expanded="false" title="File (Alt+F)">File</button>
+      <button type="button" data-app-menu="edit" aria-haspopup="menu" aria-expanded="false" title="Edit (Alt+E)">Edit</button>
+      <button type="button" data-app-menu="view" aria-haspopup="menu" aria-expanded="false" title="View (Alt+V)">View</button>
+    </div>
     <button id="tabUcp" class="workspaceTab active" type="button" data-workspace="ucp">UCP AI Library</button>
     <button id="tabCharacter" class="workspaceTab" type="button" data-workspace="character">Character</button>
     <button id="tabCastle" class="workspaceTab" type="button" data-workspace="castle">Castle</button>
@@ -152,6 +160,12 @@
           <button type="button" class="castleTool" data-tool="copy" title="Shortcut: 5 or C &#8212; Ctrl+C copies what is selected, Ctrl+V places it at the cursor">Copy<kbd>5</kbd></button>
           <button type="button" class="castleTool" data-tool="replace" title="Draw a box, then choose replacements by item type. Shortcut: 8 or R">Replace<kbd>8</kbd></button>
           <button type="button" class="castleTool" data-tool="delete" title="Shortcut: 4 or D">Delete<kbd>4</kbd></button>
+          <label id="castleDeleteModeLabel" class="castleProjectChoice" hidden>Delete mode
+            <select id="castleDeleteMode">
+              <option value="area">Area</option>
+              <option value="flood">Flood fill (same type)</option>
+            </select>
+          </label>
         </div>
         <div id="castleBlueprintControls" class="toolbarGroup castleBlueprintControls" aria-label="Temporary castle blueprint" hidden>
           <label class="hidden" title="Show or hide the temporary blueprint">
@@ -167,6 +181,7 @@
           <label class="compactToggle"><input id="castleShowNames" type="checkbox"> Item names</label>
           <label class="compactToggle"><input id="castleShowUnitNumbers" type="checkbox"> Unit Order</label>
           <label class="compactToggle"><input id="castleShowCompatibility" type="checkbox"> Guide lines</label>
+
         </div>
       </header>
 
@@ -184,6 +199,7 @@
             <input id="castleBuildSlider" type="range" min="1" max="1" value="1" step="1" disabled aria-label="Select and scroll to a build step">
           </div>
           <div class="buildHint">Drag steps to reorder. Use Ctrl+click or Shift+click to select several steps.</div>
+          <button id="castleMergeSteps" type="button" disabled title="Select two or more unlocked steps of exactly the same wall, moat or pitch type. Merges at the earliest selected step; any pause is kept at the end.">Merge selected steps</button>
           <div id="castleBuildList" class="castleBuildList"></div>
           <section id="castlePopulationOverview" class="castlePopulationOverview castleOverviewPanel" data-overview="population" aria-label="Population up to the selected build step">
             <div class="populationOverviewTitle castleOverviewTitle">
@@ -254,7 +270,7 @@
 
         <aside class="castlePanel castlePalettePanel">
           <div class="panelHeader">
-            <div>Items</div>
+            <div>Building Categories</div>
           </div>
           <div id="castlePalette" class="castlePalette"></div>
           <div class="selectedItemCard">
@@ -487,10 +503,12 @@
   <form id="castleShortcutForm">
     <div class="ucpCreateHeading">
       <h2>Castle shortcuts</h2>
-      <p>Select a field and press a letter or number. Each key can only be assigned once.</p>
+      <p>Select a field and press a letter, number or F1–F12. Each key can only be assigned once. C and X are reserved for rotation.</p>
     </div>
     <div class="castleShortcutGrid">
-      <strong>Tool</strong><strong>Primary</strong><strong>Alternative</strong>
+      <strong>Action</strong><strong>Primary</strong><strong>Alternative</strong>
+      <span>Save castle</span><input class="castleShortcutKey" data-tool="saveCastle" data-slot="0" value="F1" readonly><input class="castleShortcutKey" data-tool="saveCastle" data-slot="1" readonly>
+      <span>Open castle</span><input class="castleShortcutKey" data-tool="openCastle" data-slot="0" value="F2" readonly><input class="castleShortcutKey" data-tool="openCastle" data-slot="1" readonly>
       <span>Single</span><input class="castleShortcutKey" data-tool="single" data-slot="0" value="1" readonly><input class="castleShortcutKey" data-tool="single" data-slot="1" value="S" readonly>
       <span>Brush</span><input class="castleShortcutKey" data-tool="brush" data-slot="0" value="2" readonly><input class="castleShortcutKey" data-tool="brush" data-slot="1" value="B" readonly>
       <span>Move</span><input class="castleShortcutKey" data-tool="select" data-slot="0" value="3" readonly><input class="castleShortcutKey" data-tool="select" data-slot="1" value="V" readonly>
@@ -500,6 +518,23 @@
       <span>Fill</span><input class="castleShortcutKey" data-tool="bucket" data-slot="0" value="7" readonly><input class="castleShortcutKey" data-tool="bucket" data-slot="1" value="F" readonly>
       <span>Replace</span><input class="castleShortcutKey" data-tool="replace" data-slot="0" value="8" readonly><input class="castleShortcutKey" data-tool="replace" data-slot="1" value="R" readonly>
     </div>
+    <fieldset class="castleCameraSettings">
+      <legend>Camera</legend>
+      <div><button id="castleCameraLegacy" type="button">Photoshop controls</button>
+        <button id="castleCameraArrows" type="button">Arrow keys + wheel zoom</button></div>
+      <label>Mouse wheel <select id="castleCameraWheel">
+        <option value="legacy">Original (plan: scroll pans, Alt+scroll zooms)</option>
+        <option value="zoom">Scroll zooms, Shift+scroll pans</option>
+      </select></label>
+      <p>Ctrl+scroll pans horizontally. Middle-drag pans. Camera keys accept letters, numbers or arrows; Backspace clears. Hold Shift to pan faster. C and X are reserved for rotation.</p>
+      <div class="castleCameraKeyGrid">
+        <label>Left <input class="castleCameraKey" data-direction="left" readonly></label>
+        <label>Right <input class="castleCameraKey" data-direction="right" readonly></label>
+        <label>Up <input class="castleCameraKey" data-direction="up" readonly></label>
+        <label>Down <input class="castleCameraKey" data-direction="down" readonly></label>
+      </div>
+      <label>Pan speed (pixels per keypress) <input id="castleCameraSpeed" type="number" min="1" max="200" value="40"></label>
+    </fieldset>
     <div id="castleShortcutError" class="castleShortcutError" role="alert"></div>
     <div class="ucpCreateActions castleShortcutActions">
       <button id="castleShortcutDefaultsBtn" type="button">Restore defaults</button>
@@ -544,7 +579,11 @@
 
 
 <script src="js/app-shell.js"></script>
+<script src="js/titlebar.js"></script>
 <script src="js/castle-geometry.js"></script>
+<script src="js/castle-camera.js"></script>
+<script src="js/castle-palette.js"></script>
+<script src="js/castle-sidebar-layout.js"></script>
 <script src="js/castle-editor.js"></script>
 
 <script src="js/character-editor.js"></script>

@@ -21,6 +21,7 @@
   const CATALOGUE_PATH = '../assets/aiv/iso/verzeichnis.json';
   const SPRITE_PATH = '../assets/aiv/iso/';
   const MAX_RENDER_DPR = 1.5;
+  const MAP_MARGIN = 5;
 
   const state = {
     catalogue: null,
@@ -230,6 +231,7 @@
           px0: Number(terrain.px0) || 0, py0: Number(terrain.py0) || 0,
           cells: Number(terrain.cells) || geo.MAP_PREVIEW_EDGE,
           top: Number(terrain.top) || 0,
+          floor: Number(terrain.floor) || 0,
           village: dorfHoehen(terrain.village) }
       : null;
     paint();
@@ -240,10 +242,18 @@
   // eine Burg ueber einem flachen Boden schweben zu lassen waere schlimmer als
   // sie flach zu lassen.
   function bodenHoehe(gx, gy) {
+    const world = geo.unrotateGrid(gx, gy, viewRotation());
+    // The full-map atlas takes precedence over paintGround. It already lifts
+    // terrain tiles; sprites and picking must use those same heights, not the
+    // previous cropped image's height buffer (or zero on first load).
+    const atlas = vorrat();
+    if (atlas?.plaetze && atlas.bild?.complete && atlas.bild?.naturalWidth && gameMap()) {
+      return geo.mapTileHeight(world.gx, world.gy, currentKeep(), atlas.hoehen);
+    }
     const feld = state.hoehenFeld;
     if (!feld) return 0;
-    if (gx < 0 || gy < 0 || gx >= geo.GRID || gy >= geo.GRID) return 0;
-    return feld[gy * geo.GRID + gx] || 0;
+    if (world.gx < 0 || world.gy < 0 || world.gx >= geo.GRID || world.gy >= geo.GRID) return 0;
+    return feld[world.gy * geo.GRID + world.gx] || 0;
   }
 
   function terrainReady() {
@@ -276,6 +286,11 @@
       : null;
     // Das Gelaende der alten Karte zeigt die alte Karte. Es jetzt stehen zu
     // lassen hiesse, die neue Karte mit fremdem Boden zu zeigen.
+    if (state.kachelVorrat && state.kachelVorrat.path !== state.gameMap?.path) {
+      releaseMapImages();
+      state.kachelVorrat = null;
+    }
+    if (previous?.path !== state.gameMap?.path) handDrehung = 0;
     setTerrain(null);
     rememberGameMap();
     if (state.gameMap && state.ground) setGround(null);   // paints as well
@@ -332,7 +347,28 @@
   function viewRotation() { return handDrehung; }
 
   function turnView(richtung) {
+    if (gameMap() && !state.kachelVorrat?.cameras) {
+      setStatus(state.kachelVorrat?.nativeError
+        ? 'Rotation unavailable: ' + state.kachelVorrat.nativeError
+        : 'Loading camera views...');
+      return null;
+    }
     const schritt = Number(richtung) < 0 ? -VIERTEL : VIERTEL;
+    const target = surface();
+    if (target) {
+      const pivotKey = () => [target.width, target.height, state.view.zoom, state.view.panX,
+        state.view.panY, terrainKey()].join('/');
+      // Keep the same world-space pivot between turns. Picking again after
+      // each turn can choose a different face of a cliff and move the camera.
+      let height = state.rotationPivot?.key === pivotKey() ? state.rotationPivot.height : null;
+      if (height === null) {
+        const focus = geo.tileFromPoint(target.width / 2, target.height / 2, state.view, bodenHoehe, false);
+        height = focus ? bodenHoehe(focus.gx, focus.gy) : 0;
+      }
+      state.view = geo.turnCameraView(state.view, target.width, target.height, (schritt + 8) % 8, height);
+      state.rotationPivot = { key: pivotKey(), height };
+    }
+    if (state.hover) state.hover = geo.rotateGrid(state.hover.gx, state.hover.gy, 1, (schritt + 8) % 8);
     handDrehung = (((handDrehung + schritt) % 8) + 8) % 8;
     paint();
     return handDrehung;
@@ -348,10 +384,16 @@
   // Maus fragt, welches Feld sie gerade trifft.
   function turnedTiles(list) {
     const rotation = currentRotation();
-    if (!rotation) return list;
     return list.map(item => {
       const turned = geo.rotateGrid(item.gx, item.gy, item.tiles, rotation);
-      return { ...item, gx: turned.gx, gy: turned.gy };
+      // A quarter turn changes a gate's passage axis. Resolve drawbridge
+      // attachment after this swap, in the same coordinates as the map.
+      const gateType = [144, 145, 146, 147].includes(Number(item.itemType)) && rotation % 4 === 2
+        ? (Number(item.itemType) ^ 1) : item.itemType;
+      const base = state.catalogue?.gegenstaende[gateType] || item.entry;
+      const layouts = base?.cameraPartsLayouts?.[viewRotation() / 2];
+      return { ...item, gx: turned.gx, gy: turned.gy, itemType: gateType, cameraRotation: viewRotation(),
+        entry: layouts ? { ...base, partsLayouts: layouts } : base };
     });
   }
 
@@ -377,7 +419,7 @@
   function groundPicture() {
     const map = gameMap();
     if (!map) return null;
-    if (mapMode() === 'terrain' && terrainReady()) {
+    if (!viewRotation() && mapMode() === 'terrain' && terrainReady()) {
       const terrain = state.terrain;
       const img = image(terrain.dataUrl);
       if (img && img.complete && img.naturalWidth) {
@@ -396,25 +438,17 @@
     // gemalt - dieselbe Rechnung legt sie an dieselbe Stelle.
     const rect = geo.mapImageRect(currentKeep(), state.view, picture.px0, picture.py0, picture.cells, picture.top);
     ctx.save();
-    // Beschnitten wird auf die Raute des Dorfes - aber der Boden liegt nicht
-    // mehr in ihrer Ebene. Er steht zwischen dem tiefsten Feld (floor) und dem
-    // hoechsten (top) darueber, und der Beschnitt muss genau diesen Streifen
-    // freigeben: oben, sonst saegt er jede Bergkuppe waagerecht ab; unten,
-    // sonst bleibt am Suedrand ein dunkler Saum, weil der Boden dort um seine
-    // Grundhoehe hochgerueckt ist. Aus der Raute wird damit ein Sechseck.
-    if (picture.top > 0) {
-      const oben = picture.top * state.view.zoom;
-      const unten = (picture.floor || 0) * state.view.zoom;
-      const punkt = (cx, cy, hoch) => {
-        const [px, py] = geo.isoPoint(cx, cy, state.view);
-        return [px, py - (hoch ? oben : unten)];
-      };
-      ctx.beginPath();
-      [punkt(0, 0, true), punkt(geo.GRID, 0, true), punkt(geo.GRID, 0, false),
-       punkt(geo.GRID, geo.GRID, false), punkt(0, geo.GRID, false), punkt(0, geo.GRID, true)]
-        .forEach(([px, py], index) => { if (index === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py); });
-      ctx.closePath();
-    }
+    if (viewRotation()) ctx.transform(...geo.cameraCanvasTransform(state.view, viewRotation()));
+    // Bound the fallback preview to the same AIV footprint as native tiles.
+    // Native terrain is bounded by tile origin instead, preserving raised tops.
+    ctx.beginPath();
+    [[-MAP_MARGIN, -MAP_MARGIN], [geo.GRID + MAP_MARGIN, -MAP_MARGIN],
+      [geo.GRID + MAP_MARGIN, geo.GRID + MAP_MARGIN], [-MAP_MARGIN, geo.GRID + MAP_MARGIN]]
+      .forEach(([gx, gy], index) => {
+        const [x, y] = geo.isoPoint(gx, gy, state.view);
+        if (index === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+      });
+    ctx.closePath();
     ctx.clip();
     // Ein Vorschaupunkt ist ein ganzes Feld und muss ein hartes Quadrat bleiben
     // - geglaettet schmierte der Rand eines Feldes ueber seinen Nachbarn. Das
@@ -435,7 +469,17 @@
   // Bild von 12000x6400 Punkten entsteht.
   const KARTE_FELDER = 400;
 
-  function vorrat() { return state.kachelVorrat || null; }
+  function vorrat() {
+    const stock = state.kachelVorrat;
+    return stock?.cameras?.[viewRotation() / 2] || stock || null;
+  }
+
+  function releaseMapImages() {
+    const stock = state.kachelVorrat;
+    for (const camera of stock?.cameras || (stock ? [stock] : [])) {
+      if (camera.upperImage) state.images.delete(camera.upperImage.src);
+    }
+  }
 
   // Base64 in ein Zahlenfeld. Die Bruecke kann keine Binaerdaten, deshalb
   // kommen Plaetze und Hoehen als Text.
@@ -448,19 +492,31 @@
   }
 
   function setMapTiles(daten) {
+    if (daten?.path && daten.path !== gameMap()?.path) return;
+    releaseMapImages();
     if (!daten) { state.kachelVorrat = null; paint(); return; }
-    const bild = new Image();
-    bild.onload = () => paint();
-    bild.src = daten.atlas;
-    state.kachelVorrat = {
-      bild,
-      plaetze: ausBase64(daten.plaetze, Uint16Array),
-      hoehen: daten.hoehen ? ausBase64(daten.hoehen, Uint8Array) : null,
-      spalten: Number(daten.spalten) || 64,
-      kw: Number(daten.kachelBreite) || 30,
-      kh: Number(daten.kachelHoehe) || 16,
-      name: daten.name || ''
-    };
+    function cameraStock(daten) {
+      const bild = new Image();
+      bild.onload = () => refresh();
+      bild.src = daten.atlas;
+      const upperImage = daten.upper?.dataUrl ? image(daten.upper.dataUrl) : null;
+      return {
+        path: daten.path,
+        bild,
+        upperImage, upperEntries: daten.upper?.entries || [],
+        treeSprites: new Map((daten.treeSprites || []).map(tree => [tree[1] * KARTE_FELDER + tree[0], tree])),
+        cliffSprites: ausBase64(daten.cliffSprites, Uint16Array),
+        plaetze: ausBase64(daten.plaetze, Uint16Array),
+        hoehen: daten.hoehen ? ausBase64(daten.hoehen, Uint8Array) : null,
+        spalten: Number(daten.spalten) || 64,
+        kw: Number(daten.kachelBreite) || 30,
+        kh: Number(daten.kachelHoehe) || 16,
+        name: daten.name || ''
+      };
+    }
+    const cameras = daten.cameras?.length === 4 ? daten.cameras.map(cameraStock) : null;
+    state.kachelVorrat = { ...(cameras?.[0] || cameraStock(daten)), path: daten.path, cameras, nativeError: daten.nativeError };
+    if (!cameras) handDrehung = 0;
     paint();
   }
 
@@ -482,6 +538,7 @@
   }
 
   function paintMapTiles(ctx, width, height) {
+    state.mapScenery = [];
     const v = vorrat();
     const map = gameMap();
     const keep = currentKeep();
@@ -496,10 +553,10 @@
       return { gx: (dy + dx) / 2, gy: (dy - dx) / 2 };
     });
     const rand = 3 + Math.ceil(255 / (16 * state.view.zoom));   // hohe Felder ragen herein
-    const gx0 = Math.floor(Math.min(...ecken.map(e => e.gx))) - rand;
-    const gx1 = Math.ceil(Math.max(...ecken.map(e => e.gx))) + rand;
-    const gy0 = Math.floor(Math.min(...ecken.map(e => e.gy))) - rand;
-    const gy1 = Math.ceil(Math.max(...ecken.map(e => e.gy))) + rand;
+    const gx0 = Math.max(-MAP_MARGIN, Math.floor(Math.min(...ecken.map(e => e.gx))) - rand);
+    const gx1 = Math.min(geo.GRID + MAP_MARGIN - 1, Math.ceil(Math.max(...ecken.map(e => e.gx))) + rand);
+    const gy0 = Math.max(-MAP_MARGIN, Math.floor(Math.min(...ecken.map(e => e.gy))) - rand);
+    const gy1 = Math.min(geo.GRID + MAP_MARGIN - 1, Math.ceil(Math.max(...ecken.map(e => e.gy))) + rand);
 
     const kw = v.kw, kh = v.kh;
     let gemalt = 0;
@@ -508,17 +565,54 @@
     for (let summe = gx0 + gy0; summe <= gx1 + gy1; summe += 1) {
       for (let gx = Math.max(gx0, summe - gy1); gx <= Math.min(gx1, summe - gy0); gx += 1) {
         const gy = summe - gx;
-        const mx = gx + keep.x - anker.gx;
-        const my = gy + keep.y - anker.gy;
+        const world = geo.unrotateGrid(gx, gy, viewRotation());
+        const mx = world.gx + keep.x - anker.gx;
+        const my = world.gy + keep.y - anker.gy;
         const feld = kartenFeld(mx, my);
         if (feld < 0) continue;
         const platz = v.plaetze[feld];
         if (platz === 0xffff) continue;
         const hebung = (v.hoehen ? v.hoehen[feld] : 0) * state.view.zoom;
         const [px, py] = geo.isoPoint(gx, gy, state.view, 0);
+        // The game advances 32 pixels between tiles on a screen row, but
+        // a GM1 diamond contains only 30 pixels. Do not stretch those pixels
+        // (or the attached scenery) to fill the grid pitch.
+        const tileWidth = kw * state.view.zoom;
+        const tileLeft = px - tileWidth / 2;
+        const cliff = v.upperEntries[(v.cliffSprites?.[feld] || 0) - 1];
+        state.mapScenery.push({ gx, gy, tiles: 1, layer: 0, draw: () => {
+        if (cliff && v.upperImage?.complete && v.upperImage.naturalWidth) {
+          const lift = v.hoehen[feld];
+          for (let row = 0; row < lift; row += cliff.height) {
+            const rows = Math.min(cliff.height, lift - row);
+            ctx.drawImage(v.upperImage, cliff.x, cliff.y, cliff.width, rows,
+              tileLeft, py - hebung + (cliff.dy + row) * state.view.zoom,
+              tileWidth, rows * state.view.zoom);
+          }
+        }
         ctx.drawImage(v.bild,
           (platz % v.spalten) * kw, Math.floor(platz / v.spalten) * kh, kw, kh,
-          px - hw, py - hebung, 2 * hw, 2 * hh);
+          tileLeft, py - hebung, tileWidth, kh * state.view.zoom);
+        }});
+        const upper = v.upperEntries[platz];
+        if (upper && v.upperImage?.complete && v.upperImage.naturalWidth) {
+          state.mapScenery.push({ gx, gy, tiles: 1, draw: () => {
+            const scaleX = state.view.zoom, scaleY = state.view.zoom;
+            ctx.drawImage(v.upperImage, upper.x, upper.y, upper.width, upper.height,
+              tileLeft + upper.dx * scaleX, py - hebung + upper.dy * scaleY,
+              upper.width * scaleX, upper.height * scaleY);
+          }});
+        }
+        const tree = v.treeSprites.get(feld);
+        const treePicture = tree && v.upperEntries[tree[2]];
+        if (treePicture && v.upperImage?.complete && v.upperImage.naturalWidth) {
+          state.mapScenery.push({ gx, gy, tiles: 1, draw: () => {
+            const scaleX = state.view.zoom, scaleY = state.view.zoom;
+            ctx.drawImage(v.upperImage, treePicture.x, treePicture.y, treePicture.width, treePicture.height,
+              tileLeft + tree[3] * scaleX, py - hebung + tree[4] * scaleY,
+              treePicture.width * scaleX, treePicture.height * scaleY);
+          }});
+        }
         gemalt += 1;
       }
     }
@@ -568,14 +662,14 @@
       return;
     }
 
-    const scale = ((geo.HALF_W * 2) / GAME_TILE_WIDTH) * state.view.zoom;
+    const scale = geo.groundTextureScale(state.view.zoom, GAME_TILE_WIDTH, 16);
     ctx.save();
     ctx.clip();
     ctx.translate(state.view.panX, state.view.panY);
-    ctx.scale(scale, scale);
+    ctx.scale(scale.x, scale.y);
     ctx.fillStyle = pattern;
-    ctx.fillRect(-state.view.panX / scale, -state.view.panY / scale,
-                 width / scale, height / scale);
+    ctx.fillRect(-state.view.panX / scale.x, -state.view.panY / scale.y,
+                 width / scale.x, height / scale.y);
     ctx.restore();
   }
 
@@ -586,7 +680,23 @@
     return bodenHoehe(gx + (tiles || 1) - 1, gy + (tiles || 1) - 1);
   }
 
-  function drawSprite(ctx, sprite, gx, gy, tiles, mauerAn, hoeheAn) {
+  function drawNativePart(ctx, part, img, lift) {
+    const [x, y] = geo.isoPoint(part.gx, part.gy, state.view, lift);
+    const z = state.view.zoom;
+    ctx.drawImage(img, part.sx, part.sy, part.breite, part.hoehe,
+      x + part.dx * z, y + part.dy * z, part.breite * z, part.hoehe * z);
+  }
+
+  function drawSprite(ctx, sprite, gx, gy, tiles, mauerAn, hoeheAn, layoutIndex = 0) {
+    const parts = geo.buildingParts({ entry: sprite, gx, gy, layoutIndex });
+    if (parts) {
+      const loaded = new Map(parts.map(part => [part.bild, image(part.bild)]));
+      if ([...loaded.values()].every(img => img?.complete && img.naturalWidth)) {
+        const lift = bauHoehe(gx, gy, tiles);
+        for (const part of parts.sort(geo.renderOrder)) drawNativePart(ctx, part, loaded.get(part.bild), lift);
+        return true;
+      }
+    }
     const variant = geo.variantFor(sprite, gx, gy, mauerAn, hoeheAn);
     const img = image(variant.bild);
     if (!img || !img.complete || !img.naturalWidth) return false;
@@ -641,24 +751,64 @@
     return { width, height, ctx };
   }
 
+  // Compose at native scale once. Pan and zoom transform this world image;
+  // they must not replay thousands of terrain draw calls on every frame.
   function paint() {
     state.paintPending = false;
     if (!geo || hostIsGone()) return;
     const target = surface();
     if (!target) return;
     const { width, height, ctx } = target;
-
     if (!state.fitted) { state.view = geo.fitView(width, height); state.fitted = true; }
+    const key = [currentRotation(), terrainKey(), mapMode(), groundFit()].join('/');
+    const cache = state.sceneCache;
+    if (!cache || state.sceneDirty || cache.key !== key || cache.stock !== state.kachelVorrat
+        || cache.terrain !== state.terrain || cache.ground !== groundSource()) {
+      const sprites = Object.values(state.catalogue?.gegenstaende || {});
+      const scenery = vorrat()?.upperEntries || [];
+      const overhang = Math.ceil(Math.max(64,
+        ...sprites.map(e => Math.max(Number(e.breite) || 0, Number(e.hoehe) || 0)),
+        ...scenery.filter(Boolean).map(e => Math.max(Math.abs(Number(e.dx) || 0) + (Number(e.width) || 0), Math.abs(Number(e.dy) || 0) + (Number(e.height) || 0)))));
+      const extent = geo.GRID + 2 * MAP_MARGIN;
+      const worldWidth = extent * 32 + overhang * 2;
+      const worldHeight = extent * 16 + 255 + overhang * 2;
+      const canvas = cache?.canvas || document.createElement('canvas');
+      canvas.width = worldWidth; canvas.height = worldHeight;
+      const sceneView = { zoom: 1, panX: worldWidth / 2, panY: overhang + 255 + MAP_MARGIN * 16 };
+      const view = state.view;
+      let scene;
+      try {
+        state.view = sceneView;
+        const sceneContext = canvas.getContext('2d');
+        sceneContext.imageSmoothingEnabled = false;
+        scene = paintScene(sceneContext, worldWidth, worldHeight);
+      } finally { state.view = view; }
+      state.sceneCache = { key, canvas, view: sceneView, ...scene, stock: state.kachelVorrat,
+        terrain: state.terrain, ground: groundSource() };
+      state.sceneDirty = false;
+    }
+    const scene = state.sceneCache;
     ctx.clearRect(0, 0, width, height);
     ctx.imageSmoothingEnabled = state.view.zoom < 1;
+    const z = state.view.zoom;
+    ctx.drawImage(scene.canvas, state.view.panX - scene.view.panX * z,
+      state.view.panY - scene.view.panY * z, scene.canvas.width * z, scene.canvas.height * z);
+    paintInteraction(ctx, scene.items);
+    const { items, missing } = scene;
+    const editor = window.castleEditor;
+    const tool = editor && editor.getTool ? editor.getTool() : '—';
+    setStatus(items.length + ' items' + (missing ? ', ' + missing + ' without a sprite' : '') +
+              ' · tool: ' + tool + mapStatus() + ' · middle mouse pans, wheel zooms');
+  }
 
+  function paintScene(ctx, width, height) {
     ctx.beginPath();
     [[0, 0], [geo.GRID, 0], [geo.GRID, geo.GRID], [0, geo.GRID]].forEach(([cx, cy], index) => {
       const [px, py] = geo.isoPoint(cx, cy, state.view);
       if (index === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
     });
     ctx.closePath();
-    // Der Kachelvorrat zeigt die GANZE Karte und geht deshalb vor.
+    // Native tiles cover the AIV footprint plus its five-tile margin.
     if (!paintMapTiles(ctx, width, height)) paintGround(ctx, width, height);
 
     // Die Bodenplatten haengen an der GEDREHTEN Ecke ihres Gebaeudes, und ihr
@@ -670,11 +820,11 @@
     // gleichermassen. Der Startaufbau auf der Karte dreht sich also nicht mit;
     // das Spiel setzt ihn immer gleich hin. Genau diese 7/2 stehen auch im
     // Katalog. Wer die Platten mitdreht, schiebt den Lagerplatz von der Karte.
-    const gerade = geo.collectItems(currentDocument(), state.catalogue);
-    const items = turnedTiles(gerade);
+    const gerade = geo.collectItems(currentDocument(), state.catalogue,
+      window.castleEditor?.getActiveBuildStep?.());
+    const items = geo.attachDrawbridges(turnedTiles(gerade));
+    state.renderItems = items;
     const plates = geo.collectPlates(items);
-    for (const plate of plates.sort(geo.byDepth))
-      drawSprite(ctx, plate.sprite, plate.gx, plate.gy, plate.tiles);
 
     // Welche Felder Mauer tragen. Ein Mauerfeld waehlt sein Bild nach seinen
     // Nachbarn - laeuft die Mauer durch, wird sie eine durchgehende Flaeche
@@ -688,23 +838,34 @@
     state.hoeheAn = hoeheAn;
 
     let missing = 0;
-    for (const item of items.sort(geo.byDepth)) {
+    const buildingSprites = [...plates.map(plate => ({ ...plate, entry: plate.sprite, layer: 1 })), ...items].flatMap(item => {
+      const parts = geo.buildingParts(item);
+      if (!parts) return [item];
+      // Load all components before switching away from the complete fallback.
+      const loaded = parts.map(part => image(part.bild));
+      if (!loaded.every(img => img?.complete && img.naturalWidth)) return [item];
+      const lift = bauHoehe(item.gx, item.gy, item.tiles);
+      return parts.map((part, index) => ({ ...part, layer: item.layer ?? 2, draw: () => {
+        drawNativePart(ctx, part, loaded[index], lift);
+      }}));
+    });
+    // Scenery is no longer flattened underneath every building. Each upper
+    // tile participates in the same depth order as the castle sprites.
+    for (const item of [...(state.mapScenery || []), ...buildingSprites].sort(geo.renderOrder)) {
+      if (item.draw) { item.draw(); continue; }
       if (item.entry && drawSprite(ctx, item.entry, item.gx, item.gy, item.tiles, mauerAn, hoeheAn)) continue;
       drawDiamond(ctx, item.gx, item.gy, item.tiles, 'rgba(210,170,90,.55)');
       missing++;
     }
 
-    // where the mouse is
-    if (state.hover) drawDiamond(ctx, state.hover.gx, state.hover.gy, 1, null, 'rgba(255,255,255,.5)');
+    return { items, missing };
+  }
 
+  function paintInteraction(ctx, items) {
+    if (state.hover) drawDiamond(ctx, state.hover.gx, state.hover.gy, 1, null, 'rgba(255,255,255,.5)');
     drawSelection(ctx, items);
     drawPreview(ctx);
     drawMarquee(ctx);
-
-    const editor = window.castleEditor;
-    const tool = editor && editor.getTool ? editor.getTool() : '—';
-    setStatus(items.length + ' items' + (missing ? ', ' + missing + ' without a sprite' : '') +
-              ' · tool: ' + tool + mapStatus() + ' · middle mouse pans, wheel zooms');
   }
 
   // Was in der Statuszeile ueber die Karte steht. Die Drehung gehoert dorthin,
@@ -755,10 +916,16 @@
     // beim Loslassen zur durchgehenden Flaeche um.
     // Auch die Vorschau wird gedreht - sonst haengt am Zeiger ein Bauwerk,
     // das nach dem Loslassen woanders steht.
-    const kuenftig = turnedTiles(vorschau.tiles.map(feld => {
-      const entry = nachschlagen(feld.itemType != null ? feld.itemType : vorschau.itemType);
-      return { gx: feld.x, gy: geo.GRID - 1 - feld.y, entry, tiles: entry ? entry.kacheln : 1 };
+    const existing = state.renderItems || [];
+    const counts = new Map();
+    for (const item of existing) counts.set(item.itemType, (counts.get(item.itemType) || 0) + 1);
+    const pending = turnedTiles(vorschau.tiles.map(feld => {
+      const itemType = feld.itemType != null ? feld.itemType : vorschau.itemType;
+      const entry = nachschlagen(itemType), layoutIndex = counts.get(itemType) || 0;
+      counts.set(itemType, layoutIndex + 1);
+      return { gx: feld.x, gy: geo.GRID - 1 - feld.y, itemType, entry, layoutIndex, tiles: entry ? entry.kacheln : 1 };
     }));
+    const kuenftig = geo.attachDrawbridges([...existing, ...pending]).slice(existing.length);
     const neueMauern = geo.wallLookup(kuenftig);
     const mauerAn = (gx, gy) =>
       neueMauern(gx, gy) || (state.mauerAn ? state.mauerAn(gx, gy) : null);
@@ -776,7 +943,7 @@
     for (const feld of kuenftig) {
       const eintrag = feld.entry;
       const kacheln = feld.tiles;
-      if (!eintrag || !drawSprite(ctx, eintrag, feld.gx, feld.gy, kacheln, mauerAn, hoeheAn))
+      if (!eintrag || !drawSprite(ctx, eintrag, feld.gx, feld.gy, kacheln, mauerAn, hoeheAn, feld.layoutIndex))
         drawDiamond(ctx, feld.gx, feld.gy, kacheln, 'rgba(120,220,140,.45)', 'rgba(150,240,170,.9)');
     }
     ctx.restore();
@@ -821,7 +988,9 @@
 
   // One repaint per frame at most. The editor now tells the view about every
   // change it makes, and a build step can be a hundred of them in a row.
-  function refresh() {
+  function refresh(reuseScene = false) {
+    // A document/image update must win over a camera update queued this frame.
+    if (reuseScene !== true) state.sceneDirty = true;
     if (state.paintPending || hostIsGone()) return;
     state.paintPending = true;
     requestAnimationFrame(paint);
@@ -831,7 +1000,7 @@
     if (state.host && state.host.statusEl) state.host.statusEl.textContent = text;
   }
 
-  function fit() { state.fitted = false; refresh(); }
+  function fit() { state.fitted = false; refresh(true); }
 
   // ------------------------------------------------------------- input
 
@@ -855,12 +1024,13 @@
       pointerId: event.pointerId || 1,
       shiftKey: event.shiftKey,
       ctrlKey: event.ctrlKey,
+      metaKey: event.metaKey,
       altKey: event.altKey,
       tileFromOutside: tile,
       preventDefault() {},
       stopPropagation() {}
     });
-    refresh();
+    refresh(phase === 'move' && !state.drawing);
   }
 
   // Bound once per canvas, and a canvas belongs to exactly one host for its
@@ -868,10 +1038,12 @@
   function bindSurface(canvas) {
     if (!canvas || state.bound.has(canvas)) return;
     state.bound.add(canvas);
+    canvas.tabIndex = 0;
 
     canvas.addEventListener('contextmenu', e => e.preventDefault());
 
     canvas.addEventListener('pointerdown', event => {
+      canvas.focus({ preventScroll: true });
       // In a narrow docked panel the pointer leaves the canvas mid-stroke.
       // Without capture the matching pointerup goes to another element and
       // state.drawing would stay stuck on.
@@ -895,15 +1067,16 @@
       if (state.panning && state.panStart) {
         state.view.panX = state.panStart.panX + p.x - state.panStart.x;
         state.view.panY = state.panStart.panY + p.y - state.panStart.y;
-        refresh();
+        refresh(true);
         return;
       }
       const tile = editorTileAt(p.x, p.y);
       const grid = geo.tileFromPoint(p.x, p.y, state.view, bodenHoehe);
+      canvas.title = window.castleEditor?.itemLabelAtTile?.(tile) || '';
       const moved = !state.hover || !grid || state.hover.gx !== grid.gx || state.hover.gy !== grid.gy;
       state.hover = grid;
       if (tile && (state.drawing || moved)) toEditor('move', event, tile);
-      else if (moved) refresh();
+      else if (moved) refresh(true);
     });
 
     const ende = event => {
@@ -917,17 +1090,25 @@
     };
     canvas.addEventListener('pointerup', ende);
     canvas.addEventListener('pointercancel', ende);
-    canvas.addEventListener('pointerleave', () => { state.hover = null; refresh(); });
+    canvas.addEventListener('pointerleave', () => { state.hover = null; refresh(true); });
 
     canvas.addEventListener('wheel', event => {
       event.preventDefault();
+      const preferences = window.castleEditor?.getCameraPreferences?.() || window.castleCamera.defaults;
+      const action = window.castleCamera.wheelAction(event, preferences, true);
+      if (action !== 'zoom') {
+        state.view[action] -= event.deltaY || event.deltaX;
+        refresh(true);
+        return;
+      }
+      if (!event.deltaY) return;
       const before = state.view.zoom;
       const next = Math.max(0.15, Math.min(8, before * (event.deltaY < 0 ? 1.15 : 1 / 1.15)));
       const p = pointOf(canvas, event);
       state.view.zoom = next;
       state.view.panX = p.x - (p.x - state.view.panX) * (next / before);
       state.view.panY = p.y - (p.y - state.view.panY) * (next / before);
-      refresh();
+      refresh(true);
     }, { passive: false });
   }
 
@@ -936,13 +1117,13 @@
   // panel is watched by a ResizeObserver and shares the app's keyboard.
   function bindHostChrome(host) {
     if (host.kind === 'dock') {
-      if (!state.observer) state.observer = new ResizeObserver(() => refresh());
+      if (!state.observer) state.observer = new ResizeObserver(() => refresh(true));
       state.observer.disconnect();
       state.observer.observe(host.box);
       return;
     }
     const win = host.win;
-    win.addEventListener('resize', refresh);
+    win.addEventListener('resize', () => refresh(true));
     win.addEventListener('beforeunload', () => {
       // Only if this window is still the host. Closing it while docking
       // fires this after the panel has taken over, and clearing the host
@@ -963,7 +1144,7 @@
       const editor = window.castleEditor;
       if (!editor || !editor.handleKey) return;
       editor.handleKey(event);
-      refresh();
+      refresh(true);
     });
   }
 
@@ -977,6 +1158,20 @@
   }
 
   function isMounted() { return Boolean(state.host) && !hostIsGone(); }
+
+  function panFromKey(event, delta) {
+    if (!isMounted()) return false;
+    const host = state.host;
+    const target = event.target;
+    const belongs = host.kind === 'window'
+      ? target?.ownerDocument === host.win.document || event.view === host.win
+      : Boolean(target?.nodeType && host.box.contains(target));
+    if (!belongs) return false;
+    state.view.panX += delta.x;
+    state.view.panY += delta.y;
+    refresh(true);
+    return true;
+  }
 
   function closeWindow() {
     const host = state.host;
@@ -1073,16 +1268,26 @@
     return true;
   }
 
+  // A 2D pan or selection invalidates that canvas, but does not change the
+  // isometric scene. Compare content only on static editor notifications.
+  function editorChanged(staticChanged) {
+    if (!staticChanged) { refresh(true); return; }
+    const key = JSON.stringify([currentDocument(), window.castleEditor?.getActiveBuildStep?.()]);
+    const changed = key !== state.editorSceneKey;
+    state.editorSceneKey = key;
+    refresh(!changed);
+  }
+
   function init() {
     // The toolbar button belongs to panel-view.js: it decides where this
     // view is shown, this file only knows how to be shown.
     bindSurface(document.getElementById('isoDockCanvas'));
     state.controls = document.getElementById('castleIsoControls');
-    window.castleEditor?.addChangeListener?.(refresh);
+    window.castleEditor?.addChangeListener?.(editorChanged);
     loadCatalogue();
   }
 
-  window.isoView = { init, openWindow, closeWindow, mountDock, unmount, refresh, paint, fit, isMounted,
+  window.isoView = { init, openWindow, closeWindow, mountDock, unmount, refresh, paint, fit, isMounted, panFromKey,
                      setGround, hasOwnGround, setGroundFit, groundIsStretched,
                      setGameMap, setGameMapKeep, hasGameMap, gameMapInfo,
                      mapMode, setMapMode, setTerrain, terrainKey, terrainReady,

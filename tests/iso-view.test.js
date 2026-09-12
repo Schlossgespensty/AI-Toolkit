@@ -476,7 +476,7 @@ test('auch die Vorschau kennt die Hoehen, damit eine gezogene Treppe schon beim 
                                 script.indexOf('function drawSelection'));
   assert.match(vorschau, /geo\.hoehenLookup\(kuenftig\)/,
     'die Felder der Vorschau muessen fuer die Treppenregel schon mitzaehlen');
-  assert.match(vorschau, /drawSprite\(ctx, eintrag, feld\.gx, feld\.gy, kacheln, mauerAn, hoeheAn\)/);
+  assert.match(vorschau, /drawSprite\(ctx, eintrag, feld\.gx, feld\.gy, kacheln, mauerAn, hoeheAn, feld\.layoutIndex\)/);
 });
 
 test('dragging a wall shows the whole run at half opacity, not just one tile', () => {
@@ -519,7 +519,7 @@ test('the ground is tiled at the same scale as the map, not stretched', () => {
   const grund = iso.slice(iso.indexOf('function paintGround'), iso.indexOf('function drawSprite'));
   assert.match(grund, /createPattern\(img, 'repeat'\)/, 'wiederholt, nicht gestreckt');
   // Ein Feld im Bild muss ein Feld im Editor sein: Spielkachel 30, unsere 32.
-  assert.match(grund, /\(\(geo\.HALF_W \* 2\) \/ GAME_TILE_WIDTH\) \* state\.view\.zoom/);
+  assert.match(grund, /geo\.groundTextureScale\(state\.view\.zoom, GAME_TILE_WIDTH, 16\)/);
   assert.equal(geometry.HALF_W * 2, 32, 'unsere Kachel ist 32 Punkte breit');
   assert.match(iso, /const GAME_TILE_WIDTH = 30/, 'die des Spiels 30');
   // Mitwandern beim Schieben, und am Kartenrand ist Schluss.
@@ -659,7 +659,7 @@ test('die Ansicht legt die Karte mit der Rechnung hin, nicht nach Augenmass', ()
   const malen = iso.slice(iso.indexOf('function paintGameMap'), iso.indexOf('function paintGround'));
   assert.match(malen, /geo\.mapImageRect\(currentKeep\(\), state\.view, picture\.px0, picture\.py0, picture\.cells, picture\.top\)/);
   assert.match(malen, /ctx\.drawImage\(picture\.img, rect\.x, rect\.y, rect\.w, rect\.h\)/);
-  assert.match(malen, /ctx\.clip\(\)/, 'die Karte endet an der Raute des Dorfes');
+  assert.match(malen, /ctx\.clip\(\)/, 'fallback terrain ends at the AIV footprint and margin');
   assert.match(malen, /ctx\.imageSmoothingEnabled = picture\.smooth/);
   // Die Vorschau bleibt hart: ein Vorschaupunkt ist ein ganzes Feld und darf
   // nicht ins Nachbarfeld verlaufen. Nur das echte Gelaende wird geglaettet.
@@ -908,8 +908,8 @@ test('die Ansicht dreht die Burg und rechnet die Maus zurueck', () => {
   const iso = fs.readFileSync(path.join(root, 'src', 'js', 'iso-view.js'), 'utf8');
   // Erst einsammeln, dann drehen - sonst landen die Bodenplatten neben ihrem
   // Gebaeude, weil sie aus dessen Ecke gerechnet werden.
-  assert.match(iso, /const gerade = geo\.collectItems\(currentDocument\(\), state\.catalogue\);/);
-  assert.match(iso, /const items = turnedTiles\(gerade\);/);
+  assert.match(iso, /const gerade = geo\.collectItems\(currentDocument\(\), state\.catalogue,\s*window\.castleEditor\?\.getActiveBuildStep\?\.\(\)\);/);
+  assert.match(iso, /const items = geo\.attachDrawbridges\(turnedTiles\(gerade\)\);/);
   // Die Platten haengen an der GEDREHTEN Ecke, ihr eigener Versatz wird nicht
   // mitgedreht. Gemessen an 201 Startplaetzen aus 60 Karten: 194 davon tragen
   // den Lagerplatz genau 7 rechts und 2 unter der Bergfriedecke, und zwar bei

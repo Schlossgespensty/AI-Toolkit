@@ -14,6 +14,43 @@ const root = path.resolve(__dirname, '..');
 const daten = require(path.join(root, 'src', 'js', 'castle-cost-data.js'));
 const modell = require(path.join(root, 'src', 'js', 'castle-cost-model.js'));
 
+test('cumulative totals use the selected step limit and match the building breakdown', () => {
+  const frames = [
+    { itemType: 61, tilePositionOfsets: [5643] },
+    { itemType: 54, tilePositionOfsets: [100, 200] },
+    { itemType: 95, tilePositionOfsets: [500] }
+  ];
+  const balance = { buildings: { Hovel: { cost: [5, 0, 0, 0, 2] }, Chapel: { cost: [0, 8, 0, 0, 75] } } };
+  const result = modell.auswerten({ frames, stepIndex: 1, data: daten, balance });
+  assert.deepEqual(result.cost, { wood: 10, stone: 0, iron: 0, pitch: 0, gold: 4 });
+  const end = modell.auswerten({ frames, stepIndex: null, data: daten, balance });
+  assert.deepEqual(end.cost, { wood: 10, stone: 8, iron: 0, pitch: 0, gold: 79 });
+  assert.deepEqual(result.rows.reduce((sum, row) => {
+    for (const key of modell.RESSOURCEN) sum[key] += row.total[key];
+    return sum;
+  }, { wood: 0, stone: 0, iron: 0, pitch: 0, gold: 0 }), result.cost);
+});
+
+test('unknown future prices do not contaminate the selected-step total', () => {
+  const frames = [{ itemType: 54, tilePositionOfsets: [100] }, { itemType: 999999, tilePositionOfsets: [200] }];
+  const result = modell.auswerten({ frames, stepIndex: 0, data: daten });
+  assert.equal(result.unknown.length, 0);
+  assert.equal(modell.auswerten({ frames, stepIndex: 1, data: daten }).unknown.length, 1);
+  const empty = modell.auswerten({ frames: [], stepIndex: null, data: daten });
+  assert.deepEqual(empty.cost, { wood: 0, stone: 0, iron: 0, pitch: 0, gold: 0 });
+});
+
+test('cost overview collapses independently of the breakdown and preserves a cumulative footer', () => {
+  const panel = fs.readFileSync(path.join(root, 'src/js/castle-cost-panel.js'), 'utf8');
+  assert.match(panel, /aria-controls="castleCostBody"/);
+  assert.match(panel, /els\.body\.hidden = state\.collapsed/);
+  assert.match(panel, /setItem\(COLLAPSE_STORAGE/);
+  assert.match(panel, /costTableRow costTableTotal/);
+  assert.match(panel, /Cumulative total through step/);
+  assert.match(panel, /Total through current step/);
+  assert.doesNotMatch(panel, /Entire castle total/);
+});
+
 // Vergleichsproben aus den beiden echten Balance-Dateien, am 07.09.2026 geholt:
 //   ascension = Krarilotus/Ascension, Zweig ucp3-ascension,
 //               extension-Ascension-Balance/resources/balance/ascension.json
@@ -26,6 +63,14 @@ const modell = require(path.join(root, 'src', 'js', 'castle-cost-model.js'));
 // nicht in zwei unabhaengig gepflegten Dateien vollstaendig wiederzufinden.
 const BALANCE_PROBEN = {
   ascension: {
+    // Resource-building cost samples refreshed 2026-09-12 from the same profiles.
+    "Quarry": { cost: [15, 0, 0, 0, 0] },
+    "Wheat farm": { cost: [15, 0, 0, 0, 0] },
+    "Hop farm": { cost: [15, 0, 0, 0, 20] },
+    "Apple farm": { cost: [5, 0, 0, 0, 0] },
+    "Dairy farm": { cost: [10, 0, 0, 0, 0] },
+    "Iron mine": { cost: [15, 4, 0, 0, 0] },
+    "Pitch rig": { cost: [20, 0, 0, 0, 0] },
     "Fletcher": {},
     "Woodcutter hut": { cost: [3, 0, 0, 0, 0] },
     "Hovel": { cost: [5, 0, 0, 0, 0] },
@@ -77,6 +122,13 @@ const BALANCE_PROBEN = {
     "Water pot": {}
   },
   liga: {
+    "Quarry": { cost: [25, 0, 0, 0, 0] },
+    "Wheat farm": { cost: [13, 0, 0, 0, 15] },
+    "Hop farm": { cost: [10, 0, 0, 0, 35] },
+    "Apple farm": { cost: [3, 0, 0, 0, 15] },
+    "Dairy farm": { cost: [7, 0, 0, 0, 15] },
+    "Iron mine": { cost: [20, 6, 0, 0, 0] },
+    "Pitch rig": { cost: [25, 0, 0, 0, 0] },
     "Fletcher": { cost: [18, 0, 0, 0, 100] },
     "Woodcutter hut": { cost: [5, 0, 0, 0, 0] },
     "Hovel": { cost: [5, 0, 0, 0, 0] },
@@ -185,13 +237,14 @@ test('Jeder Balance-Name der Zuordnung steht in beiden echten Balance-Dateien', 
   assert.deepEqual(fehlt, { ascension: [], liga: [] });
 });
 
-test('T4: ein bekannter Preisfehler wird sichtbar statt still als null gerechnet', () => {
-  assert.equal(daten.buildings['169'].name, 'Town Garden');
-  assert.equal(typeof daten.buildings['169'].unknownPrice, 'string');
-
+test('Town Garden and Communal Garden share runtime Garden cost and balance overrides', () => {
   const frames = [{ itemType: 169, tilePositionOfsets: [1, 2, 3] }];
-  const ergebnis = modell.auswerten({ frames, stepIndex: 0, data: daten });
-  assert.deepEqual(ergebnis.unknown, [{ type: 169, count: 3 }]);
+  const result = modell.auswerten({ frames, stepIndex: 0, data: daten });
+  assert.deepEqual(result.unknown, []);
+  assert.equal(result.cost.gold, 90);
+  for (const type of [166,169]) {
+    assert.equal(modell.preisFuer(type, daten, {buildings:{Garden:{cost:[0,0,0,0,15]}}}).kosten.gold,15);
+  }
 });
 
 test('T5: eine Balance ohne "cost" laesst den Vanilla-Preis stehen', () => {

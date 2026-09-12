@@ -23,6 +23,91 @@
   },
   "_erzeugt": "2026-09-07",
   "buildings": {
+  "56": {
+    "name": "Quarry",
+    "aiv": 62,
+    "cost": [
+      20,
+      0,
+      0,
+      0,
+      0
+    ],
+    "balance": "Quarry"
+  },
+  "70": {
+    "name": "Wheat Farm",
+    "aiv": 73,
+    "cost": [
+      15,
+      0,
+      0,
+      0,
+      0
+    ],
+    "balance": "Wheat farm"
+  },
+  "71": {
+    "name": "Hop Farm",
+    "aiv": 75,
+    "cost": [
+      15,
+      0,
+      0,
+      0,
+      0
+    ],
+    "balance": "Hop farm"
+  },
+  "72": {
+    "name": "Apple Farm",
+    "aiv": 71,
+    "cost": [
+      5,
+      0,
+      0,
+      0,
+      0
+    ],
+    "balance": "Apple farm"
+  },
+  "73": {
+    "name": "Dairy Farm",
+    "aiv": 72,
+    "cost": [
+      10,
+      0,
+      0,
+      0,
+      0
+    ],
+    "balance": "Dairy farm"
+  },
+  "90": {
+    "name": "Iron Mine",
+    "aiv": 64,
+    "cost": [
+      20,
+      0,
+      0,
+      0,
+      0
+    ],
+    "balance": "Iron mine"
+  },
+  "91": {
+    "name": "Pitch Rig",
+    "aiv": 65,
+    "cost": [
+      20,
+      0,
+      0,
+      0,
+      0
+    ],
+    "balance": "Pitch rig"
+  }
+,
     "25": {
       "name": "High Wall",
       "aiv": 10,
@@ -611,8 +696,9 @@
     "169": {
       "name": "Town Garden",
       "aiv": 94,
-      "unknownPrice": "Die Laufzeit-Kostentabelle hat fuer diese AIV-Nummer keinen Eintrag - der Preis ist ungeklaert und wird nicht geraten.",
-      "balance": null
+      "cost": [0, 0, 0, 0, 30],
+      "balance": "Garden",
+      "via": "Mapper 169 and 166 both map to runtime Garden 66 at 0x00409370."
     },
     "175": {
       "name": "Maypole",

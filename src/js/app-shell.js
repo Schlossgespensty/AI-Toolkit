@@ -31,6 +31,7 @@
     });
     if (name === 'content') window.aiContentEditor?.onWorkspaceShown?.();
     if (name === 'ucp') window.ucpLibrary?.onWorkspaceShown?.();
+    window.ucpLibrary?.rememberProject?.();
   }
 
   function getActive() { return active; }

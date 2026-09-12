@@ -1,0 +1,7 @@
+name: ai-toolkit-native-map-renderer
+display-name: AI Toolkit native map renderer
+version: 0.1.0
+type: module
+author: Krarilotus
+meta:
+  version: 1.0.0

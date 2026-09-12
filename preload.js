@@ -1,7 +1,12 @@
 const { contextBridge, ipcRenderer } = require('electron');
 
 contextBridge.exposeInMainWorld('electronAPI', {
+  getWindowChrome: () => ipcRenderer.invoke('get-window-chrome'),
+  showTitlebarMenu: (request) => ipcRenderer.invoke('show-titlebar-menu', request),
+  onFocusTitlebarMenu: (callback) => ipcRenderer.on('focus-titlebar-menu', (_event, request) => callback(request)),
   loadConfig: (file) => ipcRenderer.invoke('load-config', file),
+  setDialogProject: (root) => ipcRenderer.invoke('set-dialog-project', root),
+  readResourceIcons: () => ipcRenderer.invoke('read-resource-icons'),
   openFile: (kind) => ipcRenderer.invoke('open-file', kind),
   saveFile: (content, kind = 'json', defaultPath, options = {}) => ipcRenderer.invoke('save-file', { content, kind, defaultPath, ...options }),
   quickSaveFile: (data) => ipcRenderer.invoke('quick-save-file', data),
@@ -14,6 +19,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   confirmUnsaved: (details) => ipcRenderer.invoke('confirm-unsaved', details),
   confirmWindowClose: () => ipcRenderer.send('confirm-window-close'),
   getUcpInstallation: () => ipcRenderer.invoke('get-ucp-installation'),
+  readInstalledBalance: () => ipcRenderer.invoke('read-installed-balance'),
   chooseUcpInstallation: () => ipcRenderer.invoke('choose-ucp-installation'),
   chooseCastleBackground: () => ipcRenderer.invoke('choose-castle-background'),
   listGameMaps: () => ipcRenderer.invoke('list-game-maps'),

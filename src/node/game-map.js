@@ -33,6 +33,10 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { explode } = require('node-pkware/simple');
 const { encodeRgbaPng } = require('./pixel-image');
+const { colourOf, readGm1, tgxToRgba, diamondToRgba, upperTilePicture } = require('./gm1');
+const { virtualToFile } = require('./pe-addresses');
+const { packMapPictures } = require('./pixel-atlas');
+const { renderNativeMap, internals: nativeRendererInternals } = require('./native-map-renderer');
 // Die Drehregel steht in iso-geometry.js, weil die Ansicht sie auch braucht.
 // Zwei Kopien derselben Regel waeren zwei Regeln, und eine davon veraltet.
 const geometry = require('../js/iso-geometry.js');
@@ -133,9 +137,7 @@ const NAME_STRIDE = 1000;
 const PICTURE_SHIFT_FROM = 149, PICTURE_SHIFT = 21;
 const TILE_W = 30, TILE_H = 16;    // eine Rautenkachel des Spiels
 const TREE_DX = 14, TREE_DY = 6;   // renderMap haengt einen Baum so an sein Feld
-const GM1_HEAD = 88, GM1_PALETTES = 10, GM1_COLOURS = 256;
-// So viele Punkte stehen in jeder Zeile einer Rautenkachel
-const TILE_ROW = [2, 6, 10, 14, 18, 22, 26, 30, 30, 26, 22, 18, 14, 10, 6, 2];
+const GM1_HEAD = 88;
 // Ein Feld ausserhalb des Dorfes wird von der Ansicht ohnehin abgeschnitten.
 // Ein Feld Zugabe, damit am Rand kein durchsichtiger Streifen stehen bleibt.
 const CLIP_MARGIN = 1;
@@ -328,129 +330,45 @@ function nameKeeps(blocks, buildingsSection) {
 // Uebernommen aus VillageStudio/lib/gm1.js und lib/gelaende.js. Nur das, was
 // das Gelaende braucht - Gebaeudebilder und Schriften bleiben dort.
 
-// 15 Bit: 0RRRRRGGGGGBBBBB
-function colourOf(word) {
-  return [((word >> 10) & 31) * 255 / 31 | 0, ((word >> 5) & 31) * 255 / 31 | 0, (word & 31) * 255 / 31 | 0];
+
+function treePicture(gameRoot, name, tree) {
+  const gm1 = heldGm1(gameRoot, name);
+  const entry = gm1.pictures[tree.picture - 1];
+  if (!entry) return null;
+  const raw = gm1.buffer.subarray(gm1.picturesAt + entry.offset, gm1.picturesAt + entry.offset + entry.size);
+  const palette = gm1.palettes[tree.palette >= 0 && tree.palette < gm1.palettes.length ? tree.palette : entry.palette];
+  return { width: entry.width, height: entry.height, dx: 0, dy: 0,
+    rgba: tgxToRgba(raw, entry.width, entry.height, palette) };
 }
 
-// Kopf, Farbtafeln und Bildverzeichnis einer .gm1
-function readGm1(buffer) {
-  const count = buffer.readUInt32LE(12);
-  const paletteAt = GM1_HEAD;
-  const offsetsAt = paletteAt + GM1_PALETTES * GM1_COLOURS * 2;
-  const sizesAt = offsetsAt + count * 4;
-  const headsAt = sizesAt + count * 4;
-  const picturesAt = headsAt + count * 16;
-
-  const palettes = [];
-  for (let index = 0; index < GM1_PALETTES; index += 1) {
-    const palette = [];
-    for (let colour = 0; colour < GM1_COLOURS; colour += 1) {
-      palette.push(colourOf(buffer.readUInt16LE(paletteAt + index * 512 + colour * 2)));
-    }
-    palettes.push(palette);
-  }
-
-  const pictures = [];
-  for (let index = 0; index < count; index += 1) {
-    const at = headsAt + index * 16;
-    pictures.push({
-      offset: buffer.readUInt32LE(offsetsAt + index * 4),
-      size: buffer.readUInt32LE(sizesAt + index * 4),
-      width: buffer.readUInt16LE(at),
-      height: buffer.readUInt16LE(at + 2),
-      lift: buffer.readUInt16LE(at + 10),        // kachelVersatz: hebt den Aufbau
-      direction: buffer.readUInt8(at + 12),
-      palette: buffer.readUInt8(at + 15)
-    });
-  }
-  return { count, palettes, pictures, picturesAt, buffer };
-}
-
-// Ein TGX-Strom in eine RGBA-Flaeche. Ohne Farbtafel sind Farben 2 Byte lang,
-// mit Farbtafel 1 Byte als Nummer darin.
-function tgxToRgba(data, width, height, palette) {
-  const image = Buffer.alloc(width * height * 4, 0);
-  const put = (x, y, rgb) => {
-    if (x < 0 || y < 0 || x >= width || y >= height) return;
-    const at = (y * width + x) * 4;
-    image[at] = rgb[0]; image[at + 1] = rgb[1]; image[at + 2] = rgb[2]; image[at + 3] = 255;
-  };
-
-  let read = 0, x = 0, y = 0;
-  while (read < data.length) {
-    const mark = data[read]; read += 1;
-    const kind = mark & 0xE0;
-    const run = (mark & 0x1F) + 1;
-    if (kind === 0x00) {                       // Punkte am Stueck
-      for (let step = 0; step < run; step += 1) {
-        if (palette) { put(x, y, palette[data[read]]); read += 1; }
-        else { if (read + 1 >= data.length) return image; put(x, y, colourOf(data.readUInt16LE(read))); read += 2; }
-        x += 1;
+function cliffReader(gameRoot) {
+  const cliffHeld = new Map();
+  return (name, index) => {
+    const key = `${name}#${index}`;
+    const found = cliffHeld.get(key);
+    if (found) return found;
+    const gm1 = heldGm1(gameRoot, name);
+    const entry = gm1.pictures[index];
+    if (!entry || entry.width !== TILE_W) return null;
+    const zeilen = entry.height - PILLAR_HEAD;
+    if (zeilen < 1 || entry.size < zeilen * CLIFF_STRIP) return null;
+    const raw = gm1.buffer.subarray(gm1.picturesAt + entry.offset, gm1.picturesAt + entry.offset + entry.size);
+    const bild = Buffer.alloc(TILE_W * zeilen * 4, 0);
+    for (let y = 0; y < zeilen; y += 1) {
+      for (let x = 0; x < TILE_W; x += 1) {
+        const rgb = colourOf(raw.readUInt16LE(y * CLIFF_STRIP + x * 2));
+        const at = (y * TILE_W + x) * 4;
+        bild[at] = rgb[0]; bild[at + 1] = rgb[1]; bild[at + 2] = rgb[2]; bild[at + 3] = 255;
       }
-    } else if (kind === 0x80) {                // Zeilenende
-      y += 1; x = 0;
-    } else if (kind === 0x40) {                // ein Punkt, wiederholt
-      let rgb;
-      if (palette) { rgb = palette[data[read]]; read += 1; }
-      else { if (read + 1 >= data.length) return image; rgb = colourOf(data.readUInt16LE(read)); read += 2; }
-      for (let step = 0; step < run; step += 1) { put(x, y, rgb); x += 1; }
-    } else if (kind === 0x20) {                // durchsichtig
-      x += run;
-    } else {
-      break;                                    // unbekannte Marke: hier ist Schluss
     }
-    if (y >= height) break;
-  }
-  return image;
-}
-
-// Eine Rautenkachel: 512 Byte, Punkt fuer Punkt, Zeilenlaengen nach TILE_ROW
-function diamondToRgba(data) {
-  const image = Buffer.alloc(TILE_W * TILE_H * 4, 0);
-  let read = 0;
-  for (let y = 0; y < TILE_ROW.length; y += 1) {
-    const run = TILE_ROW[y];
-    for (let step = 0; step < run; step += 1) {
-      const x = 15 + step - run / 2;
-      if (read * 2 + 1 >= data.length) return image;
-      const rgb = colourOf(data.readUInt16LE(read * 2));
-      const at = ((x | 0) + y * TILE_W) * 4;
-      image[at] = rgb[0]; image[at + 1] = rgb[1]; image[at + 2] = rgb[2]; image[at + 3] = 255;
-      read += 1;
-    }
-  }
-  return image;
+    const streifen = { bild, zeilen };
+    cliffHeld.set(key, streifen);
+    return streifen;
+  };
 }
 
 // Die Namensliste der exe steht an einer virtuellen Adresse; in der Datei
 // liegt sie woanders. Der PE-Kopf sagt, wie beides zusammenhaengt.
-function virtualToFile(exe) {
-  const pe = exe.readUInt32LE(0x3c);
-  const sections = exe.readUInt16LE(pe + 6);
-  const optionalSize = exe.readUInt16LE(pe + 20);
-  const imageBase = exe.readUInt32LE(pe + 24 + 28);
-  const table = pe + 24 + optionalSize;
-  const parts = [];
-  for (let index = 0; index < sections; index += 1) {
-    const at = table + index * 40;
-    parts.push({
-      virtualAt: exe.readUInt32LE(at + 12),
-      rawSize: exe.readUInt32LE(at + 16),
-      rawAt: exe.readUInt32LE(at + 20)
-    });
-  }
-  return (address) => {
-    const relative = address - imageBase;
-    for (const part of parts) {
-      if (relative >= part.virtualAt && relative < part.virtualAt + part.rawSize) {
-        return part.rawAt + (relative - part.virtualAt);
-      }
-    }
-    return -1;
-  };
-}
-
 // Die Ladereihenfolge der gm-Dateien samt Bildzahl und Startplatz. Einmal je
 // Installation gelesen - die exe aendert sich waehrend einer Sitzung nicht.
 let pictureStockHeld = null;
@@ -621,8 +539,9 @@ function renderTerrain(buffer, directory, gameRoot, keep) {
   //   gx = P + Q - (keep.x - 43)      gy = Q - P + 199 - (keep.y - 43)
   // und beide muessen zwischen 0 und 100 liegen. Nach P aufgeloest ergibt das
   // je Zeile genau ein Stueck.
-  const anchorX = keep.x - geometry.KEEP_TILE;
-  const anchorY = keep.y - geometry.KEEP_TILE;
+  const anchor = geometry.keepAnchor(keep);
+  const anchorX = keep.x - anchor.gx;
+  const anchorY = keep.y - anchor.gy;
   const low = new Int32Array(flatHeight);
   const high = new Int32Array(flatHeight);
   for (let y = 0; y < flatHeight; y += 1) {
@@ -680,12 +599,9 @@ function renderTerrain(buffer, directory, gameRoot, keep) {
 
   const paintTree = (sx, sy, hit, hebung) => {
     const tree = hit.tree;
-    const gm1 = heldGm1(gameRoot, hit.name);
-    const entry = gm1.pictures[tree.picture - 1];
+    const entry = treePicture(gameRoot, hit.name, tree);
     if (!entry) return;
-    const raw = gm1.buffer.subarray(gm1.picturesAt + entry.offset, gm1.picturesAt + entry.offset + entry.size);
-    const palette = gm1.palettes[(tree.palette >= 0 && tree.palette < gm1.palettes.length) ? tree.palette : entry.palette];
-    const picture = tgxToRgba(raw, entry.width, entry.height, palette);
+    const picture = entry.rgba;
     const atX = sx - tree.originX + TREE_DX;
     const atY = sy - tree.originY + TREE_DY;
     // Der Baum steht auf seinem Feld und steigt mit ihm: renderMap zieht auch
@@ -703,29 +619,7 @@ function renderTerrain(buffer, directory, gameRoot, keep) {
   // Die Steilkante unter einer gehobenen Kachel. Gezeichnet wird nur, was auch
   // zu sehen ist: liegen beide Nachbarn davor genauso hoch, deckt ihr eigener
   // Boden die Kante zu. Das spart bei 79 % der Felder die ganze Arbeit.
-  const cliffHeld = new Map();
-  const cliffStrip = (name, index) => {
-    const key = `${name}#${index}`;
-    const found = cliffHeld.get(key);
-    if (found) return found;
-    const gm1 = heldGm1(gameRoot, name);
-    const entry = gm1.pictures[index];
-    if (!entry || entry.width !== TILE_W) return null;
-    const zeilen = entry.height - PILLAR_HEAD;
-    if (zeilen < 1 || entry.size < zeilen * CLIFF_STRIP) return null;
-    const raw = gm1.buffer.subarray(gm1.picturesAt + entry.offset, gm1.picturesAt + entry.offset + entry.size);
-    const bild = Buffer.alloc(TILE_W * zeilen * 4, 0);
-    for (let y = 0; y < zeilen; y += 1) {
-      for (let x = 0; x < TILE_W; x += 1) {
-        const rgb = colourOf(raw.readUInt16LE(y * CLIFF_STRIP + x * 2));
-        const at = (y * TILE_W + x) * 4;
-        bild[at] = rgb[0]; bild[at + 1] = rgb[1]; bild[at + 2] = rgb[2]; bild[at + 3] = 255;
-      }
-    }
-    const streifen = { bild, zeilen };
-    cliffHeld.set(key, streifen);
-    return streifen;
-  };
+  const cliffStrip = cliffReader(gameRoot);
   const cliffFor = (tile) => {
     if (pillars) {
       const found = pictureForValue(stock, pillars.readUInt16LE(tile * 2));
@@ -791,15 +685,14 @@ function renderTerrain(buffer, directory, gameRoot, keep) {
       }
     }
     // was darueber steht (Fels, Busch): lift hebt es ueber die eigene Kachel
-    if (raw.length > 512) {
-      const lift = entry.lift || 0;
-      const above = tgxToRgba(raw.subarray(512), TILE_W, entry.height, null);
-      const right = entry.direction === 3 ? 14 : 0;
+    const upper = upperTilePicture(entry, raw);
+    if (upper) {
+      const above = upper.rgba;
       const fuss = sy + TILE_H - 1;
-      for (let y = 0; y < entry.height; y += 1) {
+      for (let y = 0; y < upper.height; y += 1) {
         for (let x = 0; x < TILE_W; x += 1) {
           const at = (y * TILE_W + x) * 4;
-          if (above[at + 3]) put(sx + right + x, sy - lift + y, above[at], above[at + 1], above[at + 2], hebung, fuss);
+          if (above[at + 3]) put(sx + upper.dx + x, sy + upper.dy + y, above[at], above[at + 1], above[at + 2], hebung, fuss);
         }
       }
     }
@@ -911,7 +804,7 @@ function readGameMap(filePath, gameRoot) {
 // vier Megabyte fuer einen Ausschnitt hinuebergehen.
 const ATLAS_SPALTEN = 64;          // 64 * 30 = 1920 Punkte breit
 
-function buildTileAtlas(gfx, gameRoot) {
+function buildTileAtlas(gfx, gameRoot, layers = {}) {
   const stock = readPictureStock(gameRoot);
 
   // Welche Bildnummern kommen ueberhaupt vor? Jede bekommt einen festen Platz.
@@ -928,6 +821,7 @@ function buildTileAtlas(gfx, gameRoot) {
   const breite = ATLAS_SPALTEN * TILE_W;
   const hoehe = zeilen * TILE_H;
   const rgba = Buffer.alloc(breite * hoehe * 4, 0);
+  const upperPictures = new Array(reihe.length).fill(null);
   let fehlend = 0;
 
   reihe.forEach((wert, platz) => {
@@ -940,6 +834,7 @@ function buildTileAtlas(gfx, gameRoot) {
       if (entry) {
         const raw = gm1.buffer.subarray(gm1.picturesAt + entry.offset, gm1.picturesAt + entry.offset + entry.size);
         bild = diamondToRgba(raw.subarray(0, 512));
+        upperPictures[platz] = upperTilePicture(entry, raw);
       }
     } catch { bild = null; }
     if (!bild) { fehlend += 1; return; }
@@ -969,6 +864,64 @@ function buildTileAtlas(gfx, gameRoot) {
     }
   }
 
+  const treeSprites = [];
+  const cliffSprites = new Uint16Array(400 * 400);
+  const cliffIndices = new Map();
+  const readCliff = cliffReader(gameRoot);
+  if (layers.heights?.length === MAP_TILES) {
+    const atHeight = (x, y, fallback) => {
+      if (y < 0 || y >= 400) return fallback;
+      const [from, to] = rowRange(y);
+      return x < from || x > to ? fallback : layers.heights[tileIndex(x, y)];
+    };
+    for (let my = 0; my < 400; my++) {
+      const [from, to] = rowRange(my);
+      for (let mx = from; mx <= to; mx++) {
+        const tile = tileIndex(mx, my), lift = layers.heights[tile];
+        if (!lift || Math.min(atHeight(mx - 1, my, lift), atHeight(mx + 1, my, lift),
+          atHeight(mx, my - 1, lift), atHeight(mx, my + 1, lift)) >= lift) continue;
+        const found = layers.pillars?.length === MAP_TILES * 2
+          ? pictureForValue(stock, layers.pillars.readUInt16LE(tile * 2)) : null;
+        // Same documented fallback as the cropped renderer.
+        const index = found?.name === CLIFF_FILE ? found.index : 0;
+        let packed = cliffIndices.get(index);
+        if (packed === undefined) {
+          const strip = readCliff(CLIFF_FILE, index) || readCliff(CLIFF_FILE, 0);
+          if (!strip) continue;
+          packed = upperPictures.length;
+          upperPictures.push({ width: TILE_W, height: strip.zeilen, dx: 0, dy: PILLAR_TOP, rgba: strip.bild });
+          cliffIndices.set(index, packed);
+        }
+        cliffSprites[my * 400 + mx] = packed + 1;
+      }
+    }
+  }
+  const treePictures = new Map();
+  const organisms = layers.organisms;
+  const trees = layers.trees;
+  if (organisms?.length === MAP_TILES * 2 && trees) {
+    for (let my = 0; my < 400; my++) {
+      const [from, to] = rowRange(my);
+      for (let mx = from; mx <= to; mx++) {
+        const id = organisms.readUInt16LE(tileIndex(mx, my) * 2);
+        const tree = id > 0 && id < FIRST_ROCK ? trees[id] : null;
+        if (!tree || !tree.alive || !tree.picture) continue;
+        const file = stock.byGmId.get(tree.gmId);
+        if (!file || tree.picture > file.count) continue;
+        const key = `${file.name}/${tree.picture}/${tree.palette}`;
+        let index = treePictures.get(key);
+        if (index === undefined) {
+          const picture = treePicture(gameRoot, file.name, tree);
+          if (!picture) continue;
+          index = upperPictures.length;
+          upperPictures.push(picture);
+          treePictures.set(key, index);
+        }
+        treeSprites.push([mx, my, index, TREE_DX - tree.originX, TREE_DY - tree.originY]);
+      }
+    }
+  }
+
   return {
     atlas: `data:image/png;base64,${encodeRgbaPng(breite, hoehe, rgba).toString('base64')}`,
     atlasBreite: breite,
@@ -978,6 +931,9 @@ function buildTileAtlas(gfx, gameRoot) {
     kachelHoehe: TILE_H,
     kacheln: reihe.length,
     fehlend,
+    upper: packMapPictures(upperPictures),
+    treeSprites,
+    cliffSprites: Buffer.from(cliffSprites.buffer).toString('base64'),
     plaetze: Buffer.from(plaetze.buffer).toString('base64')
   };
 }
@@ -994,11 +950,13 @@ function hoehenRaster(heights) {
   return raster;
 }
 
-function readMapTiles(filePath, gameRoot) {
+function readMapTiles(filePath, gameRoot, nativeLayers = null) {
   const known = knownMap(filePath, gameRoot);
   const root = gameRootOrDefault(gameRoot);
   if (!root) throw new Error('The game folder is not set.');
   const buffer = fs.readFileSync(known.path);
+  if (nativeLayers && nativeRendererInternals.sha(buffer) !== nativeLayers.mapHash)
+    throw new Error('The map changed while its native graphics were being generated. Reload the map.');
   const preview = readPreview(buffer);
   const directory = findDirectory(buffer, preview.end);
   if (!directory) throw new Error('This map carries no sections.');
@@ -1006,14 +964,46 @@ function readMapTiles(filePath, gameRoot) {
   if (!gfx || gfx.length !== MAP_TILES * 2) throw new Error('This map carries no terrain layer (section 1001).');
   let heights = null;
   try { heights = readSection(buffer, directory, HEIGHT_SECTION); } catch { heights = null; }
-  const vorrat = buildTileAtlas(gfx, root);
+  let organisms = null, trees = null, pillars = null;
+  try { pillars = readSection(buffer, directory, PILLAR_SECTION); } catch { pillars = null; }
+  try {
+    organisms = readSection(buffer, directory, ORGANISM_SECTION);
+    trees = readTrees(readSection(buffer, directory, TREES_SECTION));
+  } catch { organisms = null; trees = null; }
+  if (nativeLayers) {
+    // Loading a scenario can reset saved stockpile-platform heights.
+    // Compare unchanged ground (1045), then use the game's resulting
+    // height layer for drawing and picking, rather than the saved platforms.
+    const baseHeights = readSection(buffer, directory, 1045);
+    if (!baseHeights || !baseHeights.equals(nativeLayers.baseHeights))
+      throw new Error('The game renderer returned ground heights from a different map.');
+    heights = nativeLayers.heights;
+  }
+  const cameras = nativeLayers?.cameras.map(layer => ({
+    ...buildTileAtlas(layer.gfx, root, { organisms, trees, pillars: layer.pillars, heights: nativeLayers.heights }),
+    hoehen: Buffer.from(hoehenRaster(nativeLayers.heights)).toString('base64')
+  }));
+  const vorrat = cameras?.[0] || buildTileAtlas(gfx, root, { organisms, trees, pillars, heights });
   return {
     name: known.name,
     path: known.path,
     ...vorrat,
+    ...(cameras ? { cameras, nativeRenderer: true } : {}),
     // Hoehen in derselben Zaehlung wie die Plaetze: volles 400x400-Raster.
     hoehen: heights ? Buffer.from(hoehenRaster(heights)).toString('base64') : null
   };
+}
+
+async function readNativeMapTiles(filePath, gameRoot, cacheRoot) {
+  // Validate the selected map through the existing reader before passing it
+  // to the original executable. The saved atlas remains useful on failure.
+  const saved = readMapTiles(filePath, gameRoot);
+  try {
+    const layers = await renderNativeMap({ gameRoot, mapPath: saved.path, cacheRoot });
+    return readMapTiles(saved.path, gameRoot, layers);
+  } catch (error) {
+    return { ...saved, nativeError: error.message };
+  }
 }
 
 // Dieselbe Karte noch einmal, aber als echtes Gelaende statt als Farbpunkte.
@@ -1037,7 +1027,7 @@ function readMapTerrain(filePath, gameRoot, keep) {
   const preview = readPreview(buffer);
   const directory = findDirectory(buffer, preview.end);
   if (!directory) throw new Error('That map has no section directory.');
-  const terrain = renderTerrain(buffer, directory, root, { x, y });
+  const terrain = renderTerrain(buffer, directory, root, { x, y, orientation: keep.orientation });
   return {
     name: known.name,
     path: known.path,
@@ -1065,11 +1055,12 @@ module.exports = {
   readGameMap,
   readMapTerrain,
   readMapTiles,
+  readNativeMapTiles,
   // fuer die Tests und fuer Werkzeuge, die eine Karte ohne Electron lesen
   internals: { readPreview, previewPng, findDirectory, readSection, findKeeps, nameKeeps, keepOrientation,
                rowBase, rowRange, tileIndex,
-               readPictureStock, pictureForValue, readGm1, renderTerrain, virtualToFile,
-               buildTileAtlas, diamondToRgba, heldGm1, ATLAS_SPALTEN,
+               readPictureStock, pictureForValue, readGm1, tgxToRgba, renderTerrain, virtualToFile,
+               buildTileAtlas, diamondToRgba, upperTilePicture, packMapPictures, heldGm1, ATLAS_SPALTEN,
                PREVIEW_EDGE, MAP_TILES, BUILDING_SECTION, BUILDINGS_SECTION, STONE_KEEP, KEEP_EDGE,
                TILE_W, TILE_H, GFX_SECTION, ORGANISM_SECTION, TREES_SECTION,
                HEIGHT_SECTION, PILLAR_SECTION, PILLAR_TOP, PILLAR_HEAD, CLIFF_FILE, MAX_LIFT }

@@ -218,7 +218,7 @@ test('Castle tool shortcuts are editable, validated, and persisted locally', () 
   const html = fs.readFileSync(path.join(root, 'src', 'index.html'), 'utf8');
   const script = fs.readFileSync(path.join(root, 'src', 'js', 'castle-editor.js'), 'utf8');
   assert.match(html, /id="castleShortcutDialog"/);
-  assert.equal((html.match(/class="castleShortcutKey"/g) || []).length, 16);
+  assert.equal((html.match(/class="castleShortcutKey"/g) || []).length, 20);
   assert.match(script, /const DEFAULT_TOOL_SHORTCUTS/);
   assert.match(script, /localStorage\.setItem\(SHORTCUT_STORAGE_KEY/);
   assert.match(script, /assigned more than once/);
@@ -323,8 +323,8 @@ test('the brush size is a state of its own, and one tile to begin with', () => {
 test('a wide brush goes through the same check as a single tile', () => {
   const script = fs.readFileSync(path.join(root, 'src', 'js', 'castle-editor.js'), 'utf8');
   const pinsel = functionBody(script, 'brushAdd');
-  assert.match(pinsel, /geometry\.brushTiles\(tile, state\.brushSize\)/);
-  assert.match(pinsel, /brushAddOne\(feld\)/,
+  assert.match(pinsel, /placementBrushTiles\(tile\)/);
+  assert.match(pinsel, /brushAddOne\(field\)/,
     'jedes Feld laeuft durch dieselbe Pruefung wie ein einzelnes');
   const eines = functionBody(script, 'brushAddOne');
   assert.match(eines, /validatePlacement\(type, off/, 'und die steht unveraendert dort');
@@ -398,7 +398,7 @@ test('the slanted view previews what a click would place, at half opacity', () =
   // Kurzschreibweise im Rueckgabeobjekt, also direkt im Quelltext gesucht.
   const vorschau = editor.slice(editor.indexOf('getPlacementPreview()'),
                                editor.indexOf('getContent: outputContent'));
-  assert.match(vorschau, /geometry\.brushTiles\(state\.hoverTile, state\.brushSize\)/,
+  assert.match(vorschau, /placementBrushTiles\(state\.hoverTile\)/,
     'ein breiter Pinsel zeigt alle seine Felder, nicht nur eines');
   assert.match(vorschau, /isPlacementTool\(state\.tool\)/);
 

@@ -17,7 +17,7 @@ const {
   isWithin
 } = require('./src/node/ucp-library');
 const { placeholderPortraitPng, resizeBgraBitmapToPng } = require('./src/node/pixel-image');
-const { listGameMaps, readGameMap, readMapTerrain, readMapTiles, internals: mapInternals } = require('./src/node/game-map');
+const { listGameMaps, readGameMap, readMapTerrain, readNativeMapTiles, internals: mapInternals } = require('./src/node/game-map');
 // 17 der 189 Karten haben keinen vorgebauten Bergfried - ihre Startplaetze
 // stehen als eigener Marker in der Karte, siehe map-startplaces.js.
 const { withStartPlaces } = require('./src/node/map-startplaces');
@@ -146,13 +146,17 @@ function ensureRuntimeFiles() {
   if (!fs.existsSync(skinDir())) fs.mkdirSync(skinDir(), { recursive: true });
 }
 
-function createWindow() {
+function createWindow({ restoreProject = false } = {}) {
   const options = {
     width: 1500,
     height: 950,
     minWidth: 900,
     minHeight: 600,
     backgroundColor: '#101416',
+    ...(process.platform === 'win32' ? {
+      titleBarStyle: 'hidden',
+      titleBarOverlay: { color: '#101416', symbolColor: '#e8eceb', height: 42 }
+    } : {}),
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,
@@ -160,10 +164,24 @@ function createWindow() {
       sandbox: true
     }
   };
-  const iconPath = path.join(__dirname, 'assets', 'icon.png');
+  const iconPath = path.join(__dirname, 'assets', process.platform === 'win32' ? 'icon.ico' : 'icon.png');
   if (fs.existsSync(iconPath)) options.icon = iconPath;
 
   const win = new BrowserWindow(options);
+  win.__integratedTitlebar = process.platform === 'win32';
+  if (win.__integratedTitlebar) {
+    win.setAutoHideMenuBar(false);
+    win.setMenuBarVisibility(false);
+    win.webContents.on('before-input-event', (event, input) => {
+      if (input.type !== 'keyDown' || input.control || input.meta) return;
+      const key = input.key.toLowerCase();
+      const menu = input.alt && !input.shift ? { f: 'file', e: 'edit', v: 'view' }[key] : null;
+      if (menu || (key === 'f10' && !input.shift && !input.alt)) {
+        event.preventDefault();
+        win.webContents.send('focus-titlebar-menu', { menu: menu || 'file', open: Boolean(menu) });
+      }
+    });
+  }
   win.webContents.setWindowOpenHandler(({ url }) => (
     url === 'about:blank' ? { action: 'allow' } : { action: 'deny' }
   ));
@@ -189,7 +207,7 @@ function createWindow() {
   win.webContents.once('did-finish-load', () => { win.__closeProtectionReady = true; });
   win.webContents.once('render-process-gone', () => { win.__closeApproved = true; });
   win.on('focus', () => installApplicationMenu(win.__activeWorkspace, win));
-  win.loadFile(path.join(__dirname, 'src', 'index.html'));
+  win.loadFile(path.join(__dirname, 'src', 'index.html'), { query: { restoreProject: restoreProject ? '1' : '0' } });
   return win;
 }
 
@@ -203,7 +221,7 @@ const WORKSPACES = new Set(['ucp', 'character', 'castle', 'content']);
 function defaultCastleOverviewPreferences() {
   return {
     population: { visible: true, side: 'left' },
-    costs: { visible: true, side: 'right' }
+    costs: { visible: true, side: 'left' }
   };
 }
 
@@ -317,7 +335,33 @@ function installApplicationMenu(workspace = 'ucp', win = BrowserWindow.getFocuse
     ? win.__castleOverviewPreferences
     : defaultCastleOverviewPreferences();
   Menu.setApplicationMenu(Menu.buildFromTemplate(menuTemplateForWorkspace(selected, overview)));
+  // Keep native accelerators registered without restoring a second menu row.
+  for (const window of BrowserWindow.getAllWindows()) {
+    if (window.__integratedTitlebar) window.setMenuBarVisibility(false);
+  }
 }
+
+ipcMain.handle('get-window-chrome', event => ({
+  integrated: Boolean(BrowserWindow.fromWebContents(event.sender)?.__integratedTitlebar)
+}));
+
+ipcMain.handle('show-titlebar-menu', (event, request) => {
+  const win = BrowserWindow.fromWebContents(event.sender);
+  if (!win?.__integratedTitlebar || event.senderFrame !== event.sender.mainFrame) return;
+  const index = { file: 0, edit: 2, view: 3 }[request?.menu];
+  if (!Number.isInteger(index) || !Number.isFinite(request?.x) || !Number.isFinite(request?.y)) return;
+  const menu = Menu.buildFromTemplate(menuTemplateForWorkspace(win.__activeWorkspace, win.__castleOverviewPreferences));
+  const popup = menu.items[index]?.submenu;
+  if (!popup) return;
+  const [width, height] = win.getContentSize();
+  const zoom = win.webContents.getZoomFactor();
+  return new Promise(resolve => popup.popup({
+    window: win,
+    x: Math.round(Math.max(0, Math.min(width - 1, request.x * zoom))),
+    y: Math.round(Math.max(0, Math.min(height - 1, request.y * zoom))),
+    callback: () => resolve(true)
+  }));
+});
 
 ipcMain.on('set-active-workspace', (event, workspace) => {
   if (!WORKSPACES.has(workspace)) return;
@@ -337,9 +381,10 @@ ipcMain.on('set-castle-overview-preferences', (event, preferences) => {
 });
 
 app.whenReady().then(() => {
+  if (process.platform === 'win32') app.setAppUserModelId('de.schlossgespenst.aitoolkit');
   ensureRuntimeFiles();
   installApplicationMenu('ucp');
-  createWindow();
+  createWindow({ restoreProject: true });
 
   globalShortcut.register('CommandOrControl+=', () => {
     const win = BrowserWindow.getFocusedWindow();
@@ -347,7 +392,7 @@ app.whenReady().then(() => {
   });
 
   app.on('activate', () => {
-    if (BrowserWindow.getAllWindows().length === 0) createWindow();
+    if (BrowserWindow.getAllWindows().length === 0) createWindow({ restoreProject: true });
   });
 });
 
@@ -405,11 +450,22 @@ ipcMain.on('confirm-window-close', event => {
   win.close();
 });
 
+const dialogProjects = new WeakMap();
+function projectDialogPath(event, proposed) {
+  const root = dialogProjects.get(event.sender);
+  if (!root || !fs.existsSync(root)) return proposed;
+  return proposed ? path.join(root, path.basename(proposed)) : root;
+}
+ipcMain.handle('set-dialog-project', (event, root) => {
+  if (root == null) { dialogProjects.delete(event.sender); return; }
+  if (typeof root !== 'string' || !path.isAbsolute(root) || !fs.statSync(root).isDirectory()) throw new Error('Invalid project folder.');
+  dialogProjects.set(event.sender, fs.realpathSync(root));
+});
 ipcMain.handle('open-file', async (_event, kind = 'json') => {
   const filters = kind === 'aiv'
     ? [{ name: 'Stronghold AIV Castle', extensions: ['aiv', 'aivjson'] }]
     : [{ name: 'JSON', extensions: ['json'] }];
-  const result = await dialog.showOpenDialog({ properties: ['openFile'], filters });
+  const result = await dialog.showOpenDialog(BrowserWindow.fromWebContents(_event.sender), { properties: ['openFile'], filters, defaultPath: projectDialogPath(_event) });
   if (result.canceled || result.filePaths.length === 0) return null;
   const filePath = result.filePaths[0];
   if (kind === 'aiv') {
@@ -432,7 +488,7 @@ ipcMain.handle('save-file', async (_event, {
   const filters = kind === 'aiv'
     ? [{ name: 'Stronghold AIV Castle', extensions: ['aiv'] }]
     : [{ name: 'JSON', extensions: ['json'] }];
-  const result = await dialog.showSaveDialog({ filters, defaultPath });
+  const result = await dialog.showSaveDialog(BrowserWindow.fromWebContents(_event.sender), { filters, defaultPath: projectDialogPath(_event, defaultPath) });
   if (result.canceled || !result.filePath) return null;
   if (kind === 'aiv') {
     const filePath = result.filePath.toLowerCase().endsWith('.aiv') ? result.filePath : `${result.filePath}.aiv`;
@@ -449,7 +505,8 @@ ipcMain.handle('quick-save-file', async (_event, { path: filePath, content, kind
 });
 
 ipcMain.handle('get-ucp-installation', () => savedUcpInstallation());
-
+ipcMain.handle('read-resource-icons', () => require('./src/node/resource-icons').readResourceIcons(savedUcpInstallation()));
+ipcMain.handle('read-installed-balance', () => require('./src/node/castle-balance').readInstalledBalance(savedUcpInstallation()));
 ipcMain.handle('choose-ucp-installation', async event => {
   const win = BrowserWindow.fromWebContents(event.sender);
   const result = await dialog.showOpenDialog(win, {
@@ -467,6 +524,7 @@ ipcMain.handle('choose-castle-background', async event => {
   const win = BrowserWindow.fromWebContents(event.sender);
   const options = {
     title: 'Choose temporary castle background',
+    defaultPath: projectDialogPath(event),
     properties: ['openFile'],
     filters: [{ name: 'Image', extensions: ['png', 'jpg', 'jpeg', 'webp', 'bmp'] }]
   };
@@ -512,7 +570,8 @@ ipcMain.handle('load-game-map', (_event, filePath) =>
 // getrennt entscheiden, waeren zwei Stellen zum Auseinanderlaufen.
 // Die ganze Karte als Kachelvorrat - kein fertiges Bild, sondern das, was
 // die Ansicht braucht, um selbst zu malen (siehe readMapTiles).
-ipcMain.handle('load-map-tiles', (_event, filePath) => readMapTiles(filePath, savedUcpInstallation()));
+ipcMain.handle('load-map-tiles', (_event, filePath) =>
+  readNativeMapTiles(filePath, savedUcpInstallation(), path.join(app.getPath('userData'), 'native-map-renderer')));
 ipcMain.handle('load-map-terrain', (_event, request) =>
   readMapTerrain(request && request.path, savedUcpInstallation(), request && request.keep));
 
@@ -619,6 +678,7 @@ ipcMain.handle('choose-ai-portrait', async (event, { gameRoot, aiRoot, kind = 'p
   const win = BrowserWindow.fromWebContents(event.sender);
   const result = await dialog.showOpenDialog(win, {
     title: `Choose ${fileName}`,
+    defaultPath: projectDialogPath(event),
     properties: ['openFile'],
     filters: [{ name: 'Image', extensions: ['png', 'jpg', 'jpeg', 'bmp', 'webp'] }]
   });
@@ -651,6 +711,7 @@ ipcMain.handle('replace-ai-media', async (event, request = {}) => {
   const win = BrowserWindow.fromWebContents(event.sender);
   const result = await dialog.showOpenDialog(win, {
     title: `Replace ${media.fileName}`,
+    defaultPath: projectDialogPath(event),
     properties: ['openFile'],
     filters: [{ name: label, extensions: [extension] }]
   });
@@ -682,7 +743,7 @@ ipcMain.handle('load-file-in-new-window', async (_event, kind = 'json') => {
   const filters = kind === 'aiv'
     ? [{ name: 'Stronghold AIV Castle', extensions: ['aiv', 'aivjson'] }]
     : [{ name: 'JSON', extensions: ['json'] }];
-  const result = await dialog.showOpenDialog({ filters, properties: ['openFile'] });
+  const result = await dialog.showOpenDialog(BrowserWindow.fromWebContents(_event.sender), { filters, properties: ['openFile'], defaultPath: projectDialogPath(_event) });
   if (result.canceled || result.filePaths.length === 0) return null;
 
   const filePath = result.filePaths[0];
@@ -699,7 +760,8 @@ ipcMain.handle('load-file-in-new-window', async (_event, kind = 'json') => {
 });
 
 ipcMain.handle('choose-aiv-skin', async (_event, itemType) => {
-  const result = await dialog.showOpenDialog({
+  const result = await dialog.showOpenDialog(BrowserWindow.fromWebContents(_event.sender), {
+    defaultPath: projectDialogPath(_event),
     properties: ['openFile'],
     filters: [{ name: 'PNG Image', extensions: ['png'] }]
   });
