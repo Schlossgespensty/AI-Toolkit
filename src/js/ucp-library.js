@@ -558,6 +558,8 @@
     setBusy(true);
     setStatus(`Opening ${ai.name}…`);
     try {
+      await window.characterEditor.ready;
+      if (options.shouldAbort?.()) return false;
       const project = await window.electronAPI.loadUcpAiProject({
         gameRoot: state.gameRoot,
         aiRoot: ai.rootPath,
