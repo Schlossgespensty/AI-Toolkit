@@ -20,20 +20,27 @@ test('observer Lua preserves Recorder, captures type-32 sparks and stops safely 
     io={open=function(name,mode) if mode=='rb' then return nil end return stream end}
     json={encode=function(self,value) seen[#seen+1]=value;return '{}' end}
     local tick=1
-    local recorder={active=true,status='recording',manifest={id='fixture',variant='SHC',snapshotHash='a',settingsHash='b'},
-      onTick=function() calls=calls+1 end,
-      engine={singlePlayer=function()return true end,tick=function()return tick end,resourceState=function()return {} end}}
-    modules={recorder={recorder=recorder}}
-    local original=recorder.onTick
+    local callback
+    local provider={tickObserverApiVersion=1,
+      registerTickObserver=function(self,fn)callback=fn;return 7 end,
+      unregisterTickObserver=function(self,token)assert(token==7);callback=nil end}
+    -- UCP exposes other extensions through read-only proxies, not writable
+    -- Recorder tables. The integration must only call the public methods.
+    modules={recorder=setmetatable({},{__index=provider,__newindex=function()error('UCP read-only module')end})}
+    local function nativeTick()
+      calls=calls+1
+      if callback then callback({active=true,status='recording',singlePlayer=true,tick=tick,resources={},
+        manifest={id='fixture',variant='SHC',snapshotHash='a',settingsHash='b'}}) end
+    end
     local observer=(function() ${source} end)()
-    observer:enable();recorder:onTick()
+    observer:enable();nativeTick()
     assert(calls==1 and #seen==2)
     assert(#seen[2].workers==1 and #seen[2].fires==0 and #seen[2].sparks==1)
     assert(seen[2].sparks[1][2]==99 and seen[2].sparks[1][3]==160)
-    recorder:onTick();assert(#seen==2 and calls==2)
-    tick=2;mem[0x1387f38]=3000;recorder:onTick();assert(calls==3 and closed==1)
-    tick=3;recorder:onTick();assert(calls==4 and #seen==2)
-    observer:disable();assert(recorder.onTick==original)
+    nativeTick();assert(#seen==2 and calls==2)
+    tick=2;mem[0x1387f38]=3000;nativeTick();assert(calls==3 and closed==1)
+    tick=3;nativeTick();assert(calls==4 and #seen==2)
+    observer:disable();assert(callback==nil)
   `;
   const L=lauxlib.luaL_newstate();lualib.luaL_openlibs(L);
   const result=lauxlib.luaL_dostring(L,to_luastring(fixture));

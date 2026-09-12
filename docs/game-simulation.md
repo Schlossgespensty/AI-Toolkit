@@ -19,7 +19,9 @@ that an unsaved AIV is identical to the recorded world.
    samples contained fire on each tile; it is not a probability forecast.
    Spark trails show actual type-32 projectile positions, including height.
 
-The observer reuses Recorder's tick callback and reads memory. It installs no
+The observer subscribes to Recorder's public completed-tick API and reads memory.
+UCP exposes other modules through read-only proxies; the observer never replaces
+Recorder's private callbacks. It installs no
 second native hook, calls no RNG or pathfinding routine, and changes no game
 state. It rejects incompatible layouts and expanded unit pools. Captures stop
 at 64 MiB; errors stop the observer without suppressing Recorder's callback.

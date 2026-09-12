@@ -4,6 +4,6 @@ version: 0.1.0
 type: module
 author: Krarilotus
 dependencies:
-  recorder: ">=0.37.1 <0.40.0"
+  recorder: ">=0.51.0 <0.52.0"
 meta:
   version: 1.0.0

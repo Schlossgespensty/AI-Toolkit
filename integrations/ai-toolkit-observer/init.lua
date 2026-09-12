@@ -56,18 +56,18 @@ local function snapshot(tick)
 end
 function module:enable()
   verify()
-  local recorder=assert(modules.recorder and modules.recorder.recorder,'Enable Recorder before the observer')
-  assert(type(recorder.onTick)=='function' and recorder.engine,'Unsupported Recorder observer interface')
-  local original=recorder.onTick
+  local recorder=assert(modules.recorder,'Enable Recorder before the observer')
+  assert(recorder.tickObserverApiVersion==1 and type(recorder.registerTickObserver)=='function',
+    'This observer requires Recorder with the public tick-observer API')
   local active,stream,bytes,lastTick,stopped,failed
   local function close()
     if stream then stream:close();stream=nil end
   end
   local function observe(r)
-    if not r.active or r.status~='recording' or not r.engine:singlePlayer() then close();active=nil;return end
+    if not r.active or r.status~='recording' or not r.singlePlayer then close();active=nil;return end
     local manifest=r.manifest
     assert(manifest.variant=='SHC','Observer currently supports classic Crusader 1.41 only')
-    local tick=r.engine:tick()
+    local tick=r.tick
     if active~=manifest.id then
       close();active=manifest.id;bytes=0;lastTick=nil;stopped=false
       assert(active:match('^[%w_-]+$') and #active<80,'Invalid replay identity')
@@ -91,7 +91,7 @@ function module:enable()
     if stopped or tick==lastTick then return end
     assert(not lastTick or tick>lastTick,'Observer simulation tick moved backwards')
     local frame=snapshot(tick)
-    frame.resources=r.engine:resourceState()
+    frame.resources=r.resources
     local line=json:encode(frame)..'\n'
     if bytes+#line>LIMIT then
       assert(stream:write(json:encode({kind='end',reason='Capture size limit reached',tick=lastTick})..'\n'))
@@ -103,17 +103,15 @@ function module:enable()
     if tick%20==0 then assert(stream:flush()) end
     bytes=bytes+#line;lastTick=tick
   end
-  self.wrapper=function(r,...)
-    original(r,...)
+  self.token=recorder:registerTickObserver(function(r)
     if failed then return end
     local ok,err=pcall(observe,r)
     if not ok then close();failed=true;print('AI Toolkit observer stopped: '..tostring(err)) end
-  end
-  self.recorder=recorder;self.original=original;self.close=close
-  recorder.onTick=self.wrapper
+  end)
+  self.recorder=recorder;self.close=close
 end
 function module:disable()
   if self.close then self.close() end
-  if self.recorder and self.recorder.onTick==self.wrapper then self.recorder.onTick=self.original end
+  if self.recorder and self.token then self.recorder:unregisterTickObserver(self.token);self.token=nil end
 end
 return module
