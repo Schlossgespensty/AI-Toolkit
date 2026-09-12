@@ -3392,15 +3392,23 @@
     if (!window.isoView || !window.isoView.setMapTiles) return;
     const info = window.isoView.gameMapInfo();
     if (!info || !info.path) return;
-    if (kachelnLaufen === info.path) return;
-    kachelnLaufen = info.path;
+    if (kachelnLaufen?.path === info.path) return;
+    const request = { path: info.path };
+    kachelnLaufen = request;
+    setStatus('Loading map views…');
     try {
       const vorrat = await window.electronAPI.loadMapTiles(info.path);
-      if (kachelnLaufen !== info.path) return;      // inzwischen andere Karte
+      if (kachelnLaufen !== request) return;      // inzwischen andere Karte oder neuer Ladevorgang
       window.isoView.setMapTiles(vorrat);
+      if (vorrat.nativeError) {
+        kachelnLaufen = null;
+        setStatus(`Map loaded; rotation unavailable: ${vorrat.nativeError}`);
+        return;
+      }
       setStatus(`Whole map "${vorrat.name}" ready · ${vorrat.kacheln} different tiles`
                 + (vorrat.fehlend ? `, ${vorrat.fehlend} without a picture` : ''));
     } catch (error) {
+      if (kachelnLaufen !== request) return;
       kachelnLaufen = null;
       setStatus(`Could not read the map tiles: ${error.message}`);
     }
@@ -3469,6 +3477,7 @@
     try {
       const map = await window.electronAPI.loadGameMap(entry.path);
       window.isoView.setGameMap(map);
+      kachelnLaufen = null;
       ensureMapTiles();
       updateMapControls();
       updateGroundControls();
@@ -3677,6 +3686,10 @@
       // Kopieren bleibt auf '5' und Strg+C.
       event.preventDefault();
       const wert = window.isoView.turnView(key === 'c' ? -1 : 1);
+      if (wert === null) {
+        setStatus('Map rotation needs the game-generated camera layers. Wait for loading to finish, or reload the map after checking the selected UCP installation.');
+        return;
+      }
       setStatus('View turned' + (wert ? ' by ' + (wert / 2) + ' quarter turn' + (wert === 2 ? '' : 's') : ' back to the file'));
     } else if (shortcutTool) {
       event.preventDefault();

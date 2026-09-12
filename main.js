@@ -17,7 +17,7 @@ const {
   isWithin
 } = require('./src/node/ucp-library');
 const { placeholderPortraitPng, resizeBgraBitmapToPng } = require('./src/node/pixel-image');
-const { listGameMaps, readGameMap, readMapTerrain, readMapTiles, internals: mapInternals } = require('./src/node/game-map');
+const { listGameMaps, readGameMap, readMapTerrain, readNativeMapTiles, internals: mapInternals } = require('./src/node/game-map');
 // 17 der 189 Karten haben keinen vorgebauten Bergfried - ihre Startplaetze
 // stehen als eigener Marker in der Karte, siehe map-startplaces.js.
 const { withStartPlaces } = require('./src/node/map-startplaces');
@@ -588,7 +588,8 @@ ipcMain.handle('load-game-map', (_event, filePath) =>
 // getrennt entscheiden, waeren zwei Stellen zum Auseinanderlaufen.
 // Die ganze Karte als Kachelvorrat - kein fertiges Bild, sondern das, was
 // die Ansicht braucht, um selbst zu malen (siehe readMapTiles).
-ipcMain.handle('load-map-tiles', (_event, filePath) => readMapTiles(filePath, savedUcpInstallation()));
+ipcMain.handle('load-map-tiles', (_event, filePath) =>
+  readNativeMapTiles(filePath, savedUcpInstallation(), path.join(app.getPath('userData'), 'native-map-renderer')));
 ipcMain.handle('load-map-terrain', (_event, request) =>
   readMapTerrain(request && request.path, savedUcpInstallation(), request && request.keep));
 

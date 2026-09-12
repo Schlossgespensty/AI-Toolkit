@@ -286,9 +286,10 @@
     // Das Gelaende der alten Karte zeigt die alte Karte. Es jetzt stehen zu
     // lassen hiesse, die neue Karte mit fremdem Boden zu zeigen.
     if (state.kachelVorrat && state.kachelVorrat.path !== state.gameMap?.path) {
-      if (state.kachelVorrat.upperImage) state.images.delete(state.kachelVorrat.upperImage.src);
+      releaseMapImages();
       state.kachelVorrat = null;
     }
+    if (previous?.path !== state.gameMap?.path) handDrehung = 0;
     setTerrain(null);
     rememberGameMap();
     if (state.gameMap && state.ground) setGround(null);   // paints as well
@@ -345,6 +346,7 @@
   function viewRotation() { return handDrehung; }
 
   function turnView(richtung) {
+    if (gameMap() && !state.kachelVorrat?.cameras) return null;
     const schritt = Number(richtung) < 0 ? -VIERTEL : VIERTEL;
     const target = surface();
     if (target) {
@@ -444,7 +446,17 @@
   // Bild von 12000x6400 Punkten entsteht.
   const KARTE_FELDER = 400;
 
-  function vorrat() { return state.kachelVorrat || null; }
+  function vorrat() {
+    const stock = state.kachelVorrat;
+    return stock?.cameras?.[viewRotation() / 2] || stock || null;
+  }
+
+  function releaseMapImages() {
+    const stock = state.kachelVorrat;
+    for (const camera of stock?.cameras || (stock ? [stock] : [])) {
+      if (camera.upperImage) state.images.delete(camera.upperImage.src);
+    }
+  }
 
   // Base64 in ein Zahlenfeld. Die Bruecke kann keine Binaerdaten, deshalb
   // kommen Plaetze und Hoehen als Text.
@@ -458,25 +470,30 @@
 
   function setMapTiles(daten) {
     if (daten?.path && daten.path !== gameMap()?.path) return;
-    if (state.kachelVorrat?.upperImage) state.images.delete(state.kachelVorrat.upperImage.src);
+    releaseMapImages();
     if (!daten) { state.kachelVorrat = null; paint(); return; }
-    const bild = new Image();
-    bild.onload = () => paint();
-    bild.src = daten.atlas;
-    const upperImage = daten.upper?.dataUrl ? image(daten.upper.dataUrl) : null;
-    state.kachelVorrat = {
-      path: daten.path,
-      bild,
-      upperImage, upperEntries: daten.upper?.entries || [],
-      treeSprites: new Map((daten.treeSprites || []).map(tree => [tree[1] * KARTE_FELDER + tree[0], tree])),
-      cliffSprites: ausBase64(daten.cliffSprites, Uint16Array),
-      plaetze: ausBase64(daten.plaetze, Uint16Array),
-      hoehen: daten.hoehen ? ausBase64(daten.hoehen, Uint8Array) : null,
-      spalten: Number(daten.spalten) || 64,
-      kw: Number(daten.kachelBreite) || 30,
-      kh: Number(daten.kachelHoehe) || 16,
-      name: daten.name || ''
-    };
+    function cameraStock(daten) {
+      const bild = new Image();
+      bild.onload = () => paint();
+      bild.src = daten.atlas;
+      const upperImage = daten.upper?.dataUrl ? image(daten.upper.dataUrl) : null;
+      return {
+        path: daten.path,
+        bild,
+        upperImage, upperEntries: daten.upper?.entries || [],
+        treeSprites: new Map((daten.treeSprites || []).map(tree => [tree[1] * KARTE_FELDER + tree[0], tree])),
+        cliffSprites: ausBase64(daten.cliffSprites, Uint16Array),
+        plaetze: ausBase64(daten.plaetze, Uint16Array),
+        hoehen: daten.hoehen ? ausBase64(daten.hoehen, Uint8Array) : null,
+        spalten: Number(daten.spalten) || 64,
+        kw: Number(daten.kachelBreite) || 30,
+        kh: Number(daten.kachelHoehe) || 16,
+        name: daten.name || ''
+      };
+    }
+    const cameras = daten.cameras?.length === 4 ? daten.cameras.map(cameraStock) : null;
+    state.kachelVorrat = { ...(cameras?.[0] || cameraStock(daten)), path: daten.path, cameras, nativeError: daten.nativeError };
+    if (!cameras) handDrehung = 0;
     paint();
   }
 

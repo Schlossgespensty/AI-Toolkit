@@ -64,16 +64,23 @@ require('../main');
         atlasContext.moveTo(i*30+15,0);atlasContext.lineTo(i*30+30,8);
         atlasContext.lineTo(i*30+15,16);atlasContext.lineTo(i*30,8);atlasContext.fill();
       });
-      const mapAtlas=atlas.toDataURL(), locations=new Uint16Array(400*400);locations.fill(65535);
+      const mapAtlases=[0,2,4,6].map(orientation=>{
+        atlasContext.fillStyle='rgb('+orientation+',0,0)';atlasContext.fillRect(0,0,1,1);
+        return atlas.toDataURL();
+      });
+      const mapAtlas=mapAtlases[0], locations=new Uint16Array(400*400);locations.fill(65535);
       [[22,31],[72,32],[21,69],[73,70]].forEach(([x,y],i)=>locations[(y+157)*400+x+157]=i);
       const encode=array=>{let text='';for(const byte of new Uint8Array(array.buffer))text+=String.fromCharCode(byte);return btoa(text)};
       const mapDraws=[];
       CanvasRenderingContext2D.prototype.drawImage=function(image,...args){
-        if(image?.src===mapAtlas)mapDraws.push({tile:args[0]/30,x:args[4],y:args[5]});
+        const camera=mapAtlases.indexOf(image?.src);
+        if(camera>=0)mapDraws.push({camera:camera*2,tile:args[0]/30,x:args[4],y:args[5]});
         return original.call(this,image,...args);
       };
       window.isoView.setGameMap({name:'Camera fixture',path:'camera-fixture.map',dataUrl:mapAtlas,keeps:[{x:200,y:200,orientation:0}]});
       window.isoView.setMapTiles({path:'camera-fixture.map',atlas:mapAtlas,plaetze:encode(locations),spalten:4,kachelBreite:30,kachelHoehe:16});
+      if(window.isoView.turnView(1)!==null)throw new Error('Saved terrain must not masquerade as native directional graphics');
+      window.isoView.setMapTiles({path:'camera-fixture.map',nativeRenderer:true,cameras:mapAtlases.map(atlas=>({atlas,plaetze:encode(locations),spalten:4,kachelBreite:30,kachelHoehe:16}))});
       await pause();
       for(let turn=0;turn<=4;turn++){
         if(turn)window.isoView.turnView(1);
@@ -96,6 +103,7 @@ require('../main');
       fs.writeFileSync(path.join(output,'camera-rotation-'+i+'.png'),Buffer.from(frame.png.split(',')[1],'base64'));
       delete frame.png;
       assert.equal(frame.tiles.length,4,'All four map markers must remain visible after rotation');
+      assert.ok(frame.tiles.every(tile=>tile.camera===frame.orientation),'The selected native camera atlas must match the scene orientation');
     }
     const first=result.cameraFrames[0],last=result.cameraFrames[4];
     for(const tile of first.tiles){

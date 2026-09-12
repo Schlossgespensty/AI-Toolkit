@@ -36,6 +36,7 @@ const { encodeRgbaPng } = require('./pixel-image');
 const { colourOf, readGm1, tgxToRgba, diamondToRgba, upperTilePicture } = require('./gm1');
 const { virtualToFile } = require('./pe-addresses');
 const { packMapPictures } = require('./pixel-atlas');
+const { renderNativeMap, internals: nativeRendererInternals } = require('./native-map-renderer');
 // Die Drehregel steht in iso-geometry.js, weil die Ansicht sie auch braucht.
 // Zwei Kopien derselben Regel waeren zwei Regeln, und eine davon veraltet.
 const geometry = require('../js/iso-geometry.js');
@@ -949,11 +950,13 @@ function hoehenRaster(heights) {
   return raster;
 }
 
-function readMapTiles(filePath, gameRoot) {
+function readMapTiles(filePath, gameRoot, nativeLayers = null) {
   const known = knownMap(filePath, gameRoot);
   const root = gameRootOrDefault(gameRoot);
   if (!root) throw new Error('The game folder is not set.');
   const buffer = fs.readFileSync(known.path);
+  if (nativeLayers && nativeRendererInternals.sha(buffer) !== nativeLayers.mapHash)
+    throw new Error('The map changed while its native graphics were being generated. Reload the map.');
   const preview = readPreview(buffer);
   const directory = findDirectory(buffer, preview.end);
   if (!directory) throw new Error('This map carries no sections.');
@@ -967,14 +970,40 @@ function readMapTiles(filePath, gameRoot) {
     organisms = readSection(buffer, directory, ORGANISM_SECTION);
     trees = readTrees(readSection(buffer, directory, TREES_SECTION));
   } catch { organisms = null; trees = null; }
-  const vorrat = buildTileAtlas(gfx, root, { organisms, trees, pillars, heights });
+  if (nativeLayers) {
+    // Loading a scenario can reset saved stockpile-platform heights.
+    // Compare unchanged ground (1045), then use the game's resulting
+    // height layer for drawing and picking, rather than the saved platforms.
+    const baseHeights = readSection(buffer, directory, 1045);
+    if (!baseHeights || !baseHeights.equals(nativeLayers.baseHeights))
+      throw new Error('The game renderer returned ground heights from a different map.');
+    heights = nativeLayers.heights;
+  }
+  const cameras = nativeLayers?.cameras.map(layer => ({
+    ...buildTileAtlas(layer.gfx, root, { organisms, trees, pillars: layer.pillars, heights: nativeLayers.heights }),
+    hoehen: Buffer.from(hoehenRaster(nativeLayers.heights)).toString('base64')
+  }));
+  const vorrat = cameras?.[0] || buildTileAtlas(gfx, root, { organisms, trees, pillars, heights });
   return {
     name: known.name,
     path: known.path,
     ...vorrat,
+    ...(cameras ? { cameras, nativeRenderer: true } : {}),
     // Hoehen in derselben Zaehlung wie die Plaetze: volles 400x400-Raster.
     hoehen: heights ? Buffer.from(hoehenRaster(heights)).toString('base64') : null
   };
+}
+
+async function readNativeMapTiles(filePath, gameRoot, cacheRoot) {
+  // Validate the selected map through the existing reader before passing it
+  // to the original executable. The saved atlas remains useful on failure.
+  const saved = readMapTiles(filePath, gameRoot);
+  try {
+    const layers = await renderNativeMap({ gameRoot, mapPath: saved.path, cacheRoot });
+    return readMapTiles(saved.path, gameRoot, layers);
+  } catch (error) {
+    return { ...saved, nativeError: error.message };
+  }
 }
 
 // Dieselbe Karte noch einmal, aber als echtes Gelaende statt als Farbpunkte.
@@ -1026,6 +1055,7 @@ module.exports = {
   readGameMap,
   readMapTerrain,
   readMapTiles,
+  readNativeMapTiles,
   // fuer die Tests und fuer Werkzeuge, die eine Karte ohne Electron lesen
   internals: { readPreview, previewPng, findDirectory, readSection, findKeeps, nameKeeps, keepOrientation,
                rowBase, rowRange, tileIndex,
