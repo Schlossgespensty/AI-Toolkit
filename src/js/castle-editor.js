@@ -2465,7 +2465,7 @@
   function getAnalysisOverlay() {
     const showFire = document.getElementById('castleShowFire').checked;
     const showRoutes = document.getElementById('castleShowRoutes').checked;
-    document.getElementById('castleFireMode').hidden = !showFire;
+    document.getElementById('castleFireModeLabel').hidden = !showFire;
     if (!showFire && !showRoutes) return { heat: [], routes: [] };
     const data = window.castleCostData;
     const placements = placementRefs().filter(p => p.kind !== 'unit'
@@ -2479,7 +2479,7 @@
         : [item];
     });
     const fireMode = document.getElementById('castleFireMode').value;
-    document.getElementById('castleFireMode').hidden = !showFire;
+    document.getElementById('castleFireModeLabel').hidden = !showFire;
     const key = JSON.stringify([showFire, showRoutes, fireMode, placements]);
     if (analysisCache?.key === key) return analysisCache.value;
     const value = { heat: showFire ? window.castleAnalysis.fireExposure(placements, GRID, fireMode) : [],
