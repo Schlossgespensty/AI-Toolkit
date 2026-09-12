@@ -6,6 +6,20 @@ const geo = require('../src/js/iso-geometry');
 const catalogue = require('../assets/aiv/iso/verzeichnis.json');
 const entries = catalogue.gegenstaende;
 
+test('step preview excludes future components and keeps original references and farm layouts', () => {
+  const document = { frames: [
+    { itemType: 73, tilePositionOfsets: [100] },
+    { itemType: 73, tilePositionOfsets: [200, 300] },
+    { itemType: 70, tilePositionOfsets: [400] }
+  ] };
+  assert.equal(geo.collectItems(document, catalogue, 0).length, 1);
+  const visible = geo.collectItems(document, catalogue, 1);
+  assert.deepEqual(visible.map(item => item.ref), ['f:0:0', 'f:1:0', 'f:1:1']);
+  assert.deepEqual(visible.map(item => item.layoutIndex), [0, 1, 2]);
+  assert.equal(geo.collectItems(document, catalogue, null).length, 4);
+  assert.equal(geo.collectItems(document, catalogue, -1).length, 0);
+});
+
 function item(type, gx, gy, extra = {}) {
   return { itemType: type, gx, gy, tiles: entries[type].kacheln, entry: entries[type], ref: String(type), ...extra };
 }

@@ -345,12 +345,13 @@
       .map(([gx, gy]) => isoPoint(gx, gy, view));
   }
 
-  function collectItems(document_, catalogue) {
+  function collectItems(document_, catalogue, throughFrame = null) {
     const out = [];
     const counts = new Map();
     if (!document_ || !Array.isArray(document_.frames)) return out;
     const items = (catalogue && catalogue.gegenstaende) || {};
     document_.frames.forEach((frame, frameIndex) => {
+      if (Number.isInteger(throughFrame) && frameIndex > throughFrame) return;
       const entry = items[String(frame.itemType)] || null;
       const offsets = Array.isArray(frame.tilePositionOfsets) ? frame.tilePositionOfsets : [];
       offsets.forEach((offset, offsetIndex) => {

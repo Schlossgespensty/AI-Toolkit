@@ -729,7 +729,8 @@
     // gleichermassen. Der Startaufbau auf der Karte dreht sich also nicht mit;
     // das Spiel setzt ihn immer gleich hin. Genau diese 7/2 stehen auch im
     // Katalog. Wer die Platten mitdreht, schiebt den Lagerplatz von der Karte.
-    const gerade = geo.collectItems(currentDocument(), state.catalogue);
+    const gerade = geo.collectItems(currentDocument(), state.catalogue,
+      window.castleEditor?.getActiveBuildStep?.());
     const items = geo.attachDrawbridges(turnedTiles(gerade));
     state.renderItems = items;
     const plates = geo.collectPlates(items);

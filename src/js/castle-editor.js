@@ -1165,11 +1165,18 @@
   // einzelnes, damit ein breiter Pinsel nichts darf, was ein schmaler nicht
   // duerfte.
   function brushAdd(tile) {
-    if (state.brushSize > 1) {
-      for (const feld of geometry.brushTiles(tile, state.brushSize)) brushAddOne(feld);
-      return;
-    }
-    brushAddOne(tile);
+    for (const field of placementBrushTiles(tile)) brushAddOne(field);
+  }
+
+  function placementBrushTiles(tile) {
+    const type = state.currentItemType;
+    const size = itemInfo(type).size;
+    // Keep the user's width when switching items, but only paint an area for
+    // single-tile objects. Ordinary buildings still occupy one placement.
+    const supportsArea = !isUnitType(type) && !isLineSequence(type) &&
+      Array.isArray(size) && Number(size[0]) === 1 && Number(size[1]) === 1;
+    return state.tool === 'brush' && supportsArea && state.brushSize > 1
+      ? geometry.brushTiles(tile, state.brushSize) : [tile];
   }
 
   function brushAddOne(tile) {
@@ -2494,9 +2501,7 @@
       const previewType = lineSequence(state.currentItemType)[0] ?? state.currentItemType;
       // Beim Pinsel zeigt die Vorschau die ganze Breite - sonst sieht man die
       // eingestellte Groesse erst, wenn schon gemalt ist.
-      const felder = state.tool === 'brush' && state.brushSize > 1
-        ? geometry.brushTiles(state.hoverTile, state.brushSize)
-        : [state.hoverTile];
+      const felder = placementBrushTiles(state.hoverTile);
       for (const feld of felder) {
         const off = xyToOffset(feld.x, feld.y);
         const result = validatePlacement(previewType, off);
@@ -3703,6 +3708,7 @@
     },
     getSourceBytes: () => state.sourceBytes,
     getDocument: outputDocument,
+    getActiveBuildStep: () => state.insertionFrameIndex,
     // Fuer die 2.5D-Ansicht: ein Zeigerereignis mit { tileFromOutside: {x, y} }
     // durchreichen. Alles andere - Werkzeugwahl, Vorschau, Rueckgaengig -
     // bleibt genau wie beim Zeichnen auf der Karte.
@@ -3742,9 +3748,7 @@
       }
 
       if (!state.hoverTile) return null;
-      const felder = state.tool === 'brush' && state.brushSize > 1
-        ? geometry.brushTiles(state.hoverTile, state.brushSize)
-        : [state.hoverTile];
+      const felder = placementBrushTiles(state.hoverTile);
       return { itemType: erster, tiles: felder };
     },
     getMarquee() {
