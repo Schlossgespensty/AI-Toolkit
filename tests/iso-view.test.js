@@ -476,7 +476,7 @@ test('auch die Vorschau kennt die Hoehen, damit eine gezogene Treppe schon beim 
                                 script.indexOf('function drawSelection'));
   assert.match(vorschau, /geo\.hoehenLookup\(kuenftig\)/,
     'die Felder der Vorschau muessen fuer die Treppenregel schon mitzaehlen');
-  assert.match(vorschau, /drawSprite\(ctx, eintrag, feld\.gx, feld\.gy, kacheln, mauerAn, hoeheAn\)/);
+  assert.match(vorschau, /drawSprite\(ctx, eintrag, feld\.gx, feld\.gy, kacheln, mauerAn, hoeheAn, feld\.layoutIndex\)/);
 });
 
 test('dragging a wall shows the whole run at half opacity, not just one tile', () => {
