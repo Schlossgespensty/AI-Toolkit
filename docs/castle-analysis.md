@@ -70,13 +70,13 @@ Explicitly placed resource buildings count towards the AIC target rather than
 being counted twice. A producer retains its own unfinished cycle and delivery
 fraction. Farm kinds come from the Character's Farm1…Farm8 slots.
 
-Editable planning defaults:
-
-- Resource distance: 25 tiles, plus 5 tiles per additional building of that type.
-- Walking: 4 ticks per tile. Work: 500 ticks per delivery, separately editable
-  for each resource. **These are assumptions, not measured game cycle times.**
-- Cycle = work ticks + two-way distance × walking ticks.
-- Neutral delivery productivity: 100%; skirmish mode enabled.
+Editable planning defaults and caveats are documented in
+[Production references](production-reference.md). Distances start at 25 tiles,
+plus five for each additional producer. Walking rates and workshop itineraries
+use the cited Stronghold Heaven references, not a universal 500-tick placeholder.
+Unknown work rates stay unknown. Food journeys use the granary/delivery distance;
+stockpile goods use the stockpile distance. Custom timings and distances from
+previous installations are preserved, except the old unmodified placeholders.
 
 Delivery base quantities are from the rebalancer's original instruction
 signatures: wood 12, stone 8, iron/pitch 1, meat 6, fruit/cheese 3, wheat 2,

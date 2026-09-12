@@ -88,14 +88,18 @@ arbitrary gold equivalent. Unknown prices mark totals as partial.
 Vanilla prices come from the bundled table previously extracted from the game
 executable. **Balance → Load…** imports a plugin's balance JSON (for example
 Liga or Ascension); fields without cost overrides retain vanilla prices. The
-chosen balance and loaded tables are remembered locally. This is not live
-inspection of a running game or automatic resolution of the UCP load order.
+chosen balance and loaded tables are remembered locally. Use UCP balance resolves the installation?s selected profile and overlays it on
+the executable?s initialized-data cost table. Game simulation captures separately
+record live state; importing a balance does not start or inspect a running game.
 
 Resource-building and selection fixes (2026-09-12)
 
 The native codec already mapped farms and resource buildings, but editor constants and save templates omitted mapper IDs 56, 70–73, 90 and 91. These now use the game's placement footprints from getBuildingSizeForCommandBuildingType (0x004FA550): quarry 6, wheat/hop 9, apple 11, dairy 10, iron/pitch 4 tiles per side. AIV IDs are 62, 73, 75, 71, 72, 64 and 65 respectively. Names, palette membership, worker counts and executable-derived building prices are included.
 
-Farm 2.5D previews contain the actual static 3×3 farm building, anchored at the origin of its full field, with the full field outlined. These previews do not simulate crop growth, livestock or the game's changing fence layouts. GM1 source: tile_buildings2.gm1, zero-based groups 390, 399, 408 and 417; BuildingDefinedData sprite tables at +0x2E6C/+0x3024. Component assembly follows Gm1KonverterCrossPlatform's DecodedFile.CreateTileImage. The native field dimensions also drive plan rendering, selection, placement collision and save templates, so an imported farm no longer becomes a one-tile placeholder.
+Farm 2.5D previews now assemble the original hut and field/fence/tree components.
+See [Native building components](farm-graphics.md). The native field dimensions
+also drive plan rendering, selection, placement collision and save templates.
+
 
 Ctrl-click (Command-click where supported) toggles one placement without starting a move; Shift-click remains additive. Ctrl-drag toggles placements covered by the selection rectangle. Delete mode uses the existing castleProjectChoice dropdown style in both themes.
 

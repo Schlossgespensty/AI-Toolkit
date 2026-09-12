@@ -47,13 +47,23 @@
       deliveryDistance: number(input.deliveryDistance, input.distance ?? 25, 0, 1000),
       storesDistance: number(input.storesDistance, input.distance ?? 25, 0, 1000),
       walkSpeedMultiplier: number(input.walkSpeedMultiplier, 1, .1, 10),
+      walkTicksOverride: number(input.walkTicksOverride, null, .01, 1000),
       productivity: number(input.productivity, 100, 100, 1000),
       skirmish: input.skirmish !== false,
       workTicks: Object.fromEntries(Object.keys(GOODS).map(g => [g, number(input.workTicks?.[g], reference[g].work, 1, 1000000)])) };
   }
+  function restoreSettings(current, legacy) {
+    if (current) return settings(current);
+    if (!legacy) return settings();
+    // The old 500-tick values were placeholders, not observations. Preserve
+    // other user timings and distances, including a custom walking override.
+    const workTicks = Object.fromEntries(Object.entries(legacy.workTicks || {}).filter(([,v]) => Number(v) !== 500));
+    return settings({ ...legacy, workTicks,
+      walkTicksOverride: Number(legacy.walkTicks) !== 4 ? legacy.walkTicks : null });
+  }
   function cycleDetails(good, options, index = 0) {
     const opts = settings(options), r = reference[good];
-    const ticksPerTile = r.speed ? MONTH / r.speed / opts.walkSpeedMultiplier : null;
+    const ticksPerTile = opts.walkTicksOverride ?? (r.speed ? MONTH / r.speed / opts.walkSpeedMultiplier : null);
     const source = opts.distance + opts.extraDistance*index;
     const food = ['Meat', 'Fruit', 'Cheese'].includes(good);
     const store = (food ? opts.deliveryDistance : opts.stockpileDistance) + opts.extraDistance*index;
@@ -69,7 +79,7 @@
     const lengths={ SW:opts.stockpileDistance, DW:opts.deliveryDistance, DS:opts.storesDistance, CW:opts.distance };
     const legs=r.path.slice(1).map((to,i)=>({from:r.path[i],to,
       tiles:lengths[[r.path[i],to].sort().join('')] }));
-    const tiles=legs.reduce((n,l)=>n+l.tiles,0), travel=tiles*MONTH/r.speed/opts.walkSpeedMultiplier;
+    const tiles=legs.reduce((n,l)=>n+l.tiles,0), travel=tiles*(opts.walkTicksOverride ?? MONTH/r.speed/opts.walkSpeedMultiplier);
     return { legs, tiles, travel, work:r.work, ticks:r.work == null ? null : r.work+travel, note:r.note };
   }
   function delivery(good, profile, opts) {
@@ -117,7 +127,7 @@
         producers: entries.length, cycles: entries.reduce((sum, w) => sum + w.cycles, 0), delivery: batch.average }];
     }));
   }
-  const api = { GOODS, defaults, reference, recipes, settings, delivery, estimate, cycleDetails, recipeCycle };
+  const api = { GOODS, defaults, reference, recipes, settings, restoreSettings, delivery, estimate, cycleDetails, recipeCycle };
   if (typeof module !== 'undefined') module.exports = api;
   if (typeof window !== 'undefined') window.castleProduction = api;
 })();

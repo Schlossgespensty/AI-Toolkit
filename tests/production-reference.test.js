@@ -22,3 +22,12 @@ test('iron overlaps extraction with transport and quarry output is not an ox loa
   assert.equal(production.cycleDetails('Cheese',{stockpileDistance:0}).startup,2400);
   assert.equal(production.delivery('Stone',{resources:{Stone:{baseDelivery:32}}},production.settings()).average,1);
 });
+
+test('food uses granary distance and custom production assumptions survive migration',()=>{
+  assert.equal(production.cycleDetails('Cheese',{stockpileDistance:3,deliveryDistance:17}).tiles,34);
+  const opts=production.restoreSettings(null,{distance:38,extraDistance:7,walkTicks:6,workTicks:{Wood:800,Stone:500}});
+  assert.equal(opts.distance,38);assert.equal(opts.extraDistance,7);assert.equal(opts.workTicks.Wood,800);
+  assert.equal(opts.workTicks.Stone,480);assert.equal(opts.walkTicksOverride,6);
+  assert.equal(production.cycleDetails('Wood',opts).travel,6*8*38);
+  assert.equal(production.restoreSettings({workTicks:{Wood:500}},{}).workTicks.Wood,500);
+});

@@ -40,7 +40,9 @@
       const wahl = window.localStorage.getItem(SPEICHER_WAHL);
       if (wahl) state.choice = wahl;
       state.collapsed = window.localStorage.getItem(COLLAPSE_STORAGE) === 'true';
-      state.production = window.castleProduction.settings(JSON.parse(window.localStorage.getItem('aiv.production.v2') || '{}'));
+      state.production = window.castleProduction.restoreSettings(
+        JSON.parse(window.localStorage.getItem('aiv.production.v2') || 'null'),
+        JSON.parse(window.localStorage.getItem('aiv.production.v1') || 'null'));
     } catch { /* ohne Gedaechtnis weiterarbeiten ist besser als gar nicht */ }
   }
 
@@ -130,6 +132,17 @@
       try { window.localStorage.setItem('aiv.production.v2', JSON.stringify(state.production)); } catch { /* session only */ }
       renderRecipe(); zeichne();
     };
+    const walkingOverrideLabel = document.createElement('label');
+    walkingOverrideLabel.textContent = 'Travel ticks / tile override (blank: reference)';
+    const walkingOverride = document.createElement('input');
+    walkingOverride.type = 'number'; walkingOverride.min = '.01'; walkingOverride.max = '1000'; walkingOverride.step = '.01';
+    walkingOverride.value = state.production.walkTicksOverride ?? '';
+    walkingOverride.addEventListener('change', () => {
+      state.production.walkTicksOverride = window.castleProduction.settings({ walkTicksOverride: walkingOverride.value }).walkTicksOverride;
+      walkingOverride.value = state.production.walkTicksOverride ?? ''; saveProduction();
+    });
+    walkingOverrideLabel.appendChild(walkingOverride);
+    wurzel.querySelector('#productionWorkTicks').before(walkingOverrideLabel);
     const recipeSelect = wurzel.querySelector('#productionRecipe');
     for (const name of Object.keys(window.castleProduction.recipes)) {
       const option=document.createElement('option'); option.value=name; option.textContent=name; recipeSelect.appendChild(option);
@@ -321,7 +334,7 @@
     const goods = [...RESSOURCEN.map(r => r.key), 'meat', 'fruit', 'cheese', 'hop', 'wheat'];
     for (const good of goods) {
       const produced = production?.[good[0].toUpperCase() + good.slice(1)]?.produced;
-      if (!(good in cost) && !produced) continue;
+      if (!(good in cost) && !Object.hasOwn(production || {}, good[0].toUpperCase() + good.slice(1))) continue;
       const row = document.createElement('tr');
       const label = document.createElement('th'); label.scope = 'row'; label.appendChild(goodSymbol(good));
       const spent = document.createElement('td'); spent.textContent = zahl(cost[good]);

@@ -181,8 +181,6 @@
     const bisIndex = Number.isInteger(options.stepIndex) ? options.stepIndex : null;
     const schritte = bisIndex == null ? frames.length : Math.min(bisIndex + 1, frames.length);
     const kosten = kostenBis(frames, bisIndex, daten, options.balance || null);
-    const wholeCastle = bisIndex == null || bisIndex >= frames.length - 1
-      ? kosten : kostenBis(frames, null, daten, options.balance || null);
     const bevoelkerung = bevoelkerungBis(frames, bisIndex, options.populationData, daten, options.balance);
     const aicStats = typeof options.aicAt === 'function' ? options.aicAt(Math.max(0, bevoelkerung.provided)) : null;
     const aicBedarf = aicStats ? (Number(aicStats.population) || 0) : null;
@@ -190,8 +188,6 @@
       steps: schritte,
       totalSteps: frames.length,
       ...kosten,
-      wholeCastleCost: wholeCastle.cost,
-      wholeCastleUnknown: wholeCastle.unknown,
       time: zeitBis(schritte),
       population: {
         ...bevoelkerung,
