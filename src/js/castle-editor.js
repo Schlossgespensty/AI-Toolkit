@@ -2349,13 +2349,16 @@
 
   function scheduleDraw(staticChanged = true) {
     if (staticChanged) state.staticCacheDirty = true;
+    state.pendingSceneChange = state.pendingSceneChange || staticChanged;
     if (state.renderPending) return;
     state.renderPending = true;
     requestAnimationFrame(() => {
       state.renderPending = false;
+      const sceneChanged = state.pendingSceneChange;
+      state.pendingSceneChange = false;
       draw();
       for (const listener of changeListeners) {
-        try { listener(staticChanged); } catch { /* a watcher must not stop the map */ }
+        try { listener(sceneChanged); } catch { /* a watcher must not stop the map */ }
       }
     });
   }

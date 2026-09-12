@@ -25,7 +25,10 @@ function M:enable()
       local rotate=core.exposeCode(0x501b90,2,1)
       local update=core.exposeCode(0x509180,1,1)
       local updateTextures=core.exposeCode(0x4fc9e0,1,1)
-      local name=core.registerString(request.mapName)
+      -- ResourceManager's map slot (15) prepends "maps\\" itself at
+      -- 0x4786d0. Passing maps/preview.map tries maps/maps/preview.map and
+      -- loadMap silently leaves a blank world when that file is absent.
+      local name=core.registerString('preview.map')
       loadMap(0x1653858,name)
       for _,orientation in ipairs({0,2,4,6}) do
         rotate(0x1a93208,orientation)

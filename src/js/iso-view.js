@@ -21,6 +21,7 @@
   const CATALOGUE_PATH = '../assets/aiv/iso/verzeichnis.json';
   const SPRITE_PATH = '../assets/aiv/iso/';
   const MAX_RENDER_DPR = 1.5;
+  const MAP_MARGIN = 5;
 
   const state = {
     catalogue: null,
@@ -346,13 +347,26 @@
   function viewRotation() { return handDrehung; }
 
   function turnView(richtung) {
-    if (gameMap() && !state.kachelVorrat?.cameras) return null;
+    if (gameMap() && !state.kachelVorrat?.cameras) {
+      setStatus(state.kachelVorrat?.nativeError
+        ? 'Rotation unavailable: ' + state.kachelVorrat.nativeError
+        : 'Loading camera views...');
+      return null;
+    }
     const schritt = Number(richtung) < 0 ? -VIERTEL : VIERTEL;
     const target = surface();
     if (target) {
-      const focus = geo.tileFromPoint(target.width / 2, target.height / 2, state.view, bodenHoehe, false);
-      const height = focus ? bodenHoehe(focus.gx, focus.gy) : 0;
+      const pivotKey = () => [target.width, target.height, state.view.zoom, state.view.panX,
+        state.view.panY, terrainKey()].join('/');
+      // Keep the same world-space pivot between turns. Picking again after
+      // each turn can choose a different face of a cliff and move the camera.
+      let height = state.rotationPivot?.key === pivotKey() ? state.rotationPivot.height : null;
+      if (height === null) {
+        const focus = geo.tileFromPoint(target.width / 2, target.height / 2, state.view, bodenHoehe, false);
+        height = focus ? bodenHoehe(focus.gx, focus.gy) : 0;
+      }
       state.view = geo.turnCameraView(state.view, target.width, target.height, (schritt + 8) % 8, height);
+      state.rotationPivot = { key: pivotKey(), height };
     }
     if (state.hover) state.hover = geo.rotateGrid(state.hover.gx, state.hover.gy, 1, (schritt + 8) % 8);
     handDrehung = (((handDrehung + schritt) % 8) + 8) % 8;
@@ -425,8 +439,17 @@
     const rect = geo.mapImageRect(currentKeep(), state.view, picture.px0, picture.py0, picture.cells, picture.top);
     ctx.save();
     if (viewRotation()) ctx.transform(...geo.cameraCanvasTransform(state.view, viewRotation()));
-    // The canvas viewport clips the map. The editable village boundary is
-    // not a terrain boundary: hills and scenery may extend beyond it.
+    // Bound the fallback preview to the same AIV footprint as native tiles.
+    // Native terrain is bounded by tile origin instead, preserving raised tops.
+    ctx.beginPath();
+    [[-MAP_MARGIN, -MAP_MARGIN], [geo.GRID + MAP_MARGIN, -MAP_MARGIN],
+      [geo.GRID + MAP_MARGIN, geo.GRID + MAP_MARGIN], [-MAP_MARGIN, geo.GRID + MAP_MARGIN]]
+      .forEach(([gx, gy], index) => {
+        const [x, y] = geo.isoPoint(gx, gy, state.view);
+        if (index === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+      });
+    ctx.closePath();
+    ctx.clip();
     // Ein Vorschaupunkt ist ein ganzes Feld und muss ein hartes Quadrat bleiben
     // - geglaettet schmierte der Rand eines Feldes ueber seinen Nachbarn. Das
     // Gelaende ist ein echtes Bild aus Kacheln des Spiels und wird geglaettet,
@@ -530,10 +553,10 @@
       return { gx: (dy + dx) / 2, gy: (dy - dx) / 2 };
     });
     const rand = 3 + Math.ceil(255 / (16 * state.view.zoom));   // hohe Felder ragen herein
-    const gx0 = Math.floor(Math.min(...ecken.map(e => e.gx))) - rand;
-    const gx1 = Math.ceil(Math.max(...ecken.map(e => e.gx))) + rand;
-    const gy0 = Math.floor(Math.min(...ecken.map(e => e.gy))) - rand;
-    const gy1 = Math.ceil(Math.max(...ecken.map(e => e.gy))) + rand;
+    const gx0 = Math.max(-MAP_MARGIN, Math.floor(Math.min(...ecken.map(e => e.gx))) - rand);
+    const gx1 = Math.min(geo.GRID + MAP_MARGIN - 1, Math.ceil(Math.max(...ecken.map(e => e.gx))) + rand);
+    const gy0 = Math.max(-MAP_MARGIN, Math.floor(Math.min(...ecken.map(e => e.gy))) - rand);
+    const gy1 = Math.min(geo.GRID + MAP_MARGIN - 1, Math.ceil(Math.max(...ecken.map(e => e.gy))) + rand);
 
     const kw = v.kw, kh = v.kh;
     let gemalt = 0;
@@ -730,6 +753,8 @@
 
   function paint() {
     state.paintPending = false;
+    const reuseScene = state.reuseScene;
+    state.reuseScene = false;
     if (!geo || hostIsGone()) return;
     const target = surface();
     if (!target) return;
@@ -739,13 +764,20 @@
     ctx.clearRect(0, 0, width, height);
     ctx.imageSmoothingEnabled = state.view.zoom < 1;
 
+    const sceneKey = [width, height, state.view.zoom, state.view.panX, state.view.panY, currentRotation()].join('/');
+    if (reuseScene && state.sceneCache?.key === sceneKey) {
+      ctx.drawImage(state.sceneCache.canvas, 0, 0, width, height);
+      paintInteraction(ctx, state.renderItems || []);
+      return;
+    }
+
     ctx.beginPath();
     [[0, 0], [geo.GRID, 0], [geo.GRID, geo.GRID], [0, geo.GRID]].forEach(([cx, cy], index) => {
       const [px, py] = geo.isoPoint(cx, cy, state.view);
       if (index === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
     });
     ctx.closePath();
-    // Der Kachelvorrat zeigt die GANZE Karte und geht deshalb vor.
+    // Native tiles cover the AIV footprint plus its five-tile margin.
     if (!paintMapTiles(ctx, width, height)) paintGround(ctx, width, height);
 
     // Die Bodenplatten haengen an der GEDREHTEN Ecke ihres Gebaeudes, und ihr
@@ -795,17 +827,24 @@
       missing++;
     }
 
-    // where the mouse is
-    if (state.hover) drawDiamond(ctx, state.hover.gx, state.hover.gy, 1, null, 'rgba(255,255,255,.5)');
-
-    drawSelection(ctx, items);
-    drawPreview(ctx);
-    drawMarquee(ctx);
+    const cached = state.sceneCache?.canvas || document.createElement('canvas');
+    cached.width = ctx.canvas.width;
+    cached.height = ctx.canvas.height;
+    cached.getContext('2d').drawImage(ctx.canvas, 0, 0);
+    state.sceneCache = { key: sceneKey, canvas: cached };
+    paintInteraction(ctx, items);
 
     const editor = window.castleEditor;
     const tool = editor && editor.getTool ? editor.getTool() : '—';
     setStatus(items.length + ' items' + (missing ? ', ' + missing + ' without a sprite' : '') +
               ' · tool: ' + tool + mapStatus() + ' · middle mouse pans, wheel zooms');
+  }
+
+  function paintInteraction(ctx, items) {
+    if (state.hover) drawDiamond(ctx, state.hover.gx, state.hover.gy, 1, null, 'rgba(255,255,255,.5)');
+    drawSelection(ctx, items);
+    drawPreview(ctx);
+    drawMarquee(ctx);
   }
 
   // Was in der Statuszeile ueber die Karte steht. Die Drehung gehoert dorthin,
@@ -928,7 +967,10 @@
 
   // One repaint per frame at most. The editor now tells the view about every
   // change it makes, and a build step can be a hundred of them in a row.
-  function refresh() {
+  function refresh(reuseScene = false) {
+    // A document/image update must win over a hover update queued this frame.
+    if (!state.paintPending) state.reuseScene = reuseScene === true;
+    else if (reuseScene !== true) state.reuseScene = false;
     if (state.paintPending || hostIsGone()) return;
     state.paintPending = true;
     requestAnimationFrame(paint);
@@ -968,7 +1010,7 @@
       preventDefault() {},
       stopPropagation() {}
     });
-    refresh();
+    refresh(phase === 'move' && !state.drawing);
   }
 
   // Bound once per canvas, and a canvas belongs to exactly one host for its
@@ -1014,7 +1056,7 @@
       const moved = !state.hover || !grid || state.hover.gx !== grid.gx || state.hover.gy !== grid.gy;
       state.hover = grid;
       if (tile && (state.drawing || moved)) toEditor('move', event, tile);
-      else if (moved) refresh();
+      else if (moved) refresh(true);
     });
 
     const ende = event => {
@@ -1028,7 +1070,7 @@
     };
     canvas.addEventListener('pointerup', ende);
     canvas.addEventListener('pointercancel', ende);
-    canvas.addEventListener('pointerleave', () => { state.hover = null; refresh(); });
+    canvas.addEventListener('pointerleave', () => { state.hover = null; refresh(true); });
 
     canvas.addEventListener('wheel', event => {
       event.preventDefault();
@@ -1211,7 +1253,7 @@
     // view is shown, this file only knows how to be shown.
     bindSurface(document.getElementById('isoDockCanvas'));
     state.controls = document.getElementById('castleIsoControls');
-    window.castleEditor?.addChangeListener?.(refresh);
+    window.castleEditor?.addChangeListener?.(staticChanged => refresh(!staticChanged));
     loadCatalogue();
   }
 

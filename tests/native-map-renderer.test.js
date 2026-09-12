@@ -63,7 +63,7 @@ test('native Lua loads once, regenerates every direction and exits after closing
     end}
     json={decode=function()return request end,encode=function(self,value)receipt=value;return '{}' end}
     hooks={registerHookCallback=function(name,fn)assert(name=='afterInit');callback=fn end}
-    core={registerString=function(name)assert(name=='maps/preview.map');return 123 end,
+    core={registerString=function(name)assert(name=='preview.map', 'The game itself prepends maps/');return 123 end,
       readBytes=function(at,n) sizes[#sizes+1]={at,n};return {0} end,
       exposeCode=function(address,args,thiscall)
         return function(a,b)
