@@ -164,7 +164,7 @@ function createWindow({ restoreProject = false } = {}) {
       sandbox: true
     }
   };
-  const iconPath = path.join(__dirname, 'assets', 'icon.png');
+  const iconPath = path.join(__dirname, 'assets', process.platform === 'win32' ? 'icon.ico' : 'icon.png');
   if (fs.existsSync(iconPath)) options.icon = iconPath;
 
   const win = new BrowserWindow(options);
@@ -381,6 +381,7 @@ ipcMain.on('set-castle-overview-preferences', (event, preferences) => {
 });
 
 app.whenReady().then(() => {
+  if (process.platform === 'win32') app.setAppUserModelId('de.schlossgespenst.aitoolkit');
   ensureRuntimeFiles();
   installApplicationMenu('ucp');
   createWindow({ restoreProject: true });

@@ -56,7 +56,8 @@
         "portable"
       ],
       "artifactName": "AI-Toolkit-${version}-${arch}.${ext}",
-      "requestedExecutionLevel": "asInvoker"
+      "requestedExecutionLevel": "asInvoker",
+      "icon": "assets/icon.ico"
     }
   }
 }
