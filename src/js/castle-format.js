@@ -34,7 +34,7 @@
     for (const frame of document.frames || []) {
       if (!frame?.tilePositionOfsets?.length) issues.add('Empty build steps cannot be preserved in classic AIV.');
       const definition = constants[String(frame?.itemType)];
-      if (frame?.itemType != null && (!definition || definition.edition === 'de')) issues.add(`${definition?.name || `Item ${frame.itemType}`} is not supported by classic AIV.`);
+      if (frame?.itemType != null && (!definition || definition.edition === 'de' || definition.classicAiv === false)) issues.add(`${definition?.name || `Item ${frame.itemType}`} is not supported by classic AIV.`);
       if (frame?.shouldPause) issues.add('Build-step pauses are disabled in the classic editor.');
     }
     for (const item of document.miscItems || []) {

@@ -50,6 +50,6 @@ artwork; no image downscaling or lossy compression is involved.
 
 DE extension: the twelve classic groups remain in their established order.
 Bedouins is a thirteenth group for the eight DE unit markers. The Bedouin
-Stockade and Outpost are under Military; their preview tiles are light green.
+Stockade is under Military. All three 5x5 outposts and Dummy Step are under Misk; the Bedouin preview tiles are light green.
 New SVG previews are original Toolkit artwork; no AIVE texture-pack assets are
 redistributed, and existing PNG artwork is unchanged.

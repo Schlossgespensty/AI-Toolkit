@@ -60,16 +60,17 @@ test('regrouping all items leaves placement defaults and unit storage unchanged'
   assert.equal(h.context.isUnitType(54), false);
 });
 
-test('palette restores the original single Pause step beside Bedouins', () => {
+test('Misk retains the single Pause step and groups all three outposts beside Bedouins', () => {
   const state = { constants, categories: require('../config/aiv_categories.json').categories };
   const context = vm.createContext({ state, itemInfo: type => constants[String(type)] || {} });
   vm.runInContext(section('  function getPaletteGroups(', '  function renderPalette('), context);
   const groups = Array.from(context.getPaletteGroups(), ([name, ids]) => [name, Array.from(ids)]);
   assert.deepEqual(groups.map(([name]) => name), ['Castle', 'Gatehouses', 'Military', 'Walls, Moat & Pitch',
-    'Town', 'Stairs', 'Industry', 'Food', 'Good Things', 'Bad Things', 'Arabians', 'Europeans', 'Bedouins', 'Pause']);
+    'Town', 'Stairs', 'Industry', 'Food', 'Good Things', 'Bad Things', 'Arabians', 'Europeans', 'Bedouins', 'Misk']);
   assert.deepEqual(state.categories.Arabians, ['16','13','14','15','17','18','19','20','21','5']);
   assert.deepEqual(state.categories.Europeans, ['6','7','8','9','10','11','12','1','2','3','4']);
-  assert.deepEqual(state.categories.Pause, ['200']);
+  assert.deepEqual(state.categories.Misk, ['200', '178', '179', '53']);
+  assert.ok(state.categories.Military.includes('79'));
   const available = groups.flatMap(([, ids]) => ids).sort();
   assert.deepEqual(available, Object.keys(constants).sort(), 'every item remains available exactly once');
   assert.doesNotMatch(html, /id="castlePauseBtn"/);

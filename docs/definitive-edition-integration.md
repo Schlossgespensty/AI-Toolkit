@@ -64,19 +64,36 @@ and `shouldPause`; miscellaneous markers use `itemType`, `positionOfset` and
 Sourcehold with `invert_x=False, invert_y=True`; orientation must be verified
 with asymmetric fixtures, not inferred from a visually symmetric keep.
 
-The older third-party converter's names conflict with the supplied AIVE
-release: AIVE identifies item 79 as a 10x10 Bedouin Post, not a stockade.
-The supplied AIVE 0.9.6 config puts 79 under Castle Buildings and 53
-(Beduin Outpost, 5x5) under Outposts alongside classic outposts 178/179.
-These are distinct editor items, not two recruitment buildings. The Outpost
-entry is retained for AIVE parity; its in-game buildability is not verified.
+The installed DE game's `Assembly-CSharp.dll` confirms these `eMappers` constants:
+79 `MAPPER_BEDOUIN_STOCKADE`, 53 `MAPPER_OUTPOST_BEDOUIN`,
+178 `MAPPER_OUTPOST`, and 179 `MAPPER_OUTPOST_ARAB`. Its bundled help names
+79's recruitment building Bedouin Stockade. AIVE 0.9.6 calls it Beduin Post
+(10x10) and separately defines all three outposts as 5x5. Toolkit now uses the
+actual game name for the stockade and keeps the three distinct outpost IDs.
+
+AIVE's default config sets `allow_placeable_outposts: false`, despite including
+the outpost definitions/categories. The earlier implementation copied the
+Bedouin outpost definition without considering that setting. At the user's
+explicit request, all three outposts are selectable under Misk alongside Dummy
+Step. This is an opt-in parity choice for this editor, not proof that every AI
+lord/build context executes them. No live-game AI construction test was run.
+
+Read-only inspection on 2026-09-22: installed managed assembly SHA-256
+`bc8b6a395f01d48557db413600c8dd8d1fdfd3abdf97bfbbb68a3c56b04fd789`.
+No game process was launched or attached. The game defines separate Stockade and
+Outpost UI panels; these are not duplicate names for one building.
+
+The classic binary AIV mapper/template tables cannot encode outposts 178/179,
+so they carry `classicAiv: false`. Classic export reports an error instead of
+silently dropping them. DE JSON preserves 53/79/178/179 without substitutions.
+
 Its definitions identify 9022 Camel Lancer, 9023 Healer, 9024 Eunuch,
 9025 Ambusher, 9026 Skirmisher, 9027 Heavy Camel, 9028 Sapper and
 9029 Demolisher. Treat these as AIVE definitions pending DE game verification,
 not as a universally authoritative game registry.
 
 The shipped config selects `Bedouin2Arab`. Its mappings substitute the Bedouin
-Post with the Mercenary Post and several DE troops with classic troops.
+Stockade with the Mercenary Post and several DE troops with classic troops.
 These are deliberate compatibility substitutions, not lossless DE export.
 The converter source preserves empty frames as `{}`, defaults to Y inversion,
 uses multi-tile templates, and stores pause flags separately. Its classic
@@ -99,7 +116,7 @@ classic-to-JSON conversion only; no DE game or GUI round-trip was performed.
   JSON fields/IDs. Classic import retains its existing pause/compaction policy.
 - Classic export rejects DE-only items, unsupported markers and timing loss
   with actionable diagnostics. It does not silently substitute or discard them.
-- Bedouin Post (79, 10x10), Bedouin Outpost (53, 5x5), and the eight
+- Bedouin Stockade (79, 10x10), all three 5x5 outposts (178/179/53), and the eight
   9022?9029 markers are selectable. Bedouins have a separate category.
   New artwork is original vector preview artwork, not extracted DE game sprites;
   existing raster assets retain their original resolution. Unavailable 2.5D

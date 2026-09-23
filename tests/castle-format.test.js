@@ -5,6 +5,17 @@ const vm = require('node:vm');
 const format = require('../src/js/castle-format');
 const constants = require('../config/aiv_constants.json');
 
+test('outposts retain the actual DE mapper IDs and cannot disappear in classic export', () => {
+  const doc = {frames: [178, 179, 53, 79].map((itemType, i) => ({
+    itemType, tilePositionOfsets: [1010 + i * 20], shouldPause: false
+  })), miscItems: []};
+  assert.deepEqual(JSON.parse(format.stringify(doc)), doc);
+  assert.equal(format.classicIssues(doc, constants).length, 4);
+  for (const id of [178, 179, 53]) assert.deepEqual(constants[id].size, [5, 5]);
+  assert.deepEqual(constants[79].size, [10, 10]);
+  assert.equal(constants[79].name, 'Bedouin Stockade');
+});
+
 test('DE JSON retains timing, extensions, sparse numbering and unknown items', () => {
   const doc = { pauseDelayAmount: 123, extension: {future: true}, frames: [
     {}, {itemType: 79, tilePositionOfsets: [1724], shouldPause: true, future: 7},

@@ -11,7 +11,7 @@
     'Bad Things': '#f88080', Castle: '#a0a0a0', Food: '#f8f8c0',
     Gatehouses: '#808080', 'Good Things': '#c0c0f8', Industry: '#e0e0e0',
     Military: '#88b0b8', 'Walls, Moat & Pitch': '#505050', Stairs: '#505050',
-    Town: '#f8f840', Arabians: '#a0a0a0', Europeans: '#a0a0a0', Bedouins: '#b4d7a0', Pause: '#a0a0a0'
+    Town: '#f8f840', Arabians: '#a0a0a0', Europeans: '#a0a0a0', Bedouins: '#b4d7a0', Misk: '#a0a0a0'
   };
   function categoryStyle(category) {
     const background = colors[category] || '#505050';

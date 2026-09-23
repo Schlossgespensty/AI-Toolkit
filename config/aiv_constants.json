@@ -806,12 +806,22 @@
         ]
     },
     "79": {
-        "name": "Bedouin Post",
+        "name": "Bedouin Stockade",
         "size": [
             10,
             10
         ],
         "edition": "de"
+    },
+    "178": {
+        "name": "European Outpost",
+        "size": [5, 5],
+        "classicAiv": false
+    },
+    "179": {
+        "name": "Arabian Outpost",
+        "size": [5, 5],
+        "classicAiv": false
     },
     "53": {
         "name": "Bedouin Outpost",
