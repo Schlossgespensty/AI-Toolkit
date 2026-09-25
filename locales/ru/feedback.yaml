@@ -1,0 +1,24 @@
+missing_sprites: 'Отсутствует спрайтов: {{count}}'
+playing: 'Воспроизводится {{name}}'
+replaced_media: '✓ {{name}} заменён ({{size}})'
+choosing: 'Выбор {{name}}…'
+saved_label: '{{name}} (сохранено)'
+file_label: 'Файл: {{name}}'
+loaded_label: 'Загружено: {{name}}'
+balance_help: Нажмите «Баланс UCP», чтобы обновить данные выбранной установки. Режим EXE + UCP читает таблицу стоимости из файла игры на диске и применяет настроенный профиль rebalancer; запущенная игра не используется.
+item: 'Объект {{id}}'
+tool: 'Инструмент «{{name}}»'
+shortcut: 'Клавиша: {{key}}'
+rally_points: 'Точек сбора: {{count}}'
+rally_point: Точка сбора
+keep_footprint: '{{width}}×{{height}} + обязательный склад 5×5'
+placement_info: '{{name}} [{{id}}] · {{kind}} · {{size}} · наложение: {{overlap}} · макс.: {{maximum}}'
+overlap_allow: разрешено
+overlap_block: запрещено
+overlap_replace: с заменой
+resize: Изменить размер
+castle_slot: 'Замок {{slot}}'
+replacing_character: 'Замена персонажа ИИ {{name}}…'
+opening: 'Открытие {{name}}…'
+opened: '{{name}} открыт.'
+with_castle: ' с замком {{name}}'

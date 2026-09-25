@@ -1,0 +1,81 @@
+castle_document: Kale
+character_document: Karakter
+experimental_snapshot: Deneysel sürüm
+official_release: Resmî sürüm
+native_aiv: yerel AIV
+step_locked: '{{step}}. inşaat adımı kilitli'
+step_unlocked: '{{step}}. inşaat adımının kilidi açıldı'
+steps_locked: '{{steps}} kilitlendi'
+steps_unlocked: '{{steps}} kilidi açıldı'
+fill_result: '{{tiles}}, {{item}} ile dolduruldu'
+locked_stay: '{{placements}} yerinde kalır'
+map_terrain: harita arazisi dahil
+flat_terrain: düz arazi (harita verisi yok)
+fire_estimate: 'Yangın tahmini: içte iki kırmızı halka; can puanına göre sarıdan maviye uzanan, en fazla 8 karelik hale.'
+start: başlangıç {{number}}
+starting_place: başlangıç konumu
+map_name: ' · harita: {{name}}'
+map_start: ' · başlangıç {{number}} ({{x}}, {{y}})'
+map_start_place: ' · başlangıç konumu {{number}} ({{x}}, {{y}})'
+map_rotation: ' · {{turns}} döndürüldü (oyun değeri {{value}})'
+map_flat: ' · düz arazi (yükseklik {{height}})'
+map_height: ' · arazi {{range}} puan yükseliyor (yükseklik {{minimum}}–{{maximum}})'
+space_one: '{{count}} yer'
+space_other: '{{count}} yer'
+food_one: '{{count}} yiyecek'
+food_other: '{{count}} yiyecek'
+tile_one: '{{count}} kare'
+tile_other: '{{count}} kare'
+shortfall: '{{count}} eksik'
+free: '{{count}} boş'
+resource: Kaynak
+maximum: En fazla
+spaces: Yerler
+per_space: Yer başına {{count}}; {{source}}
+none_produced: İlgili üretim yapılandırılmamış.
+none_produced_or_bought: İlgili üretim veya asker toplama yapılandırılmamış.
+stockpiles: İç kale dahil {{count}} ambar; her birinde 4 yer. Tüm kaynak sınırları için yer ayrılır.
+granaries: '{{count}} tahıl ambarı; her birinde ortak 250 yiyecek kapasitesi.'
+armories: >-
+  {{count}} cephanelik; her birinde 5'lik 10 ayrı yığın. Alımlar, yapılandırılan asker toplama ayarlarından
+  çıkarılır.
+hops: Şerbetçi otu
+fruit: Meyve
+wav_speech: WAV konuşması
+bink_video: Bink videosu
+workshop: atölye
+work_unknown: çalışma süresi bilinmiyor
+cycle_ticks: Referans döngüsü başına {{count}} tik
+cost_table: inşa maliyeti tablosu
+bundled_vanilla: birlikte gelen orijinal değerler
+saved_balance: '{{name}} kaydının kopyası'
+year_one: '{{count}} yıl'
+year_other: '{{count}} yıl'
+month_one: '{{count}} ay'
+month_other: '{{count}} ay'
+day_one: '{{count}} gün'
+day_other: '{{count}} gün'
+quarry_one: '{{count}} taş ocağı'
+quarry_other: '{{count}} taş ocağı'
+iron_mine_one: '{{count}} demir madeni'
+iron_mine_other: '{{count}} demir madeni'
+woodcutter_one: '{{count}} oduncu'
+woodcutter_other: '{{count}} oduncu'
+farm_one: '{{count}} çiftlik'
+farm_other: '{{count}} çiftlik'
+pitch_rig_one: '{{count}} zift kuyusu'
+pitch_rig_other: '{{count}} zift kuyusu'
+ox_tether_one: '{{count}} öküz bağı'
+ox_tether_other: '{{count}} öküz bağı'
+hop_farms_one: Bu çiftliklerin {{count}} tanesi şerbetçi otu yetiştirir.
+hop_farms_other: Bu çiftliklerin {{count}} tanesi şerbetçi otu yetiştirir.
+open_character_error: 'Karakter dosyası açılamadı: {{error}}'
+save_character_error: 'Karakter dosyası kaydedilemedi: {{error}}'
+recipe_bow: 2 odun; cephanelikten ayrı dönüş
+recipe_crossbow: 3 odun; cephanelikten ayrı dönüş
+recipe_spear: 1 odun; çalışma süresi yalnızca 1 aydan kısa olarak belgelenmiş
+recipe_pike: 2 odun; ilk tahtayı cephanelik teslimatından sonra alır
+recipe_iron: 1 demir; sonraki malzemeyi cephanelik teslimatından sonra alır
+recipe_leather: İnek başına 3 teslimat; her çalışma süresi yalnızca 3 aydan kısa olarak belgelenmiş
+recipe_bread: 1 un; önce tahıl ambarı, sonra ambar
+recipe_ale: 1 şerbetçi otu; ambardan alım ve ambara teslimat

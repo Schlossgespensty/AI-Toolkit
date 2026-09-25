@@ -1,0 +1,81 @@
+castle_document: Die Burg
+character_document: Der Charakter
+experimental_snapshot: Experimenteller Snapshot
+official_release: Offizielle Veröffentlichung
+native_aiv: natives AIV
+step_locked: Bauschritt {{step}} ist gesperrt
+step_unlocked: Bauschritt {{step}} ist wieder offen
+steps_locked: '{{steps}} gesperrt'
+steps_unlocked: '{{steps}} wieder offen'
+fill_result: '{{tiles}} mit {{item}} gefüllt'
+locked_stay: '{{placements}} bleiben an ihrer Position'
+map_terrain: Kartengelände berücksichtigt
+flat_terrain: ebenes Gelände (keine Kartendaten)
+fire_estimate: 'Feuerschätzung: zwei innere rote Ringe; gelb-blauer Außenbereich je nach Trefferpunkten, bis zu 8 Felder.'
+start: Start {{number}}
+starting_place: der Startplatz
+map_name: ' · Karte: {{name}}'
+map_start: ' · Start {{number}} ({{x}}, {{y}})'
+map_start_place: ' · Startplatz {{number}} ({{x}}, {{y}})'
+map_rotation: ' · um {{turns}} gedreht (Spielwert {{value}})'
+map_flat: ' · ebenes Gelände (Höhe {{height}})'
+map_height: ' · Gelände steigt um {{range}} Punkte (Höhe {{minimum}} bis {{maximum}})'
+space_one: '{{count}} Platz'
+space_other: '{{count}} Plätze'
+food_one: '{{count}} Nahrung'
+food_other: '{{count}} Nahrung'
+tile_one: '{{count}} Feld'
+tile_other: '{{count}} Felder'
+shortfall: '{{count}} fehlen'
+free: '{{count}} frei'
+resource: Rohstoff
+maximum: Max.
+spaces: Plätze
+per_space: '{{count}} pro Platz; {{source}}'
+none_produced: Keine passende Produktion eingestellt.
+none_produced_or_bought: Keine passende Produktion oder Rekrutierung eingestellt.
+stockpiles: 'Vorratslager: {{count}} (einschließlich Bergfried); je 4 Plätze. Alle Rohstoffobergrenzen reserviert.'
+granaries: 'Kornspeicher: {{count}}; je 250 Nahrungsplätze, gemeinsam für alle Nahrungssorten.'
+armories: >-
+  Waffenkammern: {{count}}; je 10 getrennte Stapel zu 5 Waffen. Käufe aus eingestellter Rekrutierung
+  abgeleitet.
+hops: Hopfen
+fruit: Obst
+wav_speech: WAV-Sprachausgabe
+bink_video: Bink-Video
+workshop: Werkstatt
+work_unknown: Arbeitsdauer unbekannt
+cycle_ticks: '{{count}} Ticks pro Referenzzyklus'
+cost_table: die Baukostentabelle
+bundled_vanilla: mitgelieferte Vanilla-Werte
+saved_balance: der gespeicherte Stand von {{name}}
+year_one: '{{count}} Jahr'
+year_other: '{{count}} Jahre'
+month_one: '{{count}} Monat'
+month_other: '{{count}} Monate'
+day_one: '{{count}} Tag'
+day_other: '{{count}} Tage'
+quarry_one: '{{count}} Steinbruch'
+quarry_other: '{{count}} Steinbrüche'
+iron_mine_one: '{{count}} Eisenmine'
+iron_mine_other: '{{count}} Eisenminen'
+woodcutter_one: '{{count}} Holzfäller'
+woodcutter_other: '{{count}} Holzfäller'
+farm_one: '{{count}} Farm'
+farm_other: '{{count}} Farmen'
+pitch_rig_one: '{{count}} Pechgrube'
+pitch_rig_other: '{{count}} Pechgruben'
+ox_tether_one: '{{count}} Ochsenjoch'
+ox_tether_other: '{{count}} Ochsenjoche'
+hop_farms_one: '{{count}} dieser Farmen baut Hopfen an.'
+hop_farms_other: '{{count}} dieser Farmen bauen Hopfen an.'
+open_character_error: 'Charakterdatei konnte nicht geöffnet werden: {{error}}'
+save_character_error: 'Charakterdatei konnte nicht gespeichert werden: {{error}}'
+recipe_bow: 2 Holz; gesonderte Rückkehr zur Waffenkammer
+recipe_crossbow: 3 Holz; gesonderte Rückkehr zur Waffenkammer
+recipe_spear: 1 Holz; Arbeitszeit nur als unter 1 Monat dokumentiert
+recipe_pike: 2 Holz; holt das erste Brett nach der Waffenlieferung
+recipe_iron: 1 Eisen; holt das nächste Material nach der Waffenlieferung
+recipe_leather: 3 Lieferungen pro Kuh; Arbeitszeit jeweils nur als unter 3 Monaten dokumentiert
+recipe_bread: 1 Mehl; erst Kornspeicher, dann Vorratslager
+recipe_ale: 1 Hopfen; Material und Erzeugnis über das Vorratslager

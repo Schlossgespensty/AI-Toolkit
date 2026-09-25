@@ -1,0 +1,27 @@
+missing_sprites: 'Fehlende Grafiken: {{count}}'
+playing: '{{name}} wird abgespielt'
+replaced_media: ✓ {{name}} ersetzt ({{size}})
+choosing: '{{name}} auswählen…'
+saved_label: '{{name}} (gespeichert)'
+file_label: 'Datei: {{name}}'
+loaded_label: 'Geladen: {{name}}'
+balance_help: >-
+  „UCP-Balance verwenden“ liest die gewählte Installation neu ein. „EXE + UCP“ liest die Kosten aus der
+  Spieldatei und wendet das konfigurierte Rebalancer-Profil an; auf ein laufendes Spiel wird nicht
+  zugegriffen.
+item: Element {{id}}
+tool: Werkzeug „{{name}}“
+shortcut: 'Tastenkürzel: {{key}}'
+rally_points: 'Sammelpunkte: {{count}}'
+rally_point: Sammelpunkt
+keep_footprint: '{{width}}×{{height}} + benötigtes 5×5-Vorratslager'
+placement_info: '{{name}} [{{id}}] · {{kind}} · {{size}} · Überlappung: {{overlap}} · Maximum: {{maximum}}'
+overlap_allow: erlaubt
+overlap_block: gesperrt
+overlap_replace: ersetzt vorhandene Elemente
+resize: Größe ändern
+castle_slot: Burg {{slot}}
+replacing_character: Charakter von {{name}} wird ersetzt…
+opening: '{{name}} wird geöffnet…'
+opened: '{{name}} geöffnet.'
+with_castle: ' mit {{name}}'

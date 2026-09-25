@@ -1,0 +1,56 @@
+character_name: Nombre del personaje.
+character_description: Descripción del personaje.
+the_ai_s_attack_has_been_repelled: El ataque de la IA ha sido repelido.
+one_of_the_ai_s_buildings_has_been_destroyed: Se ha destruido un edificio de la IA.
+the_ai_has_been_defeated_if_enemy: La IA ha sido derrotada (si es enemiga)
+the_ai_has_successfully_defended_itself: La IA se ha defendido con éxito.
+the_ai_destroys_a_building: La IA destruye un edificio.
+the_ai_has_killed_the_player: La IA ha matado al jugador.
+the_ai_defeats_another_enemy_ai: La IA derrota a otra IA enemiga.
+the_ai_requests_goods: La IA solicita bienes.
+the_player_sends_goods_to_the_ai: El jugador envía bienes a la IA.
+the_ai_has_been_defeated_if_ally: La IA ha sido derrotada (si es aliada)
+the_player_defeats_an_enemy_while_allied_with_this_ai: El jugador derrota a un enemigo siendo aliado de esta IA.
+the_allied_ai_defeats_an_enemy: La IA aliada derrota a un enemigo.
+the_ai_is_under_attack_and_asks_for_help: La IA está siendo atacada y pide ayuda.
+the_game_has_been_going_on_for_a_long_time: La partida lleva mucho tiempo en marcha.
+a_player_is_removed_from_the_map: Se retira un jugador del mapa.
+a_player_is_added_to_the_map: Se añade un jugador al mapa.
+not_used: No se usa.
+the_ai_does_not_send_the_requested_goods: La IA no envía los bienes solicitados.
+the_ai_sends_the_requested_goods: La IA envía los bienes solicitados.
+the_team_is_winning: El equipo está ganando.
+the_team_is_losing: El equipo está perdiendo.
+the_ai_sends_the_requested_help: La IA envía la ayuda solicitada.
+the_ai_will_attack_the_requested_enemy: La IA atacará al enemigo indicado.
+character_title_include_quotation_marks_for_a_quoted_title: Título del personaje (incluye las comillas si el título va entrecomillado).
+character_name_followed_by_the_title_include_quotation_marks_for_a_quote: Nombre del personaje seguido del título (incluye las comillas si corresponde).
+the_ai_attacks_the_player: La IA ataca al jugador.
+the_player_attacks_the_ai: El jugador ataca a la IA.
+the_ai_refuses_to_attack_the_requested_enemy: La IA se niega a atacar al enemigo indicado.
+the_ai_refuses_a_request_for_help: La IA rechaza una petición de ayuda.
+replay: Repetir
+play: Reproducir
+media_replacement_cancelled: Reemplazo del archivo multimedia cancelado
+wav_speech: Voz WAV
+bink_video: Vídeo Bink
+missing: Falta
+mapped_asset: Recurso asignado
+open_externally: Abrir externamente
+open_play: Abrir / reproducir
+saving_lines_json: Guardando lines.json…
+portrait_change_cancelled: Cambio de retrato cancelado
+loading_value: Cargando {{fileName}}…
+could_not_play_value_here_value_use_open_externally: 'No se pudo reproducir {{fileName}} aquí: {{message}} Usa Abrir externamente.'
+downloaded_value_open_it_with_its_associated_program: Se descargó {{fileName}}. Ábrelo con el programa asociado.
+opened_value_in_its_associated_program: '{{fileName}} se abrió con el programa asociado.'
+could_not_open_value_value: 'No se pudo abrir {{fileName}}: {{message}}'
+choosing_a_replacement_for_value: Eligiendo un reemplazo para {{fileName}}…
+could_not_replace_value_value: 'No se pudo reemplazar {{fileName}}: {{message}}'
+no_mapped_wav_speech_files_found_for_value: No se encontraron voces WAV asignadas para {{value1}}.
+no_mapped_value_files_found: No se encontraron archivos {{value1}} asignados.
+this_wav_codec_cannot_play_in_the_editor_use_open_externally: Este códec WAV no se reproduce en el editor. Usa Abrir externamente.
+value_content_loaded: Contenido de {{value1}} cargado
+could_not_save_lines_json_value: 'No se pudo guardar lines.json: {{message}}'
+value_saved_as_value_value: ✓ {{value1}} guardado como {{width}}×{{height}}
+could_not_change_portrait_value: 'No se pudo cambiar el retrato: {{message}}'

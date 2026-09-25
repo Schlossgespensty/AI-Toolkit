@@ -1,0 +1,24 @@
+balance_profile: نمایهٔ rebalancer باید بخش buildings، resources، units، population یا castle داشته باشد.
+balance_section: 'بخش {{section}} نامعتبر است.'
+balance_building: 'ساختمان نامعتبر: {{name}}'
+balance_health: '{{name}}: مقدار health باید عدد صحیح نامنفی باشد.'
+balance_housing: '{{name}}: مقدار housing باید عدد صحیح نامنفی باشد.'
+balance_cost: '{{name}}: مقدار cost باید شامل پنج عدد صحیح نامنفی باشد (چوب، سنگ، آهن، قیر، طلا).'
+balance_resource: 'منبع نامعتبر: {{name}}'
+balance_delivery: '{{name}}: مقدار delivery باید در یک بایت جا بگیرد (۰ تا ۲۵۵).'
+balance_bonus: '{{name}}: مقدار skirmishBonus باید true یا false باشد.'
+balance_ditch: مقدار castle.ditch_per_pitch باید ۱، ۲، ۳ یا ۴ باشد.
+frames_array: مراحل ساخت قلعه باید به‌صورت آرایه باشند.
+tile_offset: '{{label}}: جابه‌جایی خانه نامعتبر است.'
+step_object: 'مرحلهٔ {{step}}: باید یک شیء داده وارد شود.'
+step_positions: 'مرحلهٔ {{step}}: مورد یا موقعیت‌ها نامعتبرند.'
+step_pause: 'مرحلهٔ {{step}}: نشانگر مکث نامعتبر است.'
+step: 'مرحلهٔ {{step}}'
+markers_array: نشانگرهای قلعه باید به‌صورت آرایه باشند.
+marker_invalid: نشانگر قلعه نامعتبر است.
+marker: نشانگر قلعه
+pause_delay: مدت مکث نامعتبر است.
+classic_empty_steps: مراحل ساخت خالی در قالب کلاسیک AIV قابل نگهداری نیستند.
+classic_item: '{{name}} در قالب کلاسیک AIV پشتیبانی نمی‌شود.'
+classic_pauses: مکث بین مراحل ساخت در ویرایشگر کلاسیک غیرفعال است.
+classic_marker: '{{name}} در قالب کلاسیک AIV قابل نگهداری نیست.'

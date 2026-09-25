@@ -4,29 +4,30 @@
   else root.castleShortcuts = api;
 })(typeof globalThis !== 'undefined' ? globalThis : this, () => {
   'use strict';
+  const tr = (key, options) => (globalThis.toolkitI18n || require('./i18n')).t(key, options);
   // Order follows the toolbar, then its submenus and additional editing actions.
   const actions = [
-    ['openCastle', 'Open castle', 'ctrl+o', 'castleOpenBtn'],
-    ['saveCastle', 'Save castle', 'ctrl+s', 'castleSaveBtn'],
-    ['newCastle', 'New castle', 'ctrl+n', 'castleNewBtn'],
-    ['map', 'Map', 'alt+m', 'castleMapBtn'], ['iso', '2.5D view', 'alt+i', 'castleIsoBtn'],
-    ['single', 'Single', '1'], ['line', 'Line', '6'], ['brush', 'Brush', '2'],
-    ['brushSmaller', 'Smaller brush', '[', 'castleBrushMinus'],
-    ['brushLarger', 'Larger brush', ']', 'castleBrushPlus'],
-    ['bucket', 'Fill', '7'], ['select', 'Select / Move', '3'],
-    ['replace', 'Replace', '8'], ['merge', 'Merge', 'm'], ['delete', 'Delete', '4'],
-    ['overlays', 'Overlays menu', 'o'], ['groups', 'Groups', 'g'],
-    ['paste', 'Clipboard / Paste', 'ctrl+v'], ['clearClipboard', 'Clear clipboard', 'ctrl+shift+delete', 'castleClipboardClearBtn'],
-    ['names', 'Item names', 'n', 'castleShowNames'], ['units', 'Unit Order', 'u', 'castleShowUnitNumbers'],
-    ['guides', 'Guide lines', 'h', 'castleShowCompatibility'], ['paths', 'Path map', 'p', 'castleShowRoutes'],
-    ['fire', 'Firespread', 'f', 'castleShowFire'],
-    ['gameMap', '2.5D: Game map', 'ctrl+m', 'castleIsoMapBtn'], ['resetMap', '2.5D: Remove game map', 'ctrl+shift+m', 'castleIsoMapReset'],
-    ['rotateLeft', '2.5D: Rotate left', 'c'], ['rotateRight', '2.5D: Rotate right', 'x'],
-    ['saveAs', 'Save As', 'ctrl+shift+s'], ['undo', 'Undo', 'ctrl+z'], ['redo', 'Redo', 'ctrl+y'],
-    ['copy', 'Copy selection', 'ctrl+c'], ['cut', 'Cut selection', 'ctrl+x'],
-    ['exportDe', 'Export DE', 'ctrl+shift+e', 'castleExportDeBtn'],
-    ['pause', 'Pause step', '0', 'castlePauseBtn'],
-    ['deleteSelected', 'Delete selected', 'delete'], ['deselect', 'Deselect', 'escape']
+    ['openCastle', "shortcuts:openCastle", 'ctrl+o', 'castleOpenBtn'],
+    ['saveCastle', "shortcuts:saveCastle", 'ctrl+s', 'castleSaveBtn'],
+    ['newCastle', "shortcuts:newCastle", 'ctrl+n', 'castleNewBtn'],
+    ['map', "shortcuts:map", 'alt+m', 'castleMapBtn'], ['iso', "shortcuts:iso", 'alt+i', 'castleIsoBtn'],
+    ['single', "shortcuts:single", '1'], ['line', "shortcuts:line", '2'], ['brush', "shortcuts:brush", '3'],
+    ['brushSmaller', "shortcuts:brushSmaller", '-', 'castleBrushMinus'],
+    ['brushLarger', "shortcuts:brushLarger", 'plus', 'castleBrushPlus'],
+    ['bucket', "shortcuts:bucket", '4'], ['select', "shortcuts:select", '5'],
+    ['replace', "shortcuts:replace", 'r'], ['merge', "shortcuts:merge", 'm'], ['delete', "shortcuts:delete", 'd'],
+    ['overlays', "shortcuts:overlays", 'o'], ['groups', "shortcuts:groups", 'g'],
+    ['paste', "shortcuts:paste", 'ctrl+v'], ['clearClipboard', "shortcuts:clearClipboard", 'ctrl+shift+delete', 'castleClipboardClearBtn'],
+    ['names', "shortcuts:names", 'n', 'castleShowNames'], ['units', "shortcuts:units", 'u', 'castleShowUnitNumbers'],
+    ['guides', "shortcuts:guides", 'h', 'castleShowCompatibility'], ['paths', "shortcuts:paths", 'p', 'castleShowRoutes'],
+    ['fire', "shortcuts:fire", 'f', 'castleShowFire'],
+    ['gameMap', "shortcuts:gameMap", 'ctrl+m', 'castleIsoMapBtn'], ['resetMap', "shortcuts:resetMap", 'ctrl+shift+m', 'castleIsoMapReset'],
+    ['rotateLeft', "shortcuts:rotateLeft", 'c'], ['rotateRight', "shortcuts:rotateRight", 'x'],
+    ['saveAs', "shortcuts:saveAs", 'ctrl+shift+s'], ['undo', "shortcuts:undo", 'ctrl+z'], ['redo', "shortcuts:redo", 'ctrl+y'],
+    ['copy', "shortcuts:copy", 'ctrl+c'], ['cut', "shortcuts:cut", 'ctrl+x'],
+    ['exportDe', "shortcuts:exportDe", 'ctrl+shift+e', 'castleExportDeBtn'],
+    ['pause', "shortcuts:pause", '0', 'castlePauseBtn'],
+    ['deleteSelected', "shortcuts:deleteSelected", 'delete'], ['deselect', "shortcuts:deselect", 'escape']
   ];
   const defaults = Object.fromEntries(actions.map(([id, , key]) => [id, [key]]));
   const reserved = new Set(['ctrl+1', 'ctrl+2', 'ctrl+3', 'ctrl+4', 'ctrl+shift+n', 'ctrl+shift+o',
@@ -49,12 +50,12 @@
   function validate(candidate) {
     const result = {}, used = new Set();
     for (const [id, label] of actions) {
-      if (Object.hasOwn(candidate || {}, id) && !Array.isArray(candidate[id])) throw new Error(`Invalid shortcut for ${label}.`);
+      if (Object.hasOwn(candidate || {}, id) && !Array.isArray(candidate[id])) throw new Error(tr('shortcuts:invalid', { label: tr(label) }));
       const value = Object.hasOwn(candidate || {}, id) ? candidate[id]?.[0] : defaults[id][0];
       const key = normalize(value);
-      if (value && !key) throw new Error(`Invalid shortcut for ${label}.`);
-      if (key && reserved.has(key)) throw new Error(`${key.toUpperCase()} is reserved for application menus.`);
-      if (key && used.has(key)) throw new Error(`${key.toUpperCase()} is assigned more than once.`);
+      if (value && !key) throw new Error(tr('shortcuts:invalid', { label: tr(label) }));
+      if (key && reserved.has(key)) throw new Error(tr('shortcuts:reserved', { key: key.toUpperCase() }));
+      if (key && used.has(key)) throw new Error(tr('shortcuts:duplicate', { key: key.toUpperCase() }));
       if (key) used.add(key);
       result[id] = [key];
     }
@@ -84,10 +85,21 @@
     }
     return checked;
   }
+  // Earlier versions saved their defaults on first start, so an untouched
+  // profile still carries the old tool keys. Only a complete, unchanged old
+  // set moves to the number row, and only if no other action holds those keys.
+  const previousDefaults = { line: '6', brush: '2', brushSmaller: '[', brushLarger: ']', bucket: '7', select: '3', replace: '8', delete: '4' };
+  function refreshDefaults(saved) {
+    const moved = Object.keys(previousDefaults);
+    if (!moved.every(id => saved?.[id]?.[0] === previousDefaults[id])) return saved;
+    const others = new Set(actions.map(([id]) => id).filter(id => !moved.includes(id)).map(id => saved[id]?.[0]).filter(Boolean));
+    if (moved.some(id => others.has(defaults[id][0]))) return saved;
+    return { ...saved, ...Object.fromEntries(moved.map(id => [id, [...defaults[id]]])) };
+  }
   function actionFor(event, bindings) {
     const key = typeof event === 'string' ? normalize(event) : fromEvent(event);
     return key ? actions.find(([id]) => bindings[id]?.[0] === key)?.[0] || null : null;
   }
   function accelerator(key) { return key ? key.split('+').map(part => part === 'ctrl' ? 'CmdOrCtrl' : part === 'space' ? 'Space' : part === 'plus' ? 'Plus' : part.toUpperCase()).join('+') : undefined; }
-  return { actions, defaults, normalize, fromEvent, validate, migrate, upgrade, actionFor, accelerator, isReserved: key => reserved.has(key) };
+  return { get actions() { return actions.map(([id, label, ...rest]) => [id, tr(label), ...rest]); }, defaults, normalize, fromEvent, validate, migrate, upgrade, refreshDefaults, actionFor, accelerator, isReserved: key => reserved.has(key) };
 });

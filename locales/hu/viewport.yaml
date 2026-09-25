@@ -1,0 +1,25 @@
+rotation_unavailable: "Forgatás nem érhető el: "
+loading_camera_views: Kameranézetek betöltése…
+loading_map: Térkép betöltése…
+items: " elem"
+without_a_sprite: " kép nélkül"
+tool: " · eszköz: "
+middle_drag_pans_right_click_clears_camera_controls_match_map: " · középső gomb: eltolás · jobb gomb: törlés · a kamera vezérlése a térképével azonos"
+start_place: " · kezdőhely "
+no_starting_place_village_in_the_middle_of_the_map: " · nincs kezdőhely, a vár a térkép közepén van"
+quarter_turn: " negyedfordulat"
+game_value: " (játékbeli érték "
+not_turned_game_value_0: " · nincs elforgatva (játékbeli érték: 0)"
+flat_ground_height: " · sík terep (magasság "
+ground_rises: " · terepemelkedés "
+2_5d_view_ai_toolkit: 2.5D nézet — AI Toolkit
+castle_moved_to_start_value_at_value_value: "Vár áthelyezve a(z) {{nummer}}. kezdőhelyre: ({{x}}, {{y}})"
+start_value_at_value_value_click_to_build_here: "Kezdőhely {{value1}}: ({{x}}, {{y}}) – kattintson az itteni építéshez"
+fit_the_castle_into_the_view: Vár igazítása a nézethez
+show_in_a_window_of_its_own: Megjelenítés külön ablakban
+click_to_show_drag_to_move_it_somewhere_else: Kattintson a megjelenítéshez, húzza máshová az áthelyezéshez
+close_the_window_shown_here: Az itt látható ablak bezárása
+no_window_open_one_from_the_toolbar: nincs ablak – nyisson egyet az eszköztárról
+add_as_a_tab_here: Hozzáadás ide lapként
+esc_cancels: " · Esc: megszakítás"
+is_missing: " hiányzik"

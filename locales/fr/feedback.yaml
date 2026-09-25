@@ -1,0 +1,27 @@
+missing_sprites: 'Images manquantes : {{count}}'
+playing: Lecture de {{name}}
+replaced_media: ✓ {{name}} remplacé ({{size}})
+choosing: Sélection de {{name}}…
+saved_label: '{{name}} (enregistré)'
+file_label: 'Fichier : {{name}}'
+loaded_label: 'Chargé : {{name}}'
+balance_help: >-
+  « Utiliser l’équilibrage UCP » actualise les données de l’installation sélectionnée. « EXE + UCP » lit les
+  coûts dans les fichiers du jeu et applique le profil d’équilibrage configuré, sans accéder au jeu en cours
+  d’exécution.
+item: Élément {{id}}
+tool: Outil {{name}}
+shortcut: 'Raccourci : {{key}}'
+rally_points: 'Points de ralliement : {{count}}'
+rally_point: Point de ralliement
+keep_footprint: '{{width}}×{{height}} + réserve obligatoire de 5×5'
+placement_info: '{{name}} [{{id}}] · {{kind}} · {{size}} · superposition : {{overlap}} · maximum : {{maximum}}'
+overlap_allow: autorisée
+overlap_block: bloquée
+overlap_replace: remplace les éléments existants
+resize: Redimensionner
+castle_slot: Château {{slot}}
+replacing_character: Remplacement du personnage de {{name}}…
+opening: Ouverture de {{name}}…
+opened: '{{name}} ouvert.'
+with_castle: ' avec {{name}}'

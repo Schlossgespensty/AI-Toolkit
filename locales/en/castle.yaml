@@ -1,0 +1,190 @@
+the_aiv_castle_document_is_invalid: The AIV castle document is invalid.
+the_aiv_file_must_contain_a_frames_array: The AIV file must contain a 'frames' array.
+that_build_step_is_locked: That build step is locked.
+overlaps_another_item_in_this_brush_stroke: Overlaps another item in this brush stroke.
+nothing_to_undo: Nothing to undo
+nothing_to_redo: Nothing to redo
+creating_a_new_castle: creating a new castle
+new_castle: New castle
+opening_another_castle: opening another castle
+definitive_edition_json: Definitive Edition JSON
+castle_document: castle document
+castle_was_not_saved: Castle was not saved
+nothing_selected_to_replace: Nothing selected to replace.
+keep_cannot_be_replaced: Keep cannot be replaced
+locked: Locked
+the_selection_contains_only_locked_placements_or_the_keep: The selection contains only locked placements or the Keep.
+buildings_can_only_replace_buildings_and_rallypoints_can_only_replace_ra: Buildings can only replace buildings, and rallypoints can only replace rallypoints.
+choose_at_least_one_different_replacement: Choose at least one different replacement.
+build_step: 'Build step '
+locked_2: locked
+open_again: open again
+locked_unlock_the_build_step_first: Locked - unlock the build step first.
+click_an_unlocked_placement_to_flood_delete_its_connected_type_the_keep_: Click an unlocked placement to flood delete its connected type. The Keep is protected.
+merge_checked_placements_inside_the_box_at_their_earliest_step_separatel: Merge checked placements inside the box at their earliest step, separately by type. Placements outside the box and locked steps stay untouched.
+merge_checked_types_from_the_selected_steps_at_their_earliest_step_separ: Merge checked types from the selected steps at their earliest step, separately by type. Locked steps stay untouched.
+no_mergeable_type_spans_two_unlocked_steps_in_this_selection: No mergeable type spans two unlocked steps in this selection.
+the_castle_changed_cancel_and_select_the_placements_again: The castle changed. Cancel and select the placements again.
+these_de_steps_contain_pauses_merge_would_change_their_timing: These DE steps contain pauses. Merge would change their timing.
+unlock_positions: Unlock positions
+choose_an_item_first: Choose an item first.
+drag_over_items_to_copy_first: Drag over items to copy first.
+nothing_to_copy_yet_drag_a_box_over_the_placements_first: Nothing to copy yet — drag a box over the placements first
+select_unlocked_building_placements_to_cut_the_keep_and_rally_points_sta: Select unlocked building placements to cut. The Keep and rally points stay in place.
+move_the_cursor_onto_the_map_then_press_ctrl_v: Move the cursor onto the map, then press Ctrl+V
+this_item_is_drawn_as_a_line_not_poured: This item is drawn as a line, not poured.
+nothing_to_fill_here_that_tile_is_taken: Nothing to fill here - that tile is taken.
+nothing_could_be_placed_there: Nothing could be placed there.
+filled: 'Filled '
+selection_cleared: Selection cleared
+copy_selection: Copy Selection
+replace_area: Replace Area
+merge_area: Merge Area
+delete_area: Delete Area
+castle_shortcuts_saved: Castle shortcuts saved
+multiple_per_step: multiple per step
+single_per_step: single per step
+empty_step: Empty step
+move_selected_step_s_up: Move selected step(s) up
+move_selected_step_s_down: Move selected step(s) down
+temporary_blueprint_cleared: Temporary blueprint cleared
+background_image: background image
+could_not_open_the_selected_blueprint_image: Could not open the selected blueprint image
+could_not_calculate_overlays: Could not calculate overlays.
+calculating_overlays: Calculating overlays...
+map_terrain_included: map terrain included
+flat_terrain_no_map_data: flat terrain (no map data)
+tiles_to_delivery_point: ' tiles to delivery point'
+ground_passage_and_raised_walkway: Ground passage and raised walkway
+raised_walkway: Raised walkway
+walkable_ground: Walkable ground
+blocked_tile: Blocked tile
+outside_map: Outside map
+no_unobstructed_route_to_that_tile: No unobstructed route to that tile.
+nothing_copyable_selected_units_and_the_keep_are_ignored: Nothing copyable selected. Units and the Keep are ignored.
+nothing_selected_to_copy: Nothing selected to copy.
+castle_editor_configuration_failed_to_load: Castle editor configuration failed to load
+loading_map_views: Loading map views…
+no_map_of_that_name: No map of that name.
+no_maps_found_choose_the_game_folder_under_ucp_first: No maps found. Choose the game folder under UCP first.
+reading_the_map: Reading the map…
+the_starting_place: the starting place
+not_turned: ' · not turned'
+starting_place_changed: Starting place changed
+map_of_the_game_taken_away: Map of the game taken away
+temporary_blueprint_shown: Temporary blueprint shown
+temporary_blueprint_hidden: Temporary blueprint hidden
+unassigned: Unassigned
+use_a_key_optionally_combined_with_ctrl_alt_or_shift: Use a key, optionally combined with Ctrl, Alt or Shift.
+map_rotation_needs_the_game_generated_camera_layers_wait_for_loading_to_: Map rotation needs the game-generated camera layers. Wait for loading to finish, or reload the map.
+frame_value_is_not_an_object: Frame {{value1}} is not an object.
+frame_value_has_no_valid_itemtype: Frame {{value1}} has no valid itemType.
+frame_value_tilepositionofsets_must_be_an_array: 'Frame {{value1}}: tilePositionOfsets must be an array.'
+frame_value_invalid_tile_offset_value: 'Frame {{value1}}: invalid tile offset {{off}}.'
+misc_item_value_is_not_an_object: Misc item {{value1}} is not an object.
+misc_item_value_has_no_valid_itemtype: Misc item {{value1}} has no valid itemType.
+misc_item_value_invalid_positionofset_value: 'Misc item {{value1}}: invalid positionOfset {{positionOfset}}.'
+value_would_extend_outside_the_100_100_field: '{{value1}} would extend outside the 100×100 field.'
+maximum_amount_for_value_is_value: Maximum amount for {{value1}} is {{maximum}}.
+blocked_by_value: Blocked by {{value1}}.
+new_castle_added_to_the_loaded_ai_as_value: New castle added to the loaded AI as {{fileName}}
+value_added_to_the_loaded_ai: '{{fileName}} added to the loaded AI'
+removed_value_empty_legacy_stepvalue: ' — removed {{quantityvalue2}}'
+disabled_value_build_step_pause_s: ' — disabled {{removedPauses}} build-step pause(s)'
+opened_value_value_build_steps_valuevaluevalue: Opened {{value1}} — {{length}} build steps · {{formatNote}}{{legacyNote}}{{pauseNote}}
+could_not_open_aiv_castle_value: |-
+  Could not open AIV castle:
+
+  {{message}}
+could_not_import_aivjson_castle_value: |-
+  Could not import AIVJSON castle:
+
+  {{message}}
+saved_value: Saved {{name}}
+could_not_save_aiv_castle_value: |-
+  Could not save AIV castle:
+
+  {{message}}
+replace_value_with: Replace {{value1}} with
+value_locked_placementvalue_will_stay_unchanged: '{{quantityvalue2}} will stay unchanged'
+value_placementvalue_across_value_item_typevalue_choose_one_replacement_: '{{quantityvalue2}} across {{quantityvalue4}}. Choose one replacement per type.'
+invalid_replacement_for_value: Invalid replacement for {{value1}}.
+no_room_for_value_value: 'No room for {{value1}}: {{reason}}'
+value_would_also_replace_an_item_outside_the_selected_area: '{{value1}} would also replace an item outside the selected area.'
+replaced_value_placementvalue_across_value_target_typevalue: Replaced {{quantityvalue2}} across {{quantityvalue4}}
+deleted_value_placementvalue: Deleted {{quantityvalue2}}
+value_locked_and_left_alone: ' ({{gesperrt}} locked and left alone)'
+selected_value_placements_shift_adds_ctrl_click_toggles_a_connected_grou: Selected {{size}} placements ? Shift adds; Ctrl-click toggles a connected group. Switch to Select / Move to drag.
+flood_deleted_value_connected_value_placements: Flood deleted {{size}} connected {{value2}} placements
+value_value_placements_in_value_steps: '{{value1}} — {{count}} placements in {{size}} steps'
+merged_value_item_types_at_their_earliest_selected_steps: Merged {{length}} item types at their earliest selected steps
+value_can_only_be_placed_with_the_line_tool: '{{value1}} can only be placed with the Line tool.'
+placed_value_rallypoint_value_at_value: 'Placed {{value1}} rallypoint #{{value2}} at {{off}}'
+placed_value_at_value: Placed {{value1}} at {{off}}
+value_ready_value_value_steps_release_to_place: '{{value1}} ready — {{length}}/{{length3}} steps — release to place'
+value_placed_nothing: '{{toolName}} placed nothing.'
+could_not_build_the_value_sequence: Could not build the {{value1}} sequence.
+value_placed_value_consecutive_stair_steps: '{{value1}}: placed {{length}} consecutive stair steps'
+value_placed_value_value_rallypoints: '{{toolName}}: placed {{length}} {{value3}} rallypoints'
+value_placed_value_value_in_consecutive_build_steps: '{{toolName}}: placed {{length}} {{value3}} in consecutive build steps'
+copy_blocked_by_value: Copy blocked by {{value1}}.
+value_build_stepvalue: '{{quantityvalue2}}'
+placed_copy_of_value_placementvalue_as_value: Placed copy of {{quantityvalue2}} as {{details}}
+copied_value_placementvalue_ctrl_v_puts_it_where_the_cursor_is: Copied {{placements}} — Ctrl+V puts it where the cursor is
+cut_value_placementvalue_ctrl_v_pastes_at_the_cursor: Cut {{quantityvalue2}} — Ctrl+V pastes at the cursor
+move_blocked_by_value: Move blocked by {{value1}}.
+moved_value_placementvalue: Moved {{quantityvalue2}}
+selected_value_click_the_map_to_place: Selected {{value1}} — click the map to place
+line_only_up_to_value_consecutive_steps: line only · up to {{length}} consecutive steps
+no_items_in_value: No items in {{value1}}.
+line_up_to_value_steps: Line · up to {{length}} steps
+step_value: Step {{value1}}
+selected_value_build_steps_drag_or_use_the_arrows_to_move_them_together: Selected {{length}} build steps — drag or use the arrows to move them together
+selected_build_step_value_new_buildings_will_be_inserted_after_it: Selected build step {{value1}} — new buildings will be inserted after it
+value_build_stepvalue_moved_together: '{{quantityvalue2}} moved together'
+value_locked_and_left_alone_2: ' ({{festgehalten}} locked and left alone)'
+set_png_skin_for_value: Set PNG skin for {{value1}}
+removed_skin_for_value: Removed skin for {{value1}}
+could_not_load_background_value: 'Could not load background: {{message}}'
+temporary_blueprint_loaded_value: 'Temporary blueprint loaded: {{blueprintFileName}}'
+paths_value_value_reachable_open_gates_value_cyan_dots_reachable_entranc: 'Paths: {{length}}/{{length2}} reachable. Open gates; {{value3}}. Cyan dots: reachable entrances; red dots: blocked. Static estimate.'
+selected_value_placementvalue: Selected {{quantityvalue2}}
+drag_from_x_value_y_value_to_choose_the_value_direction: Drag from x={{x}}, y={{y}} to choose the {{value3}} direction.
+copy_ready_at_x_value_y_value_click_to_place: Copy ready at x={{x}}, y={{y}} — click to place
+value_unit_keep_placementvalue_ignored: ' ({{quantityvalue2}} ignored)'
+copied_selection_prepared_value_placementvaluevalue_move_the_cursor_and_: 'Copied selection prepared: {{quantityvalue2}}{{ignoredNote}} — move the cursor and click to place'
+deleted_value_placementvalue_2: Deleted {{quantityvalue2}}
+start_place_value: Start place {{value1}}
+map_loaded_rotation_unavailable_value: 'Map loaded; rotation unavailable: {{nativeError}}'
+whole_map_value_ready_value_different_tiles: Whole map "{{name}}" ready · {{kacheln}} different tiles
+could_not_load_map_value_select_game_map_to_retry: 'Could not load map: {{message}}. Select Game map to retry.'
+could_not_read_the_map_tiles_value: 'Could not read the map tiles: {{message}}'
+could_not_read_that_map_value: 'Could not read that map: {{message}}'
+could_not_list_the_maps_value: 'Could not list the maps: {{message}}'
+castle_built_on_value_at_value_value: Castle built on {{value1}} at ({{x}}, {{y}})
+the_game_turns_it_by_value_quarter_turnvalue: ' · the game turns it by {{turns}}'
+castle_picture_saved_value: 'Castle picture saved: {{saved}}'
+could_not_save_castle_picture_value: 'Could not save castle picture: {{message}}'
+select_items_first_to_value: Select items first to {{action}}.
+unsaved_castle: (unsaved castle)
+select_something_on_the_map_first: Select something on the map first.
+no_groups_in_this_castle_yet_select_placements_on_the_map_give_them_a_na: No groups in this castle yet. Select placements on the map, give them a name and save.
+copy_this_group_for_placement: Copy this group for placement
+this_group_has_no_copyable_items: This group has no copyable items.
+clipboard_emptied: Clipboard emptied
+nothing_copied_yet_copy_something_with_ctrl_c_or_the_copy_tool: Nothing copied yet. Copy something with Ctrl+C or the Copy tool.
+paste_at_the_cursor: Paste at the cursor
+empty_the_clipboard: Empty the clipboard
+group_name: Group name
+save_group: Save group
+enter_a_group_name: Enter a group name.
+a_group_called_value_is_already_there: A group called "{{name}}" is already there.
+group_value_saved_with_value_placementvalue: Group "{{name}}" saved with {{quantityvalue3}}
+delete_group_value: Delete group "{{name}}"
+value_placementvalue_copied_works_in_every_castle_click_then_click_on_th: '{{quantityvalue2}} copied — works in every castle. Click, then click on the map, or press Ctrl+V.'
+castle_actions: Castle actions
+no_item_categories_configured: No item categories configured.
+dock: Dock
+groups: Groups
+cut_and_copy: Cut & copy
+deselect: Deselect

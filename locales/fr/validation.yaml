@@ -1,0 +1,24 @@
+balance_profile: Un profil d’équilibrage contenant une section buildings, resources, units, population ou castle est attendu.
+balance_section: Section {{section}} invalide.
+balance_building: 'Bâtiment invalide : {{name}}'
+balance_health: '{{name}} : health doit être un entier positif ou nul.'
+balance_housing: '{{name}} : housing doit être un entier positif ou nul.'
+balance_cost: '{{name}} : cost doit contenir cinq entiers positifs ou nuls (bois, pierre, fer, poix, or).'
+balance_resource: 'Ressource invalide : {{name}}'
+balance_delivery: '{{name}} : delivery doit tenir sur un octet (0–255).'
+balance_bonus: '{{name}} : skirmishBonus doit valoir true ou false.'
+balance_ditch: castle.ditch_per_pitch doit valoir 1, 2, 3 ou 4.
+frames_array: Les étapes de construction doivent former un tableau.
+tile_offset: '{{label}} : décalage de case invalide.'
+step_object: 'Étape {{step}} : un objet est attendu.'
+step_positions: 'Étape {{step}} : élément ou positions invalides.'
+step_pause: 'Étape {{step}} : indicateur de pause invalide.'
+step: Étape {{step}}
+markers_array: Les marqueurs du château doivent former un tableau.
+marker_invalid: Marqueur de château invalide.
+marker: Marqueur de château
+pause_delay: Durée de pause invalide.
+classic_empty_steps: Les étapes de construction vides ne peuvent pas être conservées au format AIV classique.
+classic_item: '{{name}} n’est pas pris en charge au format AIV classique.'
+classic_pauses: Les pauses de construction sont désactivées dans l’éditeur classique.
+classic_marker: '{{name}} ne peut pas être conservé au format AIV classique.'

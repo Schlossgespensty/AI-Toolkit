@@ -1,0 +1,79 @@
+castle_document: The Castle
+character_document: The Character
+experimental_snapshot: Experimental snapshot
+official_release: Official release
+native_aiv: native AIV
+step_locked: 'Build step {{step}} is locked'
+step_unlocked: 'Build step {{step}} is open again'
+steps_locked: '{{steps}} locked'
+steps_unlocked: '{{steps}} open again'
+fill_result: 'Filled {{tiles}} with {{item}}'
+locked_stay: '{{placements}} stay where they are'
+map_terrain: map terrain included
+flat_terrain: flat terrain (no map data)
+fire_estimate: 'Fire estimate: two inner red rings; HP-scaled yellow-to-blue halo, up to 8 tiles.'
+start: 'start {{number}}'
+starting_place: the starting place
+map_name: ' · map: {{name}}'
+map_start: ' · start {{number}} ({{x}}, {{y}})'
+map_start_place: ' · starting place {{number}} ({{x}}, {{y}})'
+map_rotation: ' · turned {{turns}} (game value {{value}})'
+map_flat: ' · flat ground (height {{height}})'
+map_height: ' · ground rises {{range}} points (height {{minimum}} to {{maximum}})'
+space_one: '{{count}} space'
+space_other: '{{count}} spaces'
+food_one: '{{count}} food'
+food_other: '{{count}} food'
+tile_one: '{{count}} tile'
+tile_other: '{{count}} tiles'
+shortfall: '{{count}} short'
+free: '{{count}} free'
+resource: Resource
+maximum: Max
+spaces: Spaces
+per_space: '{{count}} per space; {{source}}'
+none_produced: No relevant production configured.
+none_produced_or_bought: No relevant production or recruitment configured.
+stockpiles: 'Stockpiles: {{count}} (including the keep); 4 spaces each. All resource limits reserved.'
+granaries: 'Granaries: {{count}}; 250 food each, shared across food types.'
+armories: 'Armories: {{count}}; 10 separate stacks of 5 weapons each. Purchases inferred from recruitment settings.'
+hops: Hops
+fruit: Fruit
+wav_speech: WAV speech
+bink_video: Bink video
+workshop: workshop
+work_unknown: work duration unknown
+cycle_ticks: '{{count}} ticks per reference cycle'
+cost_table: the build cost table
+bundled_vanilla: bundled vanilla
+saved_balance: 'the saved snapshot of {{name}}'
+year_one: '{{count}} year'
+year_other: '{{count}} years'
+month_one: '{{count}} month'
+month_other: '{{count}} months'
+day_one: '{{count}} day'
+day_other: '{{count}} days'
+quarry_one: '{{count}} quarry'
+quarry_other: '{{count}} quarries'
+iron_mine_one: '{{count}} iron mine'
+iron_mine_other: '{{count}} iron mines'
+woodcutter_one: '{{count}} woodcutter'
+woodcutter_other: '{{count}} woodcutters'
+farm_one: '{{count}} farm'
+farm_other: '{{count}} farms'
+pitch_rig_one: '{{count}} pitch rig'
+pitch_rig_other: '{{count}} pitch rigs'
+ox_tether_one: '{{count}} ox tether'
+ox_tether_other: '{{count}} ox tethers'
+hop_farms_one: '{{count}} of those farms grows hops.'
+hop_farms_other: '{{count}} of those farms grow hops.'
+open_character_error: 'Could not open Character file: {{error}}'
+save_character_error: 'Could not save Character file: {{error}}'
+recipe_bow: 2 wood; separate armoury return
+recipe_crossbow: 3 wood; separate armoury return
+recipe_spear: 1 wood; work time is only documented as less than 1 month
+recipe_pike: 2 wood; collects first plank after armoury delivery
+recipe_iron: 1 iron; collects next input after armoury delivery
+recipe_leather: 3 deliveries per cow; each work time is only documented as less than 3 months
+recipe_bread: 1 flour; granary then stockpile
+recipe_ale: 1 hop; stockpile input and output

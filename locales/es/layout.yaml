@@ -1,0 +1,10 @@
+steps: Pasos
+categories: Categorías
+overview: Resumen
+resize: Cambiar el tamaño de {{panel}} y del resumen
+resize_help: >-
+  Arrastra para cambiar el tamaño o hasta un extremo para plegar. Las flechas ajustan el tamaño; Inicio/Fin
+  pliegan y Entrar restaura.
+show: Mostrar {{panel}}
+hide: Ocultar {{panel}}
+move_copy: Mueve la copia al lugar deseado; haz clic para pegar o pulsa Esc para cancelar.

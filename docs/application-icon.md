@@ -2,6 +2,8 @@
 
 `assets/icon.png` is the master; `assets/icon.ico` contains 16, 24, 32, 48, 64, 128 and 256-pixel Windows variants. The executable, BrowserWindow, favicon and custom title bar share it. The 28-pixel title-bar image remains visible on narrow windows.
 
+`src-tauri/icons/icon.png` is the unmodified 256-pixel RGBA PNG entry from `assets/icon.ico`. Tauri requires an RGBA PNG for Linux/macOS window icons; the RGB master cannot be used directly. This file preserves the existing Windows icon's exact bytes and pixels without another resize or conversion.
+
 A pale medieval tower A and masonry I fill a dark monochrome square. This replaces the padded badge and underline. The original Village Editor inspired the AI identity; the installed T3 icon supplied a reference for compact composition and contrast, not its lettering. Reference executables and icons are not redistributed.
 
 Created with the built-in image generation tool on 2026-09-12. Master preserved unchanged; ICO versions are standard-size format conversions. Inspected at 16 and 32 pixels: doorway, battlements and separate I remain distinct; masonry is secondary.

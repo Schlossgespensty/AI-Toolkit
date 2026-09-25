@@ -1,0 +1,24 @@
+missing_sprites: 'Sprites sin imagen: {{count}}'
+playing: Reproduciendo {{name}}
+replaced_media: ✓ {{name}} sustituido ({{size}})
+choosing: Seleccionando {{name}}…
+saved_label: '{{name}} (guardado)'
+file_label: 'Archivo: {{name}}'
+loaded_label: 'Cargado: {{name}}'
+balance_help: Usar balance de UCP actualiza los datos de la instalación seleccionada. EXE + UCP lee los costes del juego desde el disco y aplica el perfil de balance configurado; no lee el juego en ejecución.
+item: Elemento {{id}}
+tool: Herramienta {{name}}
+shortcut: 'Atajo: {{key}}'
+rally_points: 'Puntos de reunión: {{count}}'
+rally_point: Punto de reunión
+keep_footprint: '{{width}}×{{height}} + almacén obligatorio de 5×5'
+placement_info: '{{name}} [{{id}}] · {{kind}} · {{size}} · superposición: {{overlap}} · máx.: {{maximum}}'
+overlap_allow: permitida
+overlap_block: bloqueada
+overlap_replace: sustituye
+resize: Cambiar tamaño
+castle_slot: Castillo {{slot}}
+replacing_character: Sustituyendo el personaje de {{name}}…
+opening: Abriendo {{name}}…
+opened: '{{name}} abierto.'
+with_castle: ' con {{name}}'

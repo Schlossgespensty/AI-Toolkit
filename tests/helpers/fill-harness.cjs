@@ -1,5 +1,5 @@
 'use strict';
-const fs=require('node:fs'),vm=require('node:vm');
+const fs=require('node:fs'),vm=require('./localized-vm');
 module.exports=function fillHarness(sourceFile,geometry,placements=[],options={}) {
  const source=fs.readFileSync(sourceFile,'utf8');let footprintCalls=0,draws=0,commits=0;
  const definitions={25:{overlap:'replace'},26:{overlap:'replace'},106:{},54:{},61:{},200:{kind:'unit',overlap:'allow'}};

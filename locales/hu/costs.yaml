@@ -1,0 +1,91 @@
+wood: Fa
+stone: Kő
+iron: Vas
+pitch: Szurok
+gold: Arany
+travel_ticks_tile_override_blank_reference: "Menetidő ütemben / mező (üresen: referencia)"
+delivery_store: szállítási raktár
+dairy_farm: tehenészet
+work_duration_unknown: munkaidő ismeretlen
+ticks_per_reference_cycle: " ütem referenciaciklusonként"
+unknown: Ismeretlen
+hide_cost_per_building: Épületenkénti költség elrejtése
+show_cost_per_building: Épületenkénti költség megjelenítése
+the_build_cost_table: az építési költségtáblázat
+cost_table_not_loaded: A költségtáblázat nincs betöltve.
+castle_costs: Várköltségek ▸
+castle_costs_2: Várköltségek ▾
+bundled_base_ucp: Mellékelt alap + UCP
+bundled_vanilla: mellékelt eredeti
+the_saved_snapshot_of: "a következő mentett másolata: "
+partial: " (részleges)"
+open_a_character_for_production_estimates: A termelés becsléséhez nyisson meg egy karaktert.
+reading_selected_installation: Kiválasztott telepítés olvasása…
+using_bundled_vanilla_prices: Mellékelt eredeti árak használata
+no_steps: nincs lépés
+cumulative_total_no_steps: Halmozott összeg · nincs lépés
+partial_unknown_prices: " (részleges: ismeretlen árak)"
+no_character_file: nincs karakterfájl
+iron_mine: vasbánya
+iron_mines: vasbányák
+pitch_rig: szurokkitermelő
+pitch_rigs: szurokkitermelők
+ox_tether: ökörkarám
+ox_tethers: ökörkarámok
+1_of_those_farms_grows_hops: E gazdaságok egyike komlót termel
+open_a_character_file_to_see_how_many_resource_buildings_the_aic_would_a: Nyisson meg egy karakterfájlt, hogy lássa, hány termelőépületet adna hozzá az AIC.
+nothing_with_a_known_price_up_to_this_step: E lépésig nincs ismert árú elem.
+no_cost: nincs költség
+price_from_the_selected_balance_file: Ár a kiválasztott egyensúlyfájlból
+price_from_the_game_exe_vanilla: Ár a játék végrehajtható fájljából (eredeti)
+value_value_value_tiles_value_walking_ticks_value: "{{value1}}. {{note}}. {{value3}} mező; {{value4}} menetütem; {{value5}}."
+value_reference_ticks_batch: "{{good}} referenciaütem / adag"
+bundled_vanilla_prices_were_extracted_from_the_game_exe_at_value_load_a_: >-
+  A mellékelt eredeti árak a játék végrehajtható fájljából származnak, innen: {{value1}}. Az árak
+  felülírásához töltsön be bővítmény-egyensúlyfájlt; a hiányzó felülírásoknál megmaradnak az eredeti árak. Ez
+  nem olvassa a futó játékot. Egy építési lépés = 50 ütem = egy játéknap (445-ből 445 lépésen mérve).
+ucp_balance_could_not_be_loaded_still_using_value_value: "Nem sikerült betölteni az UCP egyensúlyát. Továbbra is ez érvényes: {{value1}}. {{value2}}"
+using_saved_snapshot_value: "Mentett másolat használata: {{choice}}"
+cumulative_total_steps_1_value: Halmozott összeg · 1–{{steps}}. lépés
+total_through_step_value: Összesen a(z) {{steps}}. lépésig
+through_step_value_value: "A(z) {{steps}}. lépésig: {{value2}}"
+price_unknown_not_counted_value_the_build_cost_table_has_no_entry_for_th: "Ismeretlen ár, nincs beleszámítva: {{namen}}. Ezekhez nincs bejegyzés az építési költségtáblázatban."
+value_ticks_one_step_is_one_game_day_and_a_step_that_cannot_be_built_sti: >-
+  {{value1}} ütem: egy lépés egy játéknap, és a meg nem építhető lépés is felhasználja a napját. Ha az MI
+  pénze elfogy, várakozik, ezért ez a legkorábbi lehetséges idő, nem ígéret.
+at_value_population_the_aic_opens_value: "{{value1}} lakosnál az AIC ezt létesíti: {{value2}}."
+1_pitch_per_value_tiles_grouped_across_steps_assumes_a_fresh_placement_c: ; 1 szurok {{pitchGroup}} mezőnként, lépések között összevonva; új elhelyezési számlálót feltételez
+cumulative_total_through_step_value: Halmozott összeg a(z) {{steps}}. lépésig
+about_the_castle_cost_overview: A várköltség-áttekintésről
+balance: Játékegyensúly
+load_a_balance_json_ascension_team_league: Egyensúly-JSON betöltése (Ascension, Team League stb.)
+load: Betöltés…
+use_ucp_balance: UCP-egyensúly használata
+cumulative_through_selected_step: Halmozott összeg a kijelölt lépésig
+total_through_current_step: Összesen a jelenlegi lépésig
+resources_through_this_step: Erőforrások e lépésig
+production_assumptions: Termelési feltételezések
+reference_estimate_from_stronghold_heaven_original_stronghold_assuming_f: >-
+  Stronghold Heaven-referenciabecslés (eredeti Stronghold), teljes létszámot feltételezve a lakóhelyek
+  megnyílásakor. Ezek közelítő értékek, nem igazolt Crusader-szimulációs időzítések. Nem tartalmazzák az
+  építési késést, szüneteket, alapanyaghiányt, fogyasztást, kereskedelmet, szállítási szűk keresztmetszeteket,
+  illetve a félelem és pihenés hatását. Ezek az áruk nem a raktárkészletet jelentik.
+resource_distance: Erőforrás távolsága
+per_extra_building: További épületenként
+stockpile_distance: Raktár távolsága
+delivery_store_distance: Szállítási raktár távolsága
+between_stores: Raktárak között
+walking_speed_multiplier: Járási sebesség szorzója
+delivery_productivity: Szállítási termelékenység %
+skirmish_delivery_bonus_where_enabled_by_balance: Csetepatés szállítási bónusz, ha az egyensúly engedélyezi
+workshop_itinerary: Műhely útvonala
+work_ticks_exclude_the_return_journey_cycle_work_ticks_2_distance_walkin: >-
+  A munkaütemek nem tartalmazzák a visszautat: ciklus = munkaütem + 2 × távolság × menetütem. Minden termelő
+  külön haladást és törtrészes szállítási bónuszt tart fenn. A kő a kőfejtő termelése; az ökrös szállítást nem
+  szimuláljuk. Az útvonalfedvény távolságai külön elrendezési diagnosztikák, nem a külső erőforrások mért
+  távolságai.
+elapsed_game_time: Eltelt játékidő
+good: Áru
+cost: Költség
+estimated_gross_production_not_stockpile_inventory: Becsült bruttó termelés, nem raktárkészlet
+produced: Termelt*

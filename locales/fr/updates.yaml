@@ -1,0 +1,20 @@
+checking_updates: Recherche de mises à jour…
+up_to_date: À jour
+no_published_builds: Aucune version publiée
+no_compatible_build: Aucune version compatible
+retry_updates: Réessayer les mises à jour
+experimental_snapshot: Aperçu expérimental
+official_release: Version officielle
+downloading_update: Téléchargement de la mise à jour…
+installing_the_selected_build_and_restarting_toolkit: installation de la version choisie et redémarrage du Toolkit
+restarting: Redémarrage…
+retry_update: Réessayer la mise à jour
+other_fork: Autre fork…
+update_source_value: 'Source des mises à jour : {{repo}}'
+install_value: Installer {{latest}}
+value_from_value_value_download_install_and_restart_installed_value: >-
+  {{value1}} de {{repo}} : {{latest}}. Télécharger, installer et redémarrer. Version installée :
+  {{installed}}.
+installed_value_value_checked_on_startup_and_hourly: 'Version installée : {{repo}} {{latest}}. Vérification au démarrage et toutes les heures.'
+no_installable_windows_zip_with_a_checksum_found_in_value: Aucune archive ZIP Windows installable avec somme de contrôle trouvée dans {{repo}}.
+install_value_2: Installer {{version}}

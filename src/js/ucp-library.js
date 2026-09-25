@@ -1,5 +1,6 @@
 (() => {
   'use strict';
+  const tr = (key, options) => globalThis.toolkitI18n.t(key, options);
 
   const els = {
     choose: document.getElementById('ucpChooseInstallationBtn'),
@@ -104,7 +105,7 @@
     </svg>`)}`;
 
   function setStatus(message, type = '') {
-    els.status.textContent = message;
+    window.toolkitI18n.bindText(els.status, message);
     els.status.classList.toggle('error', type === 'error');
     els.status.classList.toggle('success', type === 'success');
     if (window.appWorkspace?.getActive() === 'ucp') window.appWorkspace.setStatus(message);
@@ -195,7 +196,7 @@
     const ai = loadedAi();
     if (!state.loadedProject || !ai || state.busy) return null;
     setBusy(true);
-    setStatus(`Replacing ${ai.name}'s Character…`);
+    setStatus(() => tr('feedback:replacing_character', {name:ai.name}));
     try {
       const result = await window.electronAPI.addAiDocument({
         kind: 'character',
@@ -206,10 +207,10 @@
       if (!result) return null;
       state.loadedProject.characterPath = result.path;
       renderDetails();
-      setStatus(`${ai.name}'s Character was replaced.`, 'success');
+      setStatus(() => tr("library:value_s_character_was_replaced", { name: ai.name }), 'success');
       return result;
     } catch (error) {
-      setStatus(`Could not add Character to ${ai.name}: ${error.message}`, 'error');
+      setStatus(() => tr("library:could_not_add_character_to_value_value", { name: ai.name, message: error.message }), 'error');
       return null;
     } finally {
       setBusy(false);
@@ -228,7 +229,7 @@
     if (!state.loadedProject || !ai || state.busy) return null;
     const projectState = state.loadedProject;
     setBusy(true);
-    setStatus(`Adding castle to ${ai.name}…`);
+    setStatus(() => tr("library:adding_castle_to_value", { name: ai.name }));
     try {
       const result = await window.electronAPI.addAiDocument({
         kind: 'castle',
@@ -241,7 +242,7 @@
         unchanged
       });
       if (!result) {
-        setStatus('Adding the castle was cancelled.');
+        setStatus(() => tr("library:adding_the_castle_was_cancelled"));
         return null;
       }
       projectState.castleFile = result.fileName;
@@ -251,10 +252,10 @@
       projectState.ai = loadedAi();
       populateCastleSwitcher(projectState.ai, result.fileName);
       renderDetails();
-      setStatus(`${result.fileName} was added to ${ai.name}.`, 'success');
+      setStatus(() => tr("library:value_was_added_to_value", { fileName: result.fileName, name: ai.name }), 'success');
       return result;
     } catch (error) {
-      setStatus(`Could not add castle to ${ai.name}: ${error.message}`, 'error');
+      setStatus(() => tr("library:could_not_add_castle_to_value_value", { name: ai.name, message: error.message }), 'error');
       return null;
     } finally {
       setBusy(false);
@@ -266,7 +267,7 @@
     els.castle.innerHTML = '';
     const option = document.createElement('option');
     option.value = '';
-    option.textContent = 'No AI project';
+    option.textContent = tr("interface:no_ai_project");
     els.castle.appendChild(option);
     els.castle.dataset.available = 'false';
     els.castle.disabled = true;
@@ -278,7 +279,7 @@
     if (!castles.length) {
       const option = document.createElement('option');
       option.value = '';
-      option.textContent = 'No castles available';
+      option.textContent = tr("library:no_castles_available");
       els.castle.appendChild(option);
       els.castle.dataset.available = 'false';
       els.castle.disabled = true;
@@ -287,7 +288,7 @@
     for (const castle of castles) {
       const option = document.createElement('option');
       option.value = castle.fileName;
-      option.textContent = `${castle.slot == null ? 'Unmapped' : `Castle ${castle.slot}`} — ${castle.fileName}${canLoadCastle(castle) ? '' : ' (missing)'}`;
+      option.textContent = `${castle.slot == null ? tr("library:unmapped") : tr('feedback:castle_slot', {slot:castle.slot})} — ${castle.fileName}${canLoadCastle(castle) ? '' : tr("library:missing")}`;
       option.disabled = !canLoadCastle(castle);
       els.castle.appendChild(option);
     }
@@ -311,21 +312,21 @@
   function showCastleMapping() {
     const ai = loadedAi();
     if (!state.loadedProject || !ai) {
-      window.castleEditor?.setStatus?.('Open an AI project before editing its castle mapping');
+      window.castleEditor?.setStatus?.(() => tr("library:open_an_ai_project_before_editing_its_castle_mapping"));
       return false;
     }
     if (state.busy) return false;
     const choices = castleFileChoices(ai);
     els.mappingFields.innerHTML = '';
-    els.mappingHint.textContent = `Choose the AIV used in each of ${ai.name}'s eight castle slots. The same file may be selected more than once.`;
+    window.toolkitI18n.bindText(els.mappingHint, () => tr("library:choose_the_aiv_used_in_each_of_value_s_eight_castle_slots_the_same_file_", { name: ai.name }));
     for (let slot = 1; slot <= 8; slot += 1) {
       const label = document.createElement('label');
-      label.textContent = `Castle ${slot}`;
+      label.textContent = tr('feedback:castle_slot', {slot});
       const select = document.createElement('select');
       select.dataset.slot = String(slot);
       const unused = document.createElement('option');
       unused.value = '';
-      unused.textContent = 'Unused';
+      unused.textContent = tr("library:unused");
       select.appendChild(unused);
       for (const fileName of choices) {
         const option = document.createElement('option');
@@ -348,7 +349,7 @@
     const slots = [...els.mappingFields.querySelectorAll('select')].map(select => select.value);
     els.mappingDialog.close();
     setBusy(true);
-    setStatus(`Saving ${ai.name}'s castle mapping…`);
+    setStatus(() => tr("library:saving_value_s_castle_mapping", { name: ai.name }));
     try {
       const updated = await window.electronAPI.updateAiCastleMapping({
         gameRoot: state.gameRoot,
@@ -357,10 +358,10 @@
       });
       await scan({ selectKey: updated?.key || ai.key, quiet: true });
       populateCastleSwitcher(loadedAi(), state.loadedProject.castleFile);
-      setStatus(`✓ ${ai.name}'s castle mapping saved`, 'success');
+      setStatus(() => tr("library:value_s_castle_mapping_saved", { name: ai.name }), 'success');
       return true;
     } catch (error) {
-      setStatus(`Could not save castle mapping: ${error.message}`, 'error');
+      setStatus(() => tr("library:could_not_save_castle_mapping_value", { message: error.message }), 'error');
       return false;
     } finally {
       setBusy(false);
@@ -377,14 +378,15 @@
     const ais = filteredAis();
     els.list.innerHTML = '';
     els.count.textContent = String(ais.length);
-    els.count.title = state.library ? `${ais.length} of ${state.library.ais.length} AIs shown` : '';
+    els.count.title = state.library ? tr("library:value_of_value_ais_shown", { length: ais.length, length2: state.library.ais.length }) : '';
     if (!ais.length) {
       const empty = document.createElement('div');
       empty.className = 'ucpLibraryEmpty';
       empty.textContent = state.library
-        ? (els.search.value.trim() ? 'No AIs match this search.' : 'No AIs match this view.')
-        : 'No installation selected.';
+        ? (els.search.value.trim() ? tr("library:no_ais_match_this_search") : tr("library:no_ais_match_this_view"))
+        : tr("interface:no_installation_selected");
       els.list.appendChild(empty);
+      window.toolkitI18n.applyTextDirection(els.list);
       return;
     }
     for (const ai of ais) {
@@ -405,32 +407,33 @@
       name.textContent = ai.name;
       const source = document.createElement('span');
       source.className = 'ucpAiListSource';
-      source.textContent = `${ai.owned ? 'My AIs' : ai.plugin.displayName}${ai.active ? ' · active' : ''}`;
+      source.textContent = `${ai.owned ? tr("library:my_ais") : ai.plugin.displayName}${ai.active ? tr("library:active") : ''}`;
       text.append(name, source);
       button.append(portrait, text);
       button.addEventListener('click', () => selectAi(ai.key));
       els.list.appendChild(button);
     }
+    window.toolkitI18n.applyTextDirection(els.list);
   }
 
   function renderCastleSummary() {
     const ai = selectedAi();
     if (!ai?.castles.length) {
-      els.castleSummary.textContent = 'No mapped binary castles were found. The Character can still be opened.';
+      els.castleSummary.textContent = tr("library:no_mapped_binary_castles_were_found_the_character_can_still_be_opened");
       return;
     }
     const loadable = ai.castles.filter(canLoadCastle);
     const first = castleOne(ai);
     if (!first) {
       if (ai.castles.some(castle => castle.requiresFileAccess)) {
-        els.castleSummary.textContent = `${ai.castles.length} castle mapping${ai.castles.length === 1 ? '' : 's'} found · enable castles, audio & all AIs above to read the binary AIV files.`;
+        els.castleSummary.textContent = tr("library:value_castle_mappingvalue_found_enable_castles_audio_all_ais_above_to_re", { quantityvalue2: tr("quantity:castle_mapping", { count: ai.castles.length }) });
         return;
       }
-      els.castleSummary.textContent = `${loadable.length} castle${loadable.length === 1 ? '' : 's'} available, but Castle 1 was not found. The Character will open with a blank Castle editor.`;
+      els.castleSummary.textContent = tr("library:value_castlevalue_available_but_castle_1_was_not_found_the_character_wil", { quantityvalue2: tr("quantity:castle", { count: loadable.length }) });
       return;
     }
-    const source = first.exists ? 'binary AIV ready' : 'JSON fallback available';
-    els.castleSummary.textContent = `${loadable.length} castle${loadable.length === 1 ? '' : 's'} available · Castle 1 opens first · ${first.fileName} · ${source}`;
+    const source = first.exists ? tr("library:binary_aiv_ready") : tr("library:json_fallback_available");
+    els.castleSummary.textContent = tr("library:value_castlevalue_available_castle_1_opens_first_value_value", { fileName: first.fileName, source: source, quantityvalue2: tr("quantity:castle", { count: loadable.length }) });
   }
 
   function loadedSelectionMatches() {
@@ -438,7 +441,7 @@
     return Boolean(ai?.owned && state.loadedProject && state.loadedProject.aiKey === ai.key);
   }
 
-  function renderDetails() {
+  function renderDetails({ preserveDraft = false } = {}) {
     const ai = selectedAi();
     els.empty.hidden = Boolean(ai);
     els.details.hidden = !ai;
@@ -447,40 +450,43 @@
     els.portrait.src = ai.portraitDataUrl || placeholderPortrait;
     els.portrait.alt = ai.name;
     els.name.textContent = ai.name;
-    els.description.textContent = ai.description || 'No description provided.';
+    els.description.textContent = ai.description || tr("library:no_description_provided");
     els.author.textContent = ai.author || '—';
     els.version.textContent = ai.version || '—';
     els.plugin.textContent = `${ai.plugin.displayName}${ai.plugin.version ? ` ${ai.plugin.version}` : ''}`;
     els.id.textContent = ai.id;
 
-    els.ownership.textContent = ai.owned ? 'My AI' : 'Installed';
+    els.ownership.textContent = ai.owned ? tr("library:my_ai") : tr("interface:installed");
     els.ownership.classList.toggle('owned', ai.owned);
-    els.activity.textContent = ai.active ? 'Active plugin' : 'Inactive plugin';
+    els.activity.textContent = ai.active ? tr("library:active_plugin") : tr("library:inactive_plugin");
     els.activity.classList.toggle('active', ai.active);
 
-    els.open.textContent = 'Open in editors';
+    els.open.textContent = tr("interface:open_in_editors");
     els.openHint.textContent = ai.owned
-      ? 'Loads the managed Character, Castle 1, lines and portraits. Switch castles from the Castle editor.'
+      ? tr("library:loads_the_managed_character_castle_1_lines_and_portraits_switch_castles_")
       : ai.castles.some(castle => castle.requiresFileAccess)
-        ? 'Character data is ready. Enable castles, audio & all AIs above before opening to include its binary castle and sound files.'
-        : 'Loads this AI directly from its source plugin. Changes can be saved back to that plugin.';
+        ? tr("library:character_data_is_ready_enable_castles_audio_all_ais_above_before_openin")
+        : tr("library:loads_this_ai_directly_from_its_source_plugin_changes_can_be_saved_back_");
     setButtonAvailable(els.open, ai.characterExists);
     setButtonAvailable(els.openFolder, true);
 
     els.cloneCard.hidden = ai.owned || Boolean(ai.vanilla);
     els.updateCard.hidden = !ai.owned;
     if (!ai.owned) {
-      els.cloneName.value = `${ai.name} (Custom)`;
-      els.cloneId.value = `${germanSlug(ai.folderName || ai.name)}-custom`;
-      els.cloneVersion.value = ai.version || '1.0.0';
+      if (!preserveDraft) {
+        els.cloneName.value = `${ai.name} (Custom)`;
+        els.cloneId.value = `${germanSlug(ai.folderName || ai.name)}-custom`;
+        els.cloneVersion.value = ai.version || '1.0.0';
+      }
       setButtonAvailable(els.clone, true);
     } else {
       setButtonAvailable(els.update, loadedSelectionMatches());
       els.update.title = loadedSelectionMatches()
-        ? 'Safely update the managed UCP plugin from the loaded editors.'
-        : 'Open this AI in the editors first.';
+        ? tr("library:safely_update_the_managed_ucp_plugin_from_the_loaded_editors")
+        : tr("library:open_this_ai_in_the_editors_first");
     }
     renderCastleSummary();
+    window.toolkitI18n.applyTextDirection(els.details);
   }
 
   function selectAi(key) {
@@ -491,40 +497,34 @@
 
   async function scan({ selectKey = state.selectedKey, quiet = false } = {}) {
     if (!state.gameRoot) return;
-    if (!quiet) setStatus('Scanning installed UCP plugins…');
+    if (!quiet) setStatus(() => tr("library:scanning_installed_ucp_plugins"));
     setBusy(true);
     try {
       state.library = await window.electronAPI.scanUcpAiLibrary(state.gameRoot);
       state.gameRoot = state.library.gameRoot;
-      els.installationPath.textContent = state.library.gameRoot;
+      window.toolkitI18n.bindText(els.installationPath, state.library.gameRoot, 'ltr');
       els.installationPath.title = state.library.gameRoot;
       setButtonAvailable(els.refresh, true);
       setButtonAvailable(els.openPlugins, true);
       setButtonAvailable(els.create, true);
-      if (typeof state.library.fullFileAccess === 'boolean') {
-        els.choose.textContent = state.library.fullFileAccess
-          ? 'Full AI access enabled ✓'
-          : 'Enable castles, audio & all AIs…';
-        els.choose.classList.toggle('primaryAction', !state.library.fullFileAccess);
-        els.choose.title = state.library.fullFileAccess
-          ? `Folder access is active for this editor session${state.library.fileAccessLabel ? ` (${state.library.fileAccessLabel})` : ''}.`
-          : 'Select the Stronghold Crusader/ucp/plugins folder. UCP requires this permission for binary castles, audio, video and inactive plugins.';
-      }
+      updateAccessControl();
       const selected = state.library.ais.find(ai => ai.key === selectKey) || state.library.ais[0] || null;
       state.selectedKey = selected?.key || null;
       renderList();
       renderDetails();
-      const diagnosticNote = state.library.diagnostics.length ? ` ${state.library.diagnostics.length} package issue(s) were skipped.` : '';
-      const accessNote = state.library.fullFileAccess === false
-        ? ' Enable full AI access to load castles, audio, video and inactive plugins.'
-        : state.library.fullFileAccess === true ? ' Full AI file access is enabled.' : '';
-      setStatus(`Found ${state.library.ais.length} AI package${state.library.ais.length === 1 ? '' : 's'} in ${state.library.plugins.length} plugin${state.library.plugins.length === 1 ? '' : 's'}.${diagnosticNote}${accessNote}`);
+      setStatus(() => {
+        const diagnosticNote = state.library.diagnostics.length ? tr("library:value_package_issue_s_were_skipped", { length: state.library.diagnostics.length }) : '';
+        const accessNote = state.library.fullFileAccess === false
+          ? tr("library:enable_full_ai_access_to_load_castles_audio_video_and_inactive_plugins")
+          : state.library.fullFileAccess === true ? tr("library:full_ai_file_access_is_enabled") : '';
+        return tr("library:found_value_ai_packagevalue_in_value_pluginvalue_valuevalue", { diagnosticNote, accessNote, quantityvalue2: tr("quantity:ai_package", { count: state.library.ais.length }), quantityvalue4: tr("quantity:plugin", { count: state.library.plugins.length }) });
+      });
     } catch (error) {
       state.library = null;
       state.selectedKey = null;
       renderList();
       renderDetails();
-      setStatus(`Could not scan UCP: ${error.message}`, 'error');
+      setStatus(() => tr("library:could_not_scan_ucp_value", { message: error.message }), 'error');
     } finally {
       setBusy(false);
       renderDetails();
@@ -538,14 +538,14 @@
       if (!selected) return;
       state.gameRoot = selected;
       window.isoView?.setGameMap(null);
-      await window.isoView?.reloadGameAssets?.();
+      await window.castleEditor?.reloadGameAssets?.();
       state.selectedKey = null;
       state.loadedProject = null;
     window.electronAPI.setDialogProject?.(null);
       resetCastleSwitcher();
       await scan({ selectKey: null });
     } catch (error) {
-      setStatus(`Could not use that folder: ${error.message}`, 'error');
+      setStatus(() => tr("library:could_not_use_that_folder_value", { message: error.message }), 'error');
     }
   }
 
@@ -555,17 +555,17 @@
     const requestedCastle = typeof options.castleFile === 'string' ? options.castleFile : null;
     const castle = requestedCastle ? ai.castles.find(candidate => candidate.fileName === requestedCastle) : castleOne(ai);
     if (requestedCastle && !castle) {
-      setStatus(`The last castle '${requestedCastle}' is no longer in this project. Choose a castle to open.`, 'error');
+      setStatus(() => tr("library:the_last_castle_value_is_no_longer_in_this_project_choose_a_castle_to_op", { requestedCastle: requestedCastle }), 'error');
       return false;
     }
     if (castle?.requiresFileAccess) {
-      setStatus('Castle 1 is mapped but UCP cannot read its binary file yet. Click Enable castles, audio & all AIs and select the ucp/plugins folder.', 'error');
+      setStatus(() => tr("library:castle_1_is_mapped_but_ucp_cannot_read_its_binary_file_yet_click_enable_"), 'error');
       els.choose.focus();
       return false;
     }
-    if (!await window.unsavedChanges?.confirmAll('opening this AI project')) return false;
+    if (!await window.unsavedChanges?.confirmAll(tr("library:opening_this_ai_project"))) return false;
     setBusy(true);
-    setStatus(`Opening ${ai.name}…`);
+    setStatus(() => tr('feedback:opening', {name:ai.name}));
     try {
       await window.characterEditor.ready;
       if (options.shouldAbort?.()) return false;
@@ -611,10 +611,10 @@
       renderDetails();
       if (options.activateWorkspace !== false) window.appWorkspace?.setActive('castle');
       rememberProject();
-      setStatus(`${ai.name} opened for editing${project.castle ? ` with ${project.castle.fileName}` : ''}.`, 'success');
+      setStatus(() => tr("library:value_opened_for_editingvalue", { name: ai.name, value2: project.castle ? tr('feedback:with_castle', {name:project.castle.fileName}) : '' }), 'success');
       return true;
     } catch (error) {
-      setStatus(`Could not open AI project: ${error.message}`, 'error');
+      setStatus(() => tr("library:could_not_open_ai_project_value", { message: error.message }), 'error');
       return false;
     } finally {
       setBusy(false);
@@ -631,20 +631,20 @@
       return false;
     }
     if (castle.fileName === projectState.castleFile) return true;
-    if (!await window.unsavedChanges?.confirmEditor('castle', 'switching castles')) {
+    if (!await window.unsavedChanges?.confirmEditor('castle', tr("library:switching_castles"))) {
       els.castle.value = projectState.castleFile || '';
       return false;
     }
 
     setBusy(true);
-    setStatus(`Opening ${ai.name} — Castle ${castle.slot ?? castle.fileName}…`);
+    setStatus(() => tr('feedback:opening', {name:ai.name+' — '+(castle.slot == null ? castle.fileName : tr('feedback:castle_slot', {slot:castle.slot}))}));
     try {
       const project = await window.electronAPI.loadUcpAiProject({
         gameRoot: state.gameRoot,
         aiRoot: ai.rootPath,
         castleFile: castle.fileName
       });
-      if (!project.castle) throw new Error(`Castle '${castle.fileName}' could not be loaded.`);
+      if (!project.castle) throw new Error(tr("library:castle_value_could_not_be_loaded", { fileName: castle.fileName }));
       window.castleEditor.loadDocument(project.castle.document, project.castle.path, {
         projectManaged: true,
         source: project.castle.source,
@@ -655,11 +655,11 @@
       rememberProject();
       populateCastleSwitcher(ai, project.castle.fileName);
       renderDetails();
-      setStatus(`${ai.name} — ${castle.slot == null ? castle.fileName : `Castle ${castle.slot}`} opened.`, 'success');
+      setStatus(() => tr('feedback:opened', {name:ai.name+' — '+(castle.slot == null ? castle.fileName : tr('feedback:castle_slot', {slot:castle.slot}))}), 'success');
       return true;
     } catch (error) {
       populateCastleSwitcher(ai, projectState.castleFile);
-      setStatus(`Could not switch castle: ${error.message}`, 'error');
+      setStatus(() => tr("library:could_not_switch_castle_value", { message: error.message }), 'error');
       return false;
     } finally {
       setBusy(false);
@@ -679,7 +679,7 @@
     if (!ai || ai.owned || state.busy) return false;
     let clone = null;
     setBusy(true);
-    setStatus(`Cloning ${ai.name} into My AIs…`);
+    setStatus(() => tr("library:cloning_value_into_my_ais", { name: ai.name }));
     try {
       clone = await window.electronAPI.cloneUcpAi({
         gameRoot: state.gameRoot,
@@ -688,11 +688,11 @@
         name: els.cloneName.value,
         version: els.cloneVersion.value
       });
-      if (!clone) throw new Error('The cloned AI could not be found after installation.');
+      if (!clone) throw new Error(tr("library:the_cloned_ai_could_not_be_found_after_installation"));
       await scan({ selectKey: clone.key, quiet: true });
-      setStatus(`${clone.name} was installed in My AIs. Activate the plugin in the UCP GUI when ready.`, 'success');
+      setStatus(() => tr("library:value_was_installed_in_my_ais_activate_the_plugin_in_the_ucp_gui_when_re", { name: clone.name }), 'success');
     } catch (error) {
-      setStatus(`Could not clone AI: ${error.message}`, 'error');
+      setStatus(() => tr("library:could_not_clone_ai_value", { message: error.message }), 'error');
       return false;
     } finally {
       setBusy(false);
@@ -719,7 +719,7 @@
 
     els.createDialog.close();
     setBusy(true);
-    setStatus(`Creating ${name} in My AIs…`);
+    setStatus(() => tr("library:creating_value_in_my_ais", { name: name }));
     let created = null;
     try {
       created = await window.electronAPI.createUcpAi({
@@ -729,11 +729,11 @@
         author: els.createAuthor.value.trim(),
         version: els.createVersion.value.trim() || '1.0.0'
       });
-      if (!created) throw new Error('The new AI could not be found after creation.');
+      if (!created) throw new Error(tr("library:the_new_ai_could_not_be_found_after_creation"));
       await scan({ selectKey: created.key, quiet: true });
-      setStatus(`${created.name} was created in My AIs.`, 'success');
+      setStatus(() => tr("library:value_was_created_in_my_ais", { name: created.name }), 'success');
     } catch (error) {
-      setStatus(`Could not create AI: ${error.message}`, 'error');
+      setStatus(() => tr("library:could_not_create_ai_value", { message: error.message }), 'error');
       return false;
     } finally {
       setBusy(false);
@@ -755,20 +755,20 @@
   async function updateSelected() {
     const ai = selectedAi();
     if (!ai?.owned || !loadedSelectionMatches() || state.busy) {
-      setStatus('Open this My AI project before updating it.', 'error');
+      setStatus(() => tr("library:open_this_my_ai_project_before_updating_it"), 'error');
       return false;
     }
     if (!samePath(window.characterEditor?.getPath?.(), state.loadedProject.characterPath)) {
-      setStatus('The Character editor is showing another file. Open this AI project again first.', 'error');
+      setStatus(() => tr("library:the_character_editor_is_showing_another_file_open_this_ai_project_again_"), 'error');
       return false;
     }
     if (state.loadedProject.castlePath && !samePath(window.castleEditor?.getPath?.(), state.loadedProject.castlePath)) {
-      setStatus('The Castle editor is showing another file. Open the AI project again first.', 'error');
+      setStatus(() => tr("library:the_castle_editor_is_showing_another_file_open_the_ai_project_again_firs"), 'error');
       return false;
     }
 
     setBusy(true);
-    setStatus(`Updating ${ai.name} through a staging folder…`);
+    setStatus(() => tr("library:updating_value_through_a_staging_folder", { name: ai.name }));
     try {
       const updated = await window.electronAPI.updateUcpAi({
         gameRoot: state.gameRoot,
@@ -782,10 +782,10 @@
       window.characterEditor.markSaved?.();
       if (state.loadedProject.castleFile) window.castleEditor.markSaved?.(updated?.savedCastleSourceBytes);
       await scan({ selectKey: updated?.key || ai.key, quiet: true });
-      setStatus(`${ai.name} is installed and up to date in My AIs.`, 'success');
+      setStatus(() => tr("library:value_is_installed_and_up_to_date_in_my_ais", { name: ai.name }), 'success');
       return true;
     } catch (error) {
-      setStatus(`Could not update My AI: ${error.message}`, 'error');
+      setStatus(() => tr("library:could_not_update_my_ai_value", { message: error.message }), 'error');
       return false;
     } finally {
       setBusy(false);
@@ -798,7 +798,7 @@
     try {
       await window.electronAPI.openUcpPath({ gameRoot: state.gameRoot, targetPath });
     } catch (error) {
-      setStatus(`Could not open folder: ${error.message}`, 'error');
+      setStatus(() => tr("library:could_not_open_folder_value", { message: error.message }), 'error');
     }
   }
 
@@ -862,14 +862,31 @@
             rememberProject();
           }
         } else if (saved) {
-          setStatus('The last AI project is unavailable in this installation. Choose a project to continue.');
+          setStatus(() => tr("library:the_last_ai_project_is_unavailable_in_this_installation_choose_a_project"));
         }
       }
     } catch (error) {
-      setStatus(`Could not restore the UCP installation: ${error.message}`, 'error');
+      setStatus(() => tr("library:could_not_restore_the_ucp_installation_value", { message: error.message }), 'error');
     }
   }
 
+  function updateAccessControl() {
+    if (typeof state.library?.fullFileAccess !== 'boolean') return;
+    window.toolkitI18n.bindText(els.choose, state.library.fullFileAccess
+      ? tr("library:full_ai_access_enabled")
+      : tr("library:enable_castles_audio_all_ais"));
+    els.choose.classList.toggle('primaryAction', !state.library.fullFileAccess);
+    els.choose.title = state.library.fullFileAccess
+      ? tr("library:folder_access_is_active_for_this_editor_sessionvalue", { value1: state.library.fileAccessLabel ? ` (${state.library.fileAccessLabel})` : '' })
+      : tr("library:select_the_stronghold_crusader_ucp_plugins_folder_ucp_requires_this_perm");
+  }
+
+  window.toolkitI18n?.onChange(() => {
+    updateAccessControl();
+    renderList();
+    renderDetails({ preserveDraft: true });
+    renderCastleSummary();
+  });
   window.ucpLibrary = {
     chooseInstallation,
     refresh: scan,

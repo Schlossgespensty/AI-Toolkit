@@ -1,7 +1,7 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
-const vm = require('node:vm');
+const vm = require('./helpers/localized-vm');
 const source = fs.readFileSync(require.resolve('../src/js/castle-editor.js'), 'utf8');
 const html = fs.readFileSync(require.resolve('../src/index.html'), 'utf8');
 const constants = require('../config/aiv_constants.json');
@@ -108,8 +108,94 @@ test('toolbar groups expose New and all existing overlay controls without duplic
     assert.equal((html.match(new RegExp(`id="${id}"`, 'g')) || []).length, 1);
   }
   const deletion = html.slice(html.indexOf('id="castleDeleteMode"'), html.indexOf('</select>', html.indexOf('id="castleDeleteMode"')));
-  assert.match(deletion, /value="flood">Flood fill<\/option>/);
+  assert.match(deletion, /value="flood"[^>]*data-i18n="interface:flood_fill_2"[^>]*>Flood fill<\/option>/);
   for (const group of ['toolbarFileGroup', 'castleViewGroup', 'castleProjectGroup', 'castlePlacementGroup', 'castleEditGroup', 'castleOverlayGroup']) {
     assert.ok(html.includes(group), group);
   }
+});
+
+test('every toolbar menu button is exactly as wide as its panel and the panel hangs directly below it', () => {
+  const css = fs.readFileSync(require.resolve('../src/css/combined.css'), 'utf8');
+  assert.match(css, /\.toolbarMenuPanel \{[^}]*left: 0; right: 0;/);
+  const panel = {style: {width: ''}, getBoundingClientRect: () => ({width: panel.style.width === 'max-content' && menu.open ? 211.4 : 0})};
+  const menu = {open: false, style: {minWidth: ''}, getClientRects: () => [{}], querySelector: () => panel};
+  const context = vm.createContext({});
+  vm.runInContext(section('  function matchMenuWidth(', '  const matchMenuWidths'), context);
+  context.matchMenuWidth(menu);
+  assert.equal(menu.style.minWidth, '212px');
+  assert.equal(menu.open, false, 'measuring does not leave the menu open');
+  assert.equal(panel.style.width, '');
+  menu.open = true; context.matchMenuWidth(menu);
+  assert.equal(menu.open, true, 'an open menu stays open');
+  menu.getClientRects = () => []; menu.style.minWidth = '99px';
+  context.matchMenuWidth(menu);
+  assert.equal(menu.style.minWidth, '99px', 'hidden tabs keep the last measured width');
+  assert.match(source, /addEventListener\('toolkit-language-changed', matchMenuWidths\)/);
+  for (const id of ['castleFileMenu', 'castleDrawMenu', 'castleOverlayMenu'])
+    assert.match(html, new RegExp(`<details id="${id}" class="toolbarMenu[^"]*">`), id);
+  const files = html.slice(html.indexOf('id="castleFileMenu"'), html.indexOf('</details>', html.indexOf('id="castleFileMenu"')));
+  for (const id of ['castleOpenBtn', 'castleSaveBtn', 'castleExportDeBtn', 'castleNewBtn']) assert.ok(files.includes(`id="${id}"`), id);
+});
+
+test('Draw shows the chosen drawing mode, greys out without an item and offers brush size only for Brush', () => {
+  const nodes = new Map();
+  const node = id => nodes.get(id) || nodes.set(id, {id, textContent: '', hidden: false, attributes: {}, setAttribute(name, value) { this.attributes[name] = value; }}).get(id);
+  const summary = {classes: new Set(), classList: {toggle(name, on) { on ? summary.classes.add(name) : summary.classes.delete(name); }}};
+  const tools = ['single', 'line', 'brush', 'bucket'].map(tool => ({dataset: {tool}, disabled: false,
+    querySelector: selector => ({textContent: selector === 'span' ? `name ${tool}` : `key ${tool}`})}));
+  const menu = {open: true, classes: new Set(), classList: {toggle(name, on) { on ? menu.classes.add(name) : menu.classes.delete(name); }},
+    querySelector: () => summary, querySelectorAll: () => tools};
+  nodes.set('castleDrawMenu', menu);
+  const state = {tool: 'brush', drawTool: 'single'};
+  const document = {getElementById: node,
+    querySelector: selector => tools.find(button => selector.includes(`"${button.dataset.tool}"`))};
+  const context = vm.createContext({state, document});
+  vm.runInContext(section('  function isPlacementTool(', '  // Was man ohne'), context);
+  vm.runInContext(section('  function updateDrawMenu(', '  function loadToolShortcuts('), context);
+  context.updateDrawMenu();
+  assert.equal(node('castleDrawIcon').attributes.href, '#tool-brush');
+  assert.equal(node('castleDrawLabel').textContent, 'name brush');
+  assert.equal(node('castleBrushStepper').hidden, false);
+  assert.ok(summary.classes.has('active'));
+  state.tool = 'select'; context.updateDrawMenu();
+  assert.equal(node('castleDrawLabel').textContent, 'name brush', 'Select keeps the last drawing mode on the button');
+  assert.ok(!summary.classes.has('active'));
+  state.tool = 'bucket'; context.updateDrawMenu();
+  assert.equal(node('castleBrushStepper').hidden, true, 'brush size is only offered for Brush');
+  for (const tool of tools) tool.disabled = true;
+  context.updateDrawMenu();
+  assert.ok(menu.classes.has('disabled')); assert.equal(menu.open, false);
+  assert.ok(!summary.classes.has('active'), 'a greyed-out Draw is never shown as active');
+});
+
+test('floor plan export averages exactly each tile\'s own block of the full picture', () => {
+  const cell = 4, GRID = 100, size = GRID * cell;
+  // Every tile has its own colour, so any pixel taken from a neighbouring
+  // tile would change the result.
+  const colour = (x, y, px, py) => {
+    if (x === 0 && y === 0) return [0, 0, 0, 0]; // bare ground
+    if (x === 5 && y === 5) return px % cell < 2 ? [255, 0, 0, 255] : [0, 0, 0, 0]; // half covered
+    if (x === 6 && y === 5) return px % cell < 2 ? [200, 100, 0, 255] : [0, 100, 200, 255]; // two colours
+    return [x, y, (x + y) % 256, 255];
+  };
+  const picture = new Uint8ClampedArray(size * size * 4);
+  for (let py = 0; py < size; py++) for (let px = 0; px < size; px++)
+    picture.set(colour(Math.floor(px / cell), Math.floor(py / cell), px, py), (py * size + px) * 4);
+  let written = null;
+  const plan = {getContext: () => ({
+    createImageData: (w, h) => ({width: w, height: h, data: new Uint8ClampedArray(w * h * 4)}),
+    putImageData: data => { written = data; }})};
+  const full = {getContext: () => ({getImageData: (x, y, w, h) => ({data: picture.subarray((y * size + x) * 4, ((y + h - 1) * size + x + w) * 4)})})};
+  const context = vm.createContext({GRID, document: {createElement: () => plan}});
+  vm.runInContext(section('  function floorPlanPixels(', '  function renderCastlePicture('), context);
+  assert.equal(context.floorPlanPixels(full, cell), plan);
+  assert.equal(plan.width, 100); assert.equal(plan.height, 100);
+  const at = (x, y) => [...written.data.subarray((y * 100 + x) * 4, (y * 100 + x) * 4 + 4)];
+  for (const [x, y] of [[1, 0], [7, 3], [99, 99], [42, 17], [4, 5], [7, 5], [5, 4], [5, 6]])
+    assert.deepEqual(at(x, y), [x, y, (x + y) % 256, 255], `${x},${y}`);
+  assert.deepEqual(at(0, 0), [0, 0, 0, 0], 'bare ground stays transparent');
+  assert.deepEqual(at(5, 5), [255, 0, 0, 128], 'coverage becomes opacity, the colour stays');
+  assert.deepEqual(at(6, 5), [100, 100, 100, 255], 'both halves of one tile are combined');
+  assert.match(html, /<select id="castleSnapshotSize">[\s\S]*value="plan"/);
+  assert.match(source, /renderCastlePicture\(\{ floorPlan: document\.getElementById\('castleSnapshotSize'\)\.value === 'plan' \}\)/);
 });

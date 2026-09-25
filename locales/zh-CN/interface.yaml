@@ -1,0 +1,239 @@
+experimental_snapshots: 实验性快照
+toolkit_fork_owner_repository: Toolkit 分支仓库（所有者/仓库）
+fork_builds_are_experimental_switching_sources_does_not_install_a_build_unti: 分支仓库版本为实验版本。切换来源不会自动安装，需点击“安装”。
+cancel: 取消
+use_fork: 使用此分支仓库
+editor_workspace: 编辑器工作区
+application_menus: 应用菜单
+file_alt_f: 文件（Alt+F）
+file: 文件
+edit_alt_e: 编辑（Alt+E）
+edit: 编辑
+view_alt_v: 视图（Alt+V）
+view: 视图
+ucp_ai_library: UCP AI 资源库
+character: 角色
+castle: 城堡
+ai_content: AI 内容
+update_source: 更新来源
+official_releases: 官方版本
+check_official_releases: 检查官方版本
+check_updates: 检查更新
+character_editor: 角色编辑器
+no_character_loaded: 未加载角色
+open_a_character_json_file_or_choose_an_ai_from_the_library: 打开 character.json 文件，或从资源库选择 AI。
+open_character: 打开角色
+save_character: 保存角色
+save_as: 另存为
+plugins: 插件
+ai_ox_tethers: AI 牛车站
+controls_the_amount_of_ox_tethers_built: 控制建造的牛车站数量
+running_units: 单位奔跑
+controls_whether_some_units_will_run_or_walk: 控制部分单位使用奔跑还是步行。
+ai_troop_behaviour: AI 部队行为
+include_aiv_troop_behaviour_overrides: 包含 AIV 部队行为覆盖设置
+population: 人口
+available_population: 可用人口
+decrease_available_population_by_8: 可用人口减少 8
+increase_available_population_by_8: 可用人口增加 8
+use_the_population_provided_by_the_currently_loaded_castle: 使用当前城堡提供的人口
+use_castle_pop: 使用城堡人口
+maximum_workers_used: 最多使用工人数
+max_workers_used_at_set_population: 设定人口下最多使用工人数
+worker_breakdown: 工人分配
+farms: 农场
+woodcutters: 伐木场
+quarries: 采石场
+ox_tethers_up_to: 牛车站（最多）
+iron_mines: 铁矿场
+pitch_rigs: 沥青矿场
+workers_left_after_castle: 满足城堡后剩余工人
+left_after_castle_character: 满足城堡与角色后剩余工人
+fear_factor: 恐惧因子
+stockpile_space: 仓储空间
+find_setting: 查找设置
+search_character_fields: 搜索角色字段…
+section_visibility: 栏目显示
+expand_all: 全部展开
+collapse_all: 全部折叠
+character_field_order: 角色字段顺序
+standard_template: 标准模板
+ordered_template: 排序模板
+castle_files: 城堡文件
+open_castle: 打开城堡
+save_castle: 保存城堡
+export_a_definitive_edition_castle_aivjson: 导出决定版城堡（.aivjson）
+export_de: 导出决定版
+new: 新建
+castle_views: 城堡视图
+show_or_close_the_map_seen_from_above: 显示或关闭俯视地图
+map: 地图
+show_or_close_the_slanted_view_drag_a_tab_to_move_a_window: 显示或关闭斜视图；拖动标签页可移动窗口
+2_5d_view: 2.5D 视图
+ai_castle_selection: AI 城堡选择
+ai_castle: AI 城堡
+no_ai_project: 无 AI 项目
+placement_tools: 放置工具
+shortcut_1_or_s: 快捷键：1 或 S
+single: 单个
+shortcut_6_or_l: 快捷键：6 或 L
+line: 直线
+shortcut_2_or_b: 快捷键：2 或 B
+brush: 画笔
+how_wide_the_brush_paints_and_make_it_smaller_and_bigger: 画笔绘制宽度。使用 - 缩小，+ 放大。
+smaller_brush: 缩小画笔
+bigger_brush: 放大画笔
+fills_everything_up_to_a_wall_the_edge_of_the_map_counts_as_one_shortcut_7_o: 填充直至遇到城墙，地图边缘也视为城墙。快捷键：7 或 F
+fill: 填充
+selection_and_editing_tools: 选择与编辑工具
+shortcut_3_or_v: 快捷键：3 或 V
+select_move: 选择 / 移动
+select_mode: 选择模式
+flood_selects_connected_placements_of_the_same_type_including_diagonals_shif: 连通选择会选择同类型的相连元素，包括对角连接。Shift 追加选择；Ctrl+点击切换整个连通组。
+border: 边框
+flood_fill: 连通填充
+delete_mode: 删除模式
+area: 区域
+flood_fill_2: 连通填充
+display_overlays: 显示叠加层
+overlays: 叠加层
+item_names: 元素名称
+unit_order: 单位顺序
+guide_lines: 参考线
+estimated_worker_paths_through_the_current_castle: 估算当前城堡中的工人路径
+path_map: 路径图
+estimated_fire_spread_around_flammable_buildings: 估算易燃建筑周围的火势蔓延
+firespread: 火势蔓延
+build_order: 建造顺序
+0_steps: 0 个步骤
+current_position: 当前位置
+no_step_selected: 未选择步骤
+select_and_scroll_to_a_build_step: 选择并滚动到建造步骤
+drag_steps_to_reorder_ctrl_click_or_shift_click_selects_several_steps_right_: 拖动步骤可重新排序。Ctrl+点击或 Shift+点击可多选。右键可合并或锁定位置。
+population_up_to_the_selected_build_step: 截至所选建造步骤的人口
+population_at_current_step: 当前步骤的人口
+about_the_population_overview: 关于人口总览
+provided_by_castle: 城堡提供
+required_by_castle: 城堡需求
+required_by_character_aic: 角色需求（AIC）
+free: 空闲
+these_values_include_only_the_build_steps_up_to_the_current_position: 这些数值仅包含截至当前位置的建造步骤。
+2d_map_controls: 2D 地图控制
+use_picture_as_background: 使用图片作为背景
+save_the_whole_castle_as_a_full_resolution_png: 将整个城堡保存为全分辨率 PNG
+snapshot: 截图
+temporary_castle_blueprint: 临时城堡蓝图
+show_or_hide_the_temporary_blueprint: 显示或隐藏临时蓝图
+show: 显示
+blueprint_opacity: 蓝图不透明度
+opacity: 不透明度
+2_5d_view_controls: 2.5D 视图控制
+lay_a_map_of_the_game_under_the_slanted_view_to_scale_one_field_of_the_map_o: 在斜视图下方按比例放置游戏地图，每个地图格对应一个编辑器格
+game_map: 游戏地图
+which_starting_place_of_the_map_the_castle_is_built_on: 城堡所在的地图起始位置
+map_starting_place: 地图起始位置
+take_the_map_of_the_game_away: 移除游戏地图
+remove_game_map: 移除游戏地图
+100_by_100_tile_castle_map: 100 × 100 格城堡地图
+the_castle_seen_from_an_angle: 斜角观察城堡
+no_castle_loaded: 未加载城堡
+ready: 就绪
+building_categories: 建筑分类
+select_an_item: 选择一个元素
+castle_costs_up_to_the_selected_build_step: 截至所选建造步骤的城堡成本
+assets_and_dialogue: 资源与对白
+save_lines_json: 保存 lines.json
+open_an_ai_from_the_library_first: 请先从资源库打开 AI。
+no_ai_project_loaded: 未加载 AI 项目
+open_an_installed_ai_or_create_one_from_the_ucp_ai_library: 打开已安装的 AI，或在 UCP AI 资源库中新建。
+lines_json: lines.json
+text_used_for_the_ai_s_name_titles_description_and_reactions: AI 名称、头衔、说明及反应使用的文本。
+saved: 已保存
+portraits: 头像
+images_use_nearest_neighbor_resizing_transparency_is_kept_strictly_on_or_off: 图片使用最近邻缩放；透明度只保留完全透明或完全不透明。
+ai_portrait: AI 头像
+portrait_png: portrait.png
+saved_as_72_72_pixels: 保存为 72×72 像素。
+change_portrait: 更换头像
+small_ai_portrait: AI 小头像
+portrait_small_png: portrait_small.png
+saved_as_36_36_pixels: 保存为 36×36 像素。
+change_small_portrait: 更换小头像
+speech: 语音
+mapped_wav_files_can_play_here_or_open_in_your_normal_audio_program: 已关联的 WAV 文件可在此播放，也可用常用音频程序打开。
+language: 语言
+no_speech: 无语音
+bink_videos: Bink 视频
+bik_playback_is_handed_to_the_program_associated_with_bink_files_on_windows: Windows 上的 BIK 播放由关联的 Bink 文件程序处理。
+project_browser: 项目浏览器
+browse_and_edit_installed_ai_packages_or_keep_separate_variants_in_my_ais: 浏览和编辑已安装的 AI 包，或在“我的 AI”中保留独立变体。
+create_new_ai: 新建 AI
+choose_game_folder: 选择游戏文件夹
+open_plugins_folder: 打开插件文件夹
+refresh: 刷新
+no_ucp_installation_selected: 未选择 UCP 安装
+choose_your_stronghold_crusader_folder_to_begin: 选择 Stronghold Crusader 文件夹以开始。
+installed_ais: 已安装的 AI
+search: 搜索
+name_author_or_plugin: 名称、作者或插件…
+all_installed_ais: 全部已安装 AI
+active_plugins_only: 仅启用的插件
+my_ais_only: 仅我的 AI
+no_installation_selected: 未选择安装。
+your_existing_editors_stay_unchanged: 现有编辑器内容保持不变
+select_an_installed_ai_to_load_and_edit_its_character_castles_lines_and_port: 选择已安装的 AI，一并加载和编辑其角色、城堡、对白及头像。
+installed: 已安装
+inactive: 未启用
+author: 作者
+version: 版本
+source_plugin: 来源插件
+folder_id: 文件夹标识
+open_ai_project: 打开 AI 项目
+loads_the_character_and_castle_1_together_switch_castles_from_the_castle_edi: 同时加载角色与城堡 1。在城堡编辑器中可切换城堡。
+open_in_editors: 在编辑器中打开
+open_source_folder: 打开源文件夹
+clone_to_my_ais: 克隆到我的 AI
+the_complete_ai_package_is_copied_into_the_editor_owned_ucp_plugin_so_you_ca: 将完整 AI 包复制到编辑器管理的 UCP 插件中，以便创建独立变体。
+ai_name: AI 名称
+install_update_in_ucp: 在 UCP 中安装 / 更新
+writes_the_character_and_currently_open_castle_through_a_staging_folder_then: 先将角色和当前城堡写入暂存文件夹，验证成功后才替换管理中的插件。
+activate_ai_toolkit_my_ais_in_the_ucp_gui_to_use_it_with_ai_swapper: 在 UCP 界面中启用“AI Toolkit - My AIs”，即可配合 AI Swapper 使用。
+creates_a_complete_blank_ai_inside_ai_toolkit_my_ais: 在 AI Toolkit - My AIs 中创建完整的空白 AI。
+create_ai: 创建 AI
+castle_mapping: 城堡映射
+choose_the_aiv_used_in_each_of_the_ai_s_eight_castle_slots_the_same_file_may: 为 AI 的八个城堡栏位分别选择 AIV。同一文件可重复选择。
+save_mapping: 保存映射
+castle_shortcuts: 城堡快捷键
+select_a_field_and_press_a_key_optionally_with_ctrl_alt_or_shift_one_shortcu: 选择输入框后按下按键，可搭配 Ctrl、Alt 或 Shift。每个操作只设一个快捷键，每个组合只能分配一次。退格键清除输入。未分配快捷键的操作仍可通过界面使用。
+camera: 相机
+photoshop_controls: Photoshop 操作方式
+arrow_keys_wheel_zoom: 方向键 + 滚轮缩放
+mouse_wheel: 鼠标滚轮
+scroll_pans_alt_scroll_zooms_both_views: 滚轮平移，Alt+滚轮缩放（两个视图）
+scroll_zooms_alt_shift_scroll_pans: 滚轮缩放，Alt/Shift+滚轮平移
+ctrl_scroll_pans_horizontally_in_wheel_zoom_mode_alt_scroll_or_shift_scroll_: Ctrl+滚轮水平平移。在滚轮缩放模式下，Alt+滚轮或 Shift+滚轮垂直平移。中键拖动平移。相机按键支持 Ctrl/Alt/Shift 组合；退格键清除。按住 Shift 可加速平移。
+left: 左
+right: 右
+up: 上
+down: 下
+pan_speed_pixels_per_keypress: 平移速度（每次按键的像素数）
+restore_defaults: 恢复默认
+save_shortcuts: 保存快捷键
+build_step_actions: 建造步骤操作
+merge_selected_steps: 合并所选步骤…
+lock_positions: 锁定位置
+save_castle_picture: 保存城堡图片
+save_png: 保存 PNG
+picture_size: "尺寸"
+full_resolution: "完整分辨率"
+floor_plan_100x100_1_px_per_tile: "平面图 100×100（每格 1 像素）"
+merge_placements_by_item_type: 按元素类型合并放置项
+merge: 合并
+replace_selected_items: 替换所选元素
+choose_a_replacement_for_each_item_type_inside_the_box: 为选框内的每种元素选择替换项。
+apply_replacements: 应用替换
+map_of_the_game: 游戏地图
+the_chosen_map_is_laid_under_the_slanted_view_to_scale_one_field_of_the_map_: 所选地图按比例铺在斜视图下方：每个地图格对应一个编辑器格。
+filter_by_name: 按名称筛选
+
+brush_size: 笔刷大小

@@ -1,0 +1,173 @@
+{
+  "schemaVersion": 1,
+  "id": "ucp",
+  "name": "UCP",
+  "version": "1.0.0",
+  "extends": "default",
+  "variables": "variables.css",
+  "colorScheme": "dark",
+  "textures": {
+    "control": {
+      "file": "textures/button_ucp.png",
+      "mode": "frame",
+      "slice": 8,
+      "width": 8,
+      "fill": true
+    },
+    "controlHover": {
+      "file": "textures/button_ucp_hover.png",
+      "mode": "frame",
+      "slice": 8,
+      "width": 8,
+      "fill": true
+    },
+    "controlPressed": {
+      "file": "textures/button_ucp_active.png",
+      "mode": "frame",
+      "slice": 8,
+      "width": 8,
+      "fill": true
+    },
+    "panel": {
+      "file": "textures/ornament_border_shadow.png",
+      "mode": "frame",
+      "slice": 16,
+      "width": 8,
+      "fill": false
+    },
+    "panelSurface": {
+      "file": "textures/parchment_bg_light.png",
+      "mode": "tile"
+    },
+    "checkbox": {
+      "file": "textures/checkbox_empty.png",
+      "mode": "contain"
+    },
+    "checkboxChecked": {
+      "file": "textures/checkbox_full.png",
+      "mode": "contain"
+    },
+    "tab": {
+      "file": "textures/ornament_border_button.png",
+      "mode": "frame",
+      "slice": 18,
+      "width": 8,
+      "fill": true
+    },
+    "tabActive": {
+      "file": "textures/ornament_border_button_hover.png",
+      "mode": "frame",
+      "slice": 18,
+      "width": 8,
+      "fill": true
+    },
+    "input": {
+      "file": "textures/searchfield.png",
+      "mode": "frame",
+      "slice": 4,
+      "width": 4,
+      "fill": true
+    },
+    "value": {
+      "file": "textures/searchfield.png",
+      "mode": "frame",
+      "slice": 4,
+      "width": 4,
+      "fill": true
+    },
+    "dropdown": {
+      "file": "textures/dropdown_sel.png",
+      "mode": "contain"
+    },
+    "outline": {
+      "file": "textures/outline_border.png",
+      "mode": "frame",
+      "slice": 2,
+      "width": 2,
+      "fill": false
+    },
+    "rangeTrack": {
+      "file": "textures/slider_bg_middle.png",
+      "mode": "tile"
+    },
+    "rangeStart": {
+      "file": "textures/slider_bg_left.png",
+      "mode": "contain"
+    },
+    "rangeEnd": {
+      "file": "textures/slider_bg_right.png",
+      "mode": "contain"
+    },
+    "rangeThumb": {
+      "file": "textures/slider.png",
+      "mode": "contain"
+    },
+    "rangeThumbActive": {
+      "file": "textures/slider_active.png",
+      "mode": "contain"
+    },
+    "scrollTrack": {
+      "file": "textures/scroll_bar_middle.png",
+      "mode": "tile"
+    },
+    "scrollThumb": {
+      "file": "textures/scroll_bar_bottom_hook.png",
+      "mode": "contain"
+    },
+    "moveUp": {
+      "file": "textures/move_up.png",
+      "mode": "contain"
+    },
+    "moveUpHover": {
+      "file": "textures/move_up_hover.png",
+      "mode": "contain"
+    },
+    "moveUpPressed": {
+      "file": "textures/move_up_active.png",
+      "mode": "contain"
+    },
+    "moveDown": {
+      "file": "textures/move_down.png",
+      "mode": "contain"
+    },
+    "moveDownHover": {
+      "file": "textures/move_down_hover.png",
+      "mode": "contain"
+    },
+    "moveDownPressed": {
+      "file": "textures/move_down_active.png",
+      "mode": "contain"
+    },
+    "add": {
+      "file": "textures/add.png",
+      "mode": "contain"
+    },
+    "addHover": {
+      "file": "textures/add_hover.png",
+      "mode": "contain"
+    },
+    "remove": {
+      "file": "textures/remove.png",
+      "mode": "contain"
+    },
+    "removeHover": {
+      "file": "textures/remove_hover.png",
+      "mode": "contain"
+    },
+    "ornament": {
+      "file": "textures/ornament_border.png",
+      "mode": "frame",
+      "slice": 8,
+      "width": 8,
+      "fill": false
+    }
+  },
+  "attribution": [
+    {
+      "author": "Monsterfish",
+      "scope": "UCP GUI control, sword checkbox, ornament and parchment textures",
+      "source": "https://github.com/UnofficialCrusaderPatch/UCP3-GUI",
+      "permission": "Created for these UI uses; permission for AI Toolkit reuse confirmed by the project owner."
+    }
+  ]
+}

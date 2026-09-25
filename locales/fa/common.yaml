@@ -1,0 +1,28 @@
+actions:
+  cancel: لغو
+  save: ذخیره
+  close: بستن
+  open: باز کردن
+  delete: حذف
+  remove: برداشتن
+  apply: اعمال
+  reset: بازنشانی
+  replace: جایگزینی
+  merge: ادغام
+  copy: رونوشت
+  cut: برش
+  paste: چسباندن
+  undo: واگرد
+  redo: بازانجام
+preferences:
+  theme: پوسته
+  language: زبان
+  system: سیستم
+  defaultTheme: پیش‌فرض
+state:
+  loading: در حال بارگذاری…
+  saved: ذخیره‌شده
+  unsaved: ذخیره‌نشده
+  error: خطا
+  none: هیچ‌کدام
+  vanilla: اصلی

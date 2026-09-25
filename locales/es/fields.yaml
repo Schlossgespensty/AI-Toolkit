@@ -1,0 +1,232 @@
+ArabArcher: Arquero árabe
+Slave: Esclavo
+Slinger: Hondero
+Assassin: Asesino
+HorseArcher: Arquero a caballo
+ArabSwordsman: Espadachín árabe
+FireThrower: Lanzafuego
+EuropArcher: Arquero europeo
+Spearman: Lancero
+Maceman: Macero
+Crossbowman: Ballestero
+Pikeman: Piquero
+Swordsman: Espadachín
+Knight: Caballero
+Monk: Monje
+Engineer: Ingeniero
+StrengthMultiplier: Multiplicador de fuerza
+DotColour: Color de los puntos
+DotCount: Número de puntos
+Type: Tipo
+WallDecoration: Decoración de las murallas
+Unknown001: Desconocido 001
+Unknown002: Desconocido 002
+Unknown003: Desconocido 003
+Unknown004: Desconocido 004
+Unknown005: Desconocido 005
+CriticalPopularity: Popularidad crítica
+LowestPopularity: Popularidad mínima
+HighestPopularity: Popularidad máxima
+TaxesMin: Impuestos mínimos
+TaxesMax: Impuestos máximos
+Unknown011: Desconocido 011
+Farm1: Tipo de granja 1
+Farm2: Tipo de granja 2
+Farm3: Tipo de granja 3
+Farm4: Tipo de granja 4
+Farm5: Tipo de granja 5
+Farm6: Tipo de granja 6
+Farm7: Tipo de granja 7
+Farm8: Tipo de granja 8
+PopulationPerFarm: Población por granja
+PopulationPerWoodcutter: Población por leñador
+PopulationPerQuarry: Población por cantera
+PopulationPerIronmine: Población por mina de hierro
+PopulationPerPitchrig: Población por pozo de brea
+MaxQuarries: Máximo de canteras
+MaxIronmines: Máximo de minas de hierro
+MaxWoodcutters: Máximo de leñadores
+MaxPitchrigs: Máximo de pozos de brea
+MaxFarms: Máximo de granjas
+BuildInterval: Intervalo de construcción
+ResourceRebuildDelay: Espera para reconstruir edificios de recursos
+MaxFood: Máximo de alimentos
+MinimumApples: Mínimo de manzanas
+MinimumCheese: Mínimo de queso
+MinimumBread: Mínimo de pan
+MinimumWheat: Mínimo de trigo
+MinimumHop: Mínimo de lúpulo
+TradeAmountFood: Cantidad de alimentos comprados
+TradeAmountEquipment: Cantidad de equipo comprado
+AIRequestDelay: Espera entre solicitudes de la IA
+MinimumGoodsRequiredAfterTrade: Bienes mínimos tras comerciar
+DoubleRationsFoodThreshold: Umbral de alimentos para raciones dobles
+MaxWood: Máximo de madera
+MaxStone: Máximo de piedra
+MaxResourceOther: Máximo de otros recursos
+MaxEquipment: Máximo de equipo
+MaxBeer: Máximo de cerveza
+MaxResourceVariance: Variación máxima de recursos
+RecruitGoldThreshold: Umbral de oro para reclutar
+BlacksmithSetting: Producción de la herrería
+FletcherSetting: Producción del fabricante de arcos
+PoleturnerSetting: Producción del fabricante de lanzas
+SellResource01: Recurso a vender 1
+SellResource02: Recurso a vender 2
+SellResource03: Recurso a vender 3
+SellResource04: Recurso a vender 4
+SellResource05: Recurso a vender 5
+SellResource06: Recurso a vender 6
+SellResource07: Recurso a vender 7
+SellResource08: Recurso a vender 8
+SellResource09: Recurso a vender 9
+SellResource10: Recurso a vender 10
+SellResource11: Recurso a vender 11
+SellResource12: Recurso a vender 12
+SellResource13: Recurso a vender 13
+SellResource14: Recurso a vender 14
+SellResource15: Recurso a vender 15
+DefWallPatrolRallyTime: Espera de patrullas de muralla
+DefWallPatrolGroups: Grupos de patrulla de muralla
+DefSiegeEngineGoldThreshold: Oro mínimo para máquinas defensivas
+DefSiegeEngineBuildDelay: Espera para construir máquinas defensivas
+Unknown072: Desconocido 072
+Unknown073: Desconocido 073
+RecruitProbDefDefault: 'Probabilidad de reclutamiento defensivo: normal'
+RecruitProbDefWeak: 'Probabilidad de reclutamiento defensivo: débil'
+RecruitProbDefStrong: 'Probabilidad de reclutamiento defensivo: fuerte'
+RecruitProbRaidDefault: 'Probabilidad de reclutamiento para incursiones: normal'
+RecruitProbRaidWeak: 'Probabilidad de reclutamiento para incursiones: débil'
+RecruitProbRaidStrong: 'Probabilidad de reclutamiento para incursiones: fuerte'
+RecruitProbAttackDefault: 'Probabilidad de reclutamiento ofensivo: normal'
+RecruitProbAttackWeak: 'Probabilidad de reclutamiento ofensivo: débil'
+RecruitProbAttackStrong: 'Probabilidad de reclutamiento ofensivo: fuerte'
+SortieUnitRangedMin: Mínimo de unidades a distancia para salidas
+SortieUnitRanged: Unidad a distancia para salidas
+SortieUnitMeleeMin: Mínimo de unidades cuerpo a cuerpo para salidas
+SortieUnitMelee: Unidad cuerpo a cuerpo para salidas
+DefDiggingUnitMax: Máximo de excavadores defensivos
+DefDiggingUnit: Unidad excavadora defensiva
+RecruitInterval: Intervalo de reclutamiento
+RecruitIntervalWeak: 'Intervalo de reclutamiento: débil'
+RecruitIntervalStrong: 'Intervalo de reclutamiento: fuerte'
+DefTotal: Total de defensores
+OuterPatrolGroupsCount: Número de patrullas exteriores
+OuterPatrolGroupsMove: Movimiento de patrullas exteriores
+OuterPatrolRallyDelay: Espera de reunión de patrullas exteriores
+DefWalls: Defensores en las murallas
+DefUnit1: Tipo de defensor 1
+DefUnit2: Tipo de defensor 2
+DefUnit3: Tipo de defensor 3
+DefUnit4: Tipo de defensor 4
+DefUnit5: Tipo de defensor 5
+DefUnit6: Tipo de defensor 6
+DefUnit7: Tipo de defensor 7
+DefUnit8: Tipo de defensor 8
+RaidUnitsBase: Tamaño base de incursiones
+RaidUnitsRandom: Unidades aleatorias adicionales de incursión
+RaidUnit1: Tipo de incursor 1
+RaidUnit2: Tipo de incursor 2
+RaidUnit3: Tipo de incursor 3
+RaidUnit4: Tipo de incursor 4
+RaidUnit5: Tipo de incursor 5
+RaidUnit6: Tipo de incursor 6
+RaidUnit7: Tipo de incursor 7
+RaidUnit8: Tipo de incursor 8
+HarassingSiegeEngine1: Máquina de hostigamiento 1
+HarassingSiegeEngine2: Máquina de hostigamiento 2
+HarassingSiegeEngine3: Máquina de hostigamiento 3
+HarassingSiegeEngine4: Máquina de hostigamiento 4
+HarassingSiegeEngine5: Máquina de hostigamiento 5
+HarassingSiegeEngine6: Máquina de hostigamiento 6
+HarassingSiegeEngine7: Máquina de hostigamiento 7
+HarassingSiegeEngine8: Máquina de hostigamiento 8
+HarassingSiegeEnginesMax: Máximo de máquinas de hostigamiento
+RaidRetargetDelay: Espera para cambiar objetivo de incursión
+AttForceBase: Tamaño base del ejército atacante
+AttForceRandom: Tamaño aleatorio adicional del ejército
+AttForceSupportAllyThreshold: Umbral de tropas para apoyar a aliados
+AttForceRallyPercentage: Porcentaje de reunión del ejército atacante
+Unknown129: Desconocido 129
+AttAssaultDelay: Espera antes del asalto
+AttUnitPatrolRecommandDelay: Espera de retirada tras la victoria
+Unknown132: Desconocido 132
+SiegeEngine1: Máquina de asedio 1
+SiegeEngine2: Máquina de asedio 2
+SiegeEngine3: Máquina de asedio 3
+SiegeEngine4: Máquina de asedio 4
+SiegeEngine5: Máquina de asedio 5
+SiegeEngine6: Máquina de asedio 6
+SiegeEngine7: Máquina de asedio 7
+SiegeEngine8: Máquina de asedio 8
+CowThrowInterval: Intervalo entre lanzamientos de vacas
+Unknown142: Desconocido 142
+AttMaxEngineers: Máximo de ingenieros atacantes
+AttDiggingUnit: Unidad excavadora atacante
+AttDiggingUnitMax: Máximo de excavadores atacantes
+AttUnitVanguard: Unidad de vanguardia
+AttUnitVanguardMax: Máximo de unidades de vanguardia
+AttMaxAssassins: Máximo de asesinos atacantes
+AttMaxLaddermen: Máximo de escaleros atacantes
+AttMaxTunnelers: Máximo de zapadores atacantes
+AttUnitPatrol: Unidad de patrulla atacante
+AttUnitPatrolMax: Máximo de unidades de patrulla atacante
+AttUnitPatrolGroupsCount: Grupos de patrulla atacante
+AttUnitBackup: Unidad de reserva
+AttUnitBackupMax: Máximo de unidades de reserva
+AttUnitBackupGroupsCount: Grupos de reserva
+AttUnitEngage: Unidad de enfrentamiento
+AttUnitEngageMax: Máximo de unidades de enfrentamiento
+AttUnitSiegeDef: Unidad de defensa del asedio
+AttUnitSiegeDefMax: Máximo de defensores del asedio
+AttUnitSiegeDefGroupsCount: Grupos de defensa del asedio
+AttUnitMain1: Tropa principal 1
+AttUnitMain2: Tropa principal 2
+AttUnitMain3: Tropa principal 3
+AttUnitMain4: Tropa principal 4
+AttMaxDefault: Tropas principales antes de especialistas
+AttMainGroupsCount: Número de grupos principales
+TargetChoice: Elección del objetivo
+AIOxTethers_DisableInitialOxTether: Desactivar el atadero inicial
+AIOxTethers_Logic: Lógica de los ataderos
+AIOxTethers_MaxOxTethers: Máximo de ataderos
+AIOxTethers_DynamicMaxOxTethers: Máximo dinámico de ataderos
+AIOxTethers_MinimumOxTethersPerQuarry: Mínimo de ataderos por cantera
+AIOxTethers_MaximumOxTethersPerQuarry: Máximo de ataderos por cantera
+AIOxTethers_ThresholdStoneLoad: Umbral de carga de piedra
+RunningUnits_Macemen: Los maceros corren
+RunningUnits_Spearmen: Los lanceros corren
+RunningUnits_Slingers: Los honderos corren
+RunningUnits_Slaves: Los esclavos corren
+AIVTroops_InitialRole: Función inicial de todas las tropas
+AIVTroops_Movement: Movimiento de todas las tropas
+AIVTroops_InitialRole_Engineer: 'Ingeniero: función inicial'
+AIVTroops_Movement_Engineer: 'Ingeniero: movimiento'
+AIVTroops_InitialRole_Archer: 'Arquero: función inicial'
+AIVTroops_Movement_Archer: 'Arquero: movimiento'
+AIVTroops_InitialRole_Crossbowman: 'Ballestero: función inicial'
+AIVTroops_Movement_Crossbowman: 'Ballestero: movimiento'
+AIVTroops_InitialRole_Spearman: 'Lancero: función inicial'
+AIVTroops_Movement_Spearman: 'Lancero: movimiento'
+AIVTroops_InitialRole_Pikeman: 'Piquero: función inicial'
+AIVTroops_Movement_Pikeman: 'Piquero: movimiento'
+AIVTroops_InitialRole_Maceman: 'Macero: función inicial'
+AIVTroops_Movement_Maceman: 'Macero: movimiento'
+AIVTroops_InitialRole_Swordsman: 'Espadachín: función inicial'
+AIVTroops_Movement_Swordsman: 'Espadachín: movimiento'
+AIVTroops_InitialRole_Knight: 'Caballero: función inicial'
+AIVTroops_Movement_Knight: 'Caballero: movimiento'
+AIVTroops_InitialRole_Slave: 'Esclavo: función inicial'
+AIVTroops_Movement_Slave: 'Esclavo: movimiento'
+AIVTroops_InitialRole_Slinger: 'Hondero: función inicial'
+AIVTroops_Movement_Slinger: 'Hondero: movimiento'
+AIVTroops_InitialRole_Assassin: 'Asesino: función inicial'
+AIVTroops_Movement_Assassin: 'Asesino: movimiento'
+AIVTroops_InitialRole_ArabianArcher: 'Arquero árabe: función inicial'
+AIVTroops_Movement_ArabianArcher: 'Arquero árabe: movimiento'
+AIVTroops_InitialRole_HorseArcher: 'Arquero a caballo: función inicial'
+AIVTroops_Movement_HorseArcher: 'Arquero a caballo: movimiento'
+AIVTroops_InitialRole_ArabianSwordsman: 'Espadachín árabe: función inicial'
+AIVTroops_Movement_ArabianSwordsman: 'Espadachín árabe: movimiento'
+AIVTroops_InitialRole_FireThrower: 'Lanzafuego: función inicial'
+AIVTroops_Movement_FireThrower: 'Lanzafuego: movimiento'

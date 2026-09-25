@@ -1,0 +1,91 @@
+wood: Madera
+stone: Piedra
+iron: Hierro
+pitch: Brea
+gold: Oro
+unknown: Desconocido
+travel_ticks_tile_override_blank_reference: 'Ticks de viaje por casilla (vacío: referencia)'
+delivery_store: almacén de destino
+dairy_farm: granja lechera
+work_duration_unknown: duración del trabajo desconocida
+ticks_per_reference_cycle: ' ticks por ciclo de referencia'
+hide_cost_per_building: Ocultar coste por edificio
+show_cost_per_building: Mostrar coste por edificio
+the_build_cost_table: la tabla de costes de construcción
+cost_table_not_loaded: Tabla de costes no cargada.
+castle_costs: Costes del castillo ▸
+castle_costs_2: Costes del castillo ▾
+bundled_base_ucp: Base incluida + UCP
+bundled_vanilla: valores originales incluidos
+the_saved_snapshot_of: 'la copia guardada de '
+partial: ' (parcial)'
+open_a_character_for_production_estimates: Abre un personaje para estimar la producción.
+reading_selected_installation: Leyendo la instalación seleccionada…
+using_bundled_vanilla_prices: Usando los precios originales incluidos
+no_steps: sin pasos
+cumulative_total_no_steps: Total acumulado · sin pasos
+partial_unknown_prices: ' (parcial: precios desconocidos)'
+no_character_file: sin archivo de personaje
+iron_mine: minería de hierro
+iron_mines: minas de hierro
+pitch_rig: pozo de brea
+pitch_rigs: pozos de brea
+ox_tether: atadero de bueyes
+ox_tethers: ataderos de bueyes
+1_of_those_farms_grows_hops: 1 de esas granjas cultiva lúpulo
+open_a_character_file_to_see_how_many_resource_buildings_the_aic_would_a: Abre un archivo de personaje para ver cuántos edificios de recursos añadiría aquí el AIC.
+nothing_with_a_known_price_up_to_this_step: No hay elementos con precio conocido hasta este paso.
+no_cost: sin coste
+price_from_the_selected_balance_file: Precio del archivo de equilibrio seleccionado
+price_from_the_game_exe_vanilla: Precio del ejecutable del juego (original)
+value_value_value_tiles_value_walking_ticks_value: '{{value1}}. {{note}}. {{value3}} casillas; {{value4}} ticks caminando; {{value5}}.'
+value_reference_ticks_batch: '{{good}}: ticks de referencia por lote'
+bundled_vanilla_prices_were_extracted_from_the_game_exe_at_value_load_a_: >-
+  Los precios originales incluidos se extrajeron del ejecutable del juego en {{value1}}. Carga un JSON de
+  equilibrio para cambiar los precios; los valores no especificados conservan el precio original. No lee el
+  juego que está en ejecución. Un paso = 50 ticks = un día del juego (medido en 445 de 445 pasos).
+ucp_balance_could_not_be_loaded_still_using_value_value: No se pudo cargar el equilibrio de UCP. Se sigue usando {{value1}}. {{value2}}
+using_saved_snapshot_value: 'Usando copia guardada: {{choice}}'
+cumulative_total_steps_1_value: Total acumulado · pasos 1–{{steps}}
+total_through_step_value: Total hasta el paso {{steps}}
+through_step_value_value: 'Hasta el paso {{steps}}: {{value2}}'
+price_unknown_not_counted_value_the_build_cost_table_has_no_entry_for_th: 'Precio desconocido, no contabilizado: {{namen}}. No existe una entrada en la tabla de costes.'
+value_ticks_one_step_is_one_game_day_and_a_step_that_cannot_be_built_sti: >-
+  {{value1}} ticks: un paso equivale a un día del juego, aunque no pueda construirse. Si la IA se queda sin
+  dinero, espera; este es el tiempo mínimo posible, no una garantía.
+at_value_population_the_aic_opens_value: Con {{value1}} de población, el AIC abre {{value2}}.
+1_pitch_per_value_tiles_grouped_across_steps_assumes_a_fresh_placement_c: ; 1 de brea por {{pitchGroup}} casillas, agrupadas entre pasos; supone un contador de colocación nuevo
+cumulative_total_through_step_value: Total acumulado hasta el paso {{steps}}
+about_the_castle_cost_overview: Acerca del resumen de costes del castillo
+balance: Equilibrio
+load_a_balance_json_ascension_team_league: Cargar un JSON de equilibrio (Ascension, Team League, ...)
+load: Cargar…
+use_ucp_balance: Usar equilibrio de UCP
+cumulative_through_selected_step: Acumulado hasta el paso seleccionado
+total_through_current_step: Total hasta el paso actual
+resources_through_this_step: Recursos hasta este paso
+production_assumptions: Supuestos de producción
+reference_estimate_from_stronghold_heaven_original_stronghold_assuming_f: >-
+  Estimación de referencia de Stronghold Heaven (Stronghold original), suponiendo trabajadores completos a
+  medida que hay viviendas. Estas tasas aproximadas no son tiempos verificados de Crusader. No incluye
+  retrasos de construcción, pausas, falta de insumos, consumo, comercio, cuellos de botella del transporte ni
+  efectos del miedo o descanso. Estos bienes no son el saldo del almacén.
+resource_distance: Distancia al recurso
+per_extra_building: Por edificio adicional
+stockpile_distance: Distancia al almacén
+delivery_store_distance: Distancia al almacén de destino
+between_stores: Entre almacenes
+walking_speed_multiplier: Multiplicador de velocidad al caminar
+delivery_productivity: Productividad de entrega %
+skirmish_delivery_bonus_where_enabled_by_balance: Bonificación de entrega en escaramuzas si el equilibrio la habilita
+workshop_itinerary: Recorrido del taller
+work_ticks_exclude_the_return_journey_cycle_work_ticks_2_distance_walkin: >-
+  Los ticks de trabajo excluyen el regreso: ciclo = trabajo + 2 × distancia × ticks caminando. Cada productor
+  conserva su progreso y bonificación fraccionaria. La piedra es la producción de la cantera; no se simula el
+  transporte de bueyes. Las distancias de la capa de rutas son diagnósticos de distribución, no distancias
+  medidas a recursos externos.
+elapsed_game_time: Tiempo de juego transcurrido
+good: Bien
+cost: Coste
+estimated_gross_production_not_stockpile_inventory: Producción bruta estimada, no inventario del almacén
+produced: Producido*

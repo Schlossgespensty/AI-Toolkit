@@ -16,11 +16,13 @@
 
 (() => {
   'use strict';
+  const tr = (key, options) => globalThis.toolkitI18n.t(key, options);
 
   const geo = (typeof globalThis !== 'undefined' && globalThis.isoGeometry) || null;
   const CATALOGUE_PATH = '../assets/aiv/iso/verzeichnis.json';
   const SPRITE_PATH = '../assets/aiv/iso/';
   const MAX_RENDER_DPR = 1.5;
+  const GPU_SPARE = 256;          // device px of picture the GPU layer draws beyond the panel
   const MAP_MARGIN = 5;
 
   const state = {
@@ -50,6 +52,22 @@
   // ---------------------------------------------------------- sprites
 
   let catalogueRequest = null;
+  let unitRequest = null;
+  function loadUnitSprites() {
+    if (!unitRequest) {
+      const request = Promise.resolve(window.electronAPI?.loadGameUnitSprites?.())
+      .then(assets => {
+        if (unitRequest !== request) return;
+        state.unitAssets = assets || {};
+        state.troopDocument = state.troopPlan = null;
+        state.unitCommands = new Map();
+        for (const pose of Object.values(assets?.idleSprites || {})) image(pose.path);
+        refresh(false, true);
+      }).catch(error => { console.warn('Idle troop previews unavailable:', error); });
+      unitRequest = request;
+    }
+    return unitRequest;
+  }
   function loadCatalogue() {
     if (state.catalogue) return Promise.resolve(state.catalogue);
     if (!catalogueRequest) catalogueRequest = (async () => {
@@ -69,7 +87,9 @@
   async function reloadGameAssets() {
     catalogueRequest = null;
     state.catalogue = null;
-    await loadCatalogue();
+    unitRequest = null;
+    state.unitAssets = null;
+    await Promise.all([loadCatalogue(), loadUnitSprites()]);
     refresh();
   }
 
@@ -78,12 +98,15 @@
     let img = state.images.get(filename);
     if (img) { img.terrainAsset ||= terrainAsset; return img; }
     img = new Image();
+    // Tauri serves local game atlases from its scoped asset origin. Request
+    // CORS explicitly so canvas export and worker ImageBitmap transfer stay clean.
+    img.crossOrigin = 'anonymous';
     img.terrainAsset = terrainAsset;
     img.decoding = 'async';
     img.onload = () => refresh(false, !img.terrainAsset);
     img.onerror = () => onImageFailed(filename);
     // Runtime atlases use absolute URLs; bundled sprites use relative paths.
-    img.src = /^(data:|blob:|https?:|file:)/.test(filename) ? filename : SPRITE_PATH + filename;
+    img.src = /^(data:|blob:|https?:|file:|asset:)/.test(filename) ? filename : SPRITE_PATH + filename;
     state.images.set(filename, img);
     return img;
   }
@@ -285,9 +308,9 @@
 
   function turnView(richtung) {
     if (gameMap() && !state.kachelVorrat?.cameras) {
-      setStatus(state.kachelVorrat?.nativeError
-        ? 'Rotation unavailable: ' + state.kachelVorrat.nativeError
-        : 'Loading camera views...');
+      setStatus(() => state.kachelVorrat?.nativeError
+        ? tr("viewport:rotation_unavailable") + state.kachelVorrat.nativeError
+        : tr("viewport:loading_camera_views"));
       return null;
     }
     const schritt = Number(richtung) < 0 ? -VIERTEL : VIERTEL;
@@ -390,10 +413,11 @@
     const pending = [];
     function cameraStock(daten) {
       const bild = new Image();
+      bild.crossOrigin = 'anonymous';
       bild.src = daten.atlas;
       pending.push(bild.decode());
       const upperImages = (daten.upper?.pages || (daten.upper?.dataUrl ? [daten.upper.dataUrl] : [])).map(url => {
-        const img = new Image(); img.src = url; pending.push(img.decode()); return img;
+        const img = new Image(); img.crossOrigin = 'anonymous'; img.src = url; pending.push(img.decode()); return img;
       });
       return {
         path: daten.path,
@@ -646,7 +670,7 @@
       ctx.fillStyle = '#232a1c'; ctx.fillRect(0, 0, width, height);
       ctx.fillStyle = '#cbd2d2'; ctx.font = '14px system-ui, sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText(state.mapLoadError || 'Loading map...', width / 2, height / 2, width - 24);
+      ctx.fillText(state.mapLoadError || tr("viewport:loading_map"), width / 2, height / 2, width - 24);
       ctx.textAlign = 'start';
       return;
     }
@@ -701,7 +725,11 @@
     if (scene.gpu && state.gpu) {
       try {
         state.gpu.presentBehind(ctx.canvas, dpr);
-        state.gpu.render(ctx.canvas.width,ctx.canvas.height,z*dpr,
+        // The worker draws a frame or two after the panel changes size. Drawing
+        // with spare room means a growing panel uncovers finished picture, not
+        // an empty strip, and small size changes need no new canvas at all.
+        const room = v => Math.ceil((v + GPU_SPARE) / GPU_SPARE) * GPU_SPARE;
+        state.gpu.render(room(ctx.canvas.width),room(ctx.canvas.height),z*dpr,
           (state.view.panX-scene.view.panX*z)*dpr,(state.view.panY-scene.view.panY*z)*dpr);
 
       } catch(error) {
@@ -716,9 +744,10 @@
     paintInteraction(ctx, scene.items);
     const { items, missing } = scene;
     const editor = window.castleEditor;
-    const tool = editor && editor.getTool ? editor.getTool() : '—';
-    setStatus(items.length + ' items' + (missing ? ', ' + missing + ' without a sprite' : '') +
-              ' · tool: ' + tool + mapStatus() + ' · middle-drag pans · right-click clears · camera controls match Map');
+    const toolId=editor?.getTool?.();
+    const tool = toolId ? tr('shortcuts:'+toolId,{defaultValue:toolId}) : '—';
+    setStatus(() => items.length + tr("viewport:items") + (missing ? ', ' + missing + tr("viewport:without_a_sprite") : '') +
+              tr("viewport:tool") + tool + mapStatus() + tr("viewport:middle_drag_pans_right_click_clears_camera_controls_match_map"));
   }
 
   let fireLayer=null;
@@ -843,14 +872,20 @@
    * @param {SceneCommand[]} terrain @param {SceneCommand[]} buildings
    * @returns {Generator<SceneCommand>}
    */
-  function* mergeSceneCommands(terrain, buildings) {
-    let t = 0, b = 0;
-    while (t < terrain.length && b < buildings.length) {
-      if (geo.renderOrder(terrain[t].order, buildings[b].order) <= 0) yield terrain[t++];
-      else yield buildings[b++];
+  function* mergeSceneCommands(terrain, buildings, overlays = null) {
+    let t = 0, b = 0, next = 0;
+    const overlayCount = overlays?.length || 0;
+    // Select directly from all three streams: wrapping a second generator
+    // would suspend/resume twice for every static scenery command.
+    while (t < terrain.length || b < buildings.length) {
+      const command = b >= buildings.length || (t < terrain.length
+        && geo.renderOrder(terrain[t].order, buildings[b].order) <= 0)
+        ? terrain[t++] : buildings[b++];
+      while (next < overlayCount && geo.renderOrder(overlays[next].order, command.order) < 0)
+        yield overlays[next++];
+      yield command;
     }
-    while (t < terrain.length) yield terrain[t++];
-    while (b < buildings.length) yield buildings[b++];
+    while (next < overlayCount) yield overlays[next++];
   }
 
   function visibleSceneItems() {
@@ -879,6 +914,95 @@
 
   function fireOverlayVisible() {
     return !!document.getElementById?.('castleShowFire')?.checked && !window.castleEditor?.isScrubbing?.();
+  }
+
+  function troopCharacterChanged() {
+    const troops = window.castleTroops;
+    if (!troops) return;
+    const aic = window.characterEditor?.getDefensePreview?.() || null;
+    const key = troops.defenseKey(aic);
+    if (key === state.troopCharacterKey) return;
+    state.troopCharacterKey = key;
+    state.troopAic = aic;
+    state.troopDocument = null;
+    refresh(false, true);
+  }
+
+  function troopSceneCommands(items) {
+    const troops = window.castleTroops, doc = currentDocument();
+    if (!troops || !doc || !state.unitAssets) return [];
+    if (!state.troopPlanner) state.troopPlanner = troops.createPlanner();
+    if (state.troopDocument !== doc) {
+      const plan = state.troopPlanner(doc.miscItems || [], state.troopAic);
+      if (plan !== state.troopPlan) {
+        state.troopPlan = plan;
+        state.troopMarkers = plan.filter(marker=>marker.count).map(marker=>({
+          ...marker,
+          count:state.unitAssets.idleSprites?.[marker.type] ? Math.min(9,marker.count)
+            : marker.destination ? 0 : 1
+        }));
+        state.unitCommandLimit = Math.max(128, state.troopMarkers.reduce((sum,marker)=>sum+marker.count,0)*8);
+        state.unitCommands = new Map();
+      }
+      state.troopDocument = doc;
+    }
+    if (!state.troopMarkers.length) return [];
+    const context = [currentRotation(),state.view.panX,state.view.panY].join('/');
+    if (state.unitTerrain !== state.mapSceneryCommands || state.unitContext !== context
+        || state.unitCommands.size >= state.unitCommandLimit) {
+      state.unitCommands.clear();
+      state.unitTerrain = state.mapSceneryCommands;
+      state.unitContext = context;
+    }
+    const support = troops.supports(items, bodenHoehe);
+    const rotation = currentRotation();
+    const keep = items.find(item=>Number(item.itemType)===61);
+    if (state.troopAnchorSource!==state.troopMarkers || state.troopAnchorKeep!==keep
+        || state.troopAnchorRotation!==rotation) {
+      state.troopAnchors = geo.troopAnchors(state.troopMarkers,keep,rotation);
+      state.troopAnchorSource = state.troopMarkers;
+      state.troopAnchorKeep = keep;
+      state.troopAnchorRotation = rotation;
+    }
+    const layout = troops.layout(state.troopAnchors,(gx,gy)=>{
+      const tile = geo.rotateGrid(gx,gy,1,rotation);
+      return support(tile.gx,tile.gy);
+    });
+    const commands = [], cache = state.unitCommands;
+    for (const {marker,gx,gy,elevation} of layout) {
+      const tile = geo.rotateGrid(gx,gy,1,rotation);
+      const pose = state.unitAssets.idleSprites?.[marker.type];
+      let img;
+      if (pose) {
+        img = image(pose.path);
+        if (!img?.complete || !img.naturalWidth) continue;
+      } else {
+        // Explicit rally marker for unverified siege/DE poses, not a walking
+        // sprite disguised as idle. This editor-owned image is made once.
+        state.unitMarkerImages ||= new Map();
+        img = state.unitMarkerImages.get(marker.type);
+        if (!img) {
+          img = document.createElement('canvas'); img.width = 24; img.height = 20;
+          const c = img.getContext('2d');
+          c.fillStyle = '#173346'; c.strokeStyle = '#83c8ee';
+          c.fillRect(1,1,22,16); c.strokeRect(1,1,22,16);
+          c.fillStyle = '#e1f3ff'; c.font = '10px sans-serif'; c.textAlign = 'center';
+          c.fillText(String(marker.type >= 9000 ? marker.type-9000 : marker.type),12,13);
+          state.unitMarkerImages.set(marker.type,img);
+        }
+      }
+      const [x,y] = geo.isoPoint(tile.gx+.5,tile.gy+.5,state.view,elevation);
+      const key = [marker.ref,tile.gx,tile.gy,x,y,pose?.path || marker.type].join(':');
+      let command = cache.get(key);
+      if (!command) {
+        const order={gx:tile.gx,gy:tile.gy,tiles:1,layer:4};
+        [command] = recordSceneCommands(order,false,recorder => recorder.drawImage(img,
+          x+(pose?.dx ?? -12),y+(pose?.dy ?? -20),pose?.width ?? 24,pose?.height ?? 20));
+        cache.set(key,command);
+      }
+      commands.push(command);
+    }
+    return commands.sort((a,b)=>geo.renderOrder(a.order,b.order));
   }
 
   function paintScene(ctx, width, height, options = {}) {
@@ -942,7 +1066,7 @@
       });
       placedCommands.push(...recorded);
     }
-    const buildingCommands = [...mergeSceneCommands(visibleMapObjects(items, plates), placedCommands)];
+    const buildingCommands = [...mergeSceneCommands(visibleMapObjects(items, plates), placedCommands, troopSceneCommands(items))];
     const commandsIn = rect => mergeSceneCommands(terrainCommandsIn(rect),
       buildingCommands.filter(command => intersectsSceneRect(command, rect)));
     if (state.nativeTerrain && state.gpu) {
@@ -1186,25 +1310,23 @@
     if (!map) return '';
     const keep = currentKeep();
     const platz = map.keeps.length
-      ? (keep.player ? ' · start ' + keep.player : ' · start place ' + (map.keepIndex + 1)) +
-        ' (' + keep.x + ', ' + keep.y + ')'
-      : ' · no starting place, village in the middle of the map';
+      ? tr(keep.player ? 'details:map_start' : 'details:map_start_place', {number:keep.player || map.keepIndex+1,x:keep.x,y:keep.y})
+      : tr("viewport:no_starting_place_village_in_the_middle_of_the_map");
     // Die Zahl des Spiels wird mitgenannt: 0/2/4/6 ist das, was in
     // keepOrientation steht, und nur damit laesst sich nachrechnen.
     const drehung = keep.orientation
-      ? ' · turned ' + (keep.orientation / 2) + ' quarter turn' + (keep.orientation === 2 ? '' : 's') +
-        ' (game value ' + keep.orientation + ')'
-      : (map.keeps.length ? ' · not turned (game value 0)' : '');
+      ? tr('details:map_rotation', {turns:tr('quantity:quarter_turn',{count:keep.orientation/2}),value:keep.orientation})
+      : (map.keeps.length ? tr("viewport:not_turned_game_value_0") : '');
     // Und ob der Boden Hoehen hat. Ohne diese Zeile sieht man dem Bild nur an,
     // DASS etwas anders liegt, aber nicht warum - und ob es an dieser Karte
     // liegt.
     const spanne = dorfHoehen();
     let hoehe = '';
     if (spanne) {
-      hoehe = spanne.hoch === spanne.tief ? ' · flat ground (height ' + spanne.hoch + ')'
-        : ' · ground rises ' + (spanne.hoch - spanne.tief) + ' points (height ' + spanne.tief + ' to ' + spanne.hoch + ')';
+      hoehe = spanne.hoch === spanne.tief ? tr('details:map_flat',{height:spanne.hoch})
+        : tr('details:map_height',{range:spanne.hoch-spanne.tief,minimum:spanne.tief,maximum:spanne.hoch});
     }
-    return ' · map: ' + map.name + platz + drehung + hoehe;
+    return tr('details:map_name',{name:map.name}) + platz + drehung + hoehe;
   }
 
   // Was ein Klick setzen wuerde - mit dem richtigen Bild, halb durchsichtig.
@@ -1311,7 +1433,7 @@
   }
 
   function setStatus(text) {
-    if (state.host && state.host.statusEl) state.host.statusEl.textContent = text;
+    if (state.host && state.host.statusEl) window.toolkitI18n.bindText(state.host.statusEl, text);
   }
 
   function fit() { state.fitted = false; refresh(true); }
@@ -1378,7 +1500,7 @@
         setGameMapKeep(marke.index);
         window.castleEditor?.updateMapControls?.();
         const nummer = marke.platz.player || (marke.index + 1);
-        window.castleEditor?.setStatus?.(`Castle moved to start ${nummer} at (${marke.platz.x}, ${marke.platz.y})`);
+        window.castleEditor?.setStatus?.(() => tr("viewport:castle_moved_to_start_value_at_value_value", { nummer: nummer, x: marke.platz.x, y: marke.platz.y }));
         return;
       }
       const tile = editorTileAt(p.x, p.y);
@@ -1402,7 +1524,7 @@
       const ueberMarke = startPlaceAt(p.x, p.y);
       canvas.style.cursor = ueberMarke ? 'pointer' : '';
       canvas.title = ueberMarke
-        ? `Start ${ueberMarke.platz.player || (ueberMarke.index + 1)} at (${ueberMarke.platz.x}, ${ueberMarke.platz.y}) - click to build here`
+        ? tr("viewport:start_value_at_value_value_click_to_build_here", { value1: ueberMarke.platz.player || (ueberMarke.index + 1), x: ueberMarke.platz.x, y: ueberMarke.platz.y })
         : (window.castleEditor?.itemLabelAtTile?.(tile) || '');
       const moved = !state.hover || !grid || state.hover.gx !== grid.gx || state.hover.gy !== grid.gy;
       state.hover = grid;
@@ -1448,7 +1570,10 @@
   // panel is watched by a ResizeObserver and shares the app's keyboard.
   function bindHostChrome(host) {
     if (host.kind === 'dock') {
-      if (!state.observer) state.observer = new ResizeObserver(() => refresh(true));
+      // Paint inside the callback: it runs after layout and before the frame is
+      // shown, so a splitter drag never shows the moved panel with last frame's
+      // picture. A rAF paint would land one frame late and make the view shake.
+      if (!state.observer) state.observer = new ResizeObserver(() => refresh(true, false, true));
       state.observer.disconnect();
       state.observer.observe(host.box);
       return;
@@ -1486,6 +1611,7 @@
     if (state.controls && store && state.controls.parentElement !== store) {
       store.appendChild(state.controls);
     }
+    if (state.controls) window.toolkitI18n?.applyBindings(state.controls);
   }
 
   function isMounted() { return Boolean(state.host) && !hostIsGone(); }
@@ -1534,6 +1660,7 @@
     state.fitted = false;
     bindSurface(canvas);
     bindHostChrome(state.host);
+    if (state.controls) window.toolkitI18n?.applyBindings(state.controls);
     refresh();
     return true;
   }
@@ -1549,37 +1676,20 @@
     if (token !== state.mountToken) return false;      // somebody else took over meanwhile
     const win = window.open('', 'aiToolkitIsoView', 'width=1280,height=860');
     if (!win) return false;                       // blocked, or no user gesture
+    window.electronAPI?.prepareViewportWindow?.(win);
     unmount();
-    win.document.title = '2.5D view — AI Toolkit';
-    win.document.body.style.cssText =
-      'margin:0;background:#171a14;overflow:hidden;font:12px/1.4 system-ui,sans-serif;color:#cfd6c8';
+    win.document.title = tr("viewport:2_5d_view_ai_toolkit");
     win.document.body.innerHTML =
       '<div id="isoWindowChrome"><strong>2.5D</strong><div id="isoWindowControlSlot"></div>' +
-      '<span class="isoWindowFill"></span><button id="isoWindowDockBtn" type="button">Dock</button></div>' +
+      `<span class="isoWindowFill"></span><button id="isoWindowDockBtn" type="button" data-i18n="castle:dock">${globalThis.toolkitI18n.html("castle:dock")}</button></div>` +
       '<div id="isoWindowHost">' +
-      '<canvas id="isoWindowCanvas" style="display:block;width:100%;height:100%;cursor:crosshair"></canvas>' +
+      '<canvas id="isoWindowCanvas"></canvas>' +
       '</div>' +
-      '<div id="isoWindowStatus" style="position:fixed;left:0;right:0;bottom:0;padding:5px 10px;' +
-      'background:rgba(0,0,0,.55);pointer-events:none"></div>';
-    const chromeStyle = win.document.createElement('style');
-    chromeStyle.textContent =
-      '[hidden]{display:none!important}' +
-      '#isoWindowChrome{position:fixed;inset:0 0 auto 0;height:34px;display:flex;align-items:center;gap:5px;' +
-      'padding:3px 6px;box-sizing:border-box;background:#20262a;border-bottom:1px solid #465158}' +
-      '#isoWindowChrome>strong{padding:0 4px;color:#eef1f6;font-size:11px}' +
-      '#isoWindowControlSlot{min-width:0;display:flex;flex:0 1 auto;overflow-x:auto;overflow-y:hidden}' +
-      '.isoWindowFill{flex:1}' +
-      '#isoWindowHost{position:fixed;inset:34px 0 0}' +
-      '.isoViewControls{min-width:0;display:flex;align-items:center;gap:3px}' +
-      '.isoViewControls button,#isoWindowDockBtn{flex:none;min-height:24px;padding:1px 7px;border:1px solid #465158;' +
-      'border-radius:4px;background:#2a3237;color:#eef1f6;font:600 11px system-ui,sans-serif;cursor:pointer}' +
-      '.isoViewControls button[aria-pressed="true"]{border-color:#b98542;background:#463722}' +
-      '.isoViewControls .isoViewReset{width:24px;padding:0}' +
-      '.isoViewControls select{flex:none;width:128px;min-height:24px;border:1px solid #465158;border-radius:4px;' +
-      'background:#2a3237;color:#eef1f6;font:11px system-ui,sans-serif}';
-    win.document.head.appendChild(chromeStyle);
+      '<div id="isoWindowStatus"></div>';
+    window.ToolkitTheme?.attachWindow(win);
     const controlSlot = win.document.getElementById('isoWindowControlSlot');
     if (controlSlot && state.controls) controlSlot.appendChild(state.controls);
+    window.toolkitI18n?.attachWindow(win);
     state.host = {
       kind: 'window',
       win,
@@ -1618,6 +1728,9 @@
     bindSurface(document.getElementById('isoDockCanvas'));
     state.controls = document.getElementById('castleIsoControls');
     window.castleEditor?.addChangeListener?.(editorChanged);
+    window.addEventListener('character-population-changed', troopCharacterChanged);
+    troopCharacterChanged();
+    loadUnitSprites();
     loadCatalogue();
   }
 
@@ -1630,6 +1743,15 @@
                      viewInfo: () => ({ ...state.view, rotation: currentRotation(), hand: viewRotation() }),
                      startPlaceMarks };
 
+  window.toolkitI18n?.onChange(() => {
+    // The toolbar can be between documents during docking. Translate its
+    // existing nodes explicitly instead of relying on a document-wide scan.
+    if (state.controls) window.toolkitI18n?.applyBindings(state.controls);
+    if (state.host?.kind === 'window' && !state.host.win.closed) {
+      state.host.win.document.title = tr("viewport:2_5d_view_ai_toolkit");
+    }
+    if (state.host) refresh(true);
+  });
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();
 })();

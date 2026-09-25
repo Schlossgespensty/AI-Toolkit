@@ -4,15 +4,16 @@
 // Gerechnet wird nichts in dieser Datei - das steht in castle-cost-model.js.
 'use strict';
 (() => {
+  const tr = (key, options) => globalThis.toolkitI18n.t(key, options);
   const SPEICHER = 'aiv.castleCostBalances.v1';
   const SPEICHER_WAHL = 'aiv.castleCostBalanceChoice.v1';
   const COLLAPSE_STORAGE = 'aiv.castleCostPanelCollapsed.v1';
   const RESSOURCEN = [
-    { key: 'wood', label: 'Wood' },
-    { key: 'stone', label: 'Stone' },
-    { key: 'iron', label: 'Iron' },
-    { key: 'pitch', label: 'Pitch' },
-    { key: 'gold', label: 'Gold' }
+    { key: 'wood', get label() { return tr('costs:wood'); } },
+    { key: 'stone', get label() { return tr('costs:stone'); } },
+    { key: 'iron', get label() { return tr('costs:iron'); } },
+    { key: 'pitch', get label() { return tr('costs:pitch'); } },
+    { key: 'gold', get label() { return tr('costs:gold'); } }
   ];
 
   const state = {
@@ -30,7 +31,7 @@
   };
   const els = {};
 
-  const zahl = n => Number(n || 0).toLocaleString('en-US');
+  const zahl = n => globalThis.toolkitI18n.number(Number(n || 0));
 
   // localStorage kann in jedem Zugriff werfen (Privatfenster, gesperrte
   // Seitendaten). Darum jeder Zugriff eingepackt und mit brauchbarem Rueckfall.
@@ -60,54 +61,54 @@
     if (!wurzel || !bevoelkerung) return false;
     wurzel.innerHTML = `
       <div class="costOverviewTitle castleOverviewTitle">
-        <button type="button" id="castleCostCollapse" class="costCollapse" aria-controls="castleCostBody" aria-expanded="true">Castle costs ▾</button>
+        <button type="button" id="castleCostCollapse" class="costCollapse" aria-controls="castleCostBody" aria-expanded="true">${globalThis.toolkitI18n.html("costs:castle_costs_2")}</button>
         <span class="castleOverviewTitleActions">
           <strong id="castleCostStep">-</strong>
-          <button type="button" class="castleOverviewInfoButton" data-info-target="castleCostInfo" aria-label="About the castle cost overview" aria-expanded="false">i</button>
+          <button type="button" class="castleOverviewInfoButton" data-info-target="castleCostInfo" aria-label="${globalThis.toolkitI18n.html("costs:about_the_castle_cost_overview")}" aria-expanded="false">i</button>
         </span>
       </div>
 
       <div id="castleCostBody">
       <div class="costBalanceRow">
-        <label for="castleCostBalance">Balance</label>
+        <label for="castleCostBalance">${globalThis.toolkitI18n.html("costs:balance")}</label>
         <select id="castleCostBalance"></select>
-        <button type="button" id="castleCostLoadBalance" title="Load a balance JSON (Ascension, Team League, ...)">Load…</button>
-        <button type="button" id="castleCostUcpBalance">Use UCP balance</button>
+        <button type="button" id="castleCostLoadBalance" title="${globalThis.toolkitI18n.html("costs:load_a_balance_json_ascension_team_league")}">${globalThis.toolkitI18n.html("costs:load")}</button>
+        <button type="button" id="castleCostUcpBalance">${globalThis.toolkitI18n.html("costs:use_ucp_balance")}</button>
       </div>
       <input type="file" id="castleCostBalanceFile" accept="application/json,.json" hidden>
 
-      <div class="costSectionTitle" id="castleCostScope">Cumulative through selected step</div>
+      <div class="costSectionTitle" id="castleCostScope">${globalThis.toolkitI18n.html("costs:cumulative_through_selected_step")}</div>
       <div class="costGrid" id="castleCostGrid" hidden></div>
-      <div class="costCastleTotal"><span id="castleCostTotalLabel">Total through current step</span><strong id="castleCostStepTotal"></strong></div>
-      <div class="costSectionTitle">Resources through this step</div>
+      <div class="costCastleTotal"><span id="castleCostTotalLabel">${globalThis.toolkitI18n.html("costs:total_through_current_step")}</span><strong id="castleCostStepTotal"></strong></div>
+      <div class="costSectionTitle">${globalThis.toolkitI18n.html("costs:resources_through_this_step")}</div>
       <div class="costHint" id="castleProductionTotals"></div>
       <div id="castleProductionComparison"></div>
       <div class="costNote" id="castleBalanceError" hidden></div>
-      <details class="costProductionSettings"><summary>Production assumptions</summary>
-        <p class="costHint">Reference estimate from Stronghold Heaven (original Stronghold), assuming full staffing as housing becomes available. These approximate rates are not verified Crusader simulation timings. Excludes construction delays, pauses, input shortages, consumption, trade, transport bottlenecks and fear/rest effects. These goods are not your stockpile balance.</p>
-        <label>Resource distance <input id="productionDistance" type="number" min="0" max="1000"></label>
-        <label>Per extra building <input id="productionExtraDistance" type="number" min="0" max="1000"></label>
-        <label>Stockpile distance <input id="productionStockpileDistance" type="number" min="0" max="1000"></label>
-        <label>Delivery store distance <input id="productionDeliveryDistance" type="number" min="0" max="1000"></label>
-        <label>Between stores <input id="productionStoresDistance" type="number" min="0" max="1000"></label>
-        <label>Walking speed multiplier <input id="productionWalkSpeed" type="number" min="0.1" max="10" step="0.1"></label>
-        <label>Delivery productivity % <input id="productionProductivity" type="number" min="100" max="1000"></label>
-        <label><input id="productionSkirmish" type="checkbox"> Skirmish delivery bonus where enabled by balance</label>
+      <details class="costProductionSettings"><summary>${globalThis.toolkitI18n.html("costs:production_assumptions")}</summary>
+        <p class="costHint">${globalThis.toolkitI18n.html("costs:reference_estimate_from_stronghold_heaven_original_stronghold_assuming_f")}</p>
+        <label>${globalThis.toolkitI18n.html("costs:resource_distance")} <input id="productionDistance" type="number" min="0" max="1000"></label>
+        <label>${globalThis.toolkitI18n.html("costs:per_extra_building")} <input id="productionExtraDistance" type="number" min="0" max="1000"></label>
+        <label>${globalThis.toolkitI18n.html("costs:stockpile_distance")} <input id="productionStockpileDistance" type="number" min="0" max="1000"></label>
+        <label>${globalThis.toolkitI18n.html("costs:delivery_store_distance")} <input id="productionDeliveryDistance" type="number" min="0" max="1000"></label>
+        <label>${globalThis.toolkitI18n.html("costs:between_stores")} <input id="productionStoresDistance" type="number" min="0" max="1000"></label>
+        <label>${globalThis.toolkitI18n.html("costs:walking_speed_multiplier")} <input id="productionWalkSpeed" type="number" min="0.1" max="10" step="0.1"></label>
+        <label>${globalThis.toolkitI18n.html("costs:delivery_productivity")} <input id="productionProductivity" type="number" min="100" max="1000"></label>
+        <label><input id="productionSkirmish" type="checkbox"> ${globalThis.toolkitI18n.html("costs:skirmish_delivery_bonus_where_enabled_by_balance")}</label>
         <div id="productionWorkTicks"></div>
-        <label>Workshop itinerary <select id="productionRecipe"></select></label>
+        <label>${globalThis.toolkitI18n.html("costs:workshop_itinerary")} <select id="productionRecipe"></select></label>
         <p class="costHint" id="productionRecipeSummary"></p>
-        <p class="costHint">Work ticks exclude the return journey: cycle = work ticks + 2 × distance × walking ticks. Each producer keeps its own progress and fractional delivery bonus. Stone is quarry output; ox transport is not simulated. Route overlay distances are separate layout diagnostics, not measured external-resource distances.</p>
+        <p class="costHint">${globalThis.toolkitI18n.html("costs:work_ticks_exclude_the_return_journey_cycle_work_ticks_2_distance_walkin")}</p>
       </details>
       <div class="costHint" id="castleBalanceSource"></div>
 
       <div class="costNote" id="castleCostWarning" hidden></div>
 
       <div class="costSection">
-        <div class="costSectionTitle">Elapsed game time</div>
+        <div class="costSectionTitle">${globalThis.toolkitI18n.html("costs:elapsed_game_time")}</div>
         <div class="populationOverviewRow costTimeMain"><span id="castleCostTimeLabel">-</span><strong id="castleCostTimeDays">0</strong></div>
       </div>
 
-      <button type="button" class="costToggle" id="castleCostToggle" aria-expanded="false">Show cost per building</button>
+      <button type="button" class="costToggle" id="castleCostToggle" aria-expanded="false">${globalThis.toolkitI18n.html("costs:show_cost_per_building")}</button>
       <div class="costTable" id="castleCostTable" hidden></div>
 
       <div id="castleCostInfo" class="castleOverviewInfo" hidden>
@@ -134,7 +135,7 @@
       renderRecipe(); zeichne();
     };
     const walkingOverrideLabel = document.createElement('label');
-    walkingOverrideLabel.textContent = 'Travel ticks / tile override (blank: reference)';
+    walkingOverrideLabel.textContent = tr("costs:travel_ticks_tile_override_blank_reference");
     const walkingOverride = document.createElement('input');
     walkingOverride.type = 'number'; walkingOverride.min = '.01'; walkingOverride.max = '1000'; walkingOverride.step = '.01';
     walkingOverride.value = state.production.walkTicksOverride ?? '';
@@ -146,13 +147,13 @@
     wurzel.querySelector('#productionWorkTicks').before(walkingOverrideLabel);
     const recipeSelect = wurzel.querySelector('#productionRecipe');
     for (const name of Object.keys(window.castleProduction.recipes)) {
-      const option=document.createElement('option'); option.value=name; option.textContent=name; recipeSelect.appendChild(option);
+      const option=document.createElement('option'); option.value=name; option.textContent=tr('options:'+({Bow:'Bows',Crossbow:'Crossbows',Spear:'Spears',Pike:'Pikes',Sword:'Swords',Mace:'Maces',Armour:'IronArmors',Leather:'LeatherArmors',Ale:'Beer'}[name]||name)); recipeSelect.appendChild(option);
     }
     function renderRecipe() {
       const cycle=window.castleProduction.recipeCycle(recipeSelect.value,state.production);
       if (!cycle) return;
-      const places={W:'workshop',S:'stockpile',D:'delivery store',C:'dairy farm'};
-      wurzel.querySelector('#productionRecipeSummary').textContent = `${cycle.legs.map(l=>places[l.from]).concat(places[cycle.legs.at(-1).to]).join(' ? ')}. ${cycle.note}. ${zahl(cycle.tiles)} tiles; ${zahl(Math.round(cycle.travel))} walking ticks; ${cycle.ticks == null ? 'work duration unknown' : zahl(Math.round(cycle.ticks))+' ticks per reference cycle'}.`;
+      const places={W:tr('details:workshop'),S:tr('items:52'),D:tr("costs:delivery_store"),C:tr("costs:dairy_farm")};
+      wurzel.querySelector('#productionRecipeSummary').textContent = tr("costs:value_value_value_tiles_value_walking_ticks_value", { value1: cycle.legs.map(l=>places[l.from]).concat(places[cycle.legs.at(-1).to]).join(' \u2192 '), note: tr(cycle.note), value3: zahl(cycle.tiles), value4: zahl(Math.round(cycle.travel)), value5: cycle.ticks == null ? tr('details:work_unknown') : tr('details:cycle_ticks',{count:Math.round(cycle.ticks)}) });
     }
     recipeSelect.addEventListener('change',renderRecipe); renderRecipe();
     for (const [id, key] of Object.entries(numericSettings)) {
@@ -168,12 +169,12 @@
     skirmish.addEventListener('change', () => { state.production.skirmish = skirmish.checked; saveProduction(); });
     for (const good of Object.keys(window.castleProduction.GOODS)) {
       const label = document.createElement('label');
-      label.textContent = `${good} reference ticks / batch`;
+      label.textContent = tr("costs:value_reference_ticks_batch", { good: good });
       const input = document.createElement('input'); input.type = 'number'; input.min = '1'; input.max = '1000000';
-      input.value = state.production.workTicks[good] ?? ''; input.placeholder = 'Unknown';
+      input.value = state.production.workTicks[good] ?? ''; input.placeholder = tr("costs:unknown");
       input.addEventListener('change', () => {
         state.production = window.castleProduction.settings({ ...state.production, workTicks: { ...state.production.workTicks, [good]: input.value } });
-        input.value = state.production.workTicks[good] ?? ''; input.placeholder = 'Unknown'; saveProduction();
+        input.value = state.production.workTicks[good] ?? ''; input.placeholder = tr("costs:unknown"); saveProduction();
       });
       label.appendChild(input); wurzel.querySelector('#productionWorkTicks').appendChild(label);
     }
@@ -222,7 +223,7 @@
     els.toggle.addEventListener('click', () => {
       state.aufgeklappt = !state.aufgeklappt;
       els.toggle.setAttribute('aria-expanded', String(state.aufgeklappt));
-      els.toggle.textContent = state.aufgeklappt ? 'Hide cost per building' : 'Show cost per building';
+      els.toggle.textContent = state.aufgeklappt ? tr("costs:hide_cost_per_building") : tr("costs:show_cost_per_building");
       els.table.hidden = !state.aufgeklappt;
       zeichne();
     });
@@ -244,8 +245,8 @@
     fuelleBalanceListe();
     const daten = window.castleCostData;
     els.provenance.textContent = daten
-      ? `Bundled vanilla prices were extracted from the game exe at ${daten._quelle && daten._quelle.kosten ? '0x005C21D0' : 'the build cost table'}. Load a plugin balance JSON to override building prices; missing overrides retain vanilla prices. This does not read the currently running game. One build step = 50 ticks = one game day (measured, 445 of 445 steps).`
-      : 'Cost table not loaded.';
+      ? tr("costs:bundled_vanilla_prices_were_extracted_from_the_game_exe_at_value_load_a_", { value1: daten._quelle && daten._quelle.kosten ? '0x005C21D0' : tr('details:cost_table') })
+      : tr("costs:cost_table_not_loaded");
     if (window.castleEditor && typeof window.castleEditor.refreshOverviewLayout === 'function') {
       window.castleEditor.refreshOverviewLayout();
     }
@@ -255,8 +256,9 @@
   function fuelleBalanceListe() {
     if (!els.balance) return;
     els.balance.innerHTML = '';
-    const eintraege = [['vanilla', 'Vanilla (bundled)'], ...Object.keys(state.balances).map(n => [n,
-      n === state.choice && state.balanceStatus === 'ready' ? n : `${n} (saved)`])];
+    const balanceLabel = name => name.startsWith('File: ') ? tr('feedback:file_label', {name:name.slice(6)}) : name;
+    const eintraege = [['vanilla', tr('details:bundled_vanilla')], ...Object.keys(state.balances).map(n => [n,
+      n === state.choice && state.balanceStatus === 'ready' ? balanceLabel(n) : tr('feedback:saved_label', {name:balanceLabel(n)})])];
     for (const [wert, text] of eintraege) {
       const opt = document.createElement('option');
       opt.value = wert;
@@ -272,7 +274,7 @@
     els.body.hidden = state.collapsed;
     els.wurzel.classList.toggle('costCollapsed', state.collapsed);
     els.collapse.setAttribute('aria-expanded', String(!state.collapsed));
-    els.collapse.textContent = state.collapsed ? 'Castle costs ▸' : 'Castle costs ▾';
+    els.collapse.textContent = state.collapsed ? tr("costs:castle_costs") : tr("costs:castle_costs_2");
   }
 
   function costSummary(cost) {
@@ -308,7 +310,7 @@
       const name = `UCP: ${loaded.name}`;
       state.balances[name] = window.castleBalance.validate(loaded.profile);
       state.choice = name;
-      state.balanceSource = `${loaded.exePath ? 'EXE + UCP' : 'Bundled base + UCP'}: ${loaded.filePath}`;
+      state.balanceSource = `${loaded.exePath ? 'EXE + UCP' : tr("costs:bundled_base_ucp")}: ${loaded.filePath}`;
       state.balanceStatus = 'ready'; state.balanceError = ''; sichere(); fuelleBalanceListe();
       try {
         const icons = await window.electronAPI.readResourceIcons?.();
@@ -317,13 +319,13 @@
     } catch (error) {
       if (token !== state.balanceLoadToken) return;
       state.balanceStatus = 'failed';
-      state.balanceError = `UCP balance could not be loaded. Still using ${state.choice === 'vanilla' ? 'bundled vanilla' : 'the saved snapshot of ' + state.choice}. ${error.message.replace(/^Error invoking remote method '[^']+': Error: /, '')}`;
+      state.balanceError = tr("costs:ucp_balance_could_not_be_loaded_still_using_value_value", { value1: state.choice === 'vanilla' ? tr('details:bundled_vanilla') : tr('details:saved_balance',{name:state.choice}), value2: error.message.replace(/^Error invoking remote method '[^']+': Error: /, '') });
     } finally {
       if (token === state.balanceLoadToken) { button.disabled = false; fuelleBalanceListe(); zeichne(); }
     }
   }
   function goodSymbol(good) {
-    const label = good[0].toUpperCase() + good.slice(1);
+    const label = tr(good==='fruit'?'details:fruit':good==='gold'?'costs:gold':'options:'+(good[0].toUpperCase()+good.slice(1)));
     const element = document.createElement(state.icons[good] ? 'img' : 'span');
     if (state.icons[good]) { element.src = state.icons[good]; element.alt = label; element.className = 'costGoodIcon'; }
     else element.textContent = label;
@@ -339,12 +341,12 @@
       element.appendChild(chip);
     }
     if (!element.childNodes.length) element.textContent = '0';
-    if (partial) element.appendChild(document.createTextNode(' (partial)'));
+    if (partial) element.appendChild(document.createTextNode(tr("costs:partial")));
   }
   function renderResources(cost, production) {
-    els.productionTotals.textContent = production ? '' : 'Open a character for production estimates.';
+    els.productionTotals.textContent = production ? '' : tr("costs:open_a_character_for_production_estimates");
     const table = document.createElement('table'); table.className = 'costResourceTable';
-    table.innerHTML = '<thead><tr><th scope="col">Good</th><th scope="col">Cost</th><th scope="col" title="Estimated gross production, not stockpile inventory">Produced*</th></tr></thead>';
+    table.innerHTML = `<thead><tr><th scope="col">${globalThis.toolkitI18n.html("costs:good")}</th><th scope="col">${globalThis.toolkitI18n.html("costs:cost")}</th><th scope="col" title="${globalThis.toolkitI18n.html("costs:estimated_gross_production_not_stockpile_inventory")}">${globalThis.toolkitI18n.html("costs:produced")}</th></tr></thead>`;
     const body = document.createElement('tbody');
     const goods = [...RESSOURCEN.map(r => r.key), 'meat', 'fruit', 'cheese', 'hop', 'wheat'];
     for (const good of goods) {
@@ -411,20 +413,20 @@
     renderResources(ergebnis.cost, production);
     els.balanceError.hidden = !state.balanceError;
     els.balanceError.textContent = state.balanceError;
-    els.balanceSource.textContent = state.balanceStatus === 'loading' ? 'Reading selected installation…'
-      : state.balanceStatus === 'ready' ? `Loaded: ${state.balanceSource.split(/[\\/]/).pop()}`
-      : state.choice === 'vanilla' ? 'Using bundled vanilla prices' : `Using saved snapshot: ${state.choice}`;
-    els.balanceSource.title = state.balanceSource + '\n' + 'Use UCP balance to refresh the selected installation. EXE + UCP reads the on-disk game cost table and overlays the configured rebalancer profile; it does not read process memory.';
+    els.balanceSource.textContent = state.balanceStatus === 'loading' ? tr("costs:reading_selected_installation")
+      : state.balanceStatus === 'ready' ? tr('feedback:loaded_label', {name:state.balanceSource.split(/[\\/]/).pop()})
+      : state.choice === 'vanilla' ? tr("costs:using_bundled_vanilla_prices") : tr("costs:using_saved_snapshot_value", { choice: state.choice });
+    els.balanceSource.title = state.balanceSource + '\n' + tr('feedback:balance_help');
 
     const schrittText = ergebnis.totalSteps
-      ? `${ergebnis.steps} of ${ergebnis.totalSteps}`
-      : 'no steps';
+      ? `${ergebnis.steps} / ${ergebnis.totalSteps}`
+      : tr("costs:no_steps");
     els.step.textContent = schrittText;
-    els.scope.textContent = ergebnis.steps ? `Cumulative total · steps 1–${ergebnis.steps}` : 'Cumulative total · no steps';
-    els.totalLabel.textContent = `Total through step ${ergebnis.steps}`;
+    els.scope.textContent = ergebnis.steps ? tr("costs:cumulative_total_steps_1_value", { steps: ergebnis.steps }) : tr("costs:cumulative_total_no_steps");
+    els.totalLabel.textContent = tr("costs:total_through_step_value", { steps: ergebnis.steps });
     renderCostChips(els.stepTotal, ergebnis.cost, ergebnis.unknown.length > 0);
-    els.collapse.title = `Through step ${ergebnis.steps}: ${costSummary(ergebnis.cost)}`
-      + (ergebnis.unknown.length ? ' (partial: unknown prices)' : '');
+    els.collapse.title = tr("costs:through_step_value_value", { steps: ergebnis.steps, value2: costSummary(ergebnis.cost) })
+      + (ergebnis.unknown.length ? tr("costs:partial_unknown_prices") : '');
     if (els.populationStep) els.populationStep.textContent = schrittText;
 
     for (const r of RESSOURCEN) {
@@ -437,43 +439,36 @@
 
     if (ergebnis.unknown.length) {
       const namen = ergebnis.unknown
-        .map(u => `${u.count}x ${(daten.buildings[String(u.type)] || {}).name || `type ${u.type}`}`)
+        .map(u => `${u.count}× ${window.castlePalette?.itemName(window.castleEditor?.getItemDefinitions?.(), u.type) || tr('feedback:item', {id:u.type})}`)
         .join(', ');
       els.warning.hidden = false;
-      els.warning.textContent = `Price unknown, not counted: ${namen}. The build cost table has no entry for these.`;
+      els.warning.textContent = tr("costs:price_unknown_not_counted_value_the_build_cost_table_has_no_entry_for_th", { namen: namen });
     } else {
       els.warning.hidden = true;
       els.warning.textContent = '';
     }
 
-    els.timeLabel.textContent = ergebnis.time.label;
-    els.timeDays.textContent = `${zahl(ergebnis.time.days)} days`;
-    els.timeHint.textContent = `${zahl(ergebnis.time.ticks)} ticks - one step is one game day, and a step that cannot be built still uses its day. If the AI runs out of money it waits, so this is the earliest possible time, not a promise.`;
+    const time = ergebnis.time;
+    els.timeLabel.textContent = [[time.years,'year'],[time.months,'month'],[time.remainderDays,'day']].filter(([count,unit])=>count || (unit==='day' && !time.years && !time.months)).map(([count,unit])=>tr('details:'+unit,{count})).join(', ');
+    els.timeDays.textContent = tr('details:day',{count:ergebnis.time.days});
+    els.timeHint.textContent = tr("costs:value_ticks_one_step_is_one_game_day_and_a_step_that_cannot_be_built_sti", { value1: zahl(ergebnis.time.ticks) });
 
     const pop = ergebnis.population;
     els.popProvided.textContent = zahl(pop.provided);
     els.popRequired.textContent = zahl(pop.required);
-    els.popAic.textContent = pop.aicNeeded == null ? 'no character file' : zahl(pop.aicNeeded);
+    els.popAic.textContent = pop.aicNeeded == null ? tr("costs:no_character_file") : zahl(pop.aicNeeded);
     els.popFree.textContent = pop.free == null ? '-' : zahl(pop.free);
     els.popFree.classList.toggle('populationNegative', pop.free != null && pop.free < 0);
 
     if (pop.aic) {
-      const mehrzahl = (n, eins, viele) => `${n} ${n === 1 ? eins : viele}`;
-      const teile = [
-        mehrzahl(pop.aic.quarries, 'quarry', 'quarries'),
-        mehrzahl(pop.aic.iron, 'iron mine', 'iron mines'),
-        mehrzahl(pop.aic.wood, 'woodcutter', 'woodcutters'),
-        mehrzahl(pop.aic.farms, 'farm', 'farms'),
-        mehrzahl(pop.aic.pitch, 'pitch rig', 'pitch rigs'),
-        mehrzahl(pop.aic.oxTethers, 'ox tether', 'ox tethers')
-      ];
-      let satz = `At ${zahl(pop.provided)} population the AIC opens ${teile.join(', ')}.`;
+      const teile = [[pop.aic.quarries,'quarry'],[pop.aic.iron,'iron_mine'],[pop.aic.wood,'woodcutter'],[pop.aic.farms,'farm'],[pop.aic.pitch,'pitch_rig'],[pop.aic.oxTethers,'ox_tether']].map(([count,unit])=>tr('details:'+unit,{count}));
+      let satz = tr("costs:at_value_population_the_aic_opens_value", { value1: zahl(pop.provided), value2: teile.join(', ') });
       if (pop.farms && pop.farms.hop) {
-        satz += ` ${pop.farms.hop === 1 ? '1 of those farms grows hops' : `${pop.farms.hop} of those farms grow hops`}.`;
+        satz += ' '+tr('details:hop_farms',{count:pop.farms.hop});
       }
       els.aicDetail.textContent = satz;
     } else {
-      els.aicDetail.textContent = 'Open a character file to see how many resource buildings the AIC would add here.';
+      els.aicDetail.textContent = tr("costs:open_a_character_file_to_see_how_many_resource_buildings_the_aic_would_a");
     }
 
     if (state.aufgeklappt) zeichneTabelle(ergebnis);
@@ -482,31 +477,31 @@
   function zeichneTabelle(ergebnis) {
     els.table.innerHTML = '';
     if (!ergebnis.rows.length) {
-      els.table.textContent = 'Nothing with a known price up to this step.';
+      els.table.textContent = tr("costs:nothing_with_a_known_price_up_to_this_step");
     }
     for (const zeile of ergebnis.rows) {
       const teile = RESSOURCEN.filter(r => zeile.total[r.key]).map(r => `${zahl(zeile.total[r.key])} ${r.label.toLowerCase()}`);
-      if (!teile.length) teile.push('no cost');
+      if (!teile.length) teile.push(tr("costs:no_cost"));
       const div = document.createElement('div');
       div.className = 'costTableRow';
       const name = document.createElement('span');
       name.className = 'costTableName';
-      name.textContent = `${zeile.count}x ${zeile.name}`;
+      name.textContent = `${zeile.count}× ${tr('items:'+zeile.type,{defaultValue:zeile.name})}`;
       const value = document.createElement('span');
       value.className = 'costTableValue';
       renderCostChips(value, zeile.total);
       div.append(name, value);
       if (zeile.source === 'balance') div.classList.add('costFromBalance');
       div.title = zeile.source === 'balance'
-        ? 'Price from the selected balance file'
-        : 'Price from the game exe (vanilla)';
-      if (zeile.pitchGroup) div.title += `; 1 pitch per ${zeile.pitchGroup} tiles, grouped across steps; assumes a fresh placement counter`;
+        ? tr("costs:price_from_the_selected_balance_file")
+        : tr("costs:price_from_the_game_exe_vanilla");
+      if (zeile.pitchGroup) div.title += tr("costs:1_pitch_per_value_tiles_grouped_across_steps_assumes_a_fresh_placement_c", { pitchGroup: zeile.pitchGroup });
       els.table.appendChild(div);
     }
     const total = document.createElement('div');
     total.className = 'costTableRow costTableTotal';
     const label = document.createElement('strong');
-    label.textContent = `Cumulative total through step ${ergebnis.steps}`;
+    label.textContent = tr("costs:cumulative_total_through_step_value", { steps: ergebnis.steps });
     const value = document.createElement('span');
     renderCostChips(value, ergebnis.cost, ergebnis.unknown.length > 0);
     total.append(label, value);
@@ -535,4 +530,5 @@
   window.castleCostPanel = API;
   // Aendert sich die AIC, aendert sich der Arbeiterbedarf - dann neu rechnen.
   window.addEventListener('character-population-changed', () => zeichne());
+  window.toolkitI18n?.onChange(() => { if(els.wurzel) { baueOberflaeche(); zeichne(); } });
 })();

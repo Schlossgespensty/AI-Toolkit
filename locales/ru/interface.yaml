@@ -1,0 +1,250 @@
+experimental_snapshots: Экспериментальные сборки
+toolkit_fork_owner_repository: Форк Toolkit (владелец/репозиторий)
+fork_builds_are_experimental_switching_sources_does_not_install_a_build_unti: Сборки форков экспериментальные. Смена источника не устанавливает сборку, пока вы не нажмете «Установить».
+cancel: Отмена
+use_fork: Использовать форк
+editor_workspace: Рабочая область редактора
+application_menus: Меню приложения
+file_alt_f: Файл (Alt+F)
+file: Файл
+edit_alt_e: Правка (Alt+E)
+edit: Правка
+view_alt_v: Вид (Alt+V)
+view: Вид
+ucp_ai_library: Библиотека ИИ UCP
+character: Персонаж
+castle: Замок
+ai_content: Содержимое ИИ
+update_source: Источник обновлений
+official_releases: Официальные выпуски
+check_official_releases: Проверить официальные выпуски
+check_updates: Проверить обновления
+character_editor: Редактор персонажей
+no_character_loaded: Персонаж не открыт
+open_a_character_json_file_or_choose_an_ai_from_the_library: Откройте character.json или выберите ИИ из библиотеки.
+open_character: Открыть персонажа
+save_character: Сохранить персонажа
+save_as: Сохранить как
+plugins: Плагины
+ai_ox_tethers: Волы ИИ
+controls_the_amount_of_ox_tethers_built: Управляет числом привязей волов
+running_units: Бег отрядов
+controls_whether_some_units_will_run_or_walk: Определяет, будут ли некоторые отряды бежать или идти.
+ai_troop_behaviour: Поведение войск ИИ
+include_aiv_troop_behaviour_overrides: Включить настройки поведения войск AIV
+population: Население
+available_population: Доступное население
+decrease_available_population_by_8: Уменьшить доступное население на 8
+increase_available_population_by_8: Увеличить доступное население на 8
+use_the_population_provided_by_the_currently_loaded_castle: Использовать вместимость открытого замка
+use_castle_pop: Население замка
+maximum_workers_used: Максимум занятых работников
+max_workers_used_at_set_population: Максимум работников при заданном населении
+worker_breakdown: Распределение работников
+farms: Фермы
+woodcutters: Лесорубы
+quarries: Каменоломни
+ox_tethers_up_to: Привязи волов (до)
+iron_mines: Железные рудники
+pitch_rigs: Смоляные ямы
+workers_left_after_castle: Свободно после замка
+left_after_castle_character: Свободно после замка и персонажа
+fear_factor: Фактор страха
+stockpile_space: Место на складе
+find_setting: Найти настройку
+search_character_fields: Поиск параметров персонажа…
+section_visibility: Видимость разделов
+expand_all: Развернуть все
+collapse_all: Свернуть все
+character_field_order: Порядок параметров персонажа
+standard_template: Стандартный шаблон
+ordered_template: Упорядоченный шаблон
+castle_files: Файлы замков
+open_castle: Открыть замок
+save_castle: Сохранить замок
+export_a_definitive_edition_castle_aivjson: Экспортировать замок Definitive Edition (.aivjson)
+export_de: Экспорт DE
+new: Создать
+castle_views: Виды замка
+show_or_close_the_map_seen_from_above: Открыть или закрыть вид карты сверху
+map: Карта
+show_or_close_the_slanted_view_drag_a_tab_to_move_a_window: Открыть или закрыть наклонный вид; перетащите вкладку для перемещения окна
+2_5d_view: Вид 2.5D
+ai_castle_selection: Выбор замка ИИ
+ai_castle: Замок ИИ
+no_ai_project: Нет проекта ИИ
+placement_tools: Инструменты размещения
+shortcut_1_or_s: "Клавиши: 1 или S"
+single: Одиночно
+shortcut_6_or_l: "Клавиши: 6 или L"
+line: Линия
+shortcut_2_or_b: "Клавиши: 2 или B"
+brush: Кисть
+how_wide_the_brush_paints_and_make_it_smaller_and_bigger: Ширина кисти. - уменьшает, + увеличивает.
+smaller_brush: Уменьшить кисть
+bigger_brush: Увеличить кисть
+fills_everything_up_to_a_wall_the_edge_of_the_map_counts_as_one_shortcut_7_o: "Заполняет область до стен, включая край карты. Клавиши: 7 или F"
+fill: Заливка
+selection_and_editing_tools: Инструменты выделения и правки
+shortcut_3_or_v: "Клавиши: 3 или V"
+select_move: Выделить / переместить
+select_mode: Режим выделения
+flood_selects_connected_placements_of_the_same_type_including_diagonals_shif: >-
+  Заливка выделяет соприкасающиеся объекты одного типа, включая диагонали. Shift добавляет, Ctrl+щелчок
+  переключает связанную группу.
+border: Граница
+flood_fill: Заливка
+delete_mode: Режим удаления
+area: Область
+flood_fill_2: Заливка
+display_overlays: Показывать наложения
+overlays: Наложения
+item_names: Названия объектов
+unit_order: Порядок войск
+guide_lines: Направляющие
+estimated_worker_paths_through_the_current_castle: Расчетные пути работников в текущем замке
+path_map: Карта путей
+estimated_fire_spread_around_flammable_buildings: Расчетное распространение огня вокруг горючих зданий
+firespread: Распространение огня
+build_order: Порядок строительства
+0_steps: 0 шагов
+current_position: Текущая позиция
+no_step_selected: Шаг не выбран
+select_and_scroll_to_a_build_step: Выбрать шаг строительства и перейти к нему
+drag_steps_to_reorder_ctrl_click_or_shift_click_selects_several_steps_right_: >-
+  Перетаскивайте шаги для смены порядка. Ctrl+щелчок или Shift+щелчок выделяет несколько шагов. Правая кнопка
+  объединяет или фиксирует позиции.
+population_up_to_the_selected_build_step: Население до выбранного шага строительства
+population_at_current_step: Население на текущем шаге
+about_the_population_overview: Об обзоре населения
+provided_by_castle: Вместимость замка
+required_by_castle: Требуется замку
+required_by_character_aic: Требуется персонажу (AIC)
+free: Свободно
+these_values_include_only_the_build_steps_up_to_the_current_position: Учтены только шаги строительства до текущей позиции.
+2d_map_controls: Управление картой 2D
+use_picture_as_background: Использовать изображение как фон
+save_the_whole_castle_as_a_full_resolution_png: Сохранить весь замок как PNG в полном разрешении
+snapshot: Снимок
+temporary_castle_blueprint: Временный чертеж замка
+show_or_hide_the_temporary_blueprint: Показать или скрыть временный чертеж
+show: Показать
+blueprint_opacity: Непрозрачность чертежа
+opacity: Непрозрачность
+2_5d_view_controls: Управление видом 2.5D
+lay_a_map_of_the_game_under_the_slanted_view_to_scale_one_field_of_the_map_o: "Подложить игровую карту под наклонный вид в масштабе: одна клетка карты соответствует клетке редактора"
+game_map: Игровая карта
+which_starting_place_of_the_map_the_castle_is_built_on: Стартовая позиция карты для размещения замка
+map_starting_place: Стартовая позиция карты
+take_the_map_of_the_game_away: Убрать игровую карту
+remove_game_map: Убрать игровую карту
+100_by_100_tile_castle_map: Карта замка 100 на 100 клеток
+the_castle_seen_from_an_angle: Замок под углом
+no_castle_loaded: Замок не открыт
+ready: Готово
+building_categories: Категории построек
+select_an_item: Выберите объект
+castle_costs_up_to_the_selected_build_step: Стоимость замка до выбранного шага
+assets_and_dialogue: Изображения и диалоги
+save_lines_json: Сохранить lines.json
+open_an_ai_from_the_library_first: Сначала откройте ИИ из библиотеки.
+no_ai_project_loaded: Проект ИИ не открыт
+open_an_installed_ai_or_create_one_from_the_ucp_ai_library: Откройте установленный ИИ или создайте его в библиотеке ИИ UCP.
+lines_json: lines.json
+text_used_for_the_ai_s_name_titles_description_and_reactions: Тексты имени, титулов, описания и реакций ИИ.
+saved: Сохранено
+portraits: Портреты
+images_use_nearest_neighbor_resizing_transparency_is_kept_strictly_on_or_off: Изображения масштабируются методом ближайшего соседа; прозрачность остается только полной или нулевой.
+ai_portrait: Портрет ИИ
+portrait_png: portrait.png
+saved_as_72_72_pixels: Сохраняется в размере 72×72 пикселя.
+change_portrait: Изменить портрет
+small_ai_portrait: Малый портрет ИИ
+portrait_small_png: portrait_small.png
+saved_as_36_36_pixels: Сохраняется в размере 36×36 пикселей.
+change_small_portrait: Изменить малый портрет
+speech: Речь
+mapped_wav_files_can_play_here_or_open_in_your_normal_audio_program: Назначенные WAV-файлы можно прослушать здесь или открыть в обычном аудиоплеере.
+language: Язык
+no_speech: Нет речи
+bink_videos: Видео Bink
+bik_playback_is_handed_to_the_program_associated_with_bink_files_on_windows: В Windows BIK воспроизводится программой, связанной с файлами Bink.
+project_browser: Обзор проектов
+browse_and_edit_installed_ai_packages_or_keep_separate_variants_in_my_ais: Просматривайте и редактируйте установленные пакеты ИИ или создавайте отдельные варианты в «Мои ИИ».
+create_new_ai: Создать ИИ
+choose_game_folder: Выбрать папку игры
+open_plugins_folder: Открыть папку плагинов
+refresh: Обновить
+no_ucp_installation_selected: Установка UCP не выбрана
+choose_your_stronghold_crusader_folder_to_begin: Для начала выберите папку Stronghold Crusader.
+installed_ais: Установленные ИИ
+search: Поиск
+name_author_or_plugin: Название, автор или плагин…
+all_installed_ais: Все установленные ИИ
+active_plugins_only: Только активные плагины
+my_ais_only: Только мои ИИ
+no_installation_selected: Установка не выбрана.
+your_existing_editors_stay_unchanged: Открытые редакторы остаются без изменений
+select_an_installed_ai_to_load_and_edit_its_character_castles_lines_and_port: Выберите установленный ИИ, чтобы вместе открыть и редактировать его персонажа, замки, реплики и портреты.
+installed: Установлено
+inactive: Неактивно
+author: Автор
+version: Версия
+source_plugin: Исходный плагин
+folder_id: Идентификатор папки
+open_ai_project: Открыть проект ИИ
+loads_the_character_and_castle_1_together_switch_castles_from_the_castle_edi: Одновременно открывает персонажа и замок 1. Переключайте замки в редакторе замков.
+open_in_editors: Открыть в редакторах
+open_source_folder: Открыть исходную папку
+clone_to_my_ais: Копировать в мои ИИ
+the_complete_ai_package_is_copied_into_the_editor_owned_ucp_plugin_so_you_ca: Весь пакет ИИ копируется в плагин UCP редактора, чтобы вы могли создать отдельный вариант.
+ai_name: Имя ИИ
+install_update_in_ucp: Установить / обновить в UCP
+writes_the_character_and_currently_open_castle_through_a_staging_folder_then: >-
+  Записывает персонажа и открытый замок во временную папку и заменяет управляемый плагин только после успешной
+  проверки.
+activate_ai_toolkit_my_ais_in_the_ucp_gui_to_use_it_with_ai_swapper: Включите «AI Toolkit - My AIs» в UCP GUI для использования с AI Swapper.
+creates_a_complete_blank_ai_inside_ai_toolkit_my_ais: Создает полный пустой ИИ в AI Toolkit - My AIs.
+create_ai: Создать ИИ
+castle_mapping: Назначение замков
+choose_the_aiv_used_in_each_of_the_ai_s_eight_castle_slots_the_same_file_may: Выберите AIV для каждого из восьми замков ИИ. Один файл можно выбрать несколько раз.
+save_mapping: Сохранить назначения
+castle_shortcuts: Клавиши редактора замков
+select_a_field_and_press_a_key_optionally_with_ctrl_alt_or_shift_one_shortcu: >-
+  Выберите поле и нажмите клавишу, при необходимости с Ctrl, Alt или Shift. Одно сочетание на действие; каждое
+  сочетание назначается один раз. Backspace очищает поле. Действия без клавиш доступны через интерфейс.
+camera: Камера
+photoshop_controls: Управление Photoshop
+arrow_keys_wheel_zoom: Стрелки + масштаб колесом
+mouse_wheel: Колесо мыши
+scroll_pans_alt_scroll_zooms_both_views: Колесо перемещает, Alt+колесо масштабирует (оба вида)
+scroll_zooms_alt_shift_scroll_pans: Колесо масштабирует, Alt/Shift+колесо перемещает
+ctrl_scroll_pans_horizontally_in_wheel_zoom_mode_alt_scroll_or_shift_scroll_: >-
+  Ctrl+колесо перемещает по горизонтали. В режиме масштабирования колесом Alt+колесо или Shift+колесо
+  перемещает по вертикали. Средняя кнопка перемещает вид. Клавиши камеры допускают Ctrl/Alt/Shift; Backspace
+  очищает. Удерживайте Shift для ускорения.
+left: Влево
+right: Вправо
+up: Вверх
+down: Вниз
+pan_speed_pixels_per_keypress: Скорость перемещения (пикселей за нажатие)
+restore_defaults: Восстановить стандартные
+save_shortcuts: Сохранить клавиши
+build_step_actions: Действия с шагами строительства
+merge_selected_steps: Объединить выбранные шаги…
+lock_positions: Зафиксировать позиции
+save_castle_picture: Сохранить изображение замка
+save_png: Сохранить PNG
+picture_size: "Размер"
+full_resolution: "Полное разрешение"
+floor_plan_100x100_1_px_per_tile: "План 100×100 (1 пикс. на клетку)"
+merge_placements_by_item_type: Объединить размещения по типу
+merge: Объединить
+replace_selected_items: Заменить выделенные объекты
+choose_a_replacement_for_each_item_type_inside_the_box: Выберите замену для каждого типа объектов в области.
+apply_replacements: Применить замены
+map_of_the_game: Игровая карта
+the_chosen_map_is_laid_under_the_slanted_view_to_scale_one_field_of_the_map_: "Выбранная карта помещается под наклонным видом в масштабе: одна клетка карты равна клетке редактора."
+filter_by_name: Фильтр по имени
+
+brush_size: Размер кисти

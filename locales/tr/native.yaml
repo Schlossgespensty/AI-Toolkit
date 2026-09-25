@@ -1,0 +1,60 @@
+castle_files: Kale dosyaları
+new: Yeni
+save_as: Farklı kaydet
+classic_export_failed: |-
+  Bu kale klasik AIV olarak dışa aktarılamaz:
+  {{issues}}
+  Korumak için Definitive Edition olarak kaydedin.
+images: Resimler
+choose_game: Stronghold Crusader kurulumunu seçin
+unsaved_title: Kaydedilmemiş değişiklikler
+unsaved_message: |-
+  {{name}} kaydedilmemiş değişiklikler içeriyor.
+  Devam etmeden önce kaydedilsin mi?
+  Sonraki işlem: {{action}}.
+document: belge
+continue: Devam et
+discard: Vazgeç
+add_to_ai: Yapay zekâya ekle
+edit_separately: Ayrı düzenle
+add_document_message: Bu belge {{name}} projesine eklensin mi? Karakter eklemek mevcut karakter dosyasını değiştirir.
+new_window: Pencere ekle
+open_new_window: Yeni pencerede aç
+clear_background: Arka planı temizle
+castle_mapping: Kale eşlemesini düzenle…
+shortcuts: Kale kısayollarını özelleştir…
+toggle_ox: Yapay zekâ öküz bağlama yerlerini aç/kapat
+toggle_running: Koşan birimleri aç/kapat
+standard_order: Standart sırayı uygula
+ordered_order: Düzenlenmiş sırayı uygula
+toggle_sections: Tümünü genişlet/daralt
+replace_castle: '{{name}} zaten var. Kale dosyası değiştirilsin mi?'
+overviews: Kale özetleri
+show_population: Nüfusu göster
+show_costs: Kale maliyetlerini göster
+population_side: Nüfus panelinin tarafı
+costs_side: Maliyet panelinin tarafı
+reload: Yeniden yükle
+fullscreen: Tam ekran
+developer_tools: Geliştirici araçları
+zoom_in: Yakınlaştır
+zoom_out: Uzaklaştır
+reset_zoom: Gerçek boyut
+classic_castle: Klasik AIV kalesi
+choose_castle_format: Kale dosyasının biçimini seçin.
+add_castle_message: |-
+  Bu kale {{name}} projesine eklensin mi?
+  Yapay zekâya ekle, kaleyi yapay zekânın aiv klasörüne kopyalar ve projeyi açık tutar.
+  Ayrı düzenle, yapay zekâ projesinden çıkar ve kaleyi başka bir konuma kaydetmenizi sağlar.
+new_castle_message: |-
+  {{name}} projesinde yeni bir kale oluşturulsun mu?
+  Yapay zekâya ekle, kaleyi yapay zekânın aiv klasörüne kaydeder ve projeyi açık tutar.
+  Ayrı düzenle, yapay zekâ projesinden çıkar ve kaleyi başka bir konuma kaydetmenizi sağlar.
+replace_character_message: |-
+  {{name}} için bu karakter kullanılsın mı?
+  Yapay zekâya ekle, yapay zekânın mevcut character.json dosyasını kalıcı olarak değiştirir.
+  Ayrı düzenle, yapay zekâ projesinden çıkar ve mevcut karakter dosyasını korur.
+new_character_message: |-
+  {{name}} için yeni bir karakter oluşturulsun mu?
+  Yapay zekâya ekle, yapay zekânın mevcut character.json dosyasını kalıcı olarak değiştirir.
+  Ayrı düzenle, yapay zekâ projesinden çıkar ve mevcut karakter dosyasını korur.

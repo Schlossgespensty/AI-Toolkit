@@ -1,0 +1,81 @@
+adding_the_castle_was_cancelled: A vár hozzáadása megszakítva.
+no_castles_available: Nincsenek elérhető várak
+unmapped: Nincs hozzárendelve
+missing: " (hiányzik)"
+open_an_ai_project_before_editing_its_castle_mapping: A vár-hozzárendelések módosítása előtt nyisson meg egy MI-projektet
+unused: Nincs használatban
+no_ais_match_this_search: Nincs a keresésnek megfelelő MI.
+no_ais_match_this_view: Ebben a nézetben nincs MI.
+my_ais: Saját MI-k
+active: " · aktív"
+no_mapped_binary_castles_were_found_the_character_can_still_be_opened: Nem találhatók hozzárendelt bináris várfájlok. A karakter továbbra is megnyitható.
+binary_aiv_ready: bináris AIV készen áll
+json_fallback_available: JSON tartalék elérhető
+no_description_provided: Nincs megadott leírás.
+my_ai: Saját MI
+active_plugin: Aktív bővítmény
+inactive_plugin: Inaktív bővítmény
+loads_the_managed_character_castle_1_lines_and_portraits_switch_castles_: >-
+  Betölti a kezelt karaktert, az 1. várat, a szövegeket és az arcképeket. A várak között a várszerkesztőben
+  válthat.
+character_data_is_ready_enable_castles_audio_all_ais_above_before_openin: >-
+  A karakteradatok készen állnak. Megnyitás előtt fent engedélyezze a várakat, hangokat és minden MI-t a
+  bináris vár- és hangfájlok betöltéséhez.
+loads_this_ai_directly_from_its_source_plugin_changes_can_be_saved_back_: Közvetlenül a forrásbővítményből tölti be az MI-t. A módosítások visszamenthetők ugyanoda.
+safely_update_the_managed_ucp_plugin_from_the_loaded_editors: A kezelt UCP-bővítmény biztonságos frissítése a betöltött szerkesztőkből.
+open_this_ai_in_the_editors_first: Először nyissa meg ezt az MI-t a szerkesztőkben.
+scanning_installed_ucp_plugins: Telepített UCP-bővítmények keresése…
+full_ai_access_enabled: Teljes MI-hozzáférés engedélyezve ✓
+enable_castles_audio_all_ais: Várak, hangok és minden MI engedélyezése…
+select_the_stronghold_crusader_ucp_plugins_folder_ucp_requires_this_perm: >-
+  Válassza ki a Stronghold Crusader/ucp/plugins mappát. Az UCP ezt az engedélyt igényli a bináris várakhoz,
+  hangokhoz, videókhoz és inaktív bővítményekhez.
+enable_full_ai_access_to_load_castles_audio_video_and_inactive_plugins: " Engedélyezze a teljes MI-hozzáférést a várak, hangok, videók és inaktív bővítmények betöltéséhez."
+full_ai_file_access_is_enabled: " A teljes MI-fájlhozzáférés engedélyezve van."
+castle_1_is_mapped_but_ucp_cannot_read_its_binary_file_yet_click_enable_: >-
+  Az 1. vár hozzá van rendelve, de az UCP még nem olvashatja a bináris fájlját. Kattintson a várak, hangok és
+  minden MI engedélyezésére, majd válassza ki az ucp/plugins mappát.
+opening_this_ai_project: ennek az MI-projektnek a megnyitása
+switching_castles: várok közötti váltás
+the_cloned_ai_could_not_be_found_after_installation: A másolt MI nem található a telepítés után.
+the_new_ai_could_not_be_found_after_creation: Az új MI nem található a létrehozás után.
+open_this_my_ai_project_before_updating_it: Frissítés előtt nyissa meg ezt a Saját MI-projektet.
+the_character_editor_is_showing_another_file_open_this_ai_project_again_: A karakterszerkesztő másik fájlt mutat. Először nyissa meg újra ezt az MI-projektet.
+the_castle_editor_is_showing_another_file_open_the_ai_project_again_firs: A várszerkesztő másik fájlt mutat. Először nyissa meg újra az MI-projektet.
+the_last_ai_project_is_unavailable_in_this_installation_choose_a_project: Az utolsó MI-projekt ebben a telepítésben nem érhető el. A folytatáshoz válasszon projektet.
+value_s_character_was_replaced: "{{name}} karaktere lecserélve."
+could_not_add_character_to_value_value: "Nem sikerült karaktert hozzáadni ehhez: {{name}}. {{message}}"
+adding_castle_to_value: "Vár hozzáadása ehhez: {{name}}…"
+value_was_added_to_value: "{{fileName}} hozzáadva ehhez: {{name}}."
+could_not_add_castle_to_value_value: "Nem sikerült várat hozzáadni ehhez: {{name}}. {{message}}"
+choose_the_aiv_used_in_each_of_value_s_eight_castle_slots_the_same_file_: Válassza ki {{name}} nyolc várhelyének AIV-fájljait. Egy fájl többször is használható.
+saving_value_s_castle_mapping: "{{name}} vár-hozzárendeléseinek mentése…"
+value_s_castle_mapping_saved: ✓ {{name}} vár-hozzárendelései mentve
+could_not_save_castle_mapping_value: "Nem sikerült menteni a vár-hozzárendeléseket: {{message}}"
+value_of_value_ais_shown: "Megjelenített MI-k: {{length}} / {{length2}}"
+value_castle_mappingvalue_found_enable_castles_audio_all_ais_above_to_re: >-
+  Találat: {{quantityvalue2}} · a bináris AIV-k olvasásához fent engedélyezze a várakat, hangokat és minden
+  MI-t.
+value_castlevalue_available_but_castle_1_was_not_found_the_character_wil: "Elérhető: {{quantityvalue2}}, de az 1. vár nem található. A karakter üres várszerkesztővel nyílik meg."
+value_castlevalue_available_castle_1_opens_first_value_value: "Elérhető: {{quantityvalue2}} · először az 1. vár nyílik meg · {{fileName}} · {{source}}"
+folder_access_is_active_for_this_editor_sessionvalue: A mappahozzáférés aktív ebben a szerkesztő-munkamenetben{{value1}}.
+value_package_issue_s_were_skipped: " {{length}} csomaghiba kihagyva."
+found_value_ai_packagevalue_in_value_pluginvalue_valuevalue: "Találat: {{quantityvalue2}}, itt: {{quantityvalue4}}.{{diagnosticNote}}{{accessNote}}"
+could_not_scan_ucp_value: "Nem sikerült az UCP vizsgálata: {{message}}"
+could_not_use_that_folder_value: "Ez a mappa nem használható: {{message}}"
+the_last_castle_value_is_no_longer_in_this_project_choose_a_castle_to_op: Az utolsó vár, „{{requestedCastle}}” már nincs ebben a projektben. Válasszon megnyitandó várat.
+value_opened_for_editingvalue: "{{name}} szerkesztésre megnyitva{{value2}}."
+could_not_open_ai_project_value: "Nem sikerült megnyitni az MI-projektet: {{message}}"
+castle_value_could_not_be_loaded: Nem sikerült betölteni a(z) „{{fileName}}” várat.
+could_not_switch_castle_value: "Nem sikerült várat váltani: {{message}}"
+cloning_value_into_my_ais: "{{name}} másolása a Saját MI-k közé…"
+value_was_installed_in_my_ais_activate_the_plugin_in_the_ucp_gui_when_re: "{{name}} telepítve a Saját MI-k közé. Ha elkészült, kapcsolja be a bővítményt az UCP GUI-ban."
+could_not_clone_ai_value: "Nem sikerült az MI másolása: {{message}}"
+creating_value_in_my_ais: "{{name}} létrehozása a Saját MI-k között…"
+value_was_created_in_my_ais: "{{name}} létrehozva a Saját MI-k között."
+could_not_create_ai_value: "Nem sikerült az MI létrehozása: {{message}}"
+updating_value_through_a_staging_folder: "{{name}} frissítése átmeneti mappán keresztül…"
+value_is_installed_and_up_to_date_in_my_ais: "{{name}} telepítve és naprakészen a Saját MI-k között."
+could_not_update_my_ai_value: "Nem sikerült frissíteni a Saját MI-t: {{message}}"
+could_not_open_folder_value: "Nem sikerült megnyitni a mappát: {{message}}"
+could_not_restore_the_ucp_installation_value: "Nem sikerült visszaállítani az UCP-telepítést: {{message}}"

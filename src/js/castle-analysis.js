@@ -1,6 +1,7 @@
 'use strict';
 (() => {
   const game = typeof module !== 'undefined' ? require('./castle-game-data') : globalThis.castleGameData;
+  const geometry = typeof module !== 'undefined' ? require('./castle-geometry') : globalThis.castleGeometry;
   const directions = [[-1, 0], [1, 0], [0, -1], [0, 1]];
   function workerCount(p) {
     const count=p.workers ?? game.workers[Number(p.type)] ?? 0;
@@ -76,12 +77,12 @@
           }
           else if (t===61 && (ri>0 || r.part==='courtyard')) surfaces[k]=[{...tile,height:0,kind:'courtyard'}];
           else if ([98,99,105,166,169,175].includes(t)) surfaces[k]=[{...tile,height:0,kind:t===105?'bridge':'ground'}];
-          else if (stair) surfaces[k] = [{...tile,height:(186-t)*16+(terrain?.constructionLift?.[k]||0),kind:'stair'}];
+          else if (stair) surfaces[k] = [{...tile,height:geometry.structureHeight(t)+(terrain?.constructionLift?.[k]||0),kind:'stair'}];
           else if ([26,35].includes(t)) surfaces[k] = [];
-          else if (wall) surfaces[k] = [{...tile,height:(t===46?60:90)+(terrain?.constructionLift?.[k]||0),kind:'wall'}];
-          else if (tower) surfaces[k] = [{...tile,height:[296,148,180,192,192][t-110],kind:'tower'}];
+          else if (wall) surfaces[k] = [{...tile,height:geometry.structureHeight(t)+(terrain?.constructionLift?.[k]||0),kind:'wall'}];
+          else if (tower) surfaces[k] = [{...tile,height:geometry.structureHeight(t),kind:'tower'}];
           else if (gate) {
-            surfaces[k] = [{...tile,height:90,kind:'deck'}];
+            surfaces[k] = [{...tile,height:geometry.structureHeight(t),kind:'deck'}];
             // updatePathLinkageTileMapRelatedToGates (499FA0): the two
             // passage endpoints lie on the central row/column (size / 2).
             const ns = t === 144 || t === 146;

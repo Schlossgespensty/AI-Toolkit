@@ -1,0 +1,32 @@
+ai_name: MI neve
+description: Leírás
+title: Cím
+complete_title: Név és cím
+unknown: Ismeretlen szövegsor
+anger_1: Támadása visszaverve
+anger_2: Saját épülete megsemmisült
+plead: Vereség ellenségként
+victory_1: Sikeres védekezés
+victory_2: Ellenséges épület megsemmisült
+victory_3: Játékos legyőzve
+victory_4: Ellenséges MI legyőzve
+request: Áruk kérése
+thanks: Áruk megérkeztek
+ally_death: Vereség szövetségesként
+congrats: Szövetséges köszöntése
+boast: Győzelem bejelentése
+help: Segítségkérés
+extra: Hosszú mérkőzés
+kick_player: Játékos eltávolítva
+add_player: Játékos csatlakozott
+siege: Nem használt ostromszöveg
+no_sent: Árukérés elutasítva
+sent: Áruk elküldve
+team_winning: A csapat győzelemre áll
+team_losing: A csapat vesztésre áll
+help_sent: Segítség elküldve
+will_attack: Támadás elfogadva
+taunt: Gúnyolódás támadáskor
+nervous: Támadás alatt
+no_attack: Támadás elutasítva
+no_help: Segítségkérés elutasítva

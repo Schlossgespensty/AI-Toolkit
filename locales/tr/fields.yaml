@@ -1,0 +1,232 @@
+ArabArcher: Arap okçu
+Slave: Köle
+Slinger: Sapancı
+Assassin: Suikastçı
+HorseArcher: Atlı okçu
+ArabSwordsman: Arap kılıçlı
+FireThrower: Ateş atıcı
+EuropArcher: Avrupalı okçu
+Spearman: Mızrakçı
+Maceman: Gürzcü
+Crossbowman: Arbaletçi
+Pikeman: Kargıcı
+Swordsman: Kılıçlı
+Knight: Şövalye
+Monk: Keşiş
+Engineer: Mühendis
+StrengthMultiplier: Güç çarpanı
+DotColour: Nokta rengi
+DotCount: Nokta sayısı
+Type: Tür
+WallDecoration: Sur süslemesi
+Unknown001: Bilinmeyen 001
+Unknown002: Bilinmeyen 002
+Unknown003: Bilinmeyen 003
+Unknown004: Bilinmeyen 004
+Unknown005: Bilinmeyen 005
+CriticalPopularity: Kritik popülerlik
+LowestPopularity: En düşük popülerlik
+HighestPopularity: En yüksek popülerlik
+TaxesMin: En düşük vergi
+TaxesMax: En yüksek vergi
+Unknown011: Bilinmeyen 011
+Farm1: Çiftlik türü 1
+Farm2: Çiftlik türü 2
+Farm3: Çiftlik türü 3
+Farm4: Çiftlik türü 4
+Farm5: Çiftlik türü 5
+Farm6: Çiftlik türü 6
+Farm7: Çiftlik türü 7
+Farm8: Çiftlik türü 8
+PopulationPerFarm: Çiftlik başına nüfus
+PopulationPerWoodcutter: Oduncu başına nüfus
+PopulationPerQuarry: Taş ocağı başına nüfus
+PopulationPerIronmine: Demir madeni başına nüfus
+PopulationPerPitchrig: Zift kuyusu başına nüfus
+MaxQuarries: En fazla taş ocağı
+MaxIronmines: En fazla demir madeni
+MaxWoodcutters: En fazla oduncu
+MaxPitchrigs: En fazla zift kuyusu
+MaxFarms: En fazla çiftlik
+BuildInterval: İnşaat aralığı
+ResourceRebuildDelay: Kaynak binası yeniden yapım gecikmesi
+MaxFood: En fazla yiyecek
+MinimumApples: En az elma
+MinimumCheese: En az peynir
+MinimumBread: En az ekmek
+MinimumWheat: En az buğday
+MinimumHop: En az şerbetçiotu
+TradeAmountFood: Satın alınacak yiyecek miktarı
+TradeAmountEquipment: Satın alınacak teçhizat miktarı
+AIRequestDelay: Yapay zekâ istek gecikmesi
+MinimumGoodsRequiredAfterTrade: Ticaret sonrası gerekli en az mal
+DoubleRationsFoodThreshold: Çift tayın yiyecek eşiği
+MaxWood: En fazla odun
+MaxStone: En fazla taş
+MaxResourceOther: En fazla diğer kaynak
+MaxEquipment: En fazla teçhizat
+MaxBeer: En fazla bira
+MaxResourceVariance: Kaynak üst sınırındaki değişim
+RecruitGoldThreshold: Asker alma altın eşiği
+BlacksmithSetting: Demirci üretimi
+FletcherSetting: Yay ustası üretimi
+PoleturnerSetting: Mızrak ustası üretimi
+SellResource01: Satılacak kaynak 1
+SellResource02: Satılacak kaynak 2
+SellResource03: Satılacak kaynak 3
+SellResource04: Satılacak kaynak 4
+SellResource05: Satılacak kaynak 5
+SellResource06: Satılacak kaynak 6
+SellResource07: Satılacak kaynak 7
+SellResource08: Satılacak kaynak 8
+SellResource09: Satılacak kaynak 9
+SellResource10: Satılacak kaynak 10
+SellResource11: Satılacak kaynak 11
+SellResource12: Satılacak kaynak 12
+SellResource13: Satılacak kaynak 13
+SellResource14: Satılacak kaynak 14
+SellResource15: Satılacak kaynak 15
+DefWallPatrolRallyTime: Sur devriyesinin bekleme süresi
+DefWallPatrolGroups: Sur devriyesi grupları
+DefSiegeEngineGoldThreshold: Savunma makineleri altın eşiği
+DefSiegeEngineBuildDelay: Savunma makinesi yapım gecikmesi
+Unknown072: Bilinmeyen 072
+Unknown073: Bilinmeyen 073
+RecruitProbDefDefault: 'Savunmacı alma olasılığı: normal'
+RecruitProbDefWeak: 'Savunmacı alma olasılığı: zayıf'
+RecruitProbDefStrong: 'Savunmacı alma olasılığı: güçlü'
+RecruitProbRaidDefault: 'Akıncı alma olasılığı: normal'
+RecruitProbRaidWeak: 'Akıncı alma olasılığı: zayıf'
+RecruitProbRaidStrong: 'Akıncı alma olasılığı: güçlü'
+RecruitProbAttackDefault: 'Saldırgan alma olasılığı: normal'
+RecruitProbAttackWeak: 'Saldırgan alma olasılığı: zayıf'
+RecruitProbAttackStrong: 'Saldırgan alma olasılığı: güçlü'
+SortieUnitRangedMin: Huruç için en az menzilli birim
+SortieUnitRanged: Huruç menzilli birimi
+SortieUnitMeleeMin: Huruç için en az yakın dövüş birimi
+SortieUnitMelee: Huruç yakın dövüş birimi
+DefDiggingUnitMax: En fazla savunma kazıcısı
+DefDiggingUnit: Savunma kazıcı birimi
+RecruitInterval: Asker alma aralığı
+RecruitIntervalWeak: 'Asker alma aralığı: zayıf'
+RecruitIntervalStrong: 'Asker alma aralığı: güçlü'
+DefTotal: Toplam savunmacı
+OuterPatrolGroupsCount: Dış devriye grubu sayısı
+OuterPatrolGroupsMove: Dış devriye hareketi
+OuterPatrolRallyDelay: Dış devriye toplanma gecikmesi
+DefWalls: Surlardaki savunmacılar
+DefUnit1: Savunmacı türü 1
+DefUnit2: Savunmacı türü 2
+DefUnit3: Savunmacı türü 3
+DefUnit4: Savunmacı türü 4
+DefUnit5: Savunmacı türü 5
+DefUnit6: Savunmacı türü 6
+DefUnit7: Savunmacı türü 7
+DefUnit8: Savunmacı türü 8
+RaidUnitsBase: Temel akın birimi sayısı
+RaidUnitsRandom: Rastgele ek akın birimleri
+RaidUnit1: Akıncı türü 1
+RaidUnit2: Akıncı türü 2
+RaidUnit3: Akıncı türü 3
+RaidUnit4: Akıncı türü 4
+RaidUnit5: Akıncı türü 5
+RaidUnit6: Akıncı türü 6
+RaidUnit7: Akıncı türü 7
+RaidUnit8: Akıncı türü 8
+HarassingSiegeEngine1: Taciz makinesi 1
+HarassingSiegeEngine2: Taciz makinesi 2
+HarassingSiegeEngine3: Taciz makinesi 3
+HarassingSiegeEngine4: Taciz makinesi 4
+HarassingSiegeEngine5: Taciz makinesi 5
+HarassingSiegeEngine6: Taciz makinesi 6
+HarassingSiegeEngine7: Taciz makinesi 7
+HarassingSiegeEngine8: Taciz makinesi 8
+HarassingSiegeEnginesMax: En fazla taciz makinesi
+RaidRetargetDelay: Akın hedefi değiştirme gecikmesi
+AttForceBase: Temel saldırı ordusu büyüklüğü
+AttForceRandom: Rastgele ek ordu büyüklüğü
+AttForceSupportAllyThreshold: Müttefik destek birliği eşiği
+AttForceRallyPercentage: Saldırı ordusu toplanma yüzdesi
+Unknown129: Bilinmeyen 129
+AttAssaultDelay: Hücum öncesi gecikme
+AttUnitPatrolRecommandDelay: Zafer sonrası geri çekilme gecikmesi
+Unknown132: Bilinmeyen 132
+SiegeEngine1: Kuşatma makinesi 1
+SiegeEngine2: Kuşatma makinesi 2
+SiegeEngine3: Kuşatma makinesi 3
+SiegeEngine4: Kuşatma makinesi 4
+SiegeEngine5: Kuşatma makinesi 5
+SiegeEngine6: Kuşatma makinesi 6
+SiegeEngine7: Kuşatma makinesi 7
+SiegeEngine8: Kuşatma makinesi 8
+CowThrowInterval: İnek fırlatma aralığı
+Unknown142: Bilinmeyen 142
+AttMaxEngineers: En fazla saldırı mühendisi
+AttDiggingUnit: Saldırı kazıcı birimi
+AttDiggingUnitMax: En fazla saldırı kazıcısı
+AttUnitVanguard: Öncü birim
+AttUnitVanguardMax: En fazla öncü birim
+AttMaxAssassins: En fazla saldırı suikastçısı
+AttMaxLaddermen: En fazla saldırı merdivencisi
+AttMaxTunnelers: En fazla saldırı tünelcisi
+AttUnitPatrol: Saldırı devriye birimi
+AttUnitPatrolMax: En fazla saldırı devriye birimi
+AttUnitPatrolGroupsCount: Saldırı devriye grubu sayısı
+AttUnitBackup: Yedek birim
+AttUnitBackupMax: En fazla yedek birim
+AttUnitBackupGroupsCount: Yedek grup sayısı
+AttUnitEngage: Çatışma birimi
+AttUnitEngageMax: En fazla çatışma birimi
+AttUnitSiegeDef: Kuşatma savunma birimi
+AttUnitSiegeDefMax: En fazla kuşatma savunmacısı
+AttUnitSiegeDefGroupsCount: Kuşatma savunma grubu sayısı
+AttUnitMain1: Ana birlik 1
+AttUnitMain2: Ana birlik 2
+AttUnitMain3: Ana birlik 3
+AttUnitMain4: Ana birlik 4
+AttMaxDefault: Uzmanlardan önce ana birlik sayısı
+AttMainGroupsCount: Ana grup sayısı
+TargetChoice: Hedef seçimi
+AIOxTethers_DisableInitialOxTether: İlk öküz bağlama yerini devre dışı bırak
+AIOxTethers_Logic: Öküz bağlama yeri mantığı
+AIOxTethers_MaxOxTethers: En fazla öküz bağlama yeri
+AIOxTethers_DynamicMaxOxTethers: Dinamik en fazla öküz bağlama yeri
+AIOxTethers_MinimumOxTethersPerQuarry: Taş ocağı başına en az öküz bağlama yeri
+AIOxTethers_MaximumOxTethersPerQuarry: Taş ocağı başına en fazla öküz bağlama yeri
+AIOxTethers_ThresholdStoneLoad: Taş yükü eşiği
+RunningUnits_Macemen: Gürzcüler koşar
+RunningUnits_Spearmen: Mızrakçılar koşar
+RunningUnits_Slingers: Sapancılar koşar
+RunningUnits_Slaves: Köleler koşar
+AIVTroops_InitialRole: Tüm birliklerin ilk rolü
+AIVTroops_Movement: Tüm birliklerin hareketi
+AIVTroops_InitialRole_Engineer: 'Mühendis: ilk rol'
+AIVTroops_Movement_Engineer: 'Mühendis: hareket'
+AIVTroops_InitialRole_Archer: 'Okçu: ilk rol'
+AIVTroops_Movement_Archer: 'Okçu: hareket'
+AIVTroops_InitialRole_Crossbowman: 'Arbaletçi: ilk rol'
+AIVTroops_Movement_Crossbowman: 'Arbaletçi: hareket'
+AIVTroops_InitialRole_Spearman: 'Mızrakçı: ilk rol'
+AIVTroops_Movement_Spearman: 'Mızrakçı: hareket'
+AIVTroops_InitialRole_Pikeman: 'Kargıcı: ilk rol'
+AIVTroops_Movement_Pikeman: 'Kargıcı: hareket'
+AIVTroops_InitialRole_Maceman: 'Gürzcü: ilk rol'
+AIVTroops_Movement_Maceman: 'Gürzcü: hareket'
+AIVTroops_InitialRole_Swordsman: 'Kılıçlı: ilk rol'
+AIVTroops_Movement_Swordsman: 'Kılıçlı: hareket'
+AIVTroops_InitialRole_Knight: 'Şövalye: ilk rol'
+AIVTroops_Movement_Knight: 'Şövalye: hareket'
+AIVTroops_InitialRole_Slave: 'Köle: ilk rol'
+AIVTroops_Movement_Slave: 'Köle: hareket'
+AIVTroops_InitialRole_Slinger: 'Sapancı: ilk rol'
+AIVTroops_Movement_Slinger: 'Sapancı: hareket'
+AIVTroops_InitialRole_Assassin: 'Suikastçı: ilk rol'
+AIVTroops_Movement_Assassin: 'Suikastçı: hareket'
+AIVTroops_InitialRole_ArabianArcher: 'Arap okçu: ilk rol'
+AIVTroops_Movement_ArabianArcher: 'Arap okçu: hareket'
+AIVTroops_InitialRole_HorseArcher: 'Atlı okçu: ilk rol'
+AIVTroops_Movement_HorseArcher: 'Atlı okçu: hareket'
+AIVTroops_InitialRole_ArabianSwordsman: 'Arap kılıçlı: ilk rol'
+AIVTroops_Movement_ArabianSwordsman: 'Arap kılıçlı: hareket'
+AIVTroops_InitialRole_FireThrower: 'Ateş atıcı: ilk rol'
+AIVTroops_Movement_FireThrower: 'Ateş atıcı: hareket'

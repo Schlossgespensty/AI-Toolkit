@@ -1,0 +1,25 @@
+rotation_unavailable: "Drehung nicht verfügbar: "
+loading_camera_views: Kameraansichten werden geladen…
+loading_map: Karte wird geladen…
+items: " Elemente"
+without_a_sprite: " ohne Grafik"
+tool: " · Werkzeug: "
+middle_drag_pans_right_click_clears_camera_controls_match_map: " · Mit mittlerer Maustaste verschieben · Rechtsklick hebt Auswahl auf · Kamerasteuerung wie Karte"
+start_place: " · Startplatz "
+no_starting_place_village_in_the_middle_of_the_map: " · kein Startplatz, Dorf in der Kartenmitte"
+quarter_turn: " Vierteldrehung"
+game_value: " (Spielwert "
+not_turned_game_value_0: " · nicht gedreht (Spielwert 0)"
+flat_ground_height: " · ebener Boden (Höhe "
+ground_rises: " · Bodenanstieg "
+2_5d_view_ai_toolkit: 2,5D-Ansicht — AI Toolkit
+castle_moved_to_start_value_at_value_value: Burg zu Start {{nummer}} bei ({{x}}, {{y}}) verschoben
+start_value_at_value_value_click_to_build_here: Start {{value1}} bei ({{x}}, {{y}}) – zum Bauen hier klicken
+fit_the_castle_into_the_view: Burg in die Ansicht einpassen
+show_in_a_window_of_its_own: In eigenem Fenster anzeigen
+click_to_show_drag_to_move_it_somewhere_else: Zum Anzeigen klicken, zum Verschieben ziehen
+close_the_window_shown_here: Dieses Fenster schließen
+no_window_open_one_from_the_toolbar: Kein Fenster – über die Werkzeugleiste öffnen
+add_as_a_tab_here: Hier als Registerkarte hinzufügen
+esc_cancels: " · Esc bricht ab"
+is_missing: " fehlt"

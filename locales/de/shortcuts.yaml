@@ -1,0 +1,44 @@
+openCastle: Burg öffnen
+saveCastle: Burg speichern
+newCastle: Neue Burg
+map: Karte
+iso: 2,5D-Ansicht
+single: Einzeln
+line: Linie
+brush: Pinsel
+brushSmaller: Kleinerer Pinsel
+brushLarger: Größerer Pinsel
+bucket: Füllen
+select: Auswählen / Verschieben
+merge: Zusammenführen
+overlays: Überlagerungsmenü
+groups: Gruppen
+paste: Zwischenablage / Einfügen
+clearClipboard: Zwischenablage leeren
+names: Elementnamen
+units: Einheitenreihenfolge
+guides: Hilfslinien
+paths: Wegekarte
+fire: Brandausbreitung
+gameMap: '2,5D: Spielkarte'
+resetMap: '2,5D: Spielkarte entfernen'
+rotateLeft: '2,5D: Nach links drehen'
+rotateRight: '2,5D: Nach rechts drehen'
+saveAs: Speichern unter
+copy: Auswahl kopieren
+cut: Auswahl ausschneiden
+exportDe: DE exportieren
+pause: Pausenschritt
+deleteSelected: Auswahl löschen
+deselect: Auswahl aufheben
+invalid: Ungültiges Tastenkürzel für {{label}}.
+reserved: '{{key}} ist für Anwendungsmenüs reserviert.'
+duplicate: '{{key}} ist mehrfach zugewiesen.'
+wheelMode: Wähle einen Mausradmodus.
+cameraSpeed: Kamerageschwindigkeit muss zwischen 1 und 200 Pixeln liegen.
+invalidCamera: Ungültiges Kamera-Tastenkürzel.
+assigned: Die Taste {{key}} ist bereits zugewiesen oder reserviert.
+replace: Ersetzen
+delete: L?schen
+undo: R?ckg?ngig
+redo: Wiederholen

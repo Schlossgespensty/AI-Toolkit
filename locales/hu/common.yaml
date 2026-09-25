@@ -1,0 +1,28 @@
+actions:
+  cancel: Mégse
+  save: Mentés
+  close: Bezárás
+  open: Megnyitás
+  delete: Törlés
+  remove: Eltávolítás
+  apply: Alkalmazás
+  reset: Visszaállítás
+  replace: Csere
+  merge: Egyesítés
+  copy: Másolás
+  cut: Kivágás
+  paste: Beillesztés
+  undo: Visszavonás
+  redo: Újra
+preferences:
+  theme: Téma
+  language: Nyelv
+  system: Rendszer
+  defaultTheme: Alapértelmezett
+state:
+  loading: Betöltés…
+  saved: Mentve
+  unsaved: Nincs mentve
+  error: Hiba
+  none: Nincs
+  vanilla: Eredeti

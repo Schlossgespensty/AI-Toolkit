@@ -1,0 +1,32 @@
+ai_name: Nombre de la IA
+description: Descripción
+title: Título
+complete_title: Nombre y título
+unknown: Frase desconocida
+anger_1: Ataque rechazado
+anger_2: Edificio propio destruido
+plead: Derrota como enemigo
+victory_1: Defensa exitosa
+victory_2: Edificio enemigo destruido
+victory_3: Jugador derrotado
+victory_4: IA enemiga derrotada
+request: Pedir mercancías
+thanks: Mercancías recibidas
+ally_death: Derrota como aliado
+congrats: Felicitar a un aliado
+boast: Anunciar victoria
+help: Pedir ayuda
+extra: Partida prolongada
+kick_player: Jugador eliminado
+add_player: Jugador incorporado
+siege: Frase de asedio sin uso
+no_sent: Envío de mercancías rechazado
+sent: Mercancías enviadas
+team_winning: Equipo ganando
+team_losing: Equipo perdiendo
+help_sent: Ayuda enviada
+will_attack: Ataque aceptado
+taunt: Provocación al atacar
+nervous: Bajo ataque
+no_attack: Ataque rechazado
+no_help: Ayuda rechazada

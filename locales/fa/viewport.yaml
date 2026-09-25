@@ -1,0 +1,25 @@
+rotation_unavailable: "چرخش در دسترس نیست: "
+loading_camera_views: در حال بارگذاری نماهای دوربین…
+loading_map: در حال بارگذاری نقشه…
+items: " مورد"
+without_a_sprite: " بدون تصویر"
+tool: " · ابزار: "
+middle_drag_pans_right_click_clears_camera_controls_match_map: " · کشیدن با دکمهٔ وسط: جابه‌جایی · راست‌کلیک: پاک کردن · کنترل دوربین مانند نقشه است"
+start_place: " · محل آغازین "
+no_starting_place_village_in_the_middle_of_the_map: " · بدون محل آغازین؛ دهکده در مرکز نقشه"
+quarter_turn: " ربع‌دور"
+game_value: " (مقدار بازی "
+not_turned_game_value_0: " · بدون چرخش (مقدار بازی ۰)"
+flat_ground_height: " · زمین هموار (ارتفاع "
+ground_rises: " · افزایش ارتفاع زمین "
+2_5d_view_ai_toolkit: نمای ۲٫۵بعدی — AI Toolkit
+castle_moved_to_start_value_at_value_value: قلعه به محل آغازین {{nummer}} در ({{x}}، {{y}}) منتقل شد
+start_value_at_value_value_click_to_build_here: آغاز {{value1}} در ({{x}}، {{y}}) — برای ساخت اینجا کلیک کنید
+fit_the_castle_into_the_view: جا دادن قلعه در نما
+show_in_a_window_of_its_own: نمایش در پنجرهٔ مستقل
+click_to_show_drag_to_move_it_somewhere_else: برای نمایش کلیک کنید؛ برای جابه‌جایی به جای دیگر بکشید
+close_the_window_shown_here: بستن پنجرهٔ نمایش‌داده‌شده
+no_window_open_one_from_the_toolbar: پنجره‌ای نیست — یکی از نوار ابزار باز کنید
+add_as_a_tab_here: افزودن به‌عنوان زبانه در اینجا
+esc_cancels: " · Esc لغو می‌کند"
+is_missing: " موجود نیست"

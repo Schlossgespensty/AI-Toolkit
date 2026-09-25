@@ -1,0 +1,255 @@
+experimental_snapshots: Kísérleti előzetesek
+toolkit_fork_owner_repository: Toolkit-fork (tulajdonos/tároló)
+fork_builds_are_experimental_switching_sources_does_not_install_a_build_unti: A forkok kiadásai kísérletiek. A forrásváltás nem telepít verziót, amíg nem nyomja meg a Telepítés gombot.
+cancel: Mégse
+use_fork: Fork használata
+editor_workspace: Szerkesztő munkaterülete
+application_menus: Alkalmazásmenük
+file_alt_f: Fájl (Alt+F)
+file: Fájl
+edit_alt_e: Szerkesztés (Alt+E)
+edit: Szerkesztés
+view_alt_v: Nézet (Alt+V)
+view: Nézet
+ucp_ai_library: UCP MI-könyvtár
+character: Karakter
+castle: Vár
+ai_content: MI-tartalom
+update_source: Frissítési forrás
+official_releases: Hivatalos kiadások
+check_official_releases: Hivatalos kiadások ellenőrzése
+check_updates: Frissítések keresése
+character_editor: Karakterszerkesztő
+no_character_loaded: Nincs betöltött karakter
+open_a_character_json_file_or_choose_an_ai_from_the_library: Nyisson meg egy character.json fájlt, vagy válasszon MI-t a könyvtárból.
+open_character: Karakter megnyitása
+save_character: Karakter mentése
+save_as: Mentés másként
+plugins: Bővítmények
+ai_ox_tethers: MI ökörkarámok
+controls_the_amount_of_ox_tethers_built: Az épített ökörkarámok számát szabályozza
+running_units: Futó egységek
+controls_whether_some_units_will_run_or_walk: Meghatározza, hogy egyes egységek fussanak vagy sétáljanak.
+ai_troop_behaviour: MI-csapatviselkedés
+include_aiv_troop_behaviour_overrides: AIV-csapatviselkedési felülírások hozzáadása
+population: Népesség
+available_population: Rendelkezésre álló népesség
+decrease_available_population_by_8: Elérhető népesség csökkentése 8 fővel
+increase_available_population_by_8: Elérhető népesség növelése 8 fővel
+use_the_population_provided_by_the_currently_loaded_castle: A betöltött vár lakókapacitásának használata
+use_castle_pop: Vár népessége
+maximum_workers_used: Felhasznált munkások maximuma
+max_workers_used_at_set_population: Munkások maximuma a megadott népességnél
+worker_breakdown: Munkások megoszlása
+farms: Gazdaságok
+woodcutters: Favágók
+quarries: Kőfejtők
+ox_tethers_up_to: Ökörkarámok (legfeljebb)
+iron_mines: Vasbányák
+pitch_rigs: Szurokkitermelők
+workers_left_after_castle: Vár után maradó munkások
+left_after_castle_character: Vár és karakter után maradó
+fear_factor: Félelemtényező
+stockpile_space: Raktárhely
+find_setting: Beállítás keresése
+search_character_fields: Karaktermezők keresése…
+section_visibility: Szakaszok láthatósága
+expand_all: Összes kibontása
+collapse_all: Összes összecsukása
+character_field_order: Karaktermezők sorrendje
+standard_template: Szokásos sablon
+ordered_template: Rendezett sablon
+castle_files: Várfájlok
+open_castle: Vár megnyitása
+save_castle: Vár mentése
+export_a_definitive_edition_castle_aivjson: Definitive Edition-vár exportálása (.aivjson)
+export_de: DE-export
+new: Új
+castle_views: Várnézetek
+show_or_close_the_map_seen_from_above: Felülnézeti térkép megjelenítése vagy bezárása
+map: Térkép
+show_or_close_the_slanted_view_drag_a_tab_to_move_a_window: Ferde nézet megjelenítése vagy bezárása; az ablakot a lap húzásával mozgathatja
+2_5d_view: 2.5D nézet
+ai_castle_selection: MI-vár kiválasztása
+ai_castle: MI-vár
+no_ai_project: Nincs MI-projekt
+placement_tools: Elhelyezési eszközök
+shortcut_1_or_s: "Gyorsbillentyű: 1 vagy S"
+single: Egyenként
+shortcut_6_or_l: "Gyorsbillentyű: 6 vagy L"
+line: Vonal
+shortcut_2_or_b: "Gyorsbillentyű: 2 vagy B"
+brush: Ecset
+how_wide_the_brush_paints_and_make_it_smaller_and_bigger: Az ecset szélessége. A - csökkenti, a + növeli.
+smaller_brush: Kisebb ecset
+bigger_brush: Nagyobb ecset
+fills_everything_up_to_a_wall_the_edge_of_the_map_counts_as_one_shortcut_7_o: "A falakig tölti ki a területet; a térkép széle is falnak számít. Gyorsbillentyű: 7 vagy F"
+fill: Kitöltés
+selection_and_editing_tools: Kijelölési és szerkesztési eszközök
+shortcut_3_or_v: "Gyorsbillentyű: 3 vagy V"
+select_move: Kijelölés / mozgatás
+select_mode: Kijelölési mód
+flood_selects_connected_placements_of_the_same_type_including_diagonals_shif: >-
+  A kitöltő kijelölés az átlósan is összefüggő, azonos típusú elemeket választja ki. Shift: hozzáadás;
+  Ctrl+kattintás: összefüggő csoport kijelölésének kapcsolása.
+border: Keret
+flood_fill: Összefüggő kitöltés
+delete_mode: Törlési mód
+area: Terület
+flood_fill_2: Összefüggő kitöltés
+display_overlays: Fedvények megjelenítése
+overlays: Fedvények
+item_names: Elemnevek
+unit_order: Egységek sorrendje
+guide_lines: Segédvonalak
+estimated_worker_paths_through_the_current_castle: Munkások becsült útvonalai a jelenlegi várban
+path_map: Útvonaltérkép
+estimated_fire_spread_around_flammable_buildings: Becsült tűzterjedés az éghető épületek körül
+firespread: Tűzterjedés
+build_order: Építési sorrend
+0_steps: 0 lépés
+current_position: Jelenlegi helyzet
+no_step_selected: Nincs kijelölt lépés
+select_and_scroll_to_a_build_step: Építési lépés kijelölése és odagörgetés
+drag_steps_to_reorder_ctrl_click_or_shift_click_selects_several_steps_right_: >-
+  Húzza a lépéseket az átrendezéshez. Ctrl+kattintás vagy Shift+kattintás több lépést jelöl ki. Jobb
+  kattintással egyesíthet vagy rögzítheti a helyeket.
+population_up_to_the_selected_build_step: Népesség a kijelölt építési lépésig
+population_at_current_step: Népesség a jelenlegi lépésnél
+about_the_population_overview: A népességáttekintésről
+provided_by_castle: Vár által biztosított
+required_by_castle: Vár által igényelt
+required_by_character_aic: Karakter (AIC) által igényelt
+free: Szabad
+these_values_include_only_the_build_steps_up_to_the_current_position: Az értékek csak a jelenlegi helyzetig tartó építési lépéseket tartalmazzák.
+2d_map_controls: 2D térkép vezérlői
+use_picture_as_background: Kép használata háttérként
+save_the_whole_castle_as_a_full_resolution_png: Teljes vár mentése teljes felbontású PNG-ként
+snapshot: Pillanatkép
+temporary_castle_blueprint: Ideiglenes várterv
+show_or_hide_the_temporary_blueprint: Ideiglenes terv megjelenítése vagy elrejtése
+show: Megjelenítés
+blueprint_opacity: Terv fedettsége
+opacity: Fedettség
+2_5d_view_controls: 2.5D nézet vezérlői
+lay_a_map_of_the_game_under_the_slanted_view_to_scale_one_field_of_the_map_o: "Játéktérkép elhelyezése a ferde nézet alatt méretarányosan: egy térképmező egy szerkesztőmezőnek felel meg"
+game_map: Játéktérkép
+which_starting_place_of_the_map_the_castle_is_built_on: A térkép kezdőhelye, ahová a vár épül
+map_starting_place: Térkép kezdőhelye
+take_the_map_of_the_game_away: Játéktérkép eltávolítása
+remove_game_map: Játéktérkép eltávolítása
+100_by_100_tile_castle_map: 100×100 mezős vártérkép
+the_castle_seen_from_an_angle: A vár ferde nézetben
+no_castle_loaded: Nincs betöltött vár
+ready: Kész
+building_categories: Épületkategóriák
+select_an_item: Válasszon egy elemet
+castle_costs_up_to_the_selected_build_step: Várköltségek a kijelölt építési lépésig
+assets_and_dialogue: Képek és párbeszéd
+save_lines_json: lines.json mentése
+open_an_ai_from_the_library_first: Először nyisson meg egy MI-t a könyvtárból.
+no_ai_project_loaded: Nincs betöltött MI-projekt
+open_an_installed_ai_or_create_one_from_the_ucp_ai_library: Nyisson meg egy telepített MI-t, vagy hozzon létre egyet az UCP MI-könyvtárában.
+lines_json: lines.json
+text_used_for_the_ai_s_name_titles_description_and_reactions: Az MI nevéhez, címeihez, leírásához és reakcióihoz használt szöveg.
+saved: Mentve
+portraits: Arcképek
+images_use_nearest_neighbor_resizing_transparency_is_kept_strictly_on_or_off: >-
+  A képek átméretezése legközelebbi szomszéd módszerrel történik; az átlátszóság kizárólag teljes vagy nulla
+  marad.
+ai_portrait: MI-arckép
+portrait_png: portrait.png
+saved_as_72_72_pixels: 72×72 képpontként mentve.
+change_portrait: Arckép cseréje
+small_ai_portrait: Kis MI-arckép
+portrait_small_png: portrait_small.png
+saved_as_36_36_pixels: 36×36 képpontként mentve.
+change_small_portrait: Kis arckép cseréje
+speech: Beszéd
+mapped_wav_files_can_play_here_or_open_in_your_normal_audio_program: A hozzárendelt WAV-fájlok itt lejátszhatók, vagy megnyithatók a szokásos hanglejátszóban.
+language: Nyelv
+no_speech: Nincs beszéd
+bink_videos: Bink-videók
+bik_playback_is_handed_to_the_program_associated_with_bink_files_on_windows: Windows alatt a BIK-lejátszást a Bink-fájlokhoz társított program végzi.
+project_browser: Projektböngésző
+browse_and_edit_installed_ai_packages_or_keep_separate_variants_in_my_ais: Böngéssze és szerkessze a telepített MI-csomagokat, vagy tároljon külön változatokat a Saját MI-k között.
+create_new_ai: Új MI létrehozása
+choose_game_folder: Játékmappa kiválasztása
+open_plugins_folder: Bővítménymappa megnyitása
+refresh: Frissítés
+no_ucp_installation_selected: Nincs kiválasztott UCP-telepítés
+choose_your_stronghold_crusader_folder_to_begin: A kezdéshez válassza ki a Stronghold Crusader mappáját.
+installed_ais: Telepített MI-k
+search: Keresés
+name_author_or_plugin: Név, szerző vagy bővítmény…
+all_installed_ais: Összes telepített MI
+active_plugins_only: Csak aktív bővítmények
+my_ais_only: Csak saját MI-k
+no_installation_selected: Nincs kiválasztott telepítés.
+your_existing_editors_stay_unchanged: A meglévő szerkesztők változatlanok maradnak
+select_an_installed_ai_to_load_and_edit_its_character_castles_lines_and_port: Válasszon telepített MI-t a karakter, várak, szövegek és arcképek együttes betöltéséhez és szerkesztéséhez.
+installed: Telepítve
+inactive: Inaktív
+author: Szerző
+version: Verzió
+source_plugin: Forrásbővítmény
+folder_id: Mappaazonosító
+open_ai_project: MI-projekt megnyitása
+loads_the_character_and_castle_1_together_switch_castles_from_the_castle_edi: A karaktert és az 1. várat együtt tölti be. A várak között a várszerkesztőben válthat.
+open_in_editors: Megnyitás a szerkesztőkben
+open_source_folder: Forrásmappa megnyitása
+clone_to_my_ais: Másolás a saját MI-k közé
+the_complete_ai_package_is_copied_into_the_editor_owned_ucp_plugin_so_you_ca: A teljes MI-csomag a szerkesztő saját UCP-bővítményébe másolódik, így külön változatot készíthet.
+ai_name: MI neve
+install_update_in_ucp: Telepítés / frissítés az UCP-ben
+writes_the_character_and_currently_open_castle_through_a_staging_folder_then: >-
+  A karaktert és a megnyitott várat átmeneti mappába írja, és csak sikeres ellenőrzés után cseréli le a kezelt
+  bővítményt.
+activate_ai_toolkit_my_ais_in_the_ucp_gui_to_use_it_with_ai_swapper: Az AI Swapper használatához kapcsolja be az „AI Toolkit - My AIs” bővítményt az UCP GUI-ban.
+creates_a_complete_blank_ai_inside_ai_toolkit_my_ais: Teljes, üres MI-t hoz létre az AI Toolkit - My AIs bővítményben.
+create_ai: MI létrehozása
+castle_mapping: Vár-hozzárendelések
+choose_the_aiv_used_in_each_of_the_ai_s_eight_castle_slots_the_same_file_may: Válassza ki az MI nyolc várhelyéhez használt AIV-fájlt. Ugyanaz a fájl többször is kiválasztható.
+save_mapping: Hozzárendelések mentése
+castle_shortcuts: Várszerkesztő gyorsbillentyűi
+select_a_field_and_press_a_key_optionally_with_ctrl_alt_or_shift_one_shortcu: >-
+  Válasszon mezőt, majd nyomjon meg egy billentyűt, szükség esetén Ctrl, Alt vagy Shift mellett. Műveletenként
+  egy gyorsbillentyű; minden kombináció csak egyszer rendelhető hozzá. A Backspace törli a mezőt. A ki nem
+  osztott műveletek a felületen továbbra is elérhetők.
+camera: Kamera
+photoshop_controls: Photoshop-vezérlés
+arrow_keys_wheel_zoom: Nyílbillentyűk + görgős nagyítás
+mouse_wheel: Egérgörgő
+scroll_pans_alt_scroll_zooms_both_views: "Görgetés: eltolás, Alt+görgetés: nagyítás (mindkét nézet)"
+scroll_zooms_alt_shift_scroll_pans: "Görgetés: nagyítás, Alt/Shift+görgetés: eltolás"
+ctrl_scroll_pans_horizontally_in_wheel_zoom_mode_alt_scroll_or_shift_scroll_: >-
+  Ctrl+görgetés: vízszintes eltolás. Görgős nagyításnál Alt+görgetés vagy Shift+görgetés: függőleges eltolás.
+  Középső gombos húzás: eltolás. A kamerabillentyűk Ctrl/Alt/Shift kombinációkat is elfogadnak; Backspace
+  töröl. Shift nyomva tartásával gyorsabban mozoghat.
+left: Balra
+right: Jobbra
+up: Fel
+down: Le
+pan_speed_pixels_per_keypress: Eltolási sebesség (képpont billentyűnyomásonként)
+restore_defaults: Alapértékek visszaállítása
+save_shortcuts: Gyorsbillentyűk mentése
+build_step_actions: Építési lépések műveletei
+merge_selected_steps: Kijelölt lépések egyesítése…
+lock_positions: Helyek rögzítése
+save_castle_picture: Várkép mentése
+save_png: PNG mentése
+picture_size: "Méret"
+full_resolution: "Teljes felbontás"
+floor_plan_100x100_1_px_per_tile: "Alaprajz 100×100 (mezőnként 1 px)"
+merge_placements_by_item_type: Elhelyezések egyesítése elemtípus szerint
+merge: Egyesítés
+replace_selected_items: Kijelölt elemek cseréje
+choose_a_replacement_for_each_item_type_inside_the_box: Válasszon cserét a kereten belüli minden elemtípushoz.
+apply_replacements: Cserék alkalmazása
+map_of_the_game: Játéktérkép
+the_chosen_map_is_laid_under_the_slanted_view_to_scale_one_field_of_the_map_: >-
+  A kiválasztott térkép méretarányosan kerül a ferde nézet alá: egy térképmező egy szerkesztőmezőnek felel
+  meg.
+filter_by_name: Szűrés név szerint
+
+brush_size: Ecsetméret

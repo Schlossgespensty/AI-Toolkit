@@ -4,6 +4,7 @@
   else root.castleCamera = camera;
 })(typeof globalThis !== 'undefined' ? globalThis : this, shortcuts => {
   'use strict';
+  const tr = (key, options) => (globalThis.toolkitI18n || require('./i18n')).t(key, options);
 
   const legacy = {
     wheel: 'legacy', left: '', right: '', up: '', down: '', panSpeed: 40
@@ -21,18 +22,18 @@
 
   function validate(candidate, toolShortcuts = {}) {
     const result = { ...defaults, ...candidate };
-    if (!['legacy', 'zoom'].includes(result.wheel)) throw new Error('Choose a wheel mode.');
+    if (!['legacy', 'zoom'].includes(result.wheel)) throw new Error(tr('shortcuts:wheelMode'));
     if (!Number.isInteger(Number(result.panSpeed)) || result.panSpeed < 1 || result.panSpeed > 200) {
-      throw new Error('Camera speed must be between 1 and 200 pixels.');
+      throw new Error(tr('shortcuts:cameraSpeed'));
     }
     result.panSpeed = Number(result.panSpeed);
     const used = new Set(Object.values(toolShortcuts).flat().filter(Boolean));
     for (const direction of directions) {
       const supplied = String(result[direction] || '').trim();
       const key = normalizeKey(supplied);
-      if (supplied && !key) throw new Error('Invalid camera shortcut.');
-      if (key && shortcuts.isReserved(key)) throw new Error(`${key.toUpperCase()} is reserved for application menus.`);
-      if (key && (used.has(key) || used.has(`shift+${key}`))) throw new Error(`The key ${key.toUpperCase()} is already assigned or reserved.`);
+      if (supplied && !key) throw new Error(tr('shortcuts:invalidCamera'));
+      if (key && shortcuts.isReserved(key)) throw new Error(tr('shortcuts:reserved', { key: key.toUpperCase() }));
+      if (key && (used.has(key) || used.has(`shift+${key}`))) throw new Error(tr('shortcuts:assigned', { key: key.toUpperCase() }));
       if (key) used.add(key);
       result[direction] = key;
     }

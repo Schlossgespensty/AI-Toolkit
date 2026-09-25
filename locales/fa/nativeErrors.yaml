@@ -1,0 +1,62 @@
+an_ai_with_that_folder_id_already_exists: هوش مصنوعی دیگری با این شناسهٔ پوشه موجود است
+castle_already_exists: قلعه از قبل موجود است
+castle_file_does_not_exist_in_this_ai: پروندهٔ قلعه در این هوش مصنوعی موجود نیست
+castle_mapping_must_contain_at_most_eight_slots: نگاشت قلعه حداکثر می‌تواند هشت جایگاه داشته باشد
+castle_slots_must_be_an_array: جایگاه‌های قلعه باید به‌صورت آرایه باشند
+choose_a_fork_of_the_official_ai_toolkit: یک انشعاب از مخزن رسمی AI Toolkit انتخاب کنید
+choose_the_stronghold_crusader_installation: نصب Stronghold Crusader را انتخاب کنید
+close_other_editor_windows_before_updating: پیش از به‌روزرسانی، سایر پنجره‌های ویرایشگر را ببندید
+download_the_release_first: ابتدا نسخه را دریافت کنید
+editor_did_not_close_no_files_were_replaced: ویرایشگر بسته نشد؛ هیچ پرونده‌ای جایگزین نشد
+editor_window_not_found: پنجرهٔ ویرایشگر پیدا نشد
+enter_an_ai_name: نام هوش مصنوعی را وارد کنید
+expected_a_ucp_installation_containing_ucp_plugins: نصب UCP باید پوشهٔ ucp/plugins داشته باشد
+expected_an_aiv_castle_filename: نام پرونده باید متعلق به یک قلعهٔ AIV باشد
+expected_one_ai_toolkit_executable: بسته باید دقیقاً یک فایل اجرایی AI Toolkit داشته باشد
+incomplete_download: دریافت کامل نشده است
+invalid_ai_folder_id: شناسهٔ پوشهٔ هوش مصنوعی نامعتبر است
+invalid_archive_path: مسیر بایگانی نامعتبر است
+invalid_destination: مقصد نامعتبر است
+invalid_executable_path: مسیر فایل اجرایی نامعتبر است
+invalid_filename: نام پرونده نامعتبر است
+invalid_github_repository: مخزن GitHub نامعتبر است
+invalid_github_response: پاسخ GitHub نامعتبر است
+invalid_installation_root: پوشهٔ اصلی نصب نامعتبر است
+invalid_item_type: نوع مورد نامعتبر است
+invalid_manifest_path: مسیر فهرست مشخصات نامعتبر است
+invalid_package_path: مسیر بسته نامعتبر است
+invalid_png: تصویر PNG نامعتبر است
+invalid_portrait_image: تصویر چهره نامعتبر است
+invalid_project_path: مسیر پروژه نامعتبر است
+invalid_release_url: نشانی نسخهٔ منتشرشده نامعتبر است
+invalid_resource_directory: پوشهٔ منابع نامعتبر است
+invalid_settings_document: پروندهٔ تنظیمات نامعتبر است
+invalid_staging_path: مسیر پوشهٔ موقت نامعتبر است
+media_exceeds_playback_limit: رسانه از محدودیت پخش بزرگ‌تر است
+media_not_mapped: این پروندهٔ رسانه در نگاشت پروژه نیست.
+missing_dialog_choices: گزینه‌های پنجرهٔ گفت‌وگو موجود نیست
+missing_install_manifest: فهرست مشخصات نصب موجود نیست
+missing_installation_path: مسیر نصب موجود نیست
+missing_release_size: اندازهٔ نسخهٔ منتشرشده مشخص نیست
+missing_release_url: نشانی نسخهٔ منتشرشده موجود نیست
+no_eligible_snapshot_newer_than_the_official_release: نسخهٔ آزمایشی قابل‌استفاده‌ای جدیدتر از انتشار رسمی موجود نیست
+operation_failed: انجام عملیات ممکن نشد.
+missing_argument: "آرگومان لازم موجود نیست: {{name}}"
+missing_resource: "منبع برنامه موجود نیست: {{path}}"
+unexpected_package_entry: "مورد غیرمنتظره در بسته: {{path}}"
+path_is_outside_the_selected_project: مسیر خارج از پروژهٔ انتخاب‌شده است
+release_checksum_mismatch: مجموع مقابلهٔ نسخهٔ دریافتی مطابقت ندارد
+release_does_not_contain_ai_toolkit_exe: نسخهٔ دریافتی شامل AI Toolkit.exe نیست
+release_exceeds_size_limits: اندازهٔ نسخهٔ دریافتی از محدودیت مجاز بیشتر است
+selected_image_exceeds_128_mb: تصویر انتخاب‌شده بزرگ‌تر از ۱۲۸ مگابایت است
+staged_update_changed: به‌روزرسانی آمادهٔ نصب تغییر کرده است
+the_ai_project_no_longer_exists: پروژهٔ هوش مصنوعی دیگر موجود نیست
+the_media_file_type_does_not_match: نوع پروندهٔ رسانه مطابقت ندارد
+the_selected_release_changed_check_again: نسخهٔ انتخاب‌شده تغییر کرده است؛ دوباره بررسی کنید
+this_ai_has_no_aiv_folder: این هوش مصنوعی پوشهٔ aiv ندارد
+too_many_github_results: تعداد نتایج GitHub بیش از حد است
+unexpected_download_size: اندازهٔ فایل دریافتی با مقدار مورد انتظار مطابقت ندارد
+unknown_configuration_file: پروندهٔ تنظیمات ناشناخته است
+unknown_language: زبان ناشناخته است
+unknown_theme: پوسته ناشناخته است
+use_open_externally_for_bink_video: برای ویدئوی Bink از «باز کردن در برنامهٔ دیگر» استفاده کنید

@@ -1,0 +1,90 @@
+wood: Wood
+stone: Stone
+iron: Iron
+pitch: Pitch
+gold: Gold
+travel_ticks_tile_override_blank_reference: 'Travel ticks / tile override (blank: reference)'
+delivery_store: delivery store
+dairy_farm: dairy farm
+work_duration_unknown: work duration unknown
+ticks_per_reference_cycle: ' ticks per reference cycle'
+unknown: Unknown
+hide_cost_per_building: Hide cost per building
+show_cost_per_building: Show cost per building
+the_build_cost_table: the build cost table
+cost_table_not_loaded: Cost table not loaded.
+castle_costs: Castle costs ▸
+castle_costs_2: Castle costs ▾
+bundled_base_ucp: Bundled base + UCP
+bundled_vanilla: bundled vanilla
+the_saved_snapshot_of: 'the saved snapshot of '
+partial: ' (partial)'
+open_a_character_for_production_estimates: Open a character for production estimates.
+reading_selected_installation: Reading selected installation…
+using_bundled_vanilla_prices: Using bundled vanilla prices
+no_steps: no steps
+cumulative_total_no_steps: Cumulative total · no steps
+partial_unknown_prices: ' (partial: unknown prices)'
+no_character_file: no character file
+iron_mine: iron mine
+iron_mines: iron mines
+pitch_rig: pitch rig
+pitch_rigs: pitch rigs
+ox_tether: ox tether
+ox_tethers: ox tethers
+1_of_those_farms_grows_hops: 1 of those farms grows hops
+open_a_character_file_to_see_how_many_resource_buildings_the_aic_would_a: Open a character file to see how many resource buildings the AIC would add here.
+nothing_with_a_known_price_up_to_this_step: Nothing with a known price up to this step.
+no_cost: no cost
+price_from_the_selected_balance_file: Price from the selected balance file
+price_from_the_game_exe_vanilla: Price from the game exe (vanilla)
+value_value_value_tiles_value_walking_ticks_value: '{{value1}}. {{note}}. {{value3}} tiles; {{value4}} walking ticks; {{value5}}.'
+value_reference_ticks_batch: '{{good}} reference ticks / batch'
+bundled_vanilla_prices_were_extracted_from_the_game_exe_at_value_load_a_: >-
+  Bundled vanilla prices were extracted from the game exe at {{value1}}. Load a plugin balance JSON to
+  override building prices; missing overrides retain vanilla prices. This does not read the currently running
+  game. One build step = 50 ticks = one game day (measured, 445 of 445 steps).
+ucp_balance_could_not_be_loaded_still_using_value_value: UCP balance could not be loaded. Still using {{value1}}. {{value2}}
+using_saved_snapshot_value: 'Using saved snapshot: {{choice}}'
+cumulative_total_steps_1_value: Cumulative total · steps 1–{{steps}}
+total_through_step_value: Total through step {{steps}}
+through_step_value_value: 'Through step {{steps}}: {{value2}}'
+price_unknown_not_counted_value_the_build_cost_table_has_no_entry_for_th: 'Price unknown, not counted: {{namen}}. The build cost table has no entry for these.'
+value_ticks_one_step_is_one_game_day_and_a_step_that_cannot_be_built_sti: >-
+  {{value1}} ticks - one step is one game day, and a step that cannot be built still uses its day. If the AI
+  runs out of money it waits, so this is the earliest possible time, not a promise.
+at_value_population_the_aic_opens_value: At {{value1}} population the AIC opens {{value2}}.
+1_pitch_per_value_tiles_grouped_across_steps_assumes_a_fresh_placement_c: ; 1 pitch per {{pitchGroup}} tiles, grouped across steps; assumes a fresh placement counter
+cumulative_total_through_step_value: Cumulative total through step {{steps}}
+about_the_castle_cost_overview: About the castle cost overview
+balance: Balance
+load_a_balance_json_ascension_team_league: Load a balance JSON (Ascension, Team League, ...)
+load: Load…
+use_ucp_balance: Use UCP balance
+cumulative_through_selected_step: Cumulative through selected step
+total_through_current_step: Total through current step
+resources_through_this_step: Resources through this step
+production_assumptions: Production assumptions
+reference_estimate_from_stronghold_heaven_original_stronghold_assuming_f: >-
+  Reference estimate from Stronghold Heaven (original Stronghold), assuming full staffing as housing becomes
+  available. These approximate rates are not verified Crusader simulation timings. Excludes construction
+  delays, pauses, input shortages, consumption, trade, transport bottlenecks and fear/rest effects. These
+  goods are not your stockpile balance.
+resource_distance: Resource distance
+per_extra_building: Per extra building
+stockpile_distance: Stockpile distance
+delivery_store_distance: Delivery store distance
+between_stores: Between stores
+walking_speed_multiplier: Walking speed multiplier
+delivery_productivity: Delivery productivity %
+skirmish_delivery_bonus_where_enabled_by_balance: Skirmish delivery bonus where enabled by balance
+workshop_itinerary: Workshop itinerary
+work_ticks_exclude_the_return_journey_cycle_work_ticks_2_distance_walkin: >-
+  Work ticks exclude the return journey: cycle = work ticks + 2 × distance × walking ticks. Each producer
+  keeps its own progress and fractional delivery bonus. Stone is quarry output; ox transport is not simulated.
+  Route overlay distances are separate layout diagnostics, not measured external-resource distances.
+elapsed_game_time: Elapsed game time
+good: Good
+cost: Cost
+estimated_gross_production_not_stockpile_inventory: Estimated gross production, not stockpile inventory
+produced: Produced*

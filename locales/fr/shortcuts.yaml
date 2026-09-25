@@ -1,0 +1,44 @@
+openCastle: Ouvrir un château
+saveCastle: Enregistrer le château
+newCastle: Nouveau château
+map: Carte
+iso: Vue 2,5D
+single: Unique
+line: Ligne
+brush: Pinceau
+brushSmaller: Pinceau plus petit
+brushLarger: Pinceau plus grand
+bucket: Remplir
+select: Sélectionner / Déplacer
+merge: Fusionner
+overlays: Menu des calques
+groups: Groupes
+paste: Presse-papiers / Coller
+clearClipboard: Vider le presse-papiers
+names: Noms des éléments
+units: Ordre des unités
+guides: Repères
+paths: Carte des chemins
+fire: Propagation du feu
+gameMap: '2,5D : carte du jeu'
+resetMap: '2,5D : retirer la carte du jeu'
+rotateLeft: '2,5D : tourner à gauche'
+rotateRight: '2,5D : tourner à droite'
+saveAs: Enregistrer sous
+copy: Copier la sélection
+cut: Couper la sélection
+exportDe: Exporter DE
+pause: Étape de pause
+deleteSelected: Supprimer la sélection
+deselect: Désélectionner
+invalid: Raccourci invalide pour {{label}}.
+reserved: '{{key}} est réservé aux menus de l''application.'
+duplicate: '{{key}} est affecté plusieurs fois.'
+wheelMode: Choisissez un mode de molette.
+cameraSpeed: La vitesse de caméra doit être comprise entre 1 et 200 pixels.
+invalidCamera: Raccourci caméra invalide.
+assigned: La touche {{key}} est déjà affectée ou réservée.
+replace: Remplacer
+delete: Supprimer
+undo: Annuler
+redo: R?tablir

@@ -115,10 +115,6 @@
     const jahre = Math.floor(tage / TAGE_JE_JAHR);
     const monate = Math.floor((tage % TAGE_JE_JAHR) / TAGE_JE_MONAT);
     const resttage = tage % TAGE_JE_MONAT;
-    const teile = [];
-    if (jahre) teile.push(`${jahre} year${jahre === 1 ? '' : 's'}`);
-    if (monate) teile.push(`${monate} month${monate === 1 ? '' : 's'}`);
-    if (resttage || !teile.length) teile.push(`${resttage} day${resttage === 1 ? '' : 's'}`);
     return {
       steps: schritte,
       days: tage,
@@ -126,8 +122,7 @@
       years: jahre,
       months: monate,
       remainderDays: resttage,
-      totalMonths: Math.floor(tage / TAGE_JE_MONAT),
-      label: teile.join(', ')
+      totalMonths: Math.floor(tage / TAGE_JE_MONAT)
     };
   }
 

@@ -1,0 +1,81 @@
+castle_document: قلعه
+character_document: شخصیت
+experimental_snapshot: نسخهٔ آزمایشی
+official_release: انتشار رسمی
+native_aiv: AIV اصلی
+step_locked: گام ساخت {{step}} قفل است
+step_unlocked: گام ساخت {{step}} دوباره باز است
+steps_locked: "{{steps}} قفل شد"
+steps_unlocked: "{{steps}} دوباره باز شد"
+fill_result: "{{tiles}} با {{item}} پر شد"
+locked_stay: "{{placements}} در جای خود می‌ماند"
+map_terrain: با عوارض زمین نقشه
+flat_terrain: زمین هموار (بدون دادهٔ نقشه)
+fire_estimate: "تخمین آتش: دو حلقهٔ قرمز داخلی؛ هالهٔ زرد تا آبی متناسب با جان ساختمان، حداکثر تا ۸ خانه."
+start: آغاز {{number}}
+starting_place: محل آغازین
+map_name: " · نقشه: {{name}}"
+map_start: " · آغاز {{number}} ({{x}}، {{y}})"
+map_start_place: " · محل آغازین {{number}} ({{x}}، {{y}})"
+map_rotation: " · چرخش {{turns}} (مقدار بازی {{value}})"
+map_flat: " · زمین هموار (ارتفاع {{height}})"
+map_height: " · افزایش ارتفاع زمین {{range}} واحد (از {{minimum}} تا {{maximum}})"
+space_one: "{{count}} جایگاه"
+space_other: "{{count}} جایگاه"
+food_one: "{{count}} غذا"
+food_other: "{{count}} غذا"
+tile_one: "{{count}} خانه"
+tile_other: "{{count}} خانه"
+shortfall: "{{count}} کمبود"
+free: "{{count}} آزاد"
+resource: منبع
+maximum: حداکثر
+spaces: جایگاه‌ها
+per_space: "{{count}} در هر جایگاه؛ {{source}}"
+none_produced: تولید مرتبطی تنظیم نشده است.
+none_produced_or_bought: تولید یا سربازگیری مرتبطی تنظیم نشده است.
+stockpiles: "{{count}} انبار منابع با احتساب ارگ؛ هرکدام ۴ جایگاه. فضای لازم برای سقف همهٔ منابع در نظر گرفته شده است."
+granaries: "{{count}} انبار غذا؛ هرکدام با ظرفیت مشترک ۲۵۰ غذا."
+armories: >-
+  {{count}} اسلحه‌خانه؛ هرکدام ۱۰ جایگاه جداگانه با ظرفیت ۵ عدد. خرید بر اساس تنظیمات سربازگیری تخمین زده
+  می‌شود.
+hops: رازک
+fruit: میوه
+wav_speech: گفتار WAV
+bink_video: ویدئوی Bink
+workshop: کارگاه
+work_unknown: مدت کار نامشخص
+cycle_ticks: "{{count}} تیک در هر چرخهٔ مرجع"
+cost_table: جدول هزینهٔ ساخت
+bundled_vanilla: نسخهٔ اصلی همراه برنامه
+saved_balance: نسخهٔ ذخیره‌شدهٔ {{name}}
+year_one: "{{count}} سال"
+year_other: "{{count}} سال"
+month_one: "{{count}} ماه"
+month_other: "{{count}} ماه"
+day_one: "{{count}} روز"
+day_other: "{{count}} روز"
+quarry_one: "{{count}} معدن سنگ"
+quarry_other: "{{count}} معدن سنگ"
+iron_mine_one: "{{count}} معدن آهن"
+iron_mine_other: "{{count}} معدن آهن"
+woodcutter_one: "{{count}} چوب‌بری"
+woodcutter_other: "{{count}} چوب‌بری"
+farm_one: "{{count}} مزرعه"
+farm_other: "{{count}} مزرعه"
+pitch_rig_one: "{{count}} چاه قیر"
+pitch_rig_other: "{{count}} چاه قیر"
+ox_tether_one: "{{count}} محل بستن گاو"
+ox_tether_other: "{{count}} محل بستن گاو"
+hop_farms_one: "{{count}} مزرعه از این مزارع رازک می‌کارد."
+hop_farms_other: "{{count}} مزرعه از این مزارع رازک می‌کارد."
+open_character_error: "باز کردن پروندهٔ شخصیت ناموفق بود: {{error}}"
+save_character_error: "ذخیرهٔ پروندهٔ شخصیت ناموفق بود: {{error}}"
+recipe_bow: ۲ چوب؛ بازگشت جداگانه از اسلحه‌خانه
+recipe_crossbow: ۳ چوب؛ بازگشت جداگانه از اسلحه‌خانه
+recipe_spear: ۱ چوب؛ زمان کار فقط به‌صورت کمتر از یک ماه مستند شده است
+recipe_pike: ۲ چوب؛ پس از تحویل به اسلحه‌خانه اولین تخته را برمی‌دارد
+recipe_iron: ۱ آهن؛ پس از تحویل به اسلحه‌خانه مادهٔ اولیهٔ بعدی را برمی‌دارد
+recipe_leather: ۳ بار تحویل به‌ازای هر گاو؛ زمان هر بار کار فقط به‌صورت کمتر از ۳ ماه مستند شده است
+recipe_bread: ۱ آرد؛ ابتدا انبار غذا و سپس انبار منابع
+recipe_ale: ۱ رازک؛ ورودی و خروجی در انبار منابع

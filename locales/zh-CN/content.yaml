@@ -1,0 +1,56 @@
+character_name: 角色名称。
+character_description: 角色说明。
+the_ai_s_attack_has_been_repelled: AI 的进攻被击退。
+one_of_the_ai_s_buildings_has_been_destroyed: AI 的一座建筑被摧毁。
+the_ai_has_been_defeated_if_enemy: AI 被击败（作为敌人时）
+the_ai_has_successfully_defended_itself: AI 成功防守。
+the_ai_destroys_a_building: AI 摧毁一座建筑。
+the_ai_has_killed_the_player: AI 击败玩家。
+the_ai_defeats_another_enemy_ai: AI 击败另一名敌对 AI。
+the_ai_requests_goods: AI 请求物资。
+the_player_sends_goods_to_the_ai: 玩家向 AI 发送物资。
+the_ai_has_been_defeated_if_ally: AI 被击败（作为盟友时）
+the_player_defeats_an_enemy_while_allied_with_this_ai: 与该 AI 结盟的玩家击败一名敌人。
+the_allied_ai_defeats_an_enemy: 盟友 AI 击败一名敌人。
+the_ai_is_under_attack_and_asks_for_help: AI 受到攻击并请求援助。
+the_game_has_been_going_on_for_a_long_time: 游戏已经持续很长时间。
+a_player_is_removed_from_the_map: 一名玩家被移出地图。
+a_player_is_added_to_the_map: 一名玩家被加入地图。
+not_used: 未使用。
+the_ai_does_not_send_the_requested_goods: AI 不发送所请求的物资。
+the_ai_sends_the_requested_goods: AI 发送所请求的物资。
+the_team_is_winning: 队伍占据优势。
+the_team_is_losing: 队伍处于劣势。
+the_ai_sends_the_requested_help: AI 派出所请求的援军。
+the_ai_will_attack_the_requested_enemy: AI 将攻击指定的敌人。
+character_title_include_quotation_marks_for_a_quoted_title: 角色头衔（需要引号时请包含引号）。
+character_name_followed_by_the_title_include_quotation_marks_for_a_quote: 角色名称及其头衔（需要引号时请包含引号）。
+the_ai_attacks_the_player: AI 攻击玩家。
+the_player_attacks_the_ai: 玩家攻击 AI。
+the_ai_refuses_to_attack_the_requested_enemy: AI 拒绝攻击指定敌人。
+the_ai_refuses_a_request_for_help: AI 拒绝援助请求。
+replay: 重播
+play: 播放
+media_replacement_cancelled: 已取消替换媒体
+wav_speech: WAV 语音
+bink_video: Bink 视频
+missing: 缺失
+mapped_asset: 已关联资源
+open_externally: 使用外部程序打开
+open_play: 打开 / 播放
+saving_lines_json: 正在保存 lines.json…
+portrait_change_cancelled: 已取消更换头像
+loading_value: 正在加载 {{fileName}}…
+could_not_play_value_here_value_use_open_externally: 无法在此播放 {{fileName}}：{{message}} 请使用“使用外部程序打开”。
+downloaded_value_open_it_with_its_associated_program: 已下载 {{fileName}}，请使用关联程序打开。
+opened_value_in_its_associated_program: 已在关联程序中打开 {{fileName}}。
+could_not_open_value_value: 无法打开 {{fileName}}：{{message}}
+choosing_a_replacement_for_value: 正在为 {{fileName}} 选择替换文件…
+could_not_replace_value_value: 无法替换 {{fileName}}：{{message}}
+no_mapped_wav_speech_files_found_for_value: 没有找到 {{value1}} 关联的 WAV 语音文件。
+no_mapped_value_files_found: 没有找到关联的 {{value1}} 文件。
+this_wav_codec_cannot_play_in_the_editor_use_open_externally: 编辑器不支持此 WAV 编码。请使用“使用外部程序打开”。
+value_content_loaded: 已加载 {{value1}} 的内容
+could_not_save_lines_json_value: 无法保存 lines.json：{{message}}
+value_saved_as_value_value: ✓ {{value1}} 已保存为 {{width}}×{{height}}
+could_not_change_portrait_value: 无法更换头像：{{message}}

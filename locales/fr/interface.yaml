@@ -1,0 +1,259 @@
+experimental_snapshots: Aperçus expérimentaux
+toolkit_fork_owner_repository: Fork du Toolkit (propriétaire/dépôt)
+fork_builds_are_experimental_switching_sources_does_not_install_a_build_unti: Les versions de forks sont expérimentales. Changer de source n'installe rien avant de cliquer sur Installer.
+cancel: Annuler
+use_fork: Utiliser ce fork
+editor_workspace: Espace de travail de l'éditeur
+application_menus: Menus de l'application
+file_alt_f: Fichier (Alt+F)
+file: Fichier
+edit_alt_e: Édition (Alt+E)
+edit: Édition
+view_alt_v: Affichage (Alt+V)
+view: Affichage
+ucp_ai_library: Bibliothèque d'IA UCP
+character: Personnage
+castle: Château
+ai_content: Contenu de l'IA
+update_source: Source des mises à jour
+official_releases: Versions officielles
+check_official_releases: Vérifier les versions officielles
+check_updates: Vérifier les mises à jour
+character_editor: Éditeur de personnage
+no_character_loaded: Aucun personnage chargé
+open_a_character_json_file_or_choose_an_ai_from_the_library: Ouvrez un fichier character.json ou choisissez une IA dans la bibliothèque.
+open_character: Ouvrir un personnage
+save_character: Enregistrer le personnage
+save_as: Enregistrer sous
+plugins: Plugins
+ai_ox_tethers: Attaches à bœufs de l'IA
+controls_the_amount_of_ox_tethers_built: Contrôle le nombre d'attaches à bœufs construites
+running_units: Course des unités
+controls_whether_some_units_will_run_or_walk: Définit si certaines unités courent ou marchent.
+ai_troop_behaviour: Comportement des troupes de l'IA
+include_aiv_troop_behaviour_overrides: Inclure les réglages du comportement des troupes AIV
+population: Population
+available_population: Population disponible
+decrease_available_population_by_8: Réduire la population disponible de 8
+increase_available_population_by_8: Augmenter la population disponible de 8
+use_the_population_provided_by_the_currently_loaded_castle: Utiliser la population fournie par le château chargé
+use_castle_pop: Population du château
+maximum_workers_used: Travailleurs utilisés au maximum
+max_workers_used_at_set_population: Travailleurs max. pour cette population
+worker_breakdown: Répartition des travailleurs
+farms: Fermes
+woodcutters: Bûcherons
+quarries: Carrières
+ox_tethers_up_to: Attaches à bœufs (jusqu'à)
+iron_mines: Mines de fer
+pitch_rigs: Fosses à poix
+workers_left_after_castle: Travailleurs restants après le château
+left_after_castle_character: Restants après château + personnage
+fear_factor: Facteur de peur
+stockpile_space: Espace de stockage
+find_setting: Rechercher un réglage
+search_character_fields: Rechercher dans les champs du personnage…
+section_visibility: Visibilité des sections
+expand_all: Tout développer
+collapse_all: Tout réduire
+character_field_order: Ordre des champs du personnage
+standard_template: Modèle standard
+ordered_template: Modèle ordonné
+castle_files: Fichiers de château
+open_castle: Ouvrir un château
+save_castle: Enregistrer le château
+export_a_definitive_edition_castle_aivjson: Exporter un château Definitive Edition (.aivjson)
+export_de: Exporter DE
+new: Nouveau
+castle_views: Vues du château
+show_or_close_the_map_seen_from_above: Afficher ou fermer la carte vue de dessus
+map: Carte
+show_or_close_the_slanted_view_drag_a_tab_to_move_a_window: Afficher ou fermer la vue inclinée — faites glisser un onglet pour déplacer une fenêtre
+2_5d_view: Vue 2,5D
+ai_castle_selection: Choix du château de l'IA
+ai_castle: Château de l'IA
+no_ai_project: Aucun projet d'IA
+placement_tools: Outils de placement
+shortcut_1_or_s: 'Raccourci : 1 ou S'
+single: Unique
+shortcut_6_or_l: 'Raccourci : 6 ou L'
+line: Ligne
+shortcut_2_or_b: 'Raccourci : 2 ou B'
+brush: Pinceau
+how_wide_the_brush_paints_and_make_it_smaller_and_bigger: Largeur du pinceau. - la réduit et + l'agrandit.
+smaller_brush: Pinceau plus petit
+bigger_brush: Pinceau plus grand
+fills_everything_up_to_a_wall_the_edge_of_the_map_counts_as_one_shortcut_7_o: 'Remplit jusqu''à un mur — le bord de la carte compte comme un mur. Raccourci : 7 ou F'
+fill: Remplir
+selection_and_editing_tools: Outils de sélection et de modification
+shortcut_3_or_v: 'Raccourci : 3 ou V'
+select_move: Sélectionner / Déplacer
+select_mode: Mode de sélection
+flood_selects_connected_placements_of_the_same_type_including_diagonals_shif: >-
+  La sélection contiguë choisit les placements reliés du même type, diagonales comprises. Maj ajoute ;
+  Ctrl+clic inverse la sélection du groupe connecté.
+border: Cadre
+flood_fill: Remplissage contigu
+delete_mode: Mode de suppression
+area: Zone
+flood_fill_2: Remplissage contigu
+display_overlays: Afficher les calques
+overlays: Calques
+item_names: Noms des éléments
+unit_order: Ordre des unités
+guide_lines: Repères
+estimated_worker_paths_through_the_current_castle: Trajets estimés des travailleurs dans le château actuel
+path_map: Carte des chemins
+estimated_fire_spread_around_flammable_buildings: Propagation estimée du feu autour des bâtiments inflammables
+firespread: Propagation du feu
+build_order: Ordre de construction
+0_steps: 0 étape
+current_position: Position actuelle
+no_step_selected: Aucune étape sélectionnée
+select_and_scroll_to_a_build_step: Sélectionner une étape de construction et la faire défiler
+drag_steps_to_reorder_ctrl_click_or_shift_click_selects_several_steps_right_: >-
+  Faites glisser les étapes pour les réordonner. Ctrl+clic ou Maj+clic en sélectionne plusieurs. Clic droit
+  pour fusionner ou verrouiller les positions.
+population_up_to_the_selected_build_step: Population jusqu'à l'étape sélectionnée
+population_at_current_step: Population à l'étape actuelle
+about_the_population_overview: À propos du récapitulatif de population
+provided_by_castle: Fournie par le château
+required_by_castle: Requise par le château
+required_by_character_aic: Requise par le personnage (AIC)
+free: Libre
+these_values_include_only_the_build_steps_up_to_the_current_position: Ces valeurs incluent seulement les étapes jusqu'à la position actuelle.
+2d_map_controls: Commandes de la carte 2D
+use_picture_as_background: Utiliser l'image comme fond
+save_the_whole_castle_as_a_full_resolution_png: Enregistrer tout le château en PNG pleine résolution
+snapshot: Image
+temporary_castle_blueprint: Plan temporaire du château
+show_or_hide_the_temporary_blueprint: Afficher ou masquer le plan temporaire
+show: Afficher
+blueprint_opacity: Opacité du plan
+opacity: Opacité
+2_5d_view_controls: Commandes de la vue 2,5D
+lay_a_map_of_the_game_under_the_slanted_view_to_scale_one_field_of_the_map_o: 'Placer une carte du jeu sous la vue inclinée, à l''échelle : une case de carte par case de l''éditeur'
+game_map: Carte du jeu
+which_starting_place_of_the_map_the_castle_is_built_on: Emplacement de départ où le château est construit
+map_starting_place: Départ sur la carte
+take_the_map_of_the_game_away: Retirer la carte du jeu
+remove_game_map: Retirer la carte du jeu
+100_by_100_tile_castle_map: Carte du château de 100 × 100 cases
+the_castle_seen_from_an_angle: Le château vu en perspective
+no_castle_loaded: Aucun château chargé
+ready: Prêt
+building_categories: Catégories de bâtiments
+select_an_item: Sélectionnez un élément
+castle_costs_up_to_the_selected_build_step: Coûts du château jusqu'à l'étape sélectionnée
+saved: Enregistré
+language: Langue
+merge: Fusionner
+assets_and_dialogue: Ressources et dialogues
+save_lines_json: Enregistrer lines.json
+open_an_ai_from_the_library_first: Ouvrez d'abord une IA de la bibliothèque.
+no_ai_project_loaded: Aucun projet d'IA chargé
+open_an_installed_ai_or_create_one_from_the_ucp_ai_library: Ouvrez une IA installée ou créez-en une dans la bibliothèque d'IA UCP.
+lines_json: lines.json
+text_used_for_the_ai_s_name_titles_description_and_reactions: Textes du nom, des titres, de la description et des réactions de l'IA.
+portraits: Portraits
+images_use_nearest_neighbor_resizing_transparency_is_kept_strictly_on_or_off: >-
+  Les images sont redimensionnées au plus proche voisin ; la transparence reste entièrement active ou
+  inactive.
+ai_portrait: Portrait de l'IA
+portrait_png: portrait.png
+saved_as_72_72_pixels: Enregistré en 72 × 72 pixels.
+change_portrait: Changer le portrait
+small_ai_portrait: Petit portrait de l'IA
+portrait_small_png: portrait_small.png
+saved_as_36_36_pixels: Enregistré en 36 × 36 pixels.
+change_small_portrait: Changer le petit portrait
+speech: Voix
+mapped_wav_files_can_play_here_or_open_in_your_normal_audio_program: Les WAV associés peuvent être lus ici ou dans votre lecteur audio habituel.
+no_speech: Aucune voix
+bink_videos: Vidéos Bink
+bik_playback_is_handed_to_the_program_associated_with_bink_files_on_windows: Sous Windows, les BIK sont lus par l'application associée aux fichiers Bink.
+project_browser: Explorateur de projets
+browse_and_edit_installed_ai_packages_or_keep_separate_variants_in_my_ais: Parcourez et modifiez les IA installées, ou conservez vos variantes dans Mes IA.
+create_new_ai: Créer une IA
+choose_game_folder: Choisir le dossier du jeu
+open_plugins_folder: Ouvrir le dossier des plugins
+refresh: Actualiser
+no_ucp_installation_selected: Aucune installation UCP sélectionnée
+choose_your_stronghold_crusader_folder_to_begin: Choisissez votre dossier Stronghold Crusader pour commencer.
+installed_ais: IA installées
+search: Rechercher
+name_author_or_plugin: Nom, auteur ou plugin…
+all_installed_ais: Toutes les IA installées
+active_plugins_only: Plugins actifs uniquement
+my_ais_only: Mes IA uniquement
+no_installation_selected: Aucune installation sélectionnée.
+your_existing_editors_stay_unchanged: Vos éditeurs ouverts restent inchangés
+select_an_installed_ai_to_load_and_edit_its_character_castles_lines_and_port: >-
+  Sélectionnez une IA installée pour charger et modifier ensemble son personnage, ses châteaux, ses textes et
+  ses portraits.
+installed: Installé
+inactive: Inactif
+author: Auteur
+version: Version
+source_plugin: Plugin source
+folder_id: Identifiant du dossier
+open_ai_project: Ouvrir un projet d'IA
+loads_the_character_and_castle_1_together_switch_castles_from_the_castle_edi: Charge ensemble le personnage et le château 1. Changez de château dans l'éditeur de château.
+open_in_editors: Ouvrir dans les éditeurs
+open_source_folder: Ouvrir le dossier source
+clone_to_my_ais: Cloner dans Mes IA
+the_complete_ai_package_is_copied_into_the_editor_owned_ucp_plugin_so_you_ca: Le paquet complet de l'IA est copié dans le plugin UCP de l'éditeur pour créer une variante distincte.
+ai_name: Nom de l'IA
+install_update_in_ucp: Installer / Mettre à jour dans UCP
+writes_the_character_and_currently_open_castle_through_a_staging_folder_then: >-
+  Écrit le personnage et le château ouvert dans un dossier intermédiaire, puis remplace le plugin géré
+  seulement après validation.
+activate_ai_toolkit_my_ais_in_the_ucp_gui_to_use_it_with_ai_swapper: Activez « AI Toolkit - My AIs » dans l'interface UCP pour l'utiliser avec AI Swapper.
+creates_a_complete_blank_ai_inside_ai_toolkit_my_ais: Crée une IA complète vierge dans AI Toolkit - My AIs.
+create_ai: Créer l'IA
+castle_mapping: Châteaux associés
+choose_the_aiv_used_in_each_of_the_ai_s_eight_castle_slots_the_same_file_may: >-
+  Choisissez l'AIV de chacun des huit emplacements de château de l'IA. Un fichier peut être sélectionné
+  plusieurs fois.
+save_mapping: Enregistrer les associations
+castle_shortcuts: Raccourcis du château
+select_a_field_and_press_a_key_optionally_with_ctrl_alt_or_shift_one_shortcu: >-
+  Sélectionnez un champ et appuyez sur une touche, avec Ctrl, Alt ou Maj si souhaité. Un raccourci par action
+  ; chaque combinaison ne peut être affectée qu'une fois. Retour arrière efface le champ. Les actions non
+  affectées restent accessibles dans l'interface.
+camera: Caméra
+photoshop_controls: Commandes Photoshop
+arrow_keys_wheel_zoom: Flèches + zoom à la molette
+mouse_wheel: Molette
+scroll_pans_alt_scroll_zooms_both_views: La molette déplace, Alt+molette zoome (les deux vues)
+scroll_zooms_alt_shift_scroll_pans: La molette zoome, Alt/Maj+molette déplace
+ctrl_scroll_pans_horizontally_in_wheel_zoom_mode_alt_scroll_or_shift_scroll_: >-
+  Ctrl+molette déplace horizontalement. En mode zoom à la molette, Alt+molette ou Maj+molette déplace
+  verticalement. Glisser avec le bouton du milieu déplace. Les touches caméra acceptent Ctrl/Alt/Maj ; Retour
+  arrière efface. Maintenez Maj pour déplacer plus vite.
+left: Gauche
+right: Droite
+up: Haut
+down: Bas
+pan_speed_pixels_per_keypress: Vitesse de déplacement (pixels par pression)
+restore_defaults: Rétablir les valeurs par défaut
+save_shortcuts: Enregistrer les raccourcis
+build_step_actions: Actions des étapes
+merge_selected_steps: Fusionner les étapes sélectionnées…
+lock_positions: Verrouiller les positions
+save_castle_picture: Enregistrer l'image du château
+save_png: Enregistrer le PNG
+picture_size: "Taille"
+full_resolution: "Pleine résolution"
+floor_plan_100x100_1_px_per_tile: "Plan 100×100 (1 px par case)"
+merge_placements_by_item_type: Fusionner les placements par type
+replace_selected_items: Remplacer les éléments sélectionnés
+choose_a_replacement_for_each_item_type_inside_the_box: Choisissez un remplacement pour chaque type d'élément dans le cadre.
+apply_replacements: Appliquer les remplacements
+map_of_the_game: Carte du jeu
+the_chosen_map_is_laid_under_the_slanted_view_to_scale_one_field_of_the_map_: >-
+  La carte choisie est placée à l'échelle sous la vue inclinée : une case de la carte correspond à une case de
+  l'éditeur.
+filter_by_name: Filtrer par nom
+
+brush_size: Taille du pinceau

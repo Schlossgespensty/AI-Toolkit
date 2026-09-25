@@ -8,51 +8,61 @@
 <link rel="icon" href="../assets/icon.png" type="image/png">
 <link rel="stylesheet" href="css/combined.css">
 <link rel="stylesheet" href="css/castle-sidebar.css">
+<script src="js/desktop-api.js"></script>
+<script src="vendor/i18next/i18next.min.js"></script>
+<script src="locales/english.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/theme.js"></script>
 </head>
 
 <body>
 <dialog id="releaseSourceDialog" class="releaseSourceDialog">
   <form id="releaseSourceForm">
-    <h2>Experimental snapshots</h2>
-    <label for="releaseSourceRepo">Toolkit fork (owner/repository)</label>
-    <input id="releaseSourceRepo" placeholder="Krarilotus/AI-Toolkit" required autocomplete="off" spellcheck="false">
-    <p>Fork builds are experimental. Switching sources does not install a build until you press Install.</p>
+    <h2 data-i18n="interface:experimental_snapshots">Experimental snapshots</h2>
+    <label for="releaseSourceRepo" data-i18n="interface:toolkit_fork_owner_repository">Toolkit fork (owner/repository)</label>
+    <input id="releaseSourceRepo" data-bidi="ltr" dir="ltr" placeholder="Krarilotus/AI-Toolkit" required autocomplete="off" spellcheck="false">
+    <p data-i18n="interface:fork_builds_are_experimental_switching_sources_does_not_install_a_build_unti">Fork builds are experimental. Switching sources does not install a build until you press Install.</p>
     <p id="releaseSourceError" role="alert"></p>
-    <div class="releaseSourceActions"><button id="releaseSourceCancel" type="button">Cancel</button><button type="submit">Use fork</button></div>
+    <div class="releaseSourceActions"><button id="releaseSourceCancel" type="button" data-i18n="interface:cancel">Cancel</button><button type="submit" data-i18n="interface:use_fork">Use fork</button></div>
   </form>
 </dialog>
 <div id="appRoot">
-  <nav class="workspaceTabs" aria-label="Editor workspace">
+  <nav class="workspaceTabs" aria-label="Editor workspace" data-i18n-attrs="aria-label=interface:editor_workspace">
     <img class="appIcon" src="../assets/icon.png" width="28" height="28" alt="AI Toolkit" draggable="false">
-    <div id="titlebarMenus" class="titlebarMenus" role="group" aria-label="Application menus" hidden>
-      <button type="button" data-app-menu="file" aria-haspopup="menu" aria-expanded="false" title="File (Alt+F)">File</button>
-      <button type="button" data-app-menu="edit" aria-haspopup="menu" aria-expanded="false" title="Edit (Alt+E)">Edit</button>
-      <button type="button" data-app-menu="view" aria-haspopup="menu" aria-expanded="false" title="View (Alt+V)">View</button>
+    <div id="titlebarMenus" class="titlebarMenus" role="group" aria-label="Application menus" hidden data-i18n-attrs="aria-label=interface:application_menus">
+      <button type="button" data-app-menu="file" aria-haspopup="menu" aria-expanded="false" title="File (Alt+F)" data-i18n-attrs="title=interface:file_alt_f" data-i18n="interface:file">File</button>
+      <button type="button" data-app-menu="edit" aria-haspopup="menu" aria-expanded="false" title="Edit (Alt+E)" data-i18n-attrs="title=interface:edit_alt_e" data-i18n="interface:edit">Edit</button>
+      <button type="button" data-app-menu="view" aria-haspopup="menu" aria-expanded="false" title="View (Alt+V)" data-i18n-attrs="title=interface:view_alt_v" data-i18n="interface:view">View</button>
     </div>
-    <button id="tabUcp" class="workspaceTab active" type="button" data-workspace="ucp">UCP AI Library</button>
-    <button id="tabCharacter" class="workspaceTab" type="button" data-workspace="character">Character</button>
-    <button id="tabCastle" class="workspaceTab" type="button" data-workspace="castle">Castle</button>
-    <button id="tabAiContent" class="workspaceTab" type="button" data-workspace="content">AI Content</button>
+    <button id="tabUcp" class="workspaceTab active" type="button" data-workspace="ucp" data-i18n="interface:ucp_ai_library">UCP AI Library</button>
+    <button id="tabCharacter" class="workspaceTab" type="button" data-workspace="character" data-i18n="interface:character">Character</button>
+    <button id="tabCastle" class="workspaceTab" type="button" data-workspace="castle" data-i18n="interface:castle">Castle</button>
+    <button id="tabAiContent" class="workspaceTab" type="button" data-workspace="content" data-i18n="interface:ai_content">AI Content</button>
     <div class="workspaceSpacer"></div>
-    <select id="releaseSourceSelect" class="releaseSourceSelect" aria-label="Update source" title="Update source">
-      <option value="Schlossgespensty/AI-Toolkit">Official releases</option>
+    <select id="releaseSourceSelect" class="releaseSourceSelect" aria-label="Update source" title="Update source" data-i18n-attrs="title=interface:update_source;aria-label=interface:update_source">
+      <option value="Schlossgespensty/AI-Toolkit" data-i18n="interface:official_releases">Official releases</option>
     </select>
-    <button id="releaseUpdateButton" class="releaseUpdateButton" type="button" aria-live="polite" title="Check official releases">Check updates</button>
-    <span id="workspaceStatus" class="workspaceStatus">UCP AI Library</span>
+    <button id="releaseUpdateButton" class="releaseUpdateButton" type="button" aria-live="polite" title="Check official releases" data-i18n-attrs="title=interface:check_official_releases" data-i18n="interface:check_updates">Check updates</button>
+    <span id="workspaceStatus" class="workspaceStatus" data-i18n="interface:ucp_ai_library">UCP AI Library</span>
     <span class="appIdentity" aria-hidden="true"><span>AI</span> Toolkit</span>
+    <div id="windowControls" class="windowControls" role="group" aria-label="Window controls" data-i18n-attrs="aria-label=shell:window_controls" hidden>
+      <button class="windowControl" type="button" data-window-action="minimize" title="Minimize" aria-label="Minimize" data-i18n-attrs="title=shell:minimize_window;aria-label=shell:minimize_window"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M1 6.5h10"/></svg></button>
+      <button class="windowControl" type="button" data-window-action="maximize" title="Maximize" aria-label="Maximize" data-i18n-attrs="title=shell:maximize_window;aria-label=shell:maximize_window"><svg viewBox="0 0 12 12" aria-hidden="true"><path class="maximizeGlyph" d="M1.5 1.5h9v9h-9z"/><path class="restoreGlyph" d="M1.5 3.5h7v7h-7zm2-2h7v7"/></svg></button>
+      <button class="windowControl" type="button" data-window-action="close" title="Close" aria-label="Close" data-i18n-attrs="title=common:actions.close;aria-label=common:actions.close"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="m1.5 1.5 9 9m0-9-9 9"/></svg></button>
+    </div>
   </nav>
   <section id="characterWorkspace" class="workspace" aria-hidden="true">
     <div class="characterApp">
       <header class="workspaceHeader characterHeader">
         <div class="workspaceHeading characterHeading">
-          <span class="workspaceEyebrow">Character editor</span>
-          <h1 id="aiName">No Character Loaded</h1>
-          <div id="filePath" class="workspacePath">Open a character.json file or choose an AI from the Library.</div>
+          <span class="workspaceEyebrow" data-i18n="interface:character_editor">Character editor</span>
+          <h1 id="aiName" data-i18n="interface:no_character_loaded">No Character Loaded</h1>
+          <div id="filePath" class="workspacePath" data-i18n="interface:open_a_character_json_file_or_choose_an_ai_from_the_library">Open a character.json file or choose an AI from the Library.</div>
         </div>
         <div class="workspaceHeaderActions characterHeaderActions">
-          <button id="characterOpenBtn" type="button">Open character</button>
-          <button id="saveBtn" class="primaryAction" type="button">Save character</button>
-          <button id="saveAsBtn" type="button">Save as</button>
+          <button id="characterOpenBtn" type="button" data-i18n="interface:open_character">Open character</button>
+          <button id="saveBtn" class="primaryAction" type="button" data-i18n="interface:save_character">Save character</button>
+          <button id="saveAsBtn" type="button" data-i18n="interface:save_as">Save as</button>
         </div>
       </header>
 
@@ -61,66 +71,66 @@
           <details class="editorCard characterOptionsCard" data-character-card="plugins" open>
             <summary class="editorCardHeading">
               <div>
-                <span class="panelEyebrowHeader">Plugins</span>
+                <span class="panelEyebrowHeader" data-i18n="interface:plugins">Plugins</span>
               </div>
             </summary>
             <label class="switchRow">
-              <span><strong>AI ox tethers</strong><small>Controls the amount of ox tethers built</small></span>
+              <span><strong data-i18n="interface:ai_ox_tethers">AI ox tethers</strong><small data-i18n="interface:controls_the_amount_of_ox_tethers_built">Controls the amount of ox tethers built</small></span>
               <input type="checkbox" id="toggleOx" checked>
             </label>
             <label class="switchRow">
-              <span><strong>Running units</strong><small>Controls whether some units will run or walk.</small></span>
+              <span><strong data-i18n="interface:running_units">Running units</strong><small data-i18n="interface:controls_whether_some_units_will_run_or_walk">Controls whether some units will run or walk.</small></span>
               <input type="checkbox" id="toggleRun" checked>
             </label>
             <label class="switchRow">
-              <span><strong>AI Troop Behaviour</strong><small>Include AIV troop behaviour overrides</small></span>
+              <span><strong data-i18n="interface:ai_troop_behaviour">AI Troop Behaviour</strong><small data-i18n="interface:include_aiv_troop_behaviour_overrides">Include AIV troop behaviour overrides</small></span>
               <input type="checkbox" id="toggleTroops" checked>
             </label>
           </details>
 
           <details class="editorCard populationCard" data-character-card="population" open>
-            <summary class="editorCardHeading populationCardHeading"><span class="panelEyebrowHeader">Population</span></summary>
+            <summary class="editorCardHeading populationCardHeading"><span class="panelEyebrowHeader" data-i18n="interface:population">Population</span></summary>
 
             <div class="populationInputRow">
-              <label for="availablePopulation">Available population</label>
+              <label for="availablePopulation" data-i18n="interface:available_population">Available population</label>
               <div class="populationStepper">
-                <button id="populationMinusEight" class="populationStepButtonLeft" type="button" aria-label="Decrease available population by 8">−8</button>
+                <button id="populationMinusEight" class="populationStepButtonLeft" type="button" aria-label="Decrease available population by 8" data-i18n-attrs="aria-label=interface:decrease_available_population_by_8">−8</button>
                 <input id="availablePopulation" class="numberInput" type="number" value="10" min="10" inputmode="numeric">
-                <button id="populationPlusEight" class="populationStepButtonRight" type="button" aria-label="Increase available population by 8">+8</button>
+                <button id="populationPlusEight" class="populationStepButtonRight" type="button" aria-label="Increase available population by 8" data-i18n-attrs="aria-label=interface:increase_available_population_by_8">+8</button>
               </div>
             </div>
 
             <div class="populationSourceRow" hidden>
-              <button id="useCastlePopulationBtn" class="compactAction" type="button" title="Use the population provided by the currently loaded castle">Use castle pop<span id="castleProvidedForCharacter">0</span></button>
+              <button id="useCastlePopulationBtn" class="compactAction" type="button" title="Use the population provided by the currently loaded castle" data-i18n-attrs="title=interface:use_the_population_provided_by_the_currently_loaded_castle"><span data-i18n="interface:use_castle_pop">Use castle pop</span><span id="castleProvidedForCharacter">0</span></button>
             </div>
 
-            <div class="metricRow"><span>Maximum workers used</span><strong id="maxPopNeeded">0</strong></div>
-            <div class="metricRow metricPrimary"><span>Max. workers used at set population</span><strong id="actualPopNeeded">0</strong></div>
+            <div class="metricRow"><span data-i18n="interface:maximum_workers_used">Maximum workers used</span><strong id="maxPopNeeded">0</strong></div>
+            <div class="metricRow metricPrimary"><span data-i18n="interface:max_workers_used_at_set_population">Max. workers used at set population</span><strong id="actualPopNeeded">0</strong></div>
 
-            <div class="populationBreakdown" aria-label="Worker breakdown">
-              <div><span>Farms</span><strong id="farmCount">0</strong></div>
-              <div><span>Woodcutters</span><strong id="woodcutterCount">0</strong></div>
-              <div><span>Quarries</span><strong id="quarryCount">0</strong></div>
-              <div><span>Ox tethers (up to)</span><strong id="tetherCount">0</strong></div>
-              <div><span>Iron mines</span><strong id="ironmineCount">0</strong></div>
-              <div><span>Pitch rigs</span><strong id="pitchrigCount">0</strong></div>
+            <div class="populationBreakdown" aria-label="Worker breakdown" data-i18n-attrs="aria-label=interface:worker_breakdown">
+              <div><span data-i18n="interface:farms">Farms</span><strong id="farmCount">0</strong></div>
+              <div><span data-i18n="interface:woodcutters">Woodcutters</span><strong id="woodcutterCount">0</strong></div>
+              <div><span data-i18n="interface:quarries">Quarries</span><strong id="quarryCount">0</strong></div>
+              <div><span data-i18n="interface:ox_tethers_up_to">Ox tethers (up to)</span><strong id="tetherCount">0</strong></div>
+              <div><span data-i18n="interface:iron_mines">Iron mines</span><strong id="ironmineCount">0</strong></div>
+              <div><span data-i18n="interface:pitch_rigs">Pitch rigs</span><strong id="pitchrigCount">0</strong></div>
             </div>
 
             <div class="metricRow metricResult castlePopulationCharacterRow">
-              <span>Workers left after castle</span>
+              <span data-i18n="interface:workers_left_after_castle">Workers left after castle</span>
               <strong id="characterCastlePopulationLeft">0</strong>
             </div>
             <div class="metricRow metricResult characterCombinedPopulationRow">
-              <span>Left after castle + character</span>
+              <span data-i18n="interface:left_after_castle_character">Left after castle + character</span>
               <strong id="characterCastlePopulationAfterCharacter">0</strong>
             </div>
             <details class="characterSubsection" data-character-card="fear" open>
-              <summary>Fear factor <strong id="characterFearLevel">0</strong></summary>
+              <summary><span data-i18n="interface:fear_factor">Fear factor</span> <strong id="characterFearLevel">0</strong></summary>
               <div id="characterFearDetails"></div>
             </details>
           </details>
           <details class="editorCard storageCard" data-character-card="storage" open>
-            <summary class="editorCardHeading"><span class="panelEyebrowHeader">Stockpile space</span></summary>
+            <summary class="editorCardHeading"><span class="panelEyebrowHeader" data-i18n="interface:stockpile_space">Stockpile space</span></summary>
             <div id="characterStorage"></div>
           </details>
         </aside>
@@ -128,17 +138,17 @@
         <main class="characterEditorPanel">
           <div class="characterControlBar">
             <label class="characterSearch" for="search">
-              <span>Find setting</span>
-              <input type="search" id="search" aria-keyshortcuts="Control+F Meta+F" placeholder="Search character fields…" autocomplete="off" spellcheck="false">
+              <span data-i18n="interface:find_setting">Find setting</span>
+              <input type="search" id="search" aria-keyshortcuts="Control+F Meta+F" placeholder="Search character fields…" autocomplete="off" spellcheck="false" data-i18n-attrs="placeholder=interface:search_character_fields">
             </label>
             <div class="characterControlActions">
-              <div class="segmentedControl" aria-label="Section visibility">
-                <button id="characterExpandAllBtn" class="sectionBtn" type="button">Expand all</button>
-                <button id="characterCollapseAllBtn" class="sectionBtn" type="button">Collapse all</button>
+              <div class="segmentedControl" aria-label="Section visibility" data-i18n-attrs="aria-label=interface:section_visibility">
+                <button id="characterExpandAllBtn" class="sectionBtn" type="button" data-i18n="interface:expand_all">Expand all</button>
+                <button id="characterCollapseAllBtn" class="sectionBtn" type="button" data-i18n="interface:collapse_all">Collapse all</button>
               </div>
-              <div class="segmentedControl templateButtons" aria-label="Character field order">
-                <button id="btnStandard" class="templateBtn" type="button">Standard template</button>
-                <button id="btnOrdered" class="templateBtn" type="button">Ordered template</button>
+              <div class="segmentedControl templateButtons" aria-label="Character field order" data-i18n-attrs="aria-label=interface:character_field_order">
+                <button id="btnStandard" class="templateBtn" type="button" data-i18n="interface:standard_template">Standard template</button>
+                <button id="btnOrdered" class="templateBtn" type="button" data-i18n="interface:ordered_template">Ordered template</button>
               </div>
             </div>
           </div>
@@ -152,59 +162,84 @@
     <div class="castleApp">
       <div id="castleSaveNotice" class="castleSaveNotice" role="status" aria-live="polite" hidden></div>
       <header class="castleToolbar workspaceCommandBar">
-        <div class="toolbarGroup toolbarFileGroup" role="group" aria-label="Castle files">
-          <button id="castleOpenBtn" type="button">Open castle</button>
-          <button id="castleSaveBtn" class="primaryAction" type="button">Save castle</button>
-          <button id="castleExportDeBtn" type="button" title="Export a Definitive Edition castle (.aivjson)">Export DE</button>
-          <button id="castleNewBtn" type="button">New</button>
+        <svg class="iconSprite" aria-hidden="true" focusable="false">
+          <symbol id="icon-scroll" viewBox="0 0 24 24"><path d="M7 3.5h9.5L20 7v13.5H7zM16.5 3.5V7H20M10 10.5h7M10 14h7M10 17.5h4.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M7 3.5a2.5 2.5 0 0 0 0 5h2" fill="none" stroke="currentColor" stroke-width="1.6"/></symbol>
+          <symbol id="icon-castle" viewBox="0 0 24 24"><path d="M3 21V6h2v2h2V6h2v5h6V6h2v2h2V6h2v15h-7.5v-4a1.5 1.5 0 0 0-3 0v4z" fill="currentColor"/></symbol>
+          <symbol id="icon-map" viewBox="0 0 24 24"><path d="M9 9h6v6H9z" fill="currentColor" opacity=".55"/><path d="M3 3h18v18H3zM9 3v18M15 3v18M3 9h18M3 15h18" fill="none" stroke="currentColor" stroke-width="1.5"/></symbol>
+          <symbol id="icon-iso" viewBox="0 0 24 24"><path d="M12 3l8.5 4.5L12 12 3.5 7.5z" fill="currentColor" opacity=".45"/><path d="M12 3l8.5 4.5v9L12 21l-8.5-4.5v-9zM3.5 7.5 12 12l8.5-4.5M12 12v9" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></symbol>
+          <symbol id="icon-overlays" viewBox="0 0 24 24"><circle cx="12" cy="10" r="10" class="iconGlow"/><path d="M5 14.5V5h1.4v1.3h1.3V5h1.4v3.2h5.8V5h1.4v1.3h1.3V5H19v9.5h-5.8v-2.3a1.2 1.2 0 0 0-2.4 0v2.3z" fill="currentColor"/><path d="M12 23v-5.5M9.6 19.8 12 17.4l2.4 2.4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+          <symbol id="tool-grid" viewBox="0 0 24 24"><path d="M2 2h20v20H2zM6 2v20M10 2v20M14 2v20M18 2v20M2 6h20M2 10h20M2 14h20M2 18h20" fill="none" stroke="currentColor" stroke-width=".6" opacity=".4"/></symbol>
+          <symbol id="tool-single" viewBox="0 0 24 24"><use href="#tool-grid"/><path d="M10 10h4v4h-4z" fill="currentColor"/></symbol>
+          <symbol id="tool-line" viewBox="0 0 24 24"><use href="#tool-grid"/><path d="M2 10h20v4H2z" fill="currentColor"/></symbol>
+          <symbol id="tool-brush" viewBox="0 0 24 24"><use href="#tool-grid"/><path d="M10 6h4v4h4v4h-4v4h-4v-4H6v-4h4z" fill="currentColor"/></symbol>
+          <symbol id="tool-bucket" viewBox="0 0 24 24"><path d="M6 6h12v12H6z" fill="currentColor" opacity=".45"/><path d="M2 2h20v20H2zM6 6v12h12V6z" fill="currentColor" fill-rule="evenodd"/></symbol>
+          <symbol id="tool-select" viewBox="0 0 24 24"><path d="M3 3h18v18H3z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-dasharray="2.5 2"/><path d="M12 7v10M7 12h10M10 9l2-2 2 2M10 15l2 2 2-2M9 10l-2 2 2 2M15 10l2 2-2 2" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+        </svg>
+        <div class="toolbarGroup toolbarFileGroup" role="group" aria-label="Castle files" data-i18n-attrs="aria-label=interface:castle_files">
+          <details id="castleFileMenu" class="toolbarMenu">
+            <summary title="Castle files" data-i18n-attrs="title=interface:castle_files"><svg class="toolbarIcon" aria-hidden="true"><use href="#icon-scroll"></use></svg><span data-i18n="interface:castle">Castle</span></summary>
+            <div class="toolbarMenuPanel">
+              <button id="castleOpenBtn" type="button"><span data-i18n="interface:open_castle">Open castle</span><kbd></kbd></button>
+              <button id="castleSaveBtn" class="primaryAction" type="button"><span data-i18n="interface:save_castle">Save castle</span><kbd></kbd></button>
+              <button id="castleExportDeBtn" type="button" title="Export a Definitive Edition castle (.aivjson)" data-i18n-attrs="title=interface:export_a_definitive_edition_castle_aivjson"><span data-i18n="interface:export_de">Export DE</span><kbd></kbd></button>
+              <button id="castleNewBtn" type="button"><span data-i18n="interface:new">New</span><kbd></kbd></button>
+            </div>
+          </details>
         </div>
-        <div class="toolbarGroup castleViewGroup" role="group" aria-label="Castle views">
-          <button id="castleMapBtn" type="button" aria-pressed="true" title="Show or close the map seen from above">Map</button>
-          <button id="castleIsoBtn" type="button" aria-pressed="false" title="Show or close the slanted view - drag a tab to move a window">2.5D view</button>
+        <div class="toolbarGroup castleViewGroup" role="group" aria-label="Castle views" data-i18n-attrs="aria-label=interface:castle_views">
+          <button id="castleMapBtn" type="button" aria-pressed="true" title="Show or close the map seen from above" data-i18n-attrs="title=interface:show_or_close_the_map_seen_from_above"><svg class="toolbarIcon" aria-hidden="true"><use href="#icon-map"></use></svg><span data-i18n="interface:map">Map</span></button>
+          <button id="castleIsoBtn" type="button" aria-pressed="false" title="Show or close the slanted view - drag a tab to move a window" data-i18n-attrs="title=interface:show_or_close_the_slanted_view_drag_a_tab_to_move_a_window"><svg class="toolbarIcon" aria-hidden="true"><use href="#icon-iso"></use></svg><span data-i18n="interface:2_5d_view">2.5D view</span></button>
         </div>
-        <div class="toolbarGroup castleProjectGroup" role="group" aria-label="AI castle selection">
-          <label class="castleProjectChoice" for="ucpCastleSelect">
-            <span>AI castle</span>
+        <div class="toolbarGroup castleProjectGroup" role="group" aria-label="AI castle selection" data-i18n-attrs="aria-label=interface:ai_castle_selection">
+          <label class="castleProjectChoice" for="ucpCastleSelect" title="AI castle" data-i18n-attrs="title=interface:ai_castle">
+            <svg class="toolbarIcon" aria-hidden="true"><use href="#icon-castle"></use></svg>
+            <span class="visuallyHidden" data-i18n="interface:ai_castle">AI castle</span>
             <select id="ucpCastleSelect" disabled>
-              <option value="">No AI project</option>
+              <option value="" data-i18n="interface:no_ai_project">No AI project</option>
             </select>
           </label>
         </div>
-        <div class="toolbarGroup castleTools castlePlacementGroup" role="group" aria-label="Placement tools">
-          <button type="button" class="castleTool active" data-tool="single" title="Shortcut: 1 or S">Single <kbd>1</kbd></button>          
-          <button type="button" class="castleTool" data-tool="line" title="Shortcut: 6 or L">Line <kbd>2</kbd></button>
-          <button type="button" class="castleTool" data-tool="brush" title="Shortcut: 2 or B">Brush <kbd>3</kbd></button>
-          <span class="brushSize" title="How wide the brush paints. [ and ] make it smaller and bigger.">
-            <button id="castleBrushMinus" type="button" aria-label="Smaller brush">&#8722;</button>
-            <output id="castleBrushSize" for="castleBrushMinus castleBrushPlus">1</output>
-            <button id="castleBrushPlus" type="button" aria-label="Bigger brush">+</button>
+        <div class="toolbarGroup castleTools castlePlacementGroup" role="group" aria-label="Placement tools" data-i18n-attrs="aria-label=interface:placement_tools">
+          <details id="castleDrawMenu" class="toolbarMenu castleDrawMenu">
+            <summary title="Placement tools" data-i18n-attrs="title=interface:placement_tools"><svg class="toolbarIcon" aria-hidden="true"><use id="castleDrawIcon" href="#tool-single"></use></svg><span id="castleDrawLabel">Single</span><kbd id="castleDrawKey">1</kbd></summary>
+            <div class="toolbarMenuPanel castleDrawPalette">
+              <button type="button" class="castleTool" data-tool="single" title="Shortcut: 1 or S" data-i18n-attrs="title=interface:shortcut_1_or_s"><svg class="toolIcon" aria-hidden="true"><use href="#tool-single"></use></svg><span data-i18n="interface:single">Single</span> <kbd>1</kbd></button>
+              <button type="button" class="castleTool" data-tool="line" title="Shortcut: 6 or L" data-i18n-attrs="title=interface:shortcut_6_or_l"><svg class="toolIcon" aria-hidden="true"><use href="#tool-line"></use></svg><span data-i18n="interface:line">Line</span> <kbd>2</kbd></button>
+              <button type="button" class="castleTool" data-tool="brush" title="Shortcut: 2 or B" data-i18n-attrs="title=interface:shortcut_2_or_b"><svg class="toolIcon" aria-hidden="true"><use href="#tool-brush"></use></svg><span data-i18n="interface:brush">Brush</span> <kbd>3</kbd></button>
+              <button type="button" class="castleTool" data-tool="bucket" title="Fills everything up to a wall &#8212; the edge of the map counts as one. Shortcut: 7 or F" data-i18n-attrs="title=interface:fills_everything_up_to_a_wall_the_edge_of_the_map_counts_as_one_shortcut_7_o"><svg class="toolIcon" aria-hidden="true"><use href="#tool-bucket"></use></svg><span data-i18n="interface:fill">Fill</span> <kbd>4</kbd></button>
+            </div>
+          </details>
+          <span id="castleBrushStepper" class="numberStepper" title="How wide the brush paints. - and + make it smaller and bigger." data-i18n-attrs="title=interface:how_wide_the_brush_paints_and_make_it_smaller_and_bigger" hidden>
+            <label class="numberStepperLabel" for="castleBrushSize" data-i18n="interface:brush_size">Brush size</label>
+            <button id="castleBrushMinus" type="button" aria-label="Smaller brush" data-i18n-attrs="aria-label=interface:smaller_brush">&#8722;</button>
+            <input id="castleBrushSize" type="number" min="1" max="100" step="1" value="1" aria-label="Brush size" data-i18n-attrs="aria-label=interface:brush_size">
+            <button id="castleBrushPlus" type="button" aria-label="Bigger brush" data-i18n-attrs="aria-label=interface:bigger_brush">+</button>
           </span>
-          <button type="button" class="castleTool" data-tool="bucket" title="Fills everything up to a wall &#8212; the edge of the map counts as one. Shortcut: 7 or F">Fill <kbd>7</kbd></button>
         </div>
-        <div class="toolbarGroup castleTools castleEditGroup" role="group" aria-label="Selection and editing tools">
-          <button type="button" class="castleTool" data-tool="select" title="Shortcut: 3 or V">Select / Move <kbd>4</kbd></button>
-          <label id="castleSelectModeLabel" class="castleProjectChoice" hidden>Select mode
-            <select id="castleSelectMode" title="Flood selects connected placements of the same type, including diagonals. Shift adds; Ctrl-click toggles the connected group.">
-              <option value="area">Border</option>
-              <option value="flood">Flood Fill</option>
+        <div class="toolbarGroup castleTools castleEditGroup" role="group" aria-label="Selection and editing tools" data-i18n-attrs="aria-label=interface:selection_and_editing_tools">
+          <button type="button" class="castleTool" data-tool="select" title="Shortcut: 3 or V" data-i18n-attrs="title=interface:shortcut_3_or_v"><svg class="toolbarIcon" aria-hidden="true"><use href="#tool-select"></use></svg><span data-i18n="interface:select_move">Select / Move</span> <kbd>5</kbd></button>
+          <label id="castleSelectModeLabel" class="castleProjectChoice" hidden><span data-i18n="interface:select_mode">Select mode</span>
+            <select id="castleSelectMode" title="Flood selects connected placements of the same type, including diagonals. Shift adds; Ctrl-click toggles the connected group." data-i18n-attrs="title=interface:flood_selects_connected_placements_of_the_same_type_including_diagonals_shif">
+              <option value="area" data-i18n="interface:border">Border</option>
+              <option value="flood" data-i18n="interface:flood_fill">Flood Fill</option>
             </select>
           </label>
-          <label id="castleDeleteModeLabel" class="castleProjectChoice" hidden>Delete mode
+          <label id="castleDeleteModeLabel" class="castleProjectChoice" hidden><span data-i18n="interface:delete_mode">Delete mode</span>
             <select id="castleDeleteMode">
-              <option value="area">Area</option>
-              <option value="flood">Flood fill</option>
+              <option value="area" data-i18n="interface:area">Area</option>
+              <option value="flood" data-i18n="interface:flood_fill_2">Flood fill</option>
             </select>
           </label>
         </div>
-        <div class="toolbarGroup castleOverlayGroup" role="group" aria-label="Display overlays">
-          <details id="castleOverlayMenu" class="castleOverlayMenu">
-            <summary>Overlays</summary>
-            <div class="castleOverlayOptions">
-          <label class="compactToggle"><input id="castleShowNames" type="checkbox"> Item names</label>
-          <label class="compactToggle"><input id="castleShowUnitNumbers" type="checkbox"> Unit Order</label>
-          <label class="compactToggle"><input id="castleShowCompatibility" type="checkbox"> Guide lines</label>
-          <label class="compactToggle" title="Estimated worker paths through the current castle"><input id="castleShowRoutes" type="checkbox"> Path map</label>
-          <label class="compactToggle" title="Estimated fire spread around flammable buildings"><input id="castleShowFire" type="checkbox"> Firespread</label>
+        <div class="toolbarGroup castleOverlayGroup" role="group" aria-label="Display overlays" data-i18n-attrs="aria-label=interface:display_overlays">
+          <details id="castleOverlayMenu" class="toolbarMenu castleOverlayMenu">
+            <summary><svg class="toolbarIcon" aria-hidden="true"><use href="#icon-overlays"></use></svg><span data-i18n="interface:overlays">Overlays</span></summary>
+            <div class="toolbarMenuPanel castleOverlayOptions">
+          <label class="compactToggle"><input id="castleShowNames" type="checkbox"> <span data-i18n="interface:item_names">Item names</span></label>
+          <label class="compactToggle"><input id="castleShowUnitNumbers" type="checkbox"> <span data-i18n="interface:unit_order">Unit Order</span></label>
+          <label class="compactToggle"><input id="castleShowCompatibility" type="checkbox"> <span data-i18n="interface:guide_lines">Guide lines</span></label>
+          <label class="compactToggle" title="Estimated worker paths through the current castle" data-i18n-attrs="title=interface:estimated_worker_paths_through_the_current_castle"><input id="castleShowRoutes" type="checkbox"> <span data-i18n="interface:path_map">Path map</span></label>
+          <label class="compactToggle" title="Estimated fire spread around flammable buildings" data-i18n-attrs="title=interface:estimated_fire_spread_around_flammable_buildings"><input id="castleShowFire" type="checkbox"> <span data-i18n="interface:firespread">Firespread</span></label>
             </div>
           </details>
         </div>
@@ -213,33 +248,33 @@
       <div class="castleMain">
         <aside class="castlePanel castleBuildPanel">
           <div class="panelHeader buildHeader">
-            <div>Build order</div>
-            <span id="castleBuildCount">0 steps</span>
+            <div data-i18n="interface:build_order">Build order</div>
+            <span id="castleBuildCount" data-i18n="interface:0_steps">0 steps</span>
           </div>
           <div class="buildScrubber">
             <div class="buildScrubberLabel">
-              <label for="castleBuildSlider">Current position</label>
-              <output id="castleBuildSliderValue" for="castleBuildSlider">No step selected</output>
+              <label for="castleBuildSlider" data-i18n="interface:current_position">Current position</label>
+              <output id="castleBuildSliderValue" for="castleBuildSlider" data-i18n="interface:no_step_selected">No step selected</output>
             </div>
-            <input id="castleBuildSlider" type="range" min="1" max="1" value="1" step="1" disabled aria-label="Select and scroll to a build step">
+            <input id="castleBuildSlider" type="range" min="1" max="1" value="1" step="1" disabled aria-label="Select and scroll to a build step" data-i18n-attrs="aria-label=interface:select_and_scroll_to_a_build_step">
           </div>
-          <div class="buildHint">Drag steps to reorder. Ctrl+click or Shift+click selects several steps. Right-click to merge or lock positions.</div>
+          <div class="buildHint" data-i18n="interface:drag_steps_to_reorder_ctrl_click_or_shift_click_selects_several_steps_right_">Drag steps to reorder. Ctrl+click or Shift+click selects several steps. Right-click to merge or lock positions.</div>
           <div id="castleAnalysisInfo" class="buildHint" hidden></div>
           <div id="castleBuildList" class="castleBuildList"></div>
-          <section id="castlePopulationOverview" class="castlePopulationOverview castleOverviewPanel" data-overview="population" aria-label="Population up to the selected build step">
+          <section id="castlePopulationOverview" class="castlePopulationOverview castleOverviewPanel" data-overview="population" aria-label="Population up to the selected build step" data-i18n-attrs="aria-label=interface:population_up_to_the_selected_build_step">
             <div class="populationOverviewTitle castleOverviewTitle">
-              <span>Population at current step</span>
+              <span data-i18n="interface:population_at_current_step">Population at current step</span>
               <span class="castleOverviewTitleActions">
                 <strong id="castlePopulationStep">-</strong>
-                <button type="button" class="castleOverviewInfoButton" data-info-target="castlePopulationInfo" aria-label="About the population overview" aria-expanded="false">i</button>
+                <button type="button" class="castleOverviewInfoButton" data-info-target="castlePopulationInfo" aria-label="About the population overview" aria-expanded="false" data-i18n-attrs="aria-label=interface:about_the_population_overview">i</button>
               </span>
             </div>
-            <div class="populationOverviewRow"><span>Provided by castle</span><strong id="castleCostPopProvided">0</strong></div>
-            <div class="populationOverviewRow"><span>Required by castle</span><strong id="castleCostPopRequired">0</strong></div>
-            <div class="populationOverviewRow"><span>Required by character (AIC)</span><strong id="castleCostPopAic">-</strong></div>
-            <div class="populationOverviewRow populationOverviewPrimary"><span>Free</span><strong id="castleCostPopFree">-</strong></div>
+            <div class="populationOverviewRow"><span data-i18n="interface:provided_by_castle">Provided by castle</span><strong id="castleCostPopProvided">0</strong></div>
+            <div class="populationOverviewRow"><span data-i18n="interface:required_by_castle">Required by castle</span><strong id="castleCostPopRequired">0</strong></div>
+            <div class="populationOverviewRow"><span data-i18n="interface:required_by_character_aic">Required by character (AIC)</span><strong id="castleCostPopAic">-</strong></div>
+            <div class="populationOverviewRow populationOverviewPrimary"><span data-i18n="interface:free">Free</span><strong id="castleCostPopFree">-</strong></div>
             <div id="castlePopulationInfo" class="castleOverviewInfo" hidden>
-              <p>These values include only the build steps up to the current position.</p>
+              <p data-i18n="interface:these_values_include_only_the_build_steps_up_to_the_current_position">These values include only the build steps up to the current position.</p>
               <p id="castleCostAicDetail"></p>
             </div>
           </section>
@@ -256,33 +291,33 @@
                area: out of the page they cost nothing, and no ResizeObserver
                measures a canvas of no size. -->
           <div id="castleWindowStore" class="windowStore" hidden>
-            <div id="castleMapControls" class="isoViewControls" role="toolbar" aria-label="2D map controls">
-              <button id="castleBackgroundBtn" type="button">Use picture as background</button>
-              <button id="castleSavePictureBtn" type="button" title="Save the whole castle as a full-resolution PNG">Snapshot</button>
-        <div id="castleBlueprintControls" class="toolbarGroup castleBlueprintControls" aria-label="Temporary castle blueprint" hidden>
-          <label class="hidden" title="Show or hide the temporary blueprint">
-            <input id="castleShowBlueprint" type="checkbox" checked disabled> Show
+            <div id="castleMapControls" class="isoViewControls" role="toolbar" aria-label="2D map controls" data-i18n-attrs="aria-label=interface:2d_map_controls">
+              <button id="castleBackgroundBtn" type="button" data-i18n="interface:use_picture_as_background">Use picture as background</button>
+              <button id="castleSavePictureBtn" type="button" title="Save the whole castle as a full-resolution PNG" data-i18n-attrs="title=interface:save_the_whole_castle_as_a_full_resolution_png" data-i18n="interface:snapshot">Snapshot</button>
+        <div id="castleBlueprintControls" class="toolbarGroup castleBlueprintControls" aria-label="Temporary castle blueprint" hidden data-i18n-attrs="aria-label=interface:temporary_castle_blueprint">
+          <label class="hidden" title="Show or hide the temporary blueprint" data-i18n-attrs="title=interface:show_or_hide_the_temporary_blueprint">
+            <input id="castleShowBlueprint" type="checkbox" checked disabled> <span data-i18n="interface:show">Show</span>
           </label>
-          <label class="blueprintOpacity" for="castleBlueprintOpacity" title="Blueprint opacity">
-            <span>Opacity</span>
+          <label class="blueprintOpacity" for="castleBlueprintOpacity" title="Blueprint opacity" data-i18n-attrs="title=interface:blueprint_opacity">
+            <span data-i18n="interface:opacity">Opacity</span>
             <input id="castleBlueprintOpacity" type="range" min="5" max="100" value="50" step="5" disabled>
             <output id="castleBlueprintOpacityValue" for="castleBlueprintOpacity">50%</output>
           </label>
         </div>
             </div>
-            <div id="castleIsoControls" class="isoViewControls" role="toolbar" aria-label="2.5D view controls">
-              <button id="castleIsoMapBtn" type="button" title="Lay a map of the game under the slanted view - to scale, one field of the map on one field of the editor">Game map</button>
-              <select id="castleIsoMapKeep" title="Which starting place of the map the castle is built on" aria-label="Map starting place" hidden></select>
-              <button id="castleIsoMapReset" class="isoViewReset" type="button" title="Take the map of the game away" aria-label="Remove game map" hidden>&times;</button>
+            <div id="castleIsoControls" class="isoViewControls" role="toolbar" aria-label="2.5D view controls" data-i18n-attrs="aria-label=interface:2_5d_view_controls">
+              <button id="castleIsoMapBtn" type="button" title="Lay a map of the game under the slanted view - to scale, one field of the map on one field of the editor" data-i18n-attrs="title=interface:lay_a_map_of_the_game_under_the_slanted_view_to_scale_one_field_of_the_map_o" data-i18n="interface:game_map">Game map</button>
+              <select id="castleIsoMapKeep" title="Which starting place of the map the castle is built on" aria-label="Map starting place" hidden data-i18n-attrs="title=interface:which_starting_place_of_the_map_the_castle_is_built_on;aria-label=interface:map_starting_place"></select>
+              <button id="castleIsoMapReset" class="isoViewReset" type="button" title="Take the map of the game away" aria-label="Remove game map" hidden data-i18n-attrs="title=interface:take_the_map_of_the_game_away;aria-label=interface:remove_game_map">&times;</button>
             </div>
             <div id="castleMapWindow" class="viewWindow" data-window="map">
               <div id="castleCanvasHost" class="castleCanvasHost">
-                <canvas id="castleCanvas" tabindex="0" aria-label="100 by 100 tile castle map"></canvas>
+                <canvas id="castleCanvas" tabindex="0" aria-label="100 by 100 tile castle map" data-i18n-attrs="aria-label=interface:100_by_100_tile_castle_map"></canvas>
               </div>
             </div>
             <div id="castleIsoWindow" class="viewWindow" data-window="iso">
               <div id="isoDockBody" class="dockBody">
-                <canvas id="isoDockCanvas" aria-label="The castle seen from an angle"></canvas>
+                <canvas id="isoDockCanvas" aria-label="The castle seen from an angle" data-i18n-attrs="aria-label=interface:the_castle_seen_from_an_angle"></canvas>
               </div>
               <div id="isoDockStatus" class="dockStatus"></div>
             </div>
@@ -298,20 +333,20 @@
           <div id="castleDragGhost" class="dragGhost" hidden></div>
 
           <div class="castleStatusBar">
-            <span id="castleFileLabel">No castle loaded</span>
-            <span id="castleStatus">Ready</span>
+            <span id="castleFileLabel" data-i18n="interface:no_castle_loaded">No castle loaded</span>
+            <span id="castleStatus" data-i18n="interface:ready">Ready</span>
           </div>
         </main>
 
         <aside class="castlePanel castlePalettePanel">
           <div class="panelHeader">
-            <div>Building Categories</div>
+            <div data-i18n="interface:building_categories">Building Categories</div>
           </div>
           <div id="castlePalette" class="castlePalette"></div>
           <div class="selectedItemCard">
-            <div id="castleSelectedItemInfo" class="selectedItemInfo">Select an item</div>
+            <div id="castleSelectedItemInfo" class="selectedItemInfo" data-i18n="interface:select_an_item">Select an item</div>
           </div>
-          <section id="castleCostOverview" class="castleCostOverview castleOverviewPanel" data-overview="costs" aria-label="Castle costs up to the selected build step"></section>
+          <section id="castleCostOverview" class="castleCostOverview castleOverviewPanel" data-overview="costs" aria-label="Castle costs up to the selected build step" data-i18n-attrs="aria-label=interface:castle_costs_up_to_the_selected_build_step"></section>
         </aside>
       </div>
     </div>
@@ -321,27 +356,27 @@
     <div class="aiContentApp">
       <header class="workspaceHeader aiContentHeader">
         <div class="workspaceHeading">
-          <span class="workspaceEyebrow">Assets and dialogue</span>
-          <h1>AI Content</h1>
+          <span class="workspaceEyebrow" data-i18n="interface:assets_and_dialogue">Assets and dialogue</span>
+          <h1 data-i18n="interface:ai_content">AI Content</h1>
         </div>
         <div class="aiContentHeaderActions">
-          <button id="aiContentSaveBtn" class="primaryAction" type="button" disabled>Save lines.json</button>
-          <span id="aiContentStatus" role="status">Open an AI from the Library first.</span>
+          <button id="aiContentSaveBtn" class="primaryAction" type="button" disabled data-i18n="interface:save_lines_json">Save lines.json</button>
+          <span id="aiContentStatus" role="status" data-i18n="interface:open_an_ai_from_the_library_first">Open an AI from the Library first.</span>
         </div>
-        <div id="aiContentPath" class="aiContentPath">No AI project loaded</div>
+        <div id="aiContentPath" class="aiContentPath" data-i18n="interface:no_ai_project_loaded">No AI project loaded</div>
       </header>
       <div id="aiContentEmpty" class="aiContentEmpty">
-        <h2>No AI project loaded</h2>
-        <p>Open an installed AI or create one from the UCP AI Library.</p>
+        <h2 data-i18n="interface:no_ai_project_loaded">No AI project loaded</h2>
+        <p data-i18n="interface:open_an_installed_ai_or_create_one_from_the_ucp_ai_library">Open an installed AI or create one from the UCP AI Library.</p>
       </div>
       <div id="aiContentEditor" class="aiContentEditor" hidden>
         <main class="aiLinesPanel">
           <div class="aiContentPanelTitle">
             <div>
-              <h2>lines.json</h2>
-              <p>Text used for the AI's name, titles, description and reactions.</p>
+              <h2 data-i18n="interface:lines_json">lines.json</h2>
+              <p data-i18n="interface:text_used_for_the_ai_s_name_titles_description_and_reactions">Text used for the AI's name, titles, description and reactions.</p>
             </div>
-            <span id="aiLinesDirtyBadge" class="aiContentBadge">Saved</span>
+            <span id="aiLinesDirtyBadge" class="aiContentBadge" data-i18n="interface:saved">Saved</span>
           </div>
           <div id="aiLinesForm" class="aiLinesForm"></div>
         </main>
@@ -349,25 +384,25 @@
           <section class="aiAssetSection">
             <div class="aiContentPanelTitle">
               <div>
-                <h2>Portraits</h2>
-                <p>Images use nearest-neighbor resizing; transparency is kept strictly on or off.</p>
+                <h2 data-i18n="interface:portraits">Portraits</h2>
+                <p data-i18n="interface:images_use_nearest_neighbor_resizing_transparency_is_kept_strictly_on_or_off">Images use nearest-neighbor resizing; transparency is kept strictly on or off.</p>
               </div>
             </div>
             <div class="aiPortraitGrid">
               <section class="aiPortraitCard">
-                <div class="aiPortraitPreview large"><img id="aiPortraitPreview" alt="AI portrait"></div>
+                <div class="aiPortraitPreview large"><img id="aiPortraitPreview" alt="AI portrait" data-i18n-attrs="alt=interface:ai_portrait"></div>
                 <div>
-                  <h3>portrait.png</h3>
-                  <p>Saved as 72×72 pixels.</p>
-                  <button id="aiPortraitChangeBtn" type="button">Change portrait</button>
+                  <h3 data-i18n="interface:portrait_png">portrait.png</h3>
+                  <p data-i18n="interface:saved_as_72_72_pixels">Saved as 72×72 pixels.</p>
+                  <button id="aiPortraitChangeBtn" type="button" data-i18n="interface:change_portrait">Change portrait</button>
                 </div>
               </section>
               <section class="aiPortraitCard">
-                <div class="aiPortraitPreview small"><img id="aiPortraitSmallPreview" alt="Small AI portrait"></div>
+                <div class="aiPortraitPreview small"><img id="aiPortraitSmallPreview" alt="Small AI portrait" data-i18n-attrs="alt=interface:small_ai_portrait"></div>
                 <div>
-                  <h3>portrait_small.png</h3>
-                  <p>Saved as 36×36 pixels.</p>
-                  <button id="aiPortraitSmallChangeBtn" type="button">Change small portrait</button>
+                  <h3 data-i18n="interface:portrait_small_png">portrait_small.png</h3>
+                  <p data-i18n="interface:saved_as_36_36_pixels">Saved as 36×36 pixels.</p>
+                  <button id="aiPortraitSmallChangeBtn" type="button" data-i18n="interface:change_small_portrait">Change small portrait</button>
                 </div>
               </section>
             </div>
@@ -375,13 +410,13 @@
           <section class="aiAssetSection">
             <div class="aiContentPanelTitle">
               <div>
-                <h2>Speech</h2>
-                <p>Mapped WAV files can play here or open in your normal audio program.</p>
+                <h2 data-i18n="interface:speech">Speech</h2>
+                <p data-i18n="interface:mapped_wav_files_can_play_here_or_open_in_your_normal_audio_program">Mapped WAV files can play here or open in your normal audio program.</p>
               </div>
               <div class="aiSpeechHeaderControls">
-                <label for="aiSpeechLanguage">Language</label>
+                <label for="aiSpeechLanguage" data-i18n="interface:language">Language</label>
                 <select id="aiSpeechLanguage" disabled>
-                  <option value="">No speech</option>
+                  <option value="" data-i18n="interface:no_speech">No speech</option>
                 </select>
                 <span id="aiSpeechCount" class="aiContentBadge">0</span>
               </div>
@@ -391,8 +426,8 @@
           <section class="aiAssetSection">
             <div class="aiContentPanelTitle">
               <div>
-                <h2>Bink videos</h2>
-                <p>BIK playback is handed to the program associated with Bink files on Windows.</p>
+                <h2 data-i18n="interface:bink_videos">Bink videos</h2>
+                <p data-i18n="interface:bik_playback_is_handed_to_the_program_associated_with_bink_files_on_windows">BIK playback is handed to the program associated with Bink files on Windows.</p>
               </div>
               <span id="aiBinkCount" class="aiContentBadge">0</span>
             </div>
@@ -406,47 +441,47 @@
     <div class="ucpLibraryApp">
       <header class="workspaceHeader ucpLibraryHeader">
         <div class="workspaceHeading ucpLibraryHeading">
-          <span class="workspaceEyebrow">Project browser</span>
-          <h1>UCP AI Library</h1>
-          <p>Browse and edit installed AI packages, or keep separate variants in My AIs.</p>
+          <span class="workspaceEyebrow" data-i18n="interface:project_browser">Project browser</span>
+          <h1 data-i18n="interface:ucp_ai_library">UCP AI Library</h1>
+          <p data-i18n="interface:browse_and_edit_installed_ai_packages_or_keep_separate_variants_in_my_ais">Browse and edit installed AI packages, or keep separate variants in My AIs.</p>
         </div>
         <div class="ucpLibraryHeaderActions">
-          <button id="ucpCreateAiBtn" type="button" disabled>Create new AI</button>
-          <button id="ucpChooseInstallationBtn" type="button">Choose game folder</button>
-          <button id="ucpOpenPluginsBtn" type="button" disabled>Open plugins folder</button>
-          <button id="ucpRefreshBtn" type="button" disabled>Refresh</button>
+          <button id="ucpCreateAiBtn" type="button" disabled data-i18n="interface:create_new_ai">Create new AI</button>
+          <button id="ucpChooseInstallationBtn" type="button" data-i18n="interface:choose_game_folder">Choose game folder</button>
+          <button id="ucpOpenPluginsBtn" type="button" disabled data-i18n="interface:open_plugins_folder">Open plugins folder</button>
+          <button id="ucpRefreshBtn" type="button" disabled data-i18n="interface:refresh">Refresh</button>
         </div>
-        <div id="ucpInstallationPath" class="ucpInstallationPath">No UCP installation selected</div>
-        <div id="ucpLibraryStatus" class="ucpLibraryStatus" role="status">Choose your Stronghold Crusader folder to begin.</div>
+        <div id="ucpInstallationPath" class="ucpInstallationPath" data-i18n="interface:no_ucp_installation_selected">No UCP installation selected</div>
+        <div id="ucpLibraryStatus" class="ucpLibraryStatus" role="status" data-i18n="interface:choose_your_stronghold_crusader_folder_to_begin">Choose your Stronghold Crusader folder to begin.</div>
       </header>
 
       <div class="ucpLibraryMain">
         <aside class="ucpLibraryListPanel">
           <div class="ucpLibraryListHeader">
-            <strong>Installed AIs</strong>
+            <strong data-i18n="interface:installed_ais">Installed AIs</strong>
             <span id="ucpAiCount">0</span>
           </div>
           <label class="ucpLibraryFilter ucpLibrarySearch">
-            <span>Search</span>
-            <input id="ucpLibrarySearch" type="search" placeholder="Name, author or plugin…" autocomplete="off" spellcheck="false">
+            <span data-i18n="interface:search">Search</span>
+            <input id="ucpLibrarySearch" type="search" placeholder="Name, author or plugin…" autocomplete="off" spellcheck="false" data-i18n-attrs="placeholder=interface:name_author_or_plugin">
           </label>
           <label class="ucpLibraryFilter">
-            <span>Show</span>
+            <span data-i18n="interface:show">Show</span>
             <select id="ucpLibraryFilter">
-              <option value="all">All installed AIs</option>
-              <option value="active">Active plugins only</option>
-              <option value="owned">My AIs only</option>
+              <option value="all" data-i18n="interface:all_installed_ais">All installed AIs</option>
+              <option value="active" data-i18n="interface:active_plugins_only">Active plugins only</option>
+              <option value="owned" data-i18n="interface:my_ais_only">My AIs only</option>
             </select>
           </label>
           <div id="ucpAiList" class="ucpAiList">
-            <div class="ucpLibraryEmpty">No installation selected.</div>
+            <div class="ucpLibraryEmpty" data-i18n="interface:no_installation_selected">No installation selected.</div>
           </div>
         </aside>
 
         <main class="ucpLibraryDetails">
           <div id="ucpAiEmpty" class="ucpLibraryWelcome">
-            <h2>Your existing editors stay unchanged</h2>
-            <p>Select an installed AI to load and edit its Character, castles, lines and portraits together.</p>
+            <h2 data-i18n="interface:your_existing_editors_stay_unchanged">Your existing editors stay unchanged</h2>
+            <p data-i18n="interface:select_an_installed_ai_to_load_and_edit_its_character_castles_lines_and_port">Select an installed AI to load and edit its Character, castles, lines and portraits together.</p>
           </div>
 
           <div id="ucpAiDetails" class="ucpAiDetails" hidden>
@@ -455,46 +490,46 @@
               <div>
                 <div class="ucpAiTitleRow">
                   <h2 id="ucpAiName">AI</h2>
-                  <span id="ucpAiOwnership" class="ucpBadge">Installed</span>
-                  <span id="ucpAiActivity" class="ucpBadge">Inactive</span>
+                  <span id="ucpAiOwnership" class="ucpBadge" data-i18n="interface:installed">Installed</span>
+                  <span id="ucpAiActivity" class="ucpBadge" data-i18n="interface:inactive">Inactive</span>
                 </div>
                 <p id="ucpAiDescription" class="ucpAiDescription"></p>
                 <dl class="ucpAiFacts">
-                  <div><dt>Author</dt><dd id="ucpAiAuthor">—</dd></div>
-                  <div><dt>Version</dt><dd id="ucpAiVersion">—</dd></div>
-                  <div><dt>Source plugin</dt><dd id="ucpAiPlugin">—</dd></div>
-                  <div><dt>Folder ID</dt><dd id="ucpAiId">—</dd></div>
+                  <div><dt data-i18n="interface:author">Author</dt><dd id="ucpAiAuthor">—</dd></div>
+                  <div><dt data-i18n="interface:version">Version</dt><dd id="ucpAiVersion">—</dd></div>
+                  <div><dt data-i18n="interface:source_plugin">Source plugin</dt><dd id="ucpAiPlugin">—</dd></div>
+                  <div><dt data-i18n="interface:folder_id">Folder ID</dt><dd id="ucpAiId">—</dd></div>
                 </dl>
               </div>
             </div>
 
             <section class="ucpActionCard">
-              <h3>Open AI project</h3>
-              <p id="ucpOpenHint">Loads the Character and Castle 1 together. Switch castles from the Castle editor.</p>
+              <h3 data-i18n="interface:open_ai_project">Open AI project</h3>
+              <p id="ucpOpenHint" data-i18n="interface:loads_the_character_and_castle_1_together_switch_castles_from_the_castle_edi">Loads the Character and Castle 1 together. Switch castles from the Castle editor.</p>
               <div class="ucpActionRow">
-                <button id="ucpOpenAiBtn" type="button">Open in editors</button>
-                <button id="ucpOpenAiFolderBtn" type="button">Open source folder</button>
+                <button id="ucpOpenAiBtn" type="button" data-i18n="interface:open_in_editors">Open in editors</button>
+                <button id="ucpOpenAiFolderBtn" type="button" data-i18n="interface:open_source_folder">Open source folder</button>
               </div>
               <div id="ucpCastleSummary" class="ucpCastleSummary"></div>
             </section>
 
             <section id="ucpCloneCard" class="ucpActionCard">
-              <h3>Clone to My AIs</h3>
-              <p>The complete AI package is copied into the editor-owned UCP plugin so you can make a separate variant.</p>
+              <h3 data-i18n="interface:clone_to_my_ais">Clone to My AIs</h3>
+              <p data-i18n="interface:the_complete_ai_package_is_copied_into_the_editor_owned_ucp_plugin_so_you_ca">The complete AI package is copied into the editor-owned UCP plugin so you can make a separate variant.</p>
               <div class="ucpCloneFields">
-                <label>AI name <input id="ucpCloneName" type="text"></label>
-                <label>Folder ID <input id="ucpCloneId" type="text" spellcheck="false"></label>
-                <label>Version <input id="ucpCloneVersion" type="text" value="1.0.0" spellcheck="false"></label>
+                <label><span data-i18n="interface:ai_name">AI name</span> <input id="ucpCloneName" type="text"></label>
+                <label><span data-i18n="interface:folder_id">Folder ID</span> <input id="ucpCloneId" type="text" data-bidi="ltr" dir="ltr" spellcheck="false"></label>
+                <label><span data-i18n="interface:version">Version</span> <input id="ucpCloneVersion" type="text" data-bidi="ltr" dir="ltr" value="1.0.0" spellcheck="false"></label>
               </div>
-              <button id="ucpCloneBtn" type="button">Clone to My AIs</button>
+              <button id="ucpCloneBtn" type="button" data-i18n="interface:clone_to_my_ais">Clone to My AIs</button>
             </section>
 
             <section id="ucpUpdateCard" class="ucpActionCard" hidden>
-              <h3>Install / Update in UCP</h3>
-              <p>Writes the Character and currently open castle through a staging folder, then replaces the managed plugin only after validation succeeds.</p>
+              <h3 data-i18n="interface:install_update_in_ucp">Install / Update in UCP</h3>
+              <p data-i18n="interface:writes_the_character_and_currently_open_castle_through_a_staging_folder_then">Writes the Character and currently open castle through a staging folder, then replaces the managed plugin only after validation succeeds.</p>
               <div class="ucpActionRow">
-                <button id="ucpUpdateBtn" type="button">Install / Update in UCP</button>
-                <span id="ucpActivationHint">Activate “AI Toolkit - My AIs” in the UCP GUI to use it with AI Swapper.</span>
+                <button id="ucpUpdateBtn" type="button" data-i18n="interface:install_update_in_ucp">Install / Update in UCP</button>
+                <span id="ucpActivationHint" data-i18n="interface:activate_ai_toolkit_my_ais_in_the_ucp_gui_to_use_it_with_ai_swapper">Activate “AI Toolkit - My AIs” in the UCP GUI to use it with AI Swapper.</span>
               </div>
             </section>
           </div>
@@ -504,16 +539,16 @@
     <dialog id="ucpCreateDialog" class="ucpCreateDialog">
       <form id="ucpCreateForm">
         <div class="ucpCreateHeading">
-          <h2>Create new AI</h2>
-          <p>Creates a complete blank AI inside AI Toolkit - My AIs.</p>
+          <h2 data-i18n="interface:create_new_ai">Create new AI</h2>
+          <p data-i18n="interface:creates_a_complete_blank_ai_inside_ai_toolkit_my_ais">Creates a complete blank AI inside AI Toolkit - My AIs.</p>
         </div>
-        <label>AI name <input id="ucpCreateName" type="text" required autocomplete="off"></label>
-        <label>Folder ID <input id="ucpCreateId" type="text" required spellcheck="false" autocomplete="off"></label>
-        <label>Author <input id="ucpCreateAuthor" type="text" autocomplete="off"></label>
-        <label>Version <input id="ucpCreateVersion" type="text" value="1.0.0" required spellcheck="false"></label>
+        <label><span data-i18n="interface:ai_name">AI name</span> <input id="ucpCreateName" type="text" required autocomplete="off"></label>
+        <label><span data-i18n="interface:folder_id">Folder ID</span> <input id="ucpCreateId" type="text" data-bidi="ltr" dir="ltr" required spellcheck="false" autocomplete="off"></label>
+        <label><span data-i18n="interface:author">Author</span> <input id="ucpCreateAuthor" type="text" autocomplete="off"></label>
+        <label><span data-i18n="interface:version">Version</span> <input id="ucpCreateVersion" type="text" data-bidi="ltr" dir="ltr" value="1.0.0" required spellcheck="false"></label>
         <div class="ucpCreateActions">
-          <button id="ucpCreateCancelBtn" type="button">Cancel</button>
-          <button id="ucpCreateConfirmBtn" type="submit">Create AI</button>
+          <button id="ucpCreateCancelBtn" type="button" data-i18n="interface:cancel">Cancel</button>
+          <button id="ucpCreateConfirmBtn" type="submit" data-i18n="interface:create_ai">Create AI</button>
         </div>
       </form>
     </dialog>
@@ -523,13 +558,13 @@
 <dialog id="ucpCastleMappingDialog" class="ucpCreateDialog ucpCastleMappingDialog">
   <form id="ucpCastleMappingForm">
     <div class="ucpCreateHeading">
-      <h2>Castle mapping</h2>
-      <p id="ucpCastleMappingHint">Choose the AIV used in each of the AI's eight castle slots. The same file may be selected more than once.</p>
+      <h2 data-i18n="interface:castle_mapping">Castle mapping</h2>
+      <p id="ucpCastleMappingHint" data-i18n="interface:choose_the_aiv_used_in_each_of_the_ai_s_eight_castle_slots_the_same_file_may">Choose the AIV used in each of the AI's eight castle slots. The same file may be selected more than once.</p>
     </div>
     <div id="ucpCastleMappingFields" class="ucpCastleMappingFields"></div>
     <div class="ucpCreateActions">
-      <button id="ucpCastleMappingCancelBtn" type="button">Cancel</button>
-      <button id="ucpCastleMappingSaveBtn" type="submit">Save mapping</button>
+      <button id="ucpCastleMappingCancelBtn" type="button" data-i18n="interface:cancel">Cancel</button>
+      <button id="ucpCastleMappingSaveBtn" type="submit" data-i18n="interface:save_mapping">Save mapping</button>
     </div>
   </form>
 </dialog>
@@ -537,78 +572,84 @@
 <dialog id="castleShortcutDialog" class="ucpCreateDialog castleShortcutDialog">
   <form id="castleShortcutForm">
     <div class="ucpCreateHeading">
-      <h2>Castle shortcuts</h2>
-      <p>Select a field and press a key, optionally with Ctrl, Alt or Shift. One shortcut per action; each combination can only be assigned once. Backspace clears a field. Unassigned actions remain available in the UI.</p>
+      <h2 data-i18n="interface:castle_shortcuts">Castle shortcuts</h2>
+      <p data-i18n="interface:select_a_field_and_press_a_key_optionally_with_ctrl_alt_or_shift_one_shortcu">Select a field and press a key, optionally with Ctrl, Alt or Shift. One shortcut per action; each combination can only be assigned once. Backspace clears a field. Unassigned actions remain available in the UI.</p>
     </div>
     <div id="castleShortcutGrid" class="castleShortcutGrid"></div>
     <fieldset class="castleCameraSettings">
-      <legend>Camera</legend>
-      <div><button id="castleCameraLegacy" type="button">Photoshop controls</button>
-        <button id="castleCameraArrows" type="button">Arrow keys + wheel zoom</button></div>
-      <label>Mouse wheel <select id="castleCameraWheel">
-        <option value="legacy">Scroll pans, Alt+scroll zooms (both views)</option>
-        <option value="zoom">Scroll zooms, Alt/Shift+scroll pans</option>
+      <legend data-i18n="interface:camera">Camera</legend>
+      <div><button id="castleCameraLegacy" type="button" data-i18n="interface:photoshop_controls">Photoshop controls</button>
+        <button id="castleCameraArrows" type="button" data-i18n="interface:arrow_keys_wheel_zoom">Arrow keys + wheel zoom</button></div>
+      <label><span data-i18n="interface:mouse_wheel">Mouse wheel</span> <select id="castleCameraWheel">
+        <option value="legacy" data-i18n="interface:scroll_pans_alt_scroll_zooms_both_views">Scroll pans, Alt+scroll zooms (both views)</option>
+        <option value="zoom" data-i18n="interface:scroll_zooms_alt_shift_scroll_pans">Scroll zooms, Alt/Shift+scroll pans</option>
       </select></label>
-      <p>Ctrl+scroll pans horizontally. In wheel-zoom mode, Alt+scroll or Shift+scroll pans vertically. Middle-drag pans. Camera keys also accept Ctrl/Alt/Shift combinations; Backspace clears. Hold Shift to pan faster.</p>
+      <p data-i18n="interface:ctrl_scroll_pans_horizontally_in_wheel_zoom_mode_alt_scroll_or_shift_scroll_">Ctrl+scroll pans horizontally. In wheel-zoom mode, Alt+scroll or Shift+scroll pans vertically. Middle-drag pans. Camera keys also accept Ctrl/Alt/Shift combinations; Backspace clears. Hold Shift to pan faster.</p>
       <div class="castleCameraKeyGrid">
-        <label>Left <input class="castleCameraKey" data-direction="left" readonly></label>
-        <label>Right <input class="castleCameraKey" data-direction="right" readonly></label>
-        <label>Up <input class="castleCameraKey" data-direction="up" readonly></label>
-        <label>Down <input class="castleCameraKey" data-direction="down" readonly></label>
+        <label><span data-i18n="interface:left">Left</span> <input class="castleCameraKey" data-direction="left" readonly></label>
+        <label><span data-i18n="interface:right">Right</span> <input class="castleCameraKey" data-direction="right" readonly></label>
+        <label><span data-i18n="interface:up">Up</span> <input class="castleCameraKey" data-direction="up" readonly></label>
+        <label><span data-i18n="interface:down">Down</span> <input class="castleCameraKey" data-direction="down" readonly></label>
       </div>
-      <label>Pan speed (pixels per keypress) <input id="castleCameraSpeed" type="number" min="1" max="200" value="40"></label>
+      <label><span data-i18n="interface:pan_speed_pixels_per_keypress">Pan speed (pixels per keypress)</span> <input id="castleCameraSpeed" type="number" min="1" max="200" value="40"></label>
     </fieldset>
     <div id="castleShortcutError" class="castleShortcutError" role="alert"></div>
     <div class="ucpCreateActions castleShortcutActions">
-      <button id="castleShortcutDefaultsBtn" type="button">Restore defaults</button>
+      <button id="castleShortcutDefaultsBtn" type="button" data-i18n="interface:restore_defaults">Restore defaults</button>
       <span class="castleShortcutActionSpacer"></span>
-      <button id="castleShortcutCancelBtn" type="button">Cancel</button>
-      <button type="submit">Save shortcuts</button>
+      <button id="castleShortcutCancelBtn" type="button" data-i18n="interface:cancel">Cancel</button>
+      <button type="submit" data-i18n="interface:save_shortcuts">Save shortcuts</button>
     </div>
   </form>
 </dialog>
 
-<div id="castleBuildContextMenu" class="castleBuildContextMenu" role="menu" aria-label="Build-step actions" hidden>
-  <button id="castleContextMerge" type="button" role="menuitem">Merge selected steps…</button>
-  <button id="castleContextLock" type="button" role="menuitem">Lock positions</button>
+<div id="castleBuildContextMenu" class="castleBuildContextMenu" role="menu" aria-label="Build-step actions" hidden data-i18n-attrs="aria-label=interface:build_step_actions">
+  <button id="castleContextMerge" type="button" role="menuitem" data-i18n="interface:merge_selected_steps">Merge selected steps…</button>
+  <button id="castleContextLock" type="button" role="menuitem" data-i18n="interface:lock_positions">Lock positions</button>
 </div>
 <dialog id="castleSnapshotDialog" class="ucpCreateDialog">
   <form id="castleSnapshotForm">
-    <div class="ucpCreateHeading"><h2>Save castle picture</h2></div>
-    <label><input id="castleSnapshotBackground" type="checkbox"> Use picture as background</label>
+    <div class="ucpCreateHeading"><h2 data-i18n="interface:save_castle_picture">Save castle picture</h2></div>
+    <label><input id="castleSnapshotBackground" type="checkbox"> <span data-i18n="interface:use_picture_as_background">Use picture as background</span></label>
+    <label class="castleProjectChoice"><span data-i18n="interface:picture_size">Size</span>
+      <select id="castleSnapshotSize">
+        <option value="full" data-i18n="interface:full_resolution">Full resolution</option>
+        <option value="plan" data-i18n="interface:floor_plan_100x100_1_px_per_tile">Floor plan 100×100 (1 px per tile)</option>
+      </select>
+    </label>
     <div class="ucpCreateActions">
-      <button id="castleSnapshotCancel" type="button">Cancel</button>
-      <button id="castleSnapshotSave" type="submit">Save PNG</button>
+      <button id="castleSnapshotCancel" type="button" data-i18n="interface:cancel">Cancel</button>
+      <button id="castleSnapshotSave" type="submit" data-i18n="interface:save_png">Save PNG</button>
     </div>
   </form>
 </dialog>
 <dialog id="castleMergeDialog" class="ucpCreateDialog castleReplaceDialog">
   <form id="castleMergeForm">
     <div class="ucpCreateHeading">
-      <h2>Merge placements by item type</h2>
+      <h2 data-i18n="interface:merge_placements_by_item_type">Merge placements by item type</h2>
       <p id="castleMergeSummary"></p>
     </div>
     <div id="castleMergeRows" class="castleReplaceRows"></div>
     <div id="castleMergeError" class="castleShortcutError" role="alert"></div>
     <div class="ucpCreateActions castleShortcutActions">
       <span class="castleShortcutActionSpacer"></span>
-      <button id="castleMergeCancel" type="button">Cancel</button>
-      <button id="castleMergeApply" type="submit">Merge</button>
+      <button id="castleMergeCancel" type="button" data-i18n="interface:cancel">Cancel</button>
+      <button id="castleMergeApply" type="submit" data-i18n="interface:merge">Merge</button>
     </div>
   </form>
 </dialog>
 <dialog id="castleReplaceDialog" class="ucpCreateDialog castleReplaceDialog">
   <form id="castleReplaceForm">
     <div class="ucpCreateHeading">
-      <h2>Replace selected items</h2>
-      <p id="castleReplaceSummary">Choose a replacement for each item type inside the box.</p>
+      <h2 data-i18n="interface:replace_selected_items">Replace selected items</h2>
+      <p id="castleReplaceSummary" data-i18n="interface:choose_a_replacement_for_each_item_type_inside_the_box">Choose a replacement for each item type inside the box.</p>
     </div>
     <div id="castleReplaceRows" class="castleReplaceRows"></div>
     <div id="castleReplaceError" class="castleShortcutError" role="alert"></div>
     <div class="ucpCreateActions castleShortcutActions">
       <span class="castleShortcutActionSpacer"></span>
-      <button id="castleReplaceCancelBtn" type="button">Cancel</button>
-      <button id="castleReplaceApplyBtn" type="submit">Apply replacements</button>
+      <button id="castleReplaceCancelBtn" type="button" data-i18n="interface:cancel">Cancel</button>
+      <button id="castleReplaceApplyBtn" type="submit" data-i18n="interface:apply_replacements">Apply replacements</button>
     </div>
   </form>
 </dialog>
@@ -616,15 +657,15 @@
 <dialog id="castleIsoMapDialog" class="ucpCreateDialog castleMapDialog">
   <div class="castleMapBody">
     <div class="ucpCreateHeading">
-      <h2>Map of the game</h2>
-      <p>The chosen map is laid under the slanted view to scale: one field of the map is one field of the editor.</p>
+      <h2 data-i18n="interface:map_of_the_game">Map of the game</h2>
+      <p data-i18n="interface:the_chosen_map_is_laid_under_the_slanted_view_to_scale_one_field_of_the_map_">The chosen map is laid under the slanted view to scale: one field of the map is one field of the editor.</p>
     </div>
-    <input id="castleIsoMapFilter" type="search" placeholder="Filter by name" autocomplete="off">
+    <input id="castleIsoMapFilter" type="search" placeholder="Filter by name" autocomplete="off" data-i18n-attrs="placeholder=interface:filter_by_name">
     <div id="castleIsoMapList" class="castleMapList" role="listbox" tabindex="0"></div>
     <div id="castleIsoMapError" class="castleShortcutError" role="alert"></div>
     <div class="ucpCreateActions castleShortcutActions">
       <span class="castleShortcutActionSpacer"></span>
-      <button id="castleIsoMapCancel" type="button">Cancel</button>
+      <button id="castleIsoMapCancel" type="button" data-i18n="interface:cancel">Cancel</button>
     </div>
   </div>
 </dialog>
@@ -634,6 +675,7 @@
 <script src="js/titlebar.js"></script>
 <script src="js/release-updates.js"></script>
 <script src="js/castle-geometry.js"></script>
+<script src="js/castle-troops.js"></script>
 <script src="js/castle-shortcuts.js"></script>
 <script src="js/castle-camera.js"></script>
 <script src="js/castle-palette.js"></script>

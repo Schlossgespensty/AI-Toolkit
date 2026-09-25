@@ -1,5 +1,5 @@
 'use strict';
-importScripts('castle-game-data.js', 'castle-analysis.js');
+importScripts('castle-game-data.js', 'castle-geometry.js', 'castle-analysis.js');
 self.onmessage = ({ data }) => {
   try {
     const { id, placements, terrain, fire, paths } = data;

@@ -1,0 +1,44 @@
+openCastle: Open castle
+saveCastle: Save castle
+newCastle: New castle
+map: Map
+iso: 2.5D view
+single: Single
+line: Line
+brush: Brush
+brushSmaller: Smaller brush
+brushLarger: Larger brush
+bucket: Fill
+select: Select / Move
+replace: Replace
+merge: Merge
+delete: Delete
+overlays: Overlays menu
+groups: Groups
+paste: Clipboard / Paste
+clearClipboard: Clear clipboard
+names: Item names
+units: Unit Order
+guides: Guide lines
+paths: Path map
+fire: Firespread
+gameMap: '2.5D: Game map'
+resetMap: '2.5D: Remove game map'
+rotateLeft: '2.5D: Rotate left'
+rotateRight: '2.5D: Rotate right'
+saveAs: Save As
+undo: Undo
+redo: Redo
+copy: Copy selection
+cut: Cut selection
+exportDe: Export DE
+pause: Pause step
+deleteSelected: Delete selected
+deselect: Deselect
+invalid: Invalid shortcut for {{label}}.
+reserved: '{{key}} is reserved for application menus.'
+duplicate: '{{key}} is assigned more than once.'
+wheelMode: Choose a wheel mode.
+cameraSpeed: Camera speed must be between 1 and 200 pixels.
+invalidCamera: Invalid camera shortcut.
+assigned: The key {{key}} is already assigned or reserved.

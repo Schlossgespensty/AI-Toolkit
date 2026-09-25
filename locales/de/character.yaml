@@ -1,0 +1,32 @@
+failed_to_load_config_files: Konfigurationsdateien konnten nicht geladen werden.
+all_troops: Alle Truppen
+initial_role: Startaufgabe
+unsupported_value: 'Nicht unterstützter Wert: '
+no_description_yet: Noch keine Beschreibung.
+initial_roles: Startaufgaben
+unknown_parameters_found: |+
+  Unbekannte Parameter gefunden:
+
+opening_another_character_file: Öffnen einer anderen Charakterdatei
+creating_a_new_character: Erstellen eines neuen Charakters
+new_character_added_to_the_loaded_ai: Neuer Charakter zur geladenen KI hinzugefügt
+new_character: Neuer Charakter
+saving: Wird gespeichert…
+saved: Gespeichert!
+error: Fehler!
+open_an_ai_from_the_library_to_edit_its_content: Öffne eine KI aus der Bibliothek, um ihre Inhalte zu bearbeiten
+ai_content_belongs_to_the_loaded_ai_project: KI-Inhalte gehören zum geladenen KI-Projekt
+no_file_loadedvalue: Keine Datei geladen{{dirtyMarker}}
+leather_armor: Lederharnisch
+iron_armor: Eiserne Rüstung
+capacity: Kapazität
+needed_at_limits: Bedarf bei maximalen Vorräten
+production: Produktion
+recruitment_purchase: Kauf zur Rekrutierung
+maxfood_variance: Maximaler Nahrungsvorrat + Toleranz
+no_relevant_production: Keine relevante Produktion
+or_recruitment: ' oder Rekrutierung'
+positive_negative: Positiv / negativ
+net_buildings: Gebäudebilanz
+population_groups_of_16: Bevölkerung / angefangene 16er-Gruppen
+movement: Bewegung

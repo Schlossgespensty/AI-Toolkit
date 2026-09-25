@@ -1,0 +1,32 @@
+failed_to_load_config_files: Не удалось загрузить файлы настроек.
+all_troops: Все войска
+initial_role: начальная роль
+unsupported_value: "Неподдерживаемое значение: "
+no_description_yet: Описание пока отсутствует.
+initial_roles: Начальные роли
+unknown_parameters_found: |+
+  Найдены неизвестные параметры:
+
+opening_another_character_file: открыть другой файл персонажа
+creating_a_new_character: создать нового персонажа
+new_character_added_to_the_loaded_ai: Новый персонаж добавлен в открытый ИИ
+new_character: Новый персонаж
+saving: Сохранение…
+saved: Сохранено!
+error: Ошибка!
+open_an_ai_from_the_library_to_edit_its_content: Откройте ИИ из библиотеки, чтобы редактировать его содержимое
+ai_content_belongs_to_the_loaded_ai_project: Содержимое ИИ относится к открытому проекту ИИ
+no_file_loadedvalue: Файл не открыт{{dirtyMarker}}
+leather_armor: Кожаный доспех
+iron_armor: Латы
+capacity: Вместимость
+needed_at_limits: Нужно при максимальных запасах
+production: производство
+recruitment_purchase: покупка для найма
+maxfood_variance: MaxFood + разброс
+no_relevant_production: Соответствующее производство отсутствует
+or_recruitment: " или найм"
+positive_negative: Положительные / отрицательные
+net_buildings: Разница построек
+population_groups_of_16: Население / группы по 16
+movement: Передвижение

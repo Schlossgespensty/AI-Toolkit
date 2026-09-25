@@ -1,0 +1,724 @@
+StrengthMultiplier: |-
+  Lordun can puanlarını çarpar.
+  Sıçan = 0.5
+  Normal = 1
+  Kurt = 1.5
+DotColour: Lordun gücünü gösteren noktaların rengi. Orijinal oyunda sarı zayıflığı, mavi gücü belirtir.
+DotCount: Lordun gücünü gösteren nokta sayısı; çarpanın her 0.1 değeri için bir nokta.
+Type: İç kalede doğan lord türü.
+ArabArcher: Oyun başında iç kalenin yanında doğan Arap okçu sayısı.
+Slave: Oyun başında iç kalenin yanında doğan köle sayısı.
+Slinger: Oyun başında iç kalenin yanında doğan sapancı sayısı.
+Assassin: Oyun başında iç kalenin yanında doğan suikastçı sayısı.
+HorseArcher: Oyun başında iç kalenin yanında doğan atlı okçu sayısı.
+ArabSwordsman: Oyun başında iç kalenin yanında doğan Arap kılıç ustası sayısı.
+FireThrower: Oyun başında iç kalenin yanında doğan ateş atıcı sayısı.
+EuropArcher: Oyun başında iç kalenin yanında doğan Avrupalı okçu sayısı.
+Spearman: Oyun başında iç kalenin yanında doğan mızrakçı sayısı.
+Maceman: Oyun başında iç kalenin yanında doğan topuzcu sayısı.
+Crossbowman: Oyun başında iç kalenin yanında doğan arbaletçi sayısı.
+Pikeman: Oyun başında iç kalenin yanında doğan kargıcı sayısı.
+Swordsman: Oyun başında iç kalenin yanında doğan kılıç ustası sayısı.
+Knight: Oyun başında iç kalenin yanında doğan şövalye sayısı.
+Monk: Oyun başında iç kalenin yanında doğan keşiş sayısı.
+WallDecoration: |-
+  AIV düzenleyicisinde bayrak yerleştirildiğinde lordun kullandığı süsleme.
+
+  8 = dökülen yanan yağ
+  9 = alevler
+  10 = küçük bayrak
+  11 = büyük bayrak
+  12 = orta bayrak
+  13 = Haçlı bayrağı
+  14 = mangallar
+  15 = dekoratif kafatasları
+  21 = buhar bulutları
+  22 = hastalık bulutları
+  26 = ateş patlamaları
+  28 = aşağı uçan kuzgunlar
+  29 = suya düşen orta taşlar
+  30 = yapılara çarpan küçük taşlar
+  31 = suya düşen küçük taşlar
+  40 = yükselen sıfır altın bildirimi
+  41 = yükselen sıfır popülerlik bildirimi
+  42 = boş yükselen bildirim
+  43 = boş yükselen bildirim
+Unknown001: Kullanılmayan değer.
+Unknown002: Kullanılmayan değer.
+Unknown003: Kullanılmayan değer.
+Unknown004: Kullanılmayan değer.
+Unknown005: Kullanılmayan değer.
+CriticalPopularity: >-
+  Popülerlik bu değerin altındayken yapay zekâ altın kazanmak için kaynakları yoğun biçimde satar. 10000
+  değeri 100 popülerliğe, 5000 değeri 50 popülerliğe karşılık gelir.
+LowestPopularity: >-
+  Popülerlik bu değerin altındayken yapay zekâ vergileri TaxesMin değerine indirir ve HighestPopularity
+  değerine ulaşana kadar ek tayın verir. 10000 değeri 100 popülerliğe, 5000 değeri 50 popülerliğe karşılık
+  gelir.
+HighestPopularity: >-
+  Bu popülerliğin üzerinde yapay zekâ, popülerlik değişimi en fazla −3 olacak şekilde dengelenene kadar
+  vergileri artırır. 10000 değeri 100 popülerliğe, 5000 değeri 50 popülerliğe karşılık gelir.
+TaxesMin: İzin verilen en düşük vergi düzeyi. 0 en yüksek bağışı, 11 en yüksek vergiyi belirtir.
+TaxesMax: İzin verilen en yüksek vergi düzeyi. 0 en yüksek bağışı, 11 en yüksek vergiyi belirtir.
+Unknown011: Kullanılmayan değer.
+Farm1: >-
+  İnşaat sırasındaki 1. çiftlik. Bir çiftlik yıkıldığında aynı türün yeniden yapılması yerine listedeki
+  sonraki çiftlik kurulur.
+Farm2: >-
+  İnşaat sırasındaki 2. çiftlik. Bir çiftlik yıkıldığında aynı türün yeniden yapılması yerine listedeki
+  sonraki çiftlik kurulur.
+Farm3: >-
+  İnşaat sırasındaki 3. çiftlik. Bir çiftlik yıkıldığında aynı türün yeniden yapılması yerine listedeki
+  sonraki çiftlik kurulur.
+Farm4: >-
+  İnşaat sırasındaki 4. çiftlik. Bir çiftlik yıkıldığında aynı türün yeniden yapılması yerine listedeki
+  sonraki çiftlik kurulur.
+Farm5: >-
+  İnşaat sırasındaki 5. çiftlik. Bir çiftlik yıkıldığında aynı türün yeniden yapılması yerine listedeki
+  sonraki çiftlik kurulur.
+Farm6: >-
+  İnşaat sırasındaki 6. çiftlik. Bir çiftlik yıkıldığında aynı türün yeniden yapılması yerine listedeki
+  sonraki çiftlik kurulur.
+Farm7: >-
+  İnşaat sırasındaki 7. çiftlik. Bir çiftlik yıkıldığında aynı türün yeniden yapılması yerine listedeki
+  sonraki çiftlik kurulur.
+Farm8: >-
+  İnşaat sırasındaki 8. çiftlik. Bir çiftlik yıkıldığında aynı türün yeniden yapılması yerine listedeki
+  sonraki çiftlik kurulur. Farm8 sonrasında sıra başa döner.
+PopulationPerFarm: >-
+  Yapay zekâ, bu nüfus kapasitesi başına bir çiftlik kurar. İlk çiftlik kapasite 0 olsa bile kurulur. Şerbetçi
+  otu çiftlikleri bu sınıra dahil değildir; çiftlik sırasında sıra kendilerine gelince kurulur.
+PopulationPerWoodcutter: Yapay zekâ, bu nüfus kapasitesi başına bir oduncu kulübesi kurar. İlk eşiğe ulaşıldığında iki kulübe kurar.
+PopulationPerQuarry: Yapay zekâ, bu nüfus kapasitesi başına bir taş ocağı kurar. İlk eşiğe ulaşıldığında iki taş ocağı kurar.
+PopulationPerIronmine: Yapay zekâ, bu nüfus kapasitesi başına bir demir madeni kurar. İlk eşiğe ulaşıldığında iki maden kurar.
+PopulationPerPitchrig: Yapay zekâ, bu nüfus kapasitesi başına bir zift kuyusu kurar.
+MaxQuarries: Yapay zekânın kuracağı en fazla taş ocağı sayısı.
+MaxIronmines: Yapay zekânın kuracağı en fazla demir madeni sayısı.
+MaxWoodcutters: Yapay zekânın kuracağı en fazla oduncu kulübesi sayısı.
+MaxPitchrigs: Yapay zekânın kuracağı en fazla zift kuyusu sayısı.
+MaxFarms: Yapay zekânın kuracağı en fazla çiftlik sayısı. Şerbetçi otu çiftlikleri bu sınıra dahil değildir.
+BuildInterval: Onarımlar dahil, AIV içindeki ve dışındaki tüm yapay zekâ inşaatları arasındaki süre. 1 en hızlı değerdir.
+ResourceRebuildDelay: AIV'de tanımlanmayan bir kaynak binasını yeniden kurmayı denemeden önce beklenecek süre.
+MaxFood: >-
+  Her yiyecek türünün (elma, peynir, et, ekmek ve buğday) en fazla miktarı; MaxResourceVariance buna eklenir.
+  Sınır toplam miktara değil, her kaynağa ayrı uygulanır.
+MinimumApples: >-
+  Elma miktarı bunun altındaysa yapay zekâ, eşiğe ulaşana kadar TradeAmountFood büyüklüğünde partiler satın
+  alır. 0, hiç elma satın almamak demektir.
+MinimumCheese: >-
+  Peynir miktarı bunun altındaysa yapay zekâ, eşiğe ulaşana kadar TradeAmountFood büyüklüğünde partiler satın
+  alır. 0, hiç peynir satın almamak demektir.
+MinimumBread: >-
+  Ekmek miktarı bunun altındaysa yapay zekâ, eşiğe ulaşana kadar TradeAmountFood büyüklüğünde partiler satın
+  alır. 0, hiç ekmek satın almamak demektir. Ekmek üreten bir ekonomide bunu 0 bırakıp buğday satın almak daha
+  uygun olabilir.
+MinimumWheat: >-
+  Buğday miktarı bunun altındaysa yapay zekâ, eşiğe ulaşana kadar TradeAmountFood büyüklüğünde partiler satın
+  alır. 0, hiç buğday satın almamak demektir.
+MinimumHop: >-
+  Şerbetçi otu miktarı bunun altındaysa yapay zekâ, eşiğe ulaşana kadar TradeAmountFood büyüklüğünde partiler
+  satın alır. 0, hiç şerbetçi otu satın almamak demektir.
+TradeAmountFood: >-
+  Her işlemde satın alınan yiyecek miktarı; aynı anda yalnızca tek tür alınır. Düşük değer daha ucuz ve
+  güvenilir alımlar sağlar, ancak daha fazla işlem gerektirir, stokları daha yavaş doldurur ve kısa süreli
+  kıtlığa yol açabilir.
+TradeAmountEquipment: >-
+  Her işlemde satın alınan teçhizat miktarı; aynı anda yalnızca tek tür alınır. Düşük değer daha ucuz ve
+  güvenilir alımlar sağlar, ancak daha fazla işlem gerektirir, stokları daha yavaş doldurur ve kısa süreli
+  eksikliğe yol açabilir.
+AIRequestDelay: Yapay zekânın oyuncudan kaynak isteme aralığı. Düşük değer daha sık istek anlamına gelir.
+MinimumGoodsRequiredAfterTrade: >-
+  Yapay zekânın bir takas isteğini kabul etmesi için işlemden sonra elinde kalması gereken miktar. Aksi halde
+  isteği reddeder.
+DoubleRationsFoodThreshold: Elma, peynir, et ve ekmeğin toplamı bu eşiği aştığında yapay zekâ çift tayın verir.
+MaxWood: En fazla odun miktarı; MaxResourceVariance buna eklenir.
+MaxStone: En fazla taş miktarı; MaxResourceVariance buna eklenir.
+MaxResourceOther: >-
+  En fazla demir, zift, şerbetçi otu ve un miktarı; MaxResourceVariance buna eklenir. Toplam miktara değil,
+  her kaynağa ayrı uygulanır.
+MaxEquipment: >-
+  Her silah ve zırh türünün en fazla miktarı; MaxResourceVariance buna eklenir. Toplam miktara değil, her türe
+  ayrı uygulanır.
+MaxBeer: En fazla bira miktarı; MaxResourceVariance buna eklenir.
+MaxResourceVariance: Kaynakların herhangi bir en yüksek miktar sınırı üzerinde izin verilen sapma.
+RecruitGoldThreshold: Birim toplamadan önce gereken en az altın miktarı.
+BlacksmithSetting: 'Demirci üretimi. «İkisi de» kılıç ve topuz arasında dönüşümlü üretir: kılıç, topuz, kılıç…'
+FletcherSetting: 'Yaycı üretimi. «İkisi de» yay ve arbalet arasında dönüşümlü üretir: yay, arbalet, yay…'
+PoleturnerSetting: 'Mızrakçı atölyesi üretimi. «İkisi de» mızrak ve kargı arasında dönüşümlü üretir: mızrak, kargı, mızrak…'
+SellResource01: Bu kaynak elde edilir edilmez satılır.
+SellResource02: Bu kaynak elde edilir edilmez satılır.
+SellResource03: Bu kaynak elde edilir edilmez satılır.
+SellResource04: Bu kaynak elde edilir edilmez satılır.
+SellResource05: Bu kaynak elde edilir edilmez satılır.
+SellResource06: Bu kaynak elde edilir edilmez satılır.
+SellResource07: Bu kaynak elde edilir edilmez satılır.
+SellResource08: Bu kaynak elde edilir edilmez satılır.
+SellResource09: Bu kaynak elde edilir edilmez satılır.
+SellResource10: Bu kaynak elde edilir edilmez satılır.
+SellResource11: Bu kaynak elde edilir edilmez satılır.
+SellResource12: Bu kaynak elde edilir edilmez satılır.
+SellResource13: Bu kaynak elde edilir edilmez satılır.
+SellResource14: Bu kaynak elde edilir edilmez satılır.
+SellResource15: Bu kaynak elde edilir edilmez satılır.
+DefWallPatrolRallyTime: >-
+  Sur birimlerinin sonraki AIV noktasına yürümeden önce bekleyeceği süre. Her birim türü surlarda devriye
+  gezemez.
+DefWallPatrolGroups: AIV noktalarında devriye gezen sur grubu sayısı.
+DefSiegeEngineGoldThreshold: AIV'de tanımlanan kuşatma makinelerini kurmadan önce gereken altın miktarı.
+DefSiegeEngineBuildDelay: >-
+  Yıkılan bir AIV kuşatma makinesini yeniden kurmadan önce beklenecek süre. Düşük değer daha hızlı yenileme
+  sağlar.
+Unknown072: Kullanılmayan değer.
+Unknown073: Kullanılmayan değer.
+RecruitProbDefDefault: >-
+  Normal durumdayken savunma birimi toplama olasılığı.
+
+
+  Zayıf durum neredeyse hiç etkin olmaz; genellikle yalnızca yenilgi yaklaşırken kullanılır. Normal durum
+  çoğunlukla ilk yıllarda kullanılır. Güçlü durum en yaygın olanıdır; nüfus ve birim sayısı 40 üzerine
+  çıktığında sıkça ulaşılır.
+RecruitProbDefWeak: >-
+  Zayıf durumdayken savunma birimi toplama olasılığı.
+
+
+  Zayıf durum neredeyse hiç etkin olmaz; genellikle yalnızca yenilgi yaklaşırken kullanılır. Normal durum
+  çoğunlukla ilk yıllarda kullanılır. Güçlü durum en yaygın olanıdır; nüfus ve birim sayısı 40 üzerine
+  çıktığında sıkça ulaşılır.
+RecruitProbDefStrong: >-
+  Güçlü durumdayken savunma birimi toplama olasılığı.
+
+
+  Zayıf durum neredeyse hiç etkin olmaz; genellikle yalnızca yenilgi yaklaşırken kullanılır. Normal durum
+  çoğunlukla ilk yıllarda kullanılır. Güçlü durum en yaygın olanıdır; nüfus ve birim sayısı 40 üzerine
+  çıktığında sıkça ulaşılır.
+RecruitProbRaidDefault: >-
+  Normal durumdayken akın birimi toplama olasılığı.
+
+
+  Zayıf durum neredeyse hiç etkin olmaz; genellikle yalnızca yenilgi yaklaşırken kullanılır. Normal durum
+  çoğunlukla ilk yıllarda kullanılır. Güçlü durum en yaygın olanıdır; nüfus ve birim sayısı 40 üzerine
+  çıktığında sıkça ulaşılır.
+RecruitProbRaidWeak: >-
+  Zayıf durumdayken akın birimi toplama olasılığı.
+
+
+  Zayıf durum neredeyse hiç etkin olmaz; genellikle yalnızca yenilgi yaklaşırken kullanılır. Normal durum
+  çoğunlukla ilk yıllarda kullanılır. Güçlü durum en yaygın olanıdır; nüfus ve birim sayısı 40 üzerine
+  çıktığında sıkça ulaşılır.
+RecruitProbRaidStrong: >-
+  Güçlü durumdayken akın birimi toplama olasılığı.
+
+
+  Zayıf durum neredeyse hiç etkin olmaz; genellikle yalnızca yenilgi yaklaşırken kullanılır. Normal durum
+  çoğunlukla ilk yıllarda kullanılır. Güçlü durum en yaygın olanıdır; nüfus ve birim sayısı 40 üzerine
+  çıktığında sıkça ulaşılır.
+RecruitProbAttackDefault: >-
+  Normal durumdayken saldırı birimi toplama olasılığı.
+
+
+  Zayıf durum neredeyse hiç etkin olmaz; genellikle yalnızca yenilgi yaklaşırken kullanılır. Normal durum
+  çoğunlukla ilk yıllarda kullanılır. Güçlü durum en yaygın olanıdır; nüfus ve birim sayısı 40 üzerine
+  çıktığında sıkça ulaşılır.
+RecruitProbAttackWeak: >-
+  Zayıf durumdayken saldırı birimi toplama olasılığı.
+
+
+  Zayıf durum neredeyse hiç etkin olmaz; genellikle yalnızca yenilgi yaklaşırken kullanılır. Normal durum
+  çoğunlukla ilk yıllarda kullanılır. Güçlü durum en yaygın olanıdır; nüfus ve birim sayısı 40 üzerine
+  çıktığında sıkça ulaşılır.
+RecruitProbAttackStrong: >-
+  Güçlü durumdayken saldırı birimi toplama olasılığı.
+
+
+  Zayıf durum neredeyse hiç etkin olmaz; genellikle yalnızca yenilgi yaklaşırken kullanılır. Normal durum
+  çoğunlukla ilk yıllarda kullanılır. Güçlü durum en yaygın olanıdır; nüfus ve birim sayısı 40 üzerine
+  çıktığında sıkça ulaşılır.
+SortieUnitRangedMin: >-
+  En az menzilli çıkış birimi sayısı.
+
+
+  Zayıf durum neredeyse hiç etkin olmaz; genellikle yalnızca yenilgi yaklaşırken kullanılır. Normal durum
+  çoğunlukla ilk yıllarda kullanılır. Güçlü durum en yaygın olanıdır; nüfus ve birim sayısı 40 üzerine
+  çıktığında sıkça ulaşılır.
+SortieUnitRanged: >-
+  Menzilli çıkış birimi türü. Kalenin dışında, işçilerin öldüğü yerlerde toplanır. Birimler öldükçe sayıları
+  artar ve ilerleyen aşamalarda verilen asgari sayıyı genellikle yaklaşık 25 aşar. Asgari sayı 0 olsa bile
+  toplanırlar; kapatmak için toplanamayan bir tür seçin. Çıkış birimleri diğer tüm asker toplama işlemlerinden
+  önceliklidir.
+SortieUnitMeleeMin: Yakın dövüş çıkış birimlerinin kesin sayısı.
+SortieUnitMelee: >-
+  Yakın dövüş çıkış birimi türü. Binaları yıkan askerlerin önünü keser ve hedef öldüğünde iç kalenin tepesine
+  döner. Çıkış birimleri diğer tüm asker toplama işlemlerinden önceliklidir.
+DefDiggingUnitMax: >-
+  En fazla kazıcı sayısı. Kendi veya müttefik hendeğinin kazılması planlanırken savunma, akın ve saldırı
+  birimlerinden önce toplanırlar.
+DefDiggingUnit: Kendi ve müttefik savunma hendeklerini kazan birim türü.
+RecruitInterval: >-
+  Normal durumdayken asker toplama işlemleri arasındaki süre. 1 en hızlı değerdir.
+
+
+  Zayıf durum neredeyse hiç etkin olmaz; genellikle yalnızca yenilgi yaklaşırken kullanılır. Normal durum
+  çoğunlukla ilk yıllarda kullanılır. Güçlü durum en yaygın olanıdır; nüfus ve birim sayısı 40 üzerine
+  çıktığında sıkça ulaşılır.
+RecruitIntervalWeak: >-
+  Zayıf durumdayken asker toplama işlemleri arasındaki süre. 1 en hızlı değerdir.
+
+
+  Zayıf durum neredeyse hiç etkin olmaz; genellikle yalnızca yenilgi yaklaşırken kullanılır. Normal durum
+  çoğunlukla ilk yıllarda kullanılır. Güçlü durum en yaygın olanıdır; nüfus ve birim sayısı 40 üzerine
+  çıktığında sıkça ulaşılır.
+RecruitIntervalStrong: >-
+  Güçlü durumdayken asker toplama işlemleri arasındaki süre. 1 en hızlı değerdir.
+
+
+  Zayıf durum neredeyse hiç etkin olmaz; genellikle yalnızca yenilgi yaklaşırken kullanılır. Normal durum
+  çoğunlukla ilk yıllarda kullanılır. Güçlü durum en yaygın olanıdır; nüfus ve birim sayısı 40 üzerine
+  çıktığında sıkça ulaşılır.
+DefTotal: Toplam savunma birimi sayısı.
+OuterPatrolGroupsCount: Ekonomi bölgesinde devriye gezen savunma grubu sayısı.
+OuterPatrolGroupsMove: >-
+  Surlarda olmayan savunmacıların ekonomi bölgesinde devriye gezmesini veya genellikle taş ocaklarının
+  yakınında sabit durmasını belirler.
+OuterPatrolRallyDelay: Dış savunmacıların sonraki devriye noktasına gitmeden önce bekleyeceği süre.
+DefWalls: DefTotal içinden AIV sur noktalarına atanan birim sayısı. Geri kalanlar ekonomi bölgesinde devriye gezer.
+DefUnit1: >-
+  Savunma asker toplama sırasındaki 1. yuva. Yapay zekâ birimin maliyetini karşılayamazsa listedeki sonraki
+  birimi toplamayı dener.
+DefUnit2: >-
+  Savunma asker toplama sırasındaki 2. yuva. Yapay zekâ birimin maliyetini karşılayamazsa listedeki sonraki
+  birimi toplamayı dener.
+DefUnit3: >-
+  Savunma asker toplama sırasındaki 3. yuva. Yapay zekâ birimin maliyetini karşılayamazsa listedeki sonraki
+  birimi toplamayı dener.
+DefUnit4: >-
+  Savunma asker toplama sırasındaki 4. yuva. Yapay zekâ birimin maliyetini karşılayamazsa listedeki sonraki
+  birimi toplamayı dener.
+DefUnit5: >-
+  Savunma asker toplama sırasındaki 5. yuva. Yapay zekâ birimin maliyetini karşılayamazsa listedeki sonraki
+  birimi toplamayı dener.
+DefUnit6: >-
+  Savunma asker toplama sırasındaki 6. yuva. Yapay zekâ birimin maliyetini karşılayamazsa listedeki sonraki
+  birimi toplamayı dener.
+DefUnit7: >-
+  Savunma asker toplama sırasındaki 7. yuva. Yapay zekâ birimin maliyetini karşılayamazsa listedeki sonraki
+  birimi toplamayı dener.
+DefUnit8: >-
+  Savunma asker toplama sırasındaki 8. yuva. Yapay zekâ birimin maliyetini karşılayamazsa listedeki sonraki
+  birimi toplamayı dener. DefUnit8 sonrasında sıra başa döner.
+RaidUnitsBase: Düşman binalarına akın düzenleyen birim sayısı.
+RaidUnitsRandom: Yapay zekâ kendini güçlü ve zengin gördüğünde RaidUnitsBase üzerine eklenen birimler.
+RaidUnit1: >-
+  Akın asker toplama sırasındaki 1. yuva. Yapay zekâ birimin maliyetini karşılayamazsa listedeki sonraki
+  birimi toplamayı dener.
+RaidUnit2: >-
+  Akın asker toplama sırasındaki 2. yuva. Yapay zekâ birimin maliyetini karşılayamazsa listedeki sonraki
+  birimi toplamayı dener.
+RaidUnit3: >-
+  Akın asker toplama sırasındaki 3. yuva. Yapay zekâ birimin maliyetini karşılayamazsa listedeki sonraki
+  birimi toplamayı dener.
+RaidUnit4: >-
+  Akın asker toplama sırasındaki 4. yuva. Yapay zekâ birimin maliyetini karşılayamazsa listedeki sonraki
+  birimi toplamayı dener.
+RaidUnit5: >-
+  Akın asker toplama sırasındaki 5. yuva. Yapay zekâ birimin maliyetini karşılayamazsa listedeki sonraki
+  birimi toplamayı dener.
+RaidUnit6: >-
+  Akın asker toplama sırasındaki 6. yuva. Yapay zekâ birimin maliyetini karşılayamazsa listedeki sonraki
+  birimi toplamayı dener.
+RaidUnit7: >-
+  Akın asker toplama sırasındaki 7. yuva. Yapay zekâ birimin maliyetini karşılayamazsa listedeki sonraki
+  birimi toplamayı dener.
+RaidUnit8: >-
+  Akın asker toplama sırasındaki 8. yuva. Yapay zekâ birimin maliyetini karşılayamazsa listedeki sonraki
+  birimi toplamayı dener. RaidUnit8 sonrasında sıra başa döner.
+HarassingSiegeEngine1: >-
+  Taciz kuşatma makinesi toplama sırasındaki 1. yuva. Mühendis loncasından düşman kalesine gider ve yol
+  boyunca binalara ateş eder. Ateş balistaları birimlere de saldırır.
+HarassingSiegeEngine2: >-
+  Taciz kuşatma makinesi toplama sırasındaki 2. yuva. Mühendis loncasından düşman kalesine gider ve yol
+  boyunca binalara ateş eder. Ateş balistaları birimlere de saldırır.
+HarassingSiegeEngine3: >-
+  Taciz kuşatma makinesi toplama sırasındaki 3. yuva. Mühendis loncasından düşman kalesine gider ve yol
+  boyunca binalara ateş eder. Ateş balistaları birimlere de saldırır.
+HarassingSiegeEngine4: >-
+  Taciz kuşatma makinesi toplama sırasındaki 4. yuva. Mühendis loncasından düşman kalesine gider ve yol
+  boyunca binalara ateş eder. Ateş balistaları birimlere de saldırır.
+HarassingSiegeEngine5: >-
+  Taciz kuşatma makinesi toplama sırasındaki 5. yuva. Mühendis loncasından düşman kalesine gider ve yol
+  boyunca binalara ateş eder. Ateş balistaları birimlere de saldırır.
+HarassingSiegeEngine6: >-
+  Taciz kuşatma makinesi toplama sırasındaki 6. yuva. Mühendis loncasından düşman kalesine gider ve yol
+  boyunca binalara ateş eder. Ateş balistaları birimlere de saldırır.
+HarassingSiegeEngine7: >-
+  Taciz kuşatma makinesi toplama sırasındaki 7. yuva. Mühendis loncasından düşman kalesine gider ve yol
+  boyunca binalara ateş eder. Ateş balistaları birimlere de saldırır.
+HarassingSiegeEngine8: >-
+  Taciz kuşatma makinesi toplama sırasındaki 8. yuva. Mühendis loncasından düşman kalesine gider ve yol
+  boyunca binalara ateş eder. Ateş balistaları birimlere de saldırır. 8. yuvadan sonra sıra başa döner.
+HarassingSiegeEnginesMax: Aynı anda sahada bulunabilecek en fazla taciz kuşatma makinesi sayısı.
+RaidRetargetDelay: Akın için başka bir binayı hedef seçmeden önce beklenecek süre.
+AttForceBase: >-
+  Bir saldırı başlatmak için gereken birim sayısı. Her saldırıdan sonra UCP ayarına göre artar; orijinal
+  oyunda artış 5'tir.
+AttForceRandom: Yapay zekâ kendini güçlü ve zengin gördüğünde AttForceBase üzerine eklenen birimler.
+AttForceSupportAllyThreshold: Oyuncunun «Saldır» veya «Yardım et» komutlarını uygulamak için gereken saldırı askeri sayısı.
+AttForceRallyPercentage: Saldırının başlaması için toplanma noktasına ulaşması gereken ordu yüzdesi.
+Unknown129: >-
+  Etkisi çok azdır: zayıf bir saldırı geri çekilmeden önce toplanma noktasına ulaşması gereken yüzde ve yeni
+  saldırı için asker toplamadan önce iç kaleye ulaşması gereken geri çekilen asker yüzdesi.
+AttAssaultDelay: Saldırı birimlerinin ve kuşatma makinelerinin hücuma ilerlemeden önce toplanma noktasında bekleyeceği süre.
+AttUnitPatrolRecommandDelay: >-
+  Kazanılan bir saldırıdan sonra geri çekilmeden önce beklenecek süre. Rakibin mezarında beklemeye gerek
+  olmadığından genellikle 0'dır.
+Unknown132: >-
+  Müttefik saldırısını bekleme olasılığı, yüzde olarak. İlerleyen aşamalarda yapay zekâ, müttefik saldırısına
+  katılmak için asker toplamayı tamamlamadan saldırabilir.
+SiegeEngine1: Saldırı için toplanan 1. kuşatma makinesi.
+SiegeEngine2: Saldırı için toplanan 2. kuşatma makinesi.
+SiegeEngine3: Saldırı için toplanan 3. kuşatma makinesi.
+SiegeEngine4: Saldırı için toplanan 4. kuşatma makinesi.
+SiegeEngine5: Saldırı için toplanan 5. kuşatma makinesi.
+SiegeEngine6: Saldırı için toplanan 6. kuşatma makinesi.
+SiegeEngine7: Saldırı için toplanan 7. kuşatma makinesi.
+SiegeEngine8: Saldırı için toplanan 8. kuşatma makinesi. En fazla sekiz makine toplanır.
+CowThrowInterval: Bir mancınığın inek fırlatmadan önce fırlatacağı taş sayısı.
+Unknown142: Kullanılmayan değer.
+AttMaxEngineers: >-
+  SiegeEngine yuvalarındaki kuşatma makinelerini kullanacak en fazla mühendis sayısı. En azından tüm bu
+  makinelerin toplam mühendis ihtiyacını karşılamalıdır.
+AttDiggingUnit: Saldırı sırasında düşman hendeğini dolduran birim türü.
+AttDiggingUnitMax: Saldırı başına toplanan en fazla kazıcı sayısı.
+AttUnitVanguard: Diğer birimlerden önce düşman kalesine saldırmak için koşan birim türü.
+AttUnitVanguardMax: Saldırı başına toplanan en fazla öncü birim sayısı.
+AttMaxAssassins: Kuşatma sırasında düşman kapı yapılarına tırmanmaya çalışan en fazla suikastçı sayısı.
+AttMaxLaddermen: Kuşatma sırasında sura merdiven dayamaya çalışan en fazla merdivenci sayısı.
+AttMaxTunnelers: Düşman iç kalesine doğru tünel kazmaya çalışan en fazla lağımcı sayısı.
+AttUnitPatrol: Düşman kalesi çevresinde devriye gezip düşman askerlerine ateş eden birimler.
+AttUnitPatrolMax: Saldırı başına toplanan en fazla devriye birimi sayısı.
+AttUnitPatrolGroupsCount: Saldırı başladığında devriye birimlerinin ayrılacağı grup sayısı.
+AttUnitBackup: >-
+  Toplanma noktasında bekleyen ve yalnızca düşman iç kalesine yol varsa saldıran birimler. Diğer tüm
+  saldırganlar ölürse geri çekilirler.
+AttUnitBackupMax: Saldırı başına toplanan en fazla yedek birim sayısı.
+AttUnitBackupGroupsCount: Düşman iç kalesine saldırırken yedek birimlerin ayrılacağı grup sayısı.
+AttUnitEngage: Surlar yerine düşman askerlerine ve köylülerine saldırmaya çalışan birimler.
+AttUnitEngageMax: Saldırı başına toplanan en fazla çatışma birimi sayısı.
+AttUnitSiegeDef: >-
+  Kuşatma koruma birimleri saldırı sırasında makinelerin yanında kalır. Saldırı makineleriyle birlikte taciz
+  ve savunma makinelerini de koruyabilirler.
+AttUnitSiegeDefMax: Saldırı başına toplanan en fazla kuşatma koruma birimi sayısı.
+AttUnitSiegeDefGroupsCount: Saldırı sırasında kuşatma koruma birimlerinin ayrılacağı grup sayısı.
+AttUnitMain1: >-
+  Ana ordu asker toplama sırasındaki 1. yuva. Yalnızca bu birimlerin sayısı sınırsız artar. Yapay zekâ birimin
+  maliyetini karşılayamazsa sonraki birimi toplamayı dener.
+AttUnitMain2: >-
+  Ana ordu asker toplama sırasındaki 2. yuva. Yalnızca bu birimlerin sayısı sınırsız artar. Yapay zekâ birimin
+  maliyetini karşılayamazsa sonraki birimi toplamayı dener.
+AttUnitMain3: >-
+  Ana ordu asker toplama sırasındaki 3. yuva. Yalnızca bu birimlerin sayısı sınırsız artar. Yapay zekâ birimin
+  maliyetini karşılayamazsa sonraki birimi toplamayı dener.
+AttUnitMain4: >-
+  Ana ordu asker toplama sırasındaki 4. yuva. Yalnızca bu birimlerin sayısı sınırsız artar. Yapay zekâ birimin
+  maliyetini karşılayamazsa sonraki birimi toplamayı dener. AttUnitMain4 sonrasında sıra başa döner.
+AttMaxDefault: >-
+  Yapay zekânın tüm uzman rollerini (AttLaddermen, AttAssassins, AttUnitPatrol vb.) tamamlamak zorunda
+  kalmadan önce toplayabileceği ana ordu birimi sayısı. 0 olduğunda herhangi bir AttUnitMain birimini
+  toplamadan önce tüm uzman rollerini tamamlamalıdır.
+AttMainGroupsCount: Saldırı sırasında AttUnitMain birimlerinin ayrılacağı grup sayısı.
+TargetChoice: >-
+  Yapay zekânın saldırı hedefini seçme yöntemi.
+
+
+  Altın: en fazla altını olan düşmana saldırır.
+
+
+  Dengeli: hesaplanan zayıflık puanına göre seçer; en ayrıntılı ve karmaşık yöntemdir.
+
+
+  En yakın: iç kaleler arasındaki mesafeye göre en yakın düşmana saldırır.
+
+
+  Herhangi biri: dahili oyuncu listesindeki sonraki düşmana saldırır. Rastgele görünebilir ancak sabit bir
+  sıra izler.
+
+
+  Oyuncu: önce insan oyuncuları hedefler. İnsan düşman yoksa «En yakın» yöntemini kullanır.
+AIOxTethers_DisableInitialOxTether: >-
+  False orijinal davranışı korur; True her taş ocağı kurulduğunda veya yeniden yapıldığında bir öküz bağı
+  kurulmasını önler.
+AIOxTethers_Logic: 'Uygulanan mantık: False orijinal, True dinamik mantığı kullanır.'
+AIOxTethers_MaxOxTethers: Bu yapay zekânın toplam öküz bağı sayısı bu değeri aşmaz.
+AIOxTethers_DynamicMaxOxTethers: Toplam öküz bağı sayısı, bu değerin taş ocağı sayısıyla çarpımını aşmaz.
+AIOxTethers_MinimumOxTethersPerQuarry: Bu taş ocağından taş taşıyan bağlı öküz bağı sayısı bu değerden azsa ocak için yeni bir bağ kurulur.
+AIOxTethers_MaximumOxTethersPerQuarry: Bir taş ocağına bağlı öküz bağı sayısı bu değeri aşarsa ocak için yeni bir bağ kurulmaz.
+AIOxTethers_ThresholdStoneLoad: >-
+  Bir taş ocağındaki taş miktarının bağlı öküz bağı sayısına bölümü bu değeri aşarsa ocak için yeni bir bağ
+  kurulur.
+RunningUnits_Macemen: >-
+  Açıksa topuzcular, daha yavaş birimlerle aynı grupta olsalar bile daima koşar. Kapalıysa orijinal oyundaki
+  gibi grubun en yavaş biriminin hızına uyarlar.
+RunningUnits_Spearmen: >-
+  Açıksa mızrakçılar, daha yavaş birimlerle aynı grupta olsalar bile daima koşar. Kapalıysa orijinal oyundaki
+  gibi grubun en yavaş biriminin hızına uyarlar.
+RunningUnits_Slingers: >-
+  Açıksa sapancılar, daha yavaş birimlerle aynı grupta olsalar bile daima koşar. Kapalıysa orijinal oyundaki
+  gibi grubun en yavaş biriminin hızına uyarlar.
+RunningUnits_Slaves: >-
+  Açıksa köleler, daha yavaş birimlerle aynı grupta olsalar bile daima koşar. Kapalıysa orijinal oyundaki gibi
+  grubun en yavaş biriminin hızına uyarlar.
+AIVTroops_InitialRole: >-
+  Görevi olmayan başlangıç veya senaryo askerlerinin ilk görevi. Kazma için birimin kazabilmesi ve hendek
+  karelerinin bulunması gerekir; aksi halde savunma görevi verilir.
+
+
+  Desteklenen tüm askerler için ortak varsayılan değer. Vanilla seçeneği bu alanı karakter kaydına yazmaz ve
+  geçerli sıradaki ortak veya menü varsayılanını kullanır. aiv-troops-behaviour eklentisinde «Asker ayarları»
+  ve «AIC ayarlarını kullan» etkin olmalıdır. Değişikliklerden sonra UCP'yi yeniden başlatıp yeni oyun açın.
+AIVTroops_Movement: >-
+  AIV savunma noktaları arasındaki hareket. Devriye, DefWallPatrolGroups ve DefWallPatrolRallyTime değerlerini
+  kullanır; grup sayısı sıfırsa askerler sabit kalır.
+
+
+  Desteklenen tüm askerler için ortak varsayılan değer. Vanilla seçeneği bu alanı karakter kaydına yazmaz ve
+  geçerli sıradaki ortak veya menü varsayılanını kullanır. aiv-troops-behaviour eklentisinde «Asker ayarları»
+  ve «AIC ayarlarını kullan» etkin olmalıdır. Değişikliklerden sonra UCP'yi yeniden başlatıp yeni oyun açın.
+AIVTroops_InitialRole_Engineer: >-
+  Görevi olmayan başlangıç veya senaryo askerlerinin ilk görevi. Kazma için birimin kazabilmesi ve hendek
+  karelerinin bulunması gerekir; aksi halde savunma görevi verilir.
+
+
+  Bu askere özel ayar, ortak AIC alanından önceliklidir. Vanilla seçeneği bu alanı karakter kaydına yazmaz ve
+  geçerli sıradaki ortak veya menü varsayılanını kullanır. aiv-troops-behaviour eklentisinde «Asker ayarları»
+  ve «AIC ayarlarını kullan» etkin olmalıdır. Değişikliklerden sonra UCP'yi yeniden başlatıp yeni oyun açın.
+AIVTroops_Movement_Engineer: >-
+  AIV savunma noktaları arasındaki hareket. Devriye, DefWallPatrolGroups ve DefWallPatrolRallyTime değerlerini
+  kullanır; grup sayısı sıfırsa askerler sabit kalır.
+
+
+  Bu askere özel ayar, ortak AIC alanından önceliklidir. Vanilla seçeneği bu alanı karakter kaydına yazmaz ve
+  geçerli sıradaki ortak veya menü varsayılanını kullanır. aiv-troops-behaviour eklentisinde «Asker ayarları»
+  ve «AIC ayarlarını kullan» etkin olmalıdır. Değişikliklerden sonra UCP'yi yeniden başlatıp yeni oyun açın.
+AIVTroops_InitialRole_Archer: >-
+  Görevi olmayan başlangıç veya senaryo askerlerinin ilk görevi. Kazma için birimin kazabilmesi ve hendek
+  karelerinin bulunması gerekir; aksi halde savunma görevi verilir.
+
+
+  Bu askere özel ayar, ortak AIC alanından önceliklidir. Vanilla seçeneği bu alanı karakter kaydına yazmaz ve
+  geçerli sıradaki ortak veya menü varsayılanını kullanır. aiv-troops-behaviour eklentisinde «Asker ayarları»
+  ve «AIC ayarlarını kullan» etkin olmalıdır. Değişikliklerden sonra UCP'yi yeniden başlatıp yeni oyun açın.
+AIVTroops_Movement_Archer: >-
+  AIV savunma noktaları arasındaki hareket. Devriye, DefWallPatrolGroups ve DefWallPatrolRallyTime değerlerini
+  kullanır; grup sayısı sıfırsa askerler sabit kalır.
+
+
+  Bu askere özel ayar, ortak AIC alanından önceliklidir. Vanilla seçeneği bu alanı karakter kaydına yazmaz ve
+  geçerli sıradaki ortak veya menü varsayılanını kullanır. aiv-troops-behaviour eklentisinde «Asker ayarları»
+  ve «AIC ayarlarını kullan» etkin olmalıdır. Değişikliklerden sonra UCP'yi yeniden başlatıp yeni oyun açın.
+AIVTroops_InitialRole_Crossbowman: >-
+  Görevi olmayan başlangıç veya senaryo askerlerinin ilk görevi. Kazma için birimin kazabilmesi ve hendek
+  karelerinin bulunması gerekir; aksi halde savunma görevi verilir.
+
+
+  Bu askere özel ayar, ortak AIC alanından önceliklidir. Vanilla seçeneği bu alanı karakter kaydına yazmaz ve
+  geçerli sıradaki ortak veya menü varsayılanını kullanır. aiv-troops-behaviour eklentisinde «Asker ayarları»
+  ve «AIC ayarlarını kullan» etkin olmalıdır. Değişikliklerden sonra UCP'yi yeniden başlatıp yeni oyun açın.
+AIVTroops_Movement_Crossbowman: >-
+  AIV savunma noktaları arasındaki hareket. Devriye, DefWallPatrolGroups ve DefWallPatrolRallyTime değerlerini
+  kullanır; grup sayısı sıfırsa askerler sabit kalır.
+
+
+  Bu askere özel ayar, ortak AIC alanından önceliklidir. Vanilla seçeneği bu alanı karakter kaydına yazmaz ve
+  geçerli sıradaki ortak veya menü varsayılanını kullanır. aiv-troops-behaviour eklentisinde «Asker ayarları»
+  ve «AIC ayarlarını kullan» etkin olmalıdır. Değişikliklerden sonra UCP'yi yeniden başlatıp yeni oyun açın.
+AIVTroops_InitialRole_Spearman: >-
+  Görevi olmayan başlangıç veya senaryo askerlerinin ilk görevi. Kazma için birimin kazabilmesi ve hendek
+  karelerinin bulunması gerekir; aksi halde savunma görevi verilir.
+
+
+  Bu askere özel ayar, ortak AIC alanından önceliklidir. Vanilla seçeneği bu alanı karakter kaydına yazmaz ve
+  geçerli sıradaki ortak veya menü varsayılanını kullanır. aiv-troops-behaviour eklentisinde «Asker ayarları»
+  ve «AIC ayarlarını kullan» etkin olmalıdır. Değişikliklerden sonra UCP'yi yeniden başlatıp yeni oyun açın.
+AIVTroops_Movement_Spearman: >-
+  AIV savunma noktaları arasındaki hareket. Devriye, DefWallPatrolGroups ve DefWallPatrolRallyTime değerlerini
+  kullanır; grup sayısı sıfırsa askerler sabit kalır.
+
+
+  Bu askere özel ayar, ortak AIC alanından önceliklidir. Vanilla seçeneği bu alanı karakter kaydına yazmaz ve
+  geçerli sıradaki ortak veya menü varsayılanını kullanır. aiv-troops-behaviour eklentisinde «Asker ayarları»
+  ve «AIC ayarlarını kullan» etkin olmalıdır. Değişikliklerden sonra UCP'yi yeniden başlatıp yeni oyun açın.
+AIVTroops_InitialRole_Pikeman: >-
+  Görevi olmayan başlangıç veya senaryo askerlerinin ilk görevi. Kazma için birimin kazabilmesi ve hendek
+  karelerinin bulunması gerekir; aksi halde savunma görevi verilir.
+
+
+  Bu askere özel ayar, ortak AIC alanından önceliklidir. Vanilla seçeneği bu alanı karakter kaydına yazmaz ve
+  geçerli sıradaki ortak veya menü varsayılanını kullanır. aiv-troops-behaviour eklentisinde «Asker ayarları»
+  ve «AIC ayarlarını kullan» etkin olmalıdır. Değişikliklerden sonra UCP'yi yeniden başlatıp yeni oyun açın.
+AIVTroops_Movement_Pikeman: >-
+  AIV savunma noktaları arasındaki hareket. Devriye, DefWallPatrolGroups ve DefWallPatrolRallyTime değerlerini
+  kullanır; grup sayısı sıfırsa askerler sabit kalır.
+
+
+  Bu askere özel ayar, ortak AIC alanından önceliklidir. Vanilla seçeneği bu alanı karakter kaydına yazmaz ve
+  geçerli sıradaki ortak veya menü varsayılanını kullanır. aiv-troops-behaviour eklentisinde «Asker ayarları»
+  ve «AIC ayarlarını kullan» etkin olmalıdır. Değişikliklerden sonra UCP'yi yeniden başlatıp yeni oyun açın.
+AIVTroops_InitialRole_Maceman: >-
+  Görevi olmayan başlangıç veya senaryo askerlerinin ilk görevi. Kazma için birimin kazabilmesi ve hendek
+  karelerinin bulunması gerekir; aksi halde savunma görevi verilir.
+
+
+  Bu askere özel ayar, ortak AIC alanından önceliklidir. Vanilla seçeneği bu alanı karakter kaydına yazmaz ve
+  geçerli sıradaki ortak veya menü varsayılanını kullanır. aiv-troops-behaviour eklentisinde «Asker ayarları»
+  ve «AIC ayarlarını kullan» etkin olmalıdır. Değişikliklerden sonra UCP'yi yeniden başlatıp yeni oyun açın.
+AIVTroops_Movement_Maceman: >-
+  AIV savunma noktaları arasındaki hareket. Devriye, DefWallPatrolGroups ve DefWallPatrolRallyTime değerlerini
+  kullanır; grup sayısı sıfırsa askerler sabit kalır.
+
+
+  Bu askere özel ayar, ortak AIC alanından önceliklidir. Vanilla seçeneği bu alanı karakter kaydına yazmaz ve
+  geçerli sıradaki ortak veya menü varsayılanını kullanır. aiv-troops-behaviour eklentisinde «Asker ayarları»
+  ve «AIC ayarlarını kullan» etkin olmalıdır. Değişikliklerden sonra UCP'yi yeniden başlatıp yeni oyun açın.
+AIVTroops_InitialRole_Swordsman: >-
+  Görevi olmayan başlangıç veya senaryo askerlerinin ilk görevi. Kazma için birimin kazabilmesi ve hendek
+  karelerinin bulunması gerekir; aksi halde savunma görevi verilir.
+
+
+  Bu askere özel ayar, ortak AIC alanından önceliklidir. Vanilla seçeneği bu alanı karakter kaydına yazmaz ve
+  geçerli sıradaki ortak veya menü varsayılanını kullanır. aiv-troops-behaviour eklentisinde «Asker ayarları»
+  ve «AIC ayarlarını kullan» etkin olmalıdır. Değişikliklerden sonra UCP'yi yeniden başlatıp yeni oyun açın.
+AIVTroops_Movement_Swordsman: >-
+  AIV savunma noktaları arasındaki hareket. Devriye, DefWallPatrolGroups ve DefWallPatrolRallyTime değerlerini
+  kullanır; grup sayısı sıfırsa askerler sabit kalır.
+
+
+  Bu askere özel ayar, ortak AIC alanından önceliklidir. Vanilla seçeneği bu alanı karakter kaydına yazmaz ve
+  geçerli sıradaki ortak veya menü varsayılanını kullanır. aiv-troops-behaviour eklentisinde «Asker ayarları»
+  ve «AIC ayarlarını kullan» etkin olmalıdır. Değişikliklerden sonra UCP'yi yeniden başlatıp yeni oyun açın.
+AIVTroops_InitialRole_Knight: >-
+  Görevi olmayan başlangıç veya senaryo askerlerinin ilk görevi. Kazma için birimin kazabilmesi ve hendek
+  karelerinin bulunması gerekir; aksi halde savunma görevi verilir.
+
+
+  Bu askere özel ayar, ortak AIC alanından önceliklidir. Vanilla seçeneği bu alanı karakter kaydına yazmaz ve
+  geçerli sıradaki ortak veya menü varsayılanını kullanır. aiv-troops-behaviour eklentisinde «Asker ayarları»
+  ve «AIC ayarlarını kullan» etkin olmalıdır. Değişikliklerden sonra UCP'yi yeniden başlatıp yeni oyun açın.
+AIVTroops_Movement_Knight: >-
+  AIV savunma noktaları arasındaki hareket. Devriye, DefWallPatrolGroups ve DefWallPatrolRallyTime değerlerini
+  kullanır; grup sayısı sıfırsa askerler sabit kalır.
+
+
+  Bu askere özel ayar, ortak AIC alanından önceliklidir. Vanilla seçeneği bu alanı karakter kaydına yazmaz ve
+  geçerli sıradaki ortak veya menü varsayılanını kullanır. aiv-troops-behaviour eklentisinde «Asker ayarları»
+  ve «AIC ayarlarını kullan» etkin olmalıdır. Değişikliklerden sonra UCP'yi yeniden başlatıp yeni oyun açın.
+AIVTroops_InitialRole_Slave: >-
+  Görevi olmayan başlangıç veya senaryo askerlerinin ilk görevi. Kazma için birimin kazabilmesi ve hendek
+  karelerinin bulunması gerekir; aksi halde savunma görevi verilir.
+
+
+  Bu askere özel ayar, ortak AIC alanından önceliklidir. Vanilla seçeneği bu alanı karakter kaydına yazmaz ve
+  geçerli sıradaki ortak veya menü varsayılanını kullanır. aiv-troops-behaviour eklentisinde «Asker ayarları»
+  ve «AIC ayarlarını kullan» etkin olmalıdır. Değişikliklerden sonra UCP'yi yeniden başlatıp yeni oyun açın.
+AIVTroops_Movement_Slave: >-
+  AIV savunma noktaları arasındaki hareket. Devriye, DefWallPatrolGroups ve DefWallPatrolRallyTime değerlerini
+  kullanır; grup sayısı sıfırsa askerler sabit kalır.
+
+
+  Bu askere özel ayar, ortak AIC alanından önceliklidir. Vanilla seçeneği bu alanı karakter kaydına yazmaz ve
+  geçerli sıradaki ortak veya menü varsayılanını kullanır. aiv-troops-behaviour eklentisinde «Asker ayarları»
+  ve «AIC ayarlarını kullan» etkin olmalıdır. Değişikliklerden sonra UCP'yi yeniden başlatıp yeni oyun açın.
+AIVTroops_InitialRole_Slinger: >-
+  Görevi olmayan başlangıç veya senaryo askerlerinin ilk görevi. Kazma için birimin kazabilmesi ve hendek
+  karelerinin bulunması gerekir; aksi halde savunma görevi verilir.
+
+
+  Bu askere özel ayar, ortak AIC alanından önceliklidir. Vanilla seçeneği bu alanı karakter kaydına yazmaz ve
+  geçerli sıradaki ortak veya menü varsayılanını kullanır. aiv-troops-behaviour eklentisinde «Asker ayarları»
+  ve «AIC ayarlarını kullan» etkin olmalıdır. Değişikliklerden sonra UCP'yi yeniden başlatıp yeni oyun açın.
+AIVTroops_Movement_Slinger: >-
+  AIV savunma noktaları arasındaki hareket. Devriye, DefWallPatrolGroups ve DefWallPatrolRallyTime değerlerini
+  kullanır; grup sayısı sıfırsa askerler sabit kalır.
+
+
+  Bu askere özel ayar, ortak AIC alanından önceliklidir. Vanilla seçeneği bu alanı karakter kaydına yazmaz ve
+  geçerli sıradaki ortak veya menü varsayılanını kullanır. aiv-troops-behaviour eklentisinde «Asker ayarları»
+  ve «AIC ayarlarını kullan» etkin olmalıdır. Değişikliklerden sonra UCP'yi yeniden başlatıp yeni oyun açın.
+AIVTroops_InitialRole_Assassin: >-
+  Görevi olmayan başlangıç veya senaryo askerlerinin ilk görevi. Kazma için birimin kazabilmesi ve hendek
+  karelerinin bulunması gerekir; aksi halde savunma görevi verilir.
+
+
+  Bu askere özel ayar, ortak AIC alanından önceliklidir. Vanilla seçeneği bu alanı karakter kaydına yazmaz ve
+  geçerli sıradaki ortak veya menü varsayılanını kullanır. aiv-troops-behaviour eklentisinde «Asker ayarları»
+  ve «AIC ayarlarını kullan» etkin olmalıdır. Değişikliklerden sonra UCP'yi yeniden başlatıp yeni oyun açın.
+AIVTroops_Movement_Assassin: >-
+  AIV savunma noktaları arasındaki hareket. Devriye, DefWallPatrolGroups ve DefWallPatrolRallyTime değerlerini
+  kullanır; grup sayısı sıfırsa askerler sabit kalır.
+
+
+  Bu askere özel ayar, ortak AIC alanından önceliklidir. Vanilla seçeneği bu alanı karakter kaydına yazmaz ve
+  geçerli sıradaki ortak veya menü varsayılanını kullanır. aiv-troops-behaviour eklentisinde «Asker ayarları»
+  ve «AIC ayarlarını kullan» etkin olmalıdır. Değişikliklerden sonra UCP'yi yeniden başlatıp yeni oyun açın.
+AIVTroops_InitialRole_ArabianArcher: >-
+  Görevi olmayan başlangıç veya senaryo askerlerinin ilk görevi. Kazma için birimin kazabilmesi ve hendek
+  karelerinin bulunması gerekir; aksi halde savunma görevi verilir.
+
+
+  Bu askere özel ayar, ortak AIC alanından önceliklidir. Vanilla seçeneği bu alanı karakter kaydına yazmaz ve
+  geçerli sıradaki ortak veya menü varsayılanını kullanır. aiv-troops-behaviour eklentisinde «Asker ayarları»
+  ve «AIC ayarlarını kullan» etkin olmalıdır. Değişikliklerden sonra UCP'yi yeniden başlatıp yeni oyun açın.
+AIVTroops_Movement_ArabianArcher: >-
+  AIV savunma noktaları arasındaki hareket. Devriye, DefWallPatrolGroups ve DefWallPatrolRallyTime değerlerini
+  kullanır; grup sayısı sıfırsa askerler sabit kalır.
+
+
+  Bu askere özel ayar, ortak AIC alanından önceliklidir. Vanilla seçeneği bu alanı karakter kaydına yazmaz ve
+  geçerli sıradaki ortak veya menü varsayılanını kullanır. aiv-troops-behaviour eklentisinde «Asker ayarları»
+  ve «AIC ayarlarını kullan» etkin olmalıdır. Değişikliklerden sonra UCP'yi yeniden başlatıp yeni oyun açın.
+AIVTroops_InitialRole_HorseArcher: >-
+  Görevi olmayan başlangıç veya senaryo askerlerinin ilk görevi. Kazma için birimin kazabilmesi ve hendek
+  karelerinin bulunması gerekir; aksi halde savunma görevi verilir.
+
+
+  Bu askere özel ayar, ortak AIC alanından önceliklidir. Vanilla seçeneği bu alanı karakter kaydına yazmaz ve
+  geçerli sıradaki ortak veya menü varsayılanını kullanır. aiv-troops-behaviour eklentisinde «Asker ayarları»
+  ve «AIC ayarlarını kullan» etkin olmalıdır. Değişikliklerden sonra UCP'yi yeniden başlatıp yeni oyun açın.
+AIVTroops_Movement_HorseArcher: >-
+  AIV savunma noktaları arasındaki hareket. Devriye, DefWallPatrolGroups ve DefWallPatrolRallyTime değerlerini
+  kullanır; grup sayısı sıfırsa askerler sabit kalır.
+
+
+  Bu askere özel ayar, ortak AIC alanından önceliklidir. Vanilla seçeneği bu alanı karakter kaydına yazmaz ve
+  geçerli sıradaki ortak veya menü varsayılanını kullanır. aiv-troops-behaviour eklentisinde «Asker ayarları»
+  ve «AIC ayarlarını kullan» etkin olmalıdır. Değişikliklerden sonra UCP'yi yeniden başlatıp yeni oyun açın.
+AIVTroops_InitialRole_ArabianSwordsman: >-
+  Görevi olmayan başlangıç veya senaryo askerlerinin ilk görevi. Kazma için birimin kazabilmesi ve hendek
+  karelerinin bulunması gerekir; aksi halde savunma görevi verilir.
+
+
+  Bu askere özel ayar, ortak AIC alanından önceliklidir. Vanilla seçeneği bu alanı karakter kaydına yazmaz ve
+  geçerli sıradaki ortak veya menü varsayılanını kullanır. aiv-troops-behaviour eklentisinde «Asker ayarları»
+  ve «AIC ayarlarını kullan» etkin olmalıdır. Değişikliklerden sonra UCP'yi yeniden başlatıp yeni oyun açın.
+AIVTroops_Movement_ArabianSwordsman: >-
+  AIV savunma noktaları arasındaki hareket. Devriye, DefWallPatrolGroups ve DefWallPatrolRallyTime değerlerini
+  kullanır; grup sayısı sıfırsa askerler sabit kalır.
+
+
+  Bu askere özel ayar, ortak AIC alanından önceliklidir. Vanilla seçeneği bu alanı karakter kaydına yazmaz ve
+  geçerli sıradaki ortak veya menü varsayılanını kullanır. aiv-troops-behaviour eklentisinde «Asker ayarları»
+  ve «AIC ayarlarını kullan» etkin olmalıdır. Değişikliklerden sonra UCP'yi yeniden başlatıp yeni oyun açın.
+AIVTroops_InitialRole_FireThrower: >-
+  Görevi olmayan başlangıç veya senaryo askerlerinin ilk görevi. Kazma için birimin kazabilmesi ve hendek
+  karelerinin bulunması gerekir; aksi halde savunma görevi verilir.
+
+
+  Bu askere özel ayar, ortak AIC alanından önceliklidir. Vanilla seçeneği bu alanı karakter kaydına yazmaz ve
+  geçerli sıradaki ortak veya menü varsayılanını kullanır. aiv-troops-behaviour eklentisinde «Asker ayarları»
+  ve «AIC ayarlarını kullan» etkin olmalıdır. Değişikliklerden sonra UCP'yi yeniden başlatıp yeni oyun açın.
+AIVTroops_Movement_FireThrower: >-
+  AIV savunma noktaları arasındaki hareket. Devriye, DefWallPatrolGroups ve DefWallPatrolRallyTime değerlerini
+  kullanır; grup sayısı sıfırsa askerler sabit kalır.
+
+
+  Bu askere özel ayar, ortak AIC alanından önceliklidir. Vanilla seçeneği bu alanı karakter kaydına yazmaz ve
+  geçerli sıradaki ortak veya menü varsayılanını kullanır. aiv-troops-behaviour eklentisinde «Asker ayarları»
+  ve «AIC ayarlarını kullan» etkin olmalıdır. Değişikliklerden sonra UCP'yi yeniden başlatıp yeni oyun açın.

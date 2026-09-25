@@ -1,5 +1,6 @@
 (() => {
   'use strict';
+  const tr = (key, options) => globalThis.toolkitI18n.t(key, options);
 
   const els = {
     workspace: document.getElementById('aiContentWorkspace'),
@@ -54,7 +55,7 @@
   }
 
   function setStatus(message, type = '') {
-    els.status.textContent = message;
+    window.toolkitI18n.bindText(els.status, message);
     els.status.classList.toggle('success', type === 'success');
     els.status.classList.toggle('error', type === 'error');
     if (window.appWorkspace?.getActive() === 'content') window.appWorkspace.setStatus(message);
@@ -62,55 +63,56 @@
 
   function updateDirtyDisplay() {
     const dirty = isDirty();
-    els.dirty.textContent = dirty ? 'Unsaved' : 'Saved';
+    els.dirty.textContent = dirty ? tr("common:state.unsaved") : tr("common:state.saved");
     els.dirty.classList.toggle('dirty', dirty);
   }
 
   function friendlyLabel(key) {
-    return String(key)
-      .replaceAll('_', ' ')
-      .replace(/\b\w/g, character => character.toUpperCase());
+    const base=String(key).replace(/_\d+$/,''),number=String(key).match(/_(\d+)$/)?.[1];
+    if(globalThis.toolkitI18n.engine.exists('dialogue:'+key))return tr('dialogue:'+key);
+    if(globalThis.toolkitI18n.engine.exists('dialogue:'+base))return tr('dialogue:'+base)+(number?' '+number:'');
+    return String(key);
   }
 
   // English field guidance translated from the supplied lines_base.json.
   // These are placeholders only, never default dialogue or saved content.
   const LINE_HINTS = Object.freeze({
-    ai_name: 'Character name.',
-    description: 'Character description.',
-    unknown_1: 'Character name.',
-    anger_1: "The AI's attack has been repelled.",
-    anger_2: 'One of the AI\'s buildings has been destroyed.',
-    plead: 'The AI has been defeated (if enemy)',
-    victory_1: 'The AI has successfully defended itself.',
-    victory_2: 'The AI destroys a building.',
-    victory_3: 'The AI has killed the player.',
-    victory_4: 'The AI defeats another enemy AI.',
-    request: 'The AI requests goods.',
-    thanks: 'The player sends goods to the AI.',
-    ally_death: 'The AI has been defeated (if ally)',
-    congrats: 'The player defeats an enemy while allied with this AI.',
-    boast: 'The allied AI defeats an enemy.',
-    help: 'The AI is under attack and asks for help.',
-    extra: 'The game has been going on for a long time.',
-    kick_player: 'A player is removed from the map.',
-    add_player: 'A player is added to the map.',
-    siege: 'Not used.',
-    no_sent: 'The AI does not send the requested goods.',
-    sent: 'The AI sends the requested goods.',
-    team_winning: 'The team is winning.',
-    team_losing: 'The team is losing.',
-    help_sent: 'The AI sends the requested help.',
-    will_attack: 'The AI will attack the requested enemy.'
+    ai_name: "content:character_name",
+    description: "content:character_description",
+    unknown_1: "content:character_name",
+    anger_1: "content:the_ai_s_attack_has_been_repelled",
+    anger_2: "content:one_of_the_ai_s_buildings_has_been_destroyed",
+    plead: "content:the_ai_has_been_defeated_if_enemy",
+    victory_1: "content:the_ai_has_successfully_defended_itself",
+    victory_2: "content:the_ai_destroys_a_building",
+    victory_3: "content:the_ai_has_killed_the_player",
+    victory_4: "content:the_ai_defeats_another_enemy_ai",
+    request: "content:the_ai_requests_goods",
+    thanks: "content:the_player_sends_goods_to_the_ai",
+    ally_death: "content:the_ai_has_been_defeated_if_ally",
+    congrats: "content:the_player_defeats_an_enemy_while_allied_with_this_ai",
+    boast: "content:the_allied_ai_defeats_an_enemy",
+    help: "content:the_ai_is_under_attack_and_asks_for_help",
+    extra: "content:the_game_has_been_going_on_for_a_long_time",
+    kick_player: "content:a_player_is_removed_from_the_map",
+    add_player: "content:a_player_is_added_to_the_map",
+    siege: "content:not_used",
+    no_sent: "content:the_ai_does_not_send_the_requested_goods",
+    sent: "content:the_ai_sends_the_requested_goods",
+    team_winning: "content:the_team_is_winning",
+    team_losing: "content:the_team_is_losing",
+    help_sent: "content:the_ai_sends_the_requested_help",
+    will_attack: "content:the_ai_will_attack_the_requested_enemy"
   });
 
   function lineHint(key) {
-    if (/^title_[1-8]$/.test(key)) return 'Character title (include quotation marks for a quoted title).';
-    if (/^complete_title_[1-8]$/.test(key)) return 'Character name, followed by the title (include quotation marks for a quoted title).';
-    if (/^taunt_[1-4]$/.test(key)) return 'The AI attacks the player.';
-    if (/^nervous_[1-2]$/.test(key)) return 'The player attacks the AI.';
-    if (/^no_attack_[1-2]$/.test(key)) return 'The AI refuses to attack the requested enemy.';
-    if (/^no_help_[1-2]$/.test(key)) return 'The AI refuses a request for help.';
-    return Object.hasOwn(LINE_HINTS, key) ? LINE_HINTS[key] : '';
+    if (/^title_[1-8]$/.test(key)) return tr("content:character_title_include_quotation_marks_for_a_quoted_title");
+    if (/^complete_title_[1-8]$/.test(key)) return tr("content:character_name_followed_by_the_title_include_quotation_marks_for_a_quote");
+    if (/^taunt_[1-4]$/.test(key)) return tr("content:the_ai_attacks_the_player");
+    if (/^nervous_[1-2]$/.test(key)) return tr("content:the_player_attacks_the_ai");
+    if (/^no_attack_[1-2]$/.test(key)) return tr("content:the_ai_refuses_to_attack_the_requested_enemy");
+    if (/^no_help_[1-2]$/.test(key)) return tr("content:the_ai_refuses_a_request_for_help");
+    return Object.hasOwn(LINE_HINTS, key) ? tr(LINE_HINTS[key]) : '';
   }
 
   function renderLines() {
@@ -118,6 +120,7 @@
     for (const key of Object.keys(state.lines)) {
       const label = document.createElement('label');
       label.className = `aiLineField${key === 'description' ? ' long' : ''}`;
+      label.dataset.lineKey = key;
       const name = document.createElement('span');
       name.textContent = friendlyLabel(key);
       name.title = key;
@@ -133,7 +136,17 @@
       label.append(name, input);
       els.form.appendChild(label);
     }
+    window.toolkitI18n.applyTextDirection(els.form);
     updateDirtyDisplay();
+  }
+
+  function translateLineLabels() {
+    for (const label of els.form.querySelectorAll('.aiLineField')) {
+      const key = label.dataset.lineKey;
+      label.querySelector('span').textContent = friendlyLabel(key);
+      label.querySelector('textarea').placeholder = lineHint(key);
+    }
+    window.toolkitI18n.applyTextDirection(els.form);
   }
 
   function formatBytes(value) {
@@ -155,9 +168,9 @@
 
   function mediaGroup(item) {
     const parts = String(item.group || '').split('/').filter(Boolean);
-    if (parts.length === 1) return 'Default';
-    if (parts[0]?.toLowerCase() === 'lang' && parts.length >= 3) return `Language: ${parts[1]}`;
-    return parts.slice(0, -1).join(' / ') || 'Default';
+    if (parts.length === 1) return tr('common:preferences.defaultTheme');
+    if (parts[0]?.toLowerCase() === 'lang' && parts.length >= 3) return tr('interface:language')+': '+parts[1];
+    return parts.slice(0, -1).join(' / ') || tr('common:preferences.defaultTheme');
   }
 
   function speechLanguage(item) {
@@ -168,8 +181,8 @@
   }
 
   function languageLabel(language) {
-    if (language === 'default') return 'Default';
-    return language === state.defaultLanguage ? `${language} (default)` : language;
+    if (language === 'default') return tr('common:preferences.defaultTheme');
+    return language === state.defaultLanguage ? `${language} (${tr('common:preferences.defaultTheme')})` : language;
   }
 
   function populateSpeechLanguages(preferred = state.speechLanguage) {
@@ -185,7 +198,7 @@
     if (!languages.length) {
       const option = document.createElement('option');
       option.value = '';
-      option.textContent = 'No speech';
+      option.textContent = tr("interface:no_speech");
       els.speechLanguage.appendChild(option);
       els.speechLanguage.disabled = true;
       state.speechLanguage = '';
@@ -205,7 +218,7 @@
   function mediaUses(item) {
     const keys = item.keys || [];
     const shown = keys.slice(0, 3).map(friendlyLabel).join(', ');
-    return keys.length > 3 ? `${shown} +${keys.length - 3} more` : shown;
+    return keys.length > 3 ? `${shown} +${keys.length - 3}` : shown;
   }
 
   function mediaEntryMatches(one, two) {
@@ -217,8 +230,8 @@
   async function playSpeech(item, button, audio) {
     if (!item.exists || state.busy) return;
     button.disabled = true;
-    button.textContent = 'Loading…';
-    setStatus(`Loading ${item.fileName}…`);
+    button.textContent = tr("common:state.loading");
+    setStatus(() => tr("content:loading_value", { fileName: item.fileName }));
     try {
       const AudioContextType = window.AudioContext || window.webkitAudioContext;
       if (AudioContextType && !speechAudioContext) speechAudioContext = new AudioContextType();
@@ -244,11 +257,11 @@
         audio.hidden = false;
         await audio.play();
       }
-      button.textContent = 'Replay';
-      setStatus(`Playing ${item.fileName}`, 'success');
+      button.textContent = tr("content:replay");
+      setStatus(() => tr('feedback:playing', {name:item.fileName}), 'success');
     } catch (error) {
-      button.textContent = 'Play';
-      setStatus(`Could not play ${item.fileName} here: ${error.message} Use Open externally.`, 'error');
+      button.textContent = tr("content:play");
+      setStatus(() => tr("content:could_not_play_value_here_value_use_open_externally", { fileName: item.fileName, message: error.message }), 'error');
     } finally {
       button.disabled = state.busy;
     }
@@ -259,14 +272,14 @@
     try {
       const result = await window.electronAPI.openAiMedia(mediaRequest(item));
       setStatus(
-        result?.action === 'downloaded'
-          ? `Downloaded ${item.fileName}. Open it with its associated program.`
-          : `Opened ${item.fileName} in its associated program.`,
+        () => result?.action === 'downloaded'
+          ? tr("content:downloaded_value_open_it_with_its_associated_program", { fileName: item.fileName })
+          : tr("content:opened_value_in_its_associated_program", { fileName: item.fileName }),
         'success'
       );
       return true;
     } catch (error) {
-      setStatus(`Could not open ${item.fileName}: ${error.message}`, 'error');
+      setStatus(() => tr("content:could_not_open_value_value", { fileName: item.fileName, message: error.message }), 'error');
       return false;
     }
   }
@@ -274,21 +287,21 @@
   async function replaceMedia(item) {
     if (!state.aiRoot || state.busy) return false;
     setBusy(true);
-    setStatus(`Choosing a replacement for ${item.fileName}…`);
+    setStatus(() => tr("content:choosing_a_replacement_for_value", { fileName: item.fileName }));
     try {
       const result = await window.electronAPI.replaceAiMedia(mediaRequest(item));
       if (!result) {
-        setStatus('Media replacement cancelled');
+        setStatus(() => tr("content:media_replacement_cancelled"));
         return false;
       }
       const collection = state.media[item.kind];
       const index = collection.findIndex(candidate => mediaEntryMatches(candidate, item));
       if (index >= 0) collection[index] = result;
       renderMedia(item.kind);
-      setStatus(`✓ ${item.fileName} replaced (${formatBytes(result.size)})`, 'success');
+      setStatus(() => tr('feedback:replaced_media', {name:item.fileName,size:formatBytes(result.size)}), 'success');
       return true;
     } catch (error) {
-      setStatus(`Could not replace ${item.fileName}: ${error.message}`, 'error');
+      setStatus(() => tr("content:could_not_replace_value_value", { fileName: item.fileName, message: error.message }), 'error');
       return false;
     } finally {
       setBusy(false);
@@ -309,9 +322,10 @@
       const empty = document.createElement('div');
       empty.className = 'aiMediaEmpty';
       empty.textContent = speech && state.speechLanguage
-        ? `No mapped WAV speech files found for ${languageLabel(state.speechLanguage)}.`
-        : `No mapped ${speech ? 'WAV speech' : 'Bink video'} files found.`;
+        ? tr("content:no_mapped_wav_speech_files_found_for_value", { value1: languageLabel(state.speechLanguage) })
+        : tr("content:no_mapped_value_files_found", { value1: speech ? tr('details:wav_speech') : tr('details:bink_video') });
       list.appendChild(empty);
+      window.toolkitI18n.applyTextDirection(list);
       return;
     }
 
@@ -322,17 +336,18 @@
       const heading = document.createElement('div');
       heading.className = 'aiMediaHeading';
       const title = document.createElement('h3');
+      title.dataset.bidi = 'ltr';
       title.textContent = item.fileName;
       title.title = item.filePath;
       const badge = document.createElement('span');
       badge.className = 'aiMediaState';
-      badge.textContent = item.exists ? formatBytes(item.size) : 'Missing';
+      badge.textContent = item.exists ? formatBytes(item.size) : tr("content:missing");
       heading.append(title, badge);
 
       const meta = document.createElement('p');
       meta.className = 'aiMediaMeta';
-      meta.textContent = `${mediaGroup(item)} · ${mediaUses(item) || 'Mapped asset'}`;
-      meta.title = `${item.group}\n${(item.keys || []).join(', ')}`;
+      meta.textContent = `${mediaGroup(item)} · ${mediaUses(item) || tr("content:mapped_asset")}`;
+      meta.title = `${mediaGroup(item)}\n${(item.keys || []).map(friendlyLabel).join(', ')}`;
 
       const actions = document.createElement('div');
       actions.className = 'aiMediaActions';
@@ -340,7 +355,7 @@
       if (speech) {
         const play = document.createElement('button');
         play.type = 'button';
-        play.textContent = 'Play';
+        play.textContent = tr("content:play");
         play.dataset.available = item.exists ? 'true' : 'false';
         play.disabled = state.busy || !item.exists;
         play.addEventListener('click', () => playSpeech(item, play, audio));
@@ -350,18 +365,18 @@
         audio.preload = 'none';
         audio.hidden = true;
         audio.addEventListener('error', () => {
-          setStatus(`This WAV codec cannot play in the editor. Use Open externally.`, 'error');
+          setStatus(() => tr("content:this_wav_codec_cannot_play_in_the_editor_use_open_externally"), 'error');
         });
       }
       const open = document.createElement('button');
       open.type = 'button';
-      open.textContent = speech ? 'Open externally' : 'Open / play';
+      open.textContent = speech ? tr("content:open_externally") : tr("content:open_play");
       open.dataset.available = item.exists ? 'true' : 'false';
       open.disabled = state.busy || !item.exists;
       open.addEventListener('click', () => openMedia(item));
       const replace = document.createElement('button');
       replace.type = 'button';
-      replace.textContent = 'Replace';
+      replace.textContent = tr("common:actions.replace");
       replace.dataset.available = 'true';
       replace.disabled = state.busy;
       replace.addEventListener('click', () => replaceMedia(item));
@@ -370,6 +385,7 @@
       if (audio) card.appendChild(audio);
       list.appendChild(card);
     }
+    window.toolkitI18n.applyTextDirection(list);
   }
 
   function renderAllMedia() {
@@ -404,14 +420,14 @@
     state.speechLanguage = state.defaultLanguage;
     els.empty.hidden = true;
     els.editor.hidden = false;
-    els.path.textContent = state.linesPath;
+    window.toolkitI18n.bindText(els.path, state.linesPath, 'ltr');
     els.path.title = state.linesPath;
     els.portrait.src = state.portraits.portrait?.dataUrl || placeholder;
     els.portraitSmall.src = state.portraits.portraitSmall?.dataUrl || placeholder;
     renderLines();
     renderAllMedia();
     setBusy(false);
-    setStatus(`${state.aiName || 'AI'} content loaded`);
+    setStatus(() => tr("content:value_content_loaded", { value1: state.aiName || 'AI' }));
   }
 
   function clearProject() {
@@ -427,19 +443,19 @@
     state.speechLanguage = '';
     els.empty.hidden = false;
     els.editor.hidden = true;
-    els.path.textContent = 'No AI project loaded';
+    window.toolkitI18n.bindText(els.path, () => tr("interface:no_ai_project_loaded"));
     els.form.innerHTML = '';
     els.portrait.src = placeholder;
     els.portraitSmall.src = placeholder;
     renderAllMedia();
     setBusy(false);
-    setStatus('Open an AI from the Library first.');
+    setStatus(() => tr("interface:open_an_ai_from_the_library_first"));
   }
 
   async function saveFile() {
     if (!state.linesPath || state.busy) return false;
     setBusy(true);
-    setStatus('Saving lines.json…');
+    setStatus(() => tr("content:saving_lines_json"));
     try {
       await window.electronAPI.quickSaveFile({
         path: state.linesPath,
@@ -451,7 +467,7 @@
       setStatus('✓ lines.json saved', 'success');
       return true;
     } catch (error) {
-      setStatus(`Could not save lines.json: ${error.message}`, 'error');
+      setStatus(() => tr("content:could_not_save_lines_json_value", { message: error.message }), 'error');
       return false;
     } finally {
       setBusy(false);
@@ -462,7 +478,7 @@
     if (!state.aiRoot || state.busy) return false;
     setBusy(true);
     const small = kind === 'portraitSmall';
-    setStatus(`Choosing ${small ? 'portrait_small.png' : 'portrait.png'}…`);
+    setStatus(() => tr('feedback:choosing', {name:small ? 'portrait_small.png' : 'portrait.png'}));
     try {
       const result = await window.electronAPI.chooseAiPortrait({
         gameRoot: state.gameRoot,
@@ -470,16 +486,16 @@
         kind
       });
       if (!result) {
-        setStatus('Portrait change cancelled');
+        setStatus(() => tr("content:portrait_change_cancelled"));
         return false;
       }
       state.portraits[kind] = result;
       (small ? els.portraitSmall : els.portrait).src = result.dataUrl;
-      setStatus(`✓ ${small ? 'portrait_small.png' : 'portrait.png'} saved as ${result.width}×${result.height}`, 'success');
+      setStatus(() => tr("content:value_saved_as_value_value", { value1: small ? 'portrait_small.png' : 'portrait.png', width: result.width, height: result.height }), 'success');
       window.ucpLibrary?.refreshCurrent?.();
       return true;
     } catch (error) {
-      setStatus(`Could not change portrait: ${error.message}`, 'error');
+      setStatus(() => tr("content:could_not_change_portrait_value", { message: error.message }), 'error');
       return false;
     } finally {
       setBusy(false);
@@ -504,5 +520,8 @@
     onWorkspaceShown: () => updateDirtyDisplay()
   };
 
+  window.toolkitI18n?.onChange(() => {
+    translateLineLabels(); renderAllMedia(); updateDirtyDisplay();
+  });
   clearProject();
 })();

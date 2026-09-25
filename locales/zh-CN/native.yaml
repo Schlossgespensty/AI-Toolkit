@@ -1,0 +1,60 @@
+classic_export_failed: |-
+  无法将此城堡导出为经典 AIV：
+  {{issues}}
+  请保存为决定版格式以保留内容。
+castle_files: 城堡文件
+images: 图片
+choose_game: 选择 Stronghold Crusader 安装目录
+unsaved_title: 未保存的更改
+unsaved_message: |-
+  {{name}} 有未保存的更改。
+  是否先保存再继续？
+  下一步：{{action}}。
+document: 文档
+continue: 继续
+discard: 放弃
+add_to_ai: 添加到 AI
+edit_separately: 单独编辑
+add_document_message: 将此文档添加到 {{name}}？添加角色会替换现有角色文件。
+new_window: 添加窗口
+new: 新建
+open_new_window: 在新窗口中打开
+save_as: 另存为
+clear_background: 清除背景
+castle_mapping: 编辑城堡映射…
+shortcuts: 自定义城堡快捷键…
+toggle_ox: 切换 AI 牛车站
+toggle_running: 切换单位奔跑
+standard_order: 应用标准顺序
+ordered_order: 应用排序顺序
+toggle_sections: 全部展开/折叠
+replace_castle: '{{name}} 已存在。要替换城堡文件吗？'
+overviews: 城堡概览
+show_population: 显示人口
+show_costs: 显示城堡成本
+population_side: 人口面板位置
+costs_side: 城堡成本面板位置
+reload: 重新加载
+fullscreen: 全屏
+developer_tools: 开发者工具
+zoom_in: 放大
+zoom_out: 缩小
+reset_zoom: 实际大小
+classic_castle: 经典版 AIV 城堡
+choose_castle_format: 请选择此文件使用的城堡格式。
+add_castle_message: |-
+  将此城堡添加到 {{name}}？
+  “添加到 AI”会将其复制到该 AI 的 aiv 文件夹，并保持项目打开。
+  “单独编辑”会退出 AI 项目，你可以将城堡保存到其他位置。
+new_castle_message: |-
+  在 {{name}} 中创建新城堡？
+  “添加到 AI”会将其保存到该 AI 的 aiv 文件夹，并保持项目打开。
+  “单独编辑”会退出 AI 项目，你可以将城堡保存到其他位置。
+replace_character_message: |-
+  为 {{name}} 使用此角色？
+  “添加到 AI”会永久替换该 AI 现有的 character.json。
+  “单独编辑”会退出 AI 项目，并保留项目现有的角色文件。
+new_character_message: |-
+  为 {{name}} 创建新角色？
+  “添加到 AI”会永久替换该 AI 现有的 character.json。
+  “单独编辑”会退出 AI 项目，并保留项目现有的角色文件。

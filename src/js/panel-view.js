@@ -12,6 +12,7 @@
 
 (() => {
   'use strict';
+  const tr = (key, options) => globalThis.toolkitI18n.t(key, options);
 
   const G = (typeof globalThis !== 'undefined' && globalThis.dockGeometry) || null;
   const M = (typeof globalThis !== 'undefined' && globalThis.panelModel) || null;
@@ -26,10 +27,10 @@
   // the one being shown - the things that belong to the window itself, not
   // to the box it happens to sit in.
   const WINDOWS = {
-    map: { title: 'Map', el: 'castleMapWindow', actions: [] },
+    map: { get title() {return tr('interface:map');}, el: 'castleMapWindow', actions: [] },
     iso: { title: '2.5D', el: 'castleIsoWindow', actions: [
-      { act: 'fit', glyph: '⤢', title: 'Fit the castle into the view' },
-      { act: 'popout', glyph: '⧉', title: 'Show in a window of its own' }
+      { act: 'fit', glyph: '⤢', get title() {return tr('viewport:fit_the_castle_into_the_view');} },
+      { act: 'popout', glyph: '⧉', get title() {return tr('viewport:show_in_a_window_of_its_own');} }
     ] }
   };
 
@@ -111,7 +112,7 @@
       tab.dataset.window = win;
       tab.dataset.area = node.id;
       tab.textContent = (WINDOWS[win] && WINDOWS[win].title) || win;
-      tab.title = 'Click to show, drag to move it somewhere else';
+      tab.title = tr("viewport:click_to_show_drag_to_move_it_somewhere_else");
       strip.appendChild(tab);
     }
     const controls = node.active === 'iso' ? els.isoControls : els.mapControls;
@@ -124,13 +125,14 @@
       for (const action of (shown && shown.actions) || []) {
         strip.appendChild(actionButton(action.act, action.glyph, action.title, node.id));
       }
-      strip.appendChild(actionButton('close', '✕', 'Close the window shown here', node.id));
+      strip.appendChild(actionButton('close', '✕', tr("viewport:close_the_window_shown_here"), node.id));
     } else {
       const hint = document.createElement('span');
       hint.className = 'areaEmptyHint';
-      hint.textContent = 'no window — open one from the toolbar';
+      hint.textContent = tr("viewport:no_window_open_one_from_the_toolbar");
       strip.insertBefore(hint, fill);
     }
+    window.toolkitI18n.applyTextDirection(strip);
   }
 
   function actionButton(act, glyph, title, areaId) {
@@ -172,7 +174,8 @@
     bar.setAttribute('role', 'separator');
     bar.setAttribute('tabindex', '0');
     bar.setAttribute('aria-orientation', node.dir === 'row' ? 'vertical' : 'horizontal');
-    bar.setAttribute('aria-label', 'Resize');
+    bar.dataset.i18nAttrs = 'aria-label=feedback:resize';
+    bar.setAttribute('aria-label', tr('feedback:resize'));
     box.append(a, bar, b);
     return box;
   }
@@ -336,8 +339,8 @@
     // can be seen. Not gone: a card that disappears is a card the user has
     // to guess the position of.
     els.ghost.classList.add('overTarget');
-    const words = target.where === 'tab' ? 'Add as a tab here' : 'Split: ' + target.where;
-    els.hint.textContent = words + ' · Esc cancels';
+    const words = target.where === 'tab' ? tr("viewport:add_as_a_tab_here") : 'Split: ' + target.where;
+    els.hint.textContent = words + tr("viewport:esc_cancels");
     els.hint.hidden = false;
   }
 
@@ -416,7 +419,7 @@
 
   function need(id) {
     const el = document.getElementById(id);
-    if (!el) throw new Error('panel-view: #' + id + ' is missing');
+    if (!el) throw new Error('panel-view: #' + id + tr("viewport:is_missing"));
     return el;
   }
 
@@ -461,6 +464,7 @@
     announce();
   }
 
+  window.toolkitI18n?.onChange(() => { if (current) render(); });
   window.castlePanels = {
     start,
     // The castle tab has just been shown: its boxes have a size again, so

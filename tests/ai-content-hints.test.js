@@ -1,7 +1,7 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
-const vm = require('node:vm');
+const vm = require('./helpers/localized-vm');
 const {defaultLines} = require('../src/node/ucp-library');
 const source = fs.readFileSync(require.resolve('../src/js/ai-content-editor.js'), 'utf8');
 
@@ -9,7 +9,7 @@ function editor(lines) {
   const inputs = new Map(), saved = [];
   const state = {lines: structuredClone(lines), linesPath: 'test/lines.json', busy: false};
   state.savedSnapshot = JSON.stringify(state.lines);
-  const element = tag => ({tag, value: '', placeholder: '', children: [], handlers: {},
+  const element = tag => ({tag, dataset: {}, value: '', placeholder: '', children: [], handlers: {},
     append(...nodes) { this.children.push(...nodes); },
     addEventListener(event, fn) { this.handlers[event] = fn; }});
   const form = {appendChild(label) { inputs.set(label.children[0].title, label.children[1]); }};

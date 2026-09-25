@@ -57,6 +57,32 @@
     if (!chrome?.integrated) return;
     document.documentElement.classList.add('integratedTitlebar');
     group.hidden = false;
+    if (chrome.customControls) {
+      const controls = document.getElementById('windowControls');
+      const maximize = controls.querySelector('[data-window-action="maximize"]');
+      document.documentElement.classList.add('customWindowControls');
+      controls.hidden = false;
+      // Tauri handles native dragging/double-click only on these inert regions.
+      // Interactive descendants never inherit the drag attribute.
+      document.querySelectorAll('.workspaceTabs, .workspaceSpacer, .appIcon, .workspaceStatus, .appIdentity, .appIdentity span')
+        .forEach(region => region.setAttribute('data-tauri-drag-region', ''));
+      const actions = { minimize: api.minimizeWindow, maximize: api.toggleMaximizeWindow, close: api.closeWindow };
+      controls.addEventListener('click', event => {
+        const action = event.target.closest('[data-window-action]')?.dataset.windowAction;
+        if (actions[action]) actions[action]().catch(console.error);
+      });
+      const update = state => {
+        document.documentElement.classList.toggle('windowMaximized', state.maximized);
+        document.documentElement.classList.toggle('windowFullscreen', state.fullscreen);
+        const key = state.maximized ? 'shell:restore_window' : 'shell:maximize_window';
+        maximize.setAttribute('data-i18n-attrs', `title=${key};aria-label=${key}`);
+        const label = window.toolkitI18n.t(key);
+        maximize.title = label; maximize.setAttribute('aria-label', label);
+      };
+      api.onWindowStateChanged(update).catch(console.error);
+      api.getWindowState().then(update).catch(console.error);
+      return;
+    }
     const overlay = navigator.windowControlsOverlay;
     const update = () => document.documentElement.classList.toggle('windowControlsVisible', overlay ? overlay.visible : true);
     update();

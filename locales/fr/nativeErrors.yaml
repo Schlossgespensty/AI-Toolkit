@@ -1,0 +1,62 @@
+an_ai_with_that_folder_id_already_exists: Une IA utilise d?j? cet identifiant de dossier.
+castle_already_exists: Ce fichier de ch?teau existe d?j?.
+castle_file_does_not_exist_in_this_ai: Le fichier du ch?teau est introuvable dans le dossier de cette IA.
+castle_mapping_must_contain_at_most_eight_slots: Une IA peut avoir au maximum huit emplacements de ch?teau.
+castle_slots_must_be_an_array: La liste des emplacements de ch?teau a un format incorrect.
+choose_a_fork_of_the_official_ai_toolkit: Choisissez un fork du d?p?t officiel d?AI Toolkit.
+choose_the_stronghold_crusader_installation: Choisissez le dossier d?installation de Stronghold Crusader.
+close_other_editor_windows_before_updating: Fermez les autres fen?tres de l??diteur avant la mise ? jour.
+download_the_release_first: T?l?chargez d?abord la nouvelle version.
+editor_did_not_close_no_files_were_replaced: L??diteur ne s?est pas ferm?. Aucun fichier n?a ?t? remplac?.
+editor_window_not_found: La fen?tre de l??diteur est introuvable.
+enter_an_ai_name: Saisissez un nom pour l?IA.
+expected_a_ucp_installation_containing_ucp_plugins: Choisissez une installation du jeu avec UCP contenant le sous-dossier ucp/plugins.
+expected_an_aiv_castle_filename: Le nom du fichier doit se terminer par .aiv.
+expected_one_ai_toolkit_executable: Le paquet de mise ? jour doit contenir un seul ex?cutable AI Toolkit.
+incomplete_download: Le t?l?chargement est incomplet.
+invalid_ai_folder_id: L?identifiant du dossier de l?IA est incorrect.
+invalid_archive_path: L?archive contient un chemin de fichier incorrect.
+invalid_destination: L?emplacement de destination est incorrect.
+invalid_executable_path: Le chemin de l?ex?cutable est incorrect.
+invalid_filename: Le nom de fichier est incorrect.
+invalid_github_repository: Indiquez le d?p?t GitHub au format propri?taire/d?p?t.
+invalid_github_response: GitHub a renvoy? une r?ponse inattendue.
+invalid_installation_root: Le dossier d?installation est incorrect.
+invalid_item_type: Le type d??l?ment est incorrect.
+invalid_manifest_path: La liste des fichiers de mise ? jour contient un chemin incorrect.
+invalid_package_path: Le paquet de mise ? jour contient un chemin incorrect.
+invalid_png: Le fichier n?est pas une image PNG valide.
+invalid_portrait_image: L?image du portrait est incorrecte.
+invalid_project_path: Le chemin du projet est incorrect.
+invalid_release_url: L?adresse de t?l?chargement de la version est incorrecte.
+invalid_resource_directory: Le dossier des ressources est incorrect.
+invalid_settings_document: Le fichier des param?tres a un format incorrect.
+invalid_staging_path: Le chemin de stockage temporaire est incorrect.
+media_exceeds_playback_limit: Le fichier multim?dia est trop volumineux pour ?tre lu dans l??diteur.
+media_not_mapped: Ce fichier multim?dia n?est pas associ? au projet.
+missing_argument: 'Un param?tre requis est manquant : {{name}}'
+missing_dialog_choices: Les choix de la bo?te de dialogue sont manquants.
+missing_install_manifest: La liste des fichiers ? installer est manquante.
+missing_installation_path: Le chemin d?installation est manquant.
+missing_release_size: La taille du t?l?chargement n?est pas indiqu?e.
+missing_release_url: L?adresse de t?l?chargement de la version est manquante.
+missing_resource: 'Une ressource de l?application est manquante : {{path}}'
+no_eligible_snapshot_newer_than_the_official_release: Ce fork ne propose aucun aper?u compatible plus r?cent que la version officielle.
+operation_failed: L?op?ration n?a pas pu ?tre effectu?e.
+path_is_outside_the_selected_project: Le chemin se trouve en dehors du projet s?lectionn?.
+release_checksum_mismatch: La somme de contr?le du t?l?chargement ne correspond pas.
+release_does_not_contain_ai_toolkit_exe: Le paquet de mise ? jour ne contient pas AI Toolkit.exe.
+release_exceeds_size_limits: Le paquet de mise ? jour d?passe la taille autoris?e.
+selected_image_exceeds_128_mb: L?image s?lectionn?e d?passe 128 Mo.
+staged_update_changed: Les fichiers t?l?charg?s pour la mise ? jour ont ?t? modifi?s.
+the_ai_project_no_longer_exists: Le projet d?IA n?existe plus.
+the_media_file_type_does_not_match: Le type de fichier ne correspond pas au fichier multim?dia ? remplacer.
+the_selected_release_changed_check_again: La version s?lectionn?e a chang?. V?rifiez ? nouveau les mises ? jour.
+this_ai_has_no_aiv_folder: Cette IA n?a pas de dossier aiv.
+too_many_github_results: GitHub a renvoy? trop de r?sultats.
+unexpected_download_size: La taille du t?l?chargement ne correspond pas ? celle attendue.
+unexpected_package_entry: 'Entr?e inattendue dans le paquet de mise ? jour : {{path}}'
+unknown_configuration_file: Ce fichier de configuration n?est pas reconnu.
+unknown_language: Cette langue n?est pas prise en charge.
+unknown_theme: Ce th?me est introuvable.
+use_open_externally_for_bink_video: Utilisez ? Ouvrir avec une application externe ? pour les vid?os Bink.

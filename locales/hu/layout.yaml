@@ -1,0 +1,10 @@
+steps: Lépések
+categories: Kategóriák
+overview: Áttekintés
+resize: A(z) {{panel}} és az áttekintés átméretezése
+resize_help: >-
+  Húzd a méretezéshez, a szélekre húzva összecsukhatod. A nyilak méreteznek, Home/End összecsuk, Enter
+  visszaállít.
+show: '{{panel}} megjelenítése'
+hide: '{{panel}} elrejtése'
+move_copy: Mozgasd a másolatot a helyére; kattints a beillesztéshez, Esc a megszakításhoz.

@@ -1,0 +1,8 @@
+steps: Steps
+categories: Categories
+overview: Overview
+resize: 'Resize {{panel}} and overview'
+resize_help: 'Drag to resize; drag to either end to collapse. Arrow keys resize; Home/End collapse; Enter restores.'
+show: 'Show {{panel}}'
+hide: 'Hide {{panel}}'
+move_copy: Move the copy into place; click to paste, Esc to cancel.

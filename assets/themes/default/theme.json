@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "id": "default",
+  "name": "Default",
+  "version": "1.0.0",
+  "variables": "variables.css",
+  "colorScheme": "dark",
+  "textures": {
+    "sidebar": {
+      "file": "textures/sidebar.png",
+      "mode": "cover"
+    },
+    "backdrop": {
+      "file": "textures/backdrop.png",
+      "mode": "cover"
+    }
+  },
+  "attribution": [
+    {
+      "author": "Monsterfish",
+      "scope": "sidebar and backdrop textures",
+      "permission": "Contributed for use in AI Toolkit; confirmed by the project owner."
+    }
+  ]
+}

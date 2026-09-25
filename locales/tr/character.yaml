@@ -1,0 +1,32 @@
+failed_to_load_config_files: Yapılandırma dosyaları yüklenemedi.
+all_troops: Tüm birlikler
+initial_role: ilk rol
+unsupported_value: 'Desteklenmeyen değer: '
+no_description_yet: Henüz açıklama yok.
+initial_roles: İlk roller
+unknown_parameters_found: |+
+  Bilinmeyen parametreler bulundu:
+
+opening_another_character_file: başka karakter dosyası açma
+creating_a_new_character: yeni karakter oluşturma
+new_character_added_to_the_loaded_ai: Yüklü yapay zekâya yeni karakter eklendi
+new_character: Yeni karakter
+saving: Kaydediliyor…
+saved: Kaydedildi!
+error: Hata!
+open_an_ai_from_the_library_to_edit_its_content: İçeriğini düzenlemek için kitaplıktan bir yapay zekâ açın
+ai_content_belongs_to_the_loaded_ai_project: Yapay zekâ içeriği yüklü projeye aittir
+no_file_loadedvalue: Dosya yüklenmedi{{dirtyMarker}}
+leather_armor: Deri zırh
+iron_armor: Demir zırh
+capacity: Kapasite
+needed_at_limits: Sınırlarda gereken
+production: üretim
+recruitment_purchase: asker alma için satın alma
+maxfood_variance: MaxFood + değişim
+no_relevant_production: İlgili üretim yok
+or_recruitment: ' veya asker alma'
+positive_negative: Olumlu / olumsuz
+net_buildings: Net bina sayısı
+population_groups_of_16: Nüfus / 16 kişilik gruplar
+movement: Hareket

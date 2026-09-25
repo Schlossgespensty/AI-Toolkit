@@ -1,0 +1,190 @@
+the_aiv_castle_document_is_invalid: AIV 城堡文档无效。
+the_aiv_file_must_contain_a_frames_array: AIV 文件必须包含 frames 数组。
+that_build_step_is_locked: 此建造步骤已锁定。
+overlaps_another_item_in_this_brush_stroke: 与本次画笔操作中的其他元素重叠。
+nothing_to_undo: 没有可撤销的操作
+nothing_to_redo: 没有可重做的操作
+creating_a_new_castle: 创建新城堡
+new_castle: 新城堡
+opening_another_castle: 打开另一个城堡
+definitive_edition_json: 决定版 JSON
+castle_document: 城堡文档
+castle_was_not_saved: 城堡未保存
+nothing_selected_to_replace: 未选择要替换的元素。
+keep_cannot_be_replaced: 主堡无法替换
+locked: 已锁定
+the_selection_contains_only_locked_placements_or_the_keep: 选区只包含已锁定的放置项或主堡。
+buildings_can_only_replace_buildings_and_rallypoints_can_only_replace_ra: 建筑只能替换建筑，集结点只能替换集结点。
+choose_at_least_one_different_replacement: 请至少选择一个不同的替换项。
+build_step: '建造步骤 '
+locked_2: 已锁定
+open_again: 重新打开
+locked_unlock_the_build_step_first: 已锁定，请先解锁建造步骤。
+click_an_unlocked_placement_to_flood_delete_its_connected_type_the_keep_: 点击未锁定的放置项，删除与其连通的同类型元素。主堡受保护。
+merge_checked_placements_inside_the_box_at_their_earliest_step_separatel: 按类型将框内勾选的放置项合并到各自最早步骤。框外放置项和已锁定步骤保持不变。
+merge_checked_types_from_the_selected_steps_at_their_earliest_step_separ: 按类型将所选步骤中勾选的元素合并到各自最早步骤。已锁定步骤保持不变。
+no_mergeable_type_spans_two_unlocked_steps_in_this_selection: 选区中没有跨越两个未锁定步骤的可合并类型。
+the_castle_changed_cancel_and_select_the_placements_again: 城堡已发生变化，请取消并重新选择放置项。
+these_de_steps_contain_pauses_merge_would_change_their_timing: 这些决定版步骤包含暂停，合并会改变时间安排。
+unlock_positions: 解锁位置
+choose_an_item_first: 请先选择元素。
+drag_over_items_to_copy_first: 请先拖框选中要复制的元素。
+nothing_to_copy_yet_drag_a_box_over_the_placements_first: 没有可复制内容，请先用选框选中放置项
+select_unlocked_building_placements_to_cut_the_keep_and_rally_points_sta: 选择未锁定建筑进行剪切。主堡和集结点保留原位。
+move_the_cursor_onto_the_map_then_press_ctrl_v: 将光标移到地图上，然后按 Ctrl+V
+this_item_is_drawn_as_a_line_not_poured: 此元素只能绘制为直线，不能填充。
+nothing_to_fill_here_that_tile_is_taken: 此格已占用，无法填充。
+nothing_could_be_placed_there: 无法在此放置任何元素。
+filled: '已填充 '
+selection_cleared: 已清除选择
+copy_selection: 复制选区
+replace_area: 替换区域
+merge_area: 合并区域
+delete_area: 删除区域
+castle_shortcuts_saved: 已保存城堡快捷键
+multiple_per_step: 每步多个
+single_per_step: 每步一个
+empty_step: 空步骤
+move_selected_step_s_up: 上移所选步骤
+move_selected_step_s_down: 下移所选步骤
+temporary_blueprint_cleared: 已清除临时蓝图
+background_image: 背景图片
+could_not_open_the_selected_blueprint_image: 无法打开所选蓝图图片
+could_not_calculate_overlays: 无法计算叠加层。
+calculating_overlays: 正在计算叠加层…
+map_terrain_included: 包含地图地形
+flat_terrain_no_map_data: 平坦地形（无地图数据）
+tiles_to_delivery_point: ' 格至交货点'
+ground_passage_and_raised_walkway: 地面通道和高架通道
+raised_walkway: 高架通道
+walkable_ground: 可行走地面
+blocked_tile: 阻挡格
+outside_map: 地图之外
+no_unobstructed_route_to_that_tile: 没有通往此格的畅通路径。
+nothing_copyable_selected_units_and_the_keep_are_ignored: 没有选中可复制内容。单位和主堡会被忽略。
+nothing_selected_to_copy: 未选择要复制的内容。
+castle_editor_configuration_failed_to_load: 无法加载城堡编辑器配置
+loading_map_views: 正在加载地图视图…
+no_map_of_that_name: 没有此名称的地图。
+no_maps_found_choose_the_game_folder_under_ucp_first: 没有找到地图。请先在 UCP 中选择游戏文件夹。
+reading_the_map: 正在读取地图…
+the_starting_place: 起始位置
+not_turned: ' · 未旋转'
+starting_place_changed: 已更改起始位置
+map_of_the_game_taken_away: 已移除游戏地图
+temporary_blueprint_shown: 已显示临时蓝图
+temporary_blueprint_hidden: 已隐藏临时蓝图
+unassigned: 未分配
+use_a_key_optionally_combined_with_ctrl_alt_or_shift: 请选择按键，可搭配 Ctrl、Alt 或 Shift。
+map_rotation_needs_the_game_generated_camera_layers_wait_for_loading_to_: 地图旋转需要游戏生成的相机图层。请等待加载完成或重新加载地图。
+frame_value_is_not_an_object: 帧 {{value1}} 不是对象。
+frame_value_has_no_valid_itemtype: 帧 {{value1}} 没有有效的 itemType。
+frame_value_tilepositionofsets_must_be_an_array: 帧 {{value1}}：tilePositionOfsets 必须为数组。
+frame_value_invalid_tile_offset_value: 帧 {{value1}}：无效的格偏移 {{off}}。
+misc_item_value_is_not_an_object: 杂项元素 {{value1}} 不是对象。
+misc_item_value_has_no_valid_itemtype: 杂项元素 {{value1}} 没有有效的 itemType。
+misc_item_value_invalid_positionofset_value: 杂项元素 {{value1}}：无效的 positionOfset {{positionOfset}}。
+value_would_extend_outside_the_100_100_field: '{{value1}} 将超出 100×100 区域。'
+maximum_amount_for_value_is_value: '{{value1}} 的最大数量为 {{maximum}}。'
+blocked_by_value: 被 {{value1}} 阻挡。
+new_castle_added_to_the_loaded_ai_as_value: 已将新城堡以 {{fileName}} 添加到当前 AI
+value_added_to_the_loaded_ai: 已将 {{fileName}} 添加到当前 AI
+removed_value_empty_legacy_stepvalue: ' — 已移除 {{quantityvalue2}}'
+disabled_value_build_step_pause_s: ' — 已禁用 {{removedPauses}} 个建造暂停'
+opened_value_value_build_steps_valuevaluevalue: 已打开 {{value1}} — {{length}} 个建造步骤 · {{formatNote}}{{legacyNote}}{{pauseNote}}
+could_not_open_aiv_castle_value: |-
+  无法打开 AIV 城堡：
+
+  {{message}}
+could_not_import_aivjson_castle_value: |-
+  无法导入 AIVJSON 城堡：
+
+  {{message}}
+saved_value: 已保存 {{name}}
+could_not_save_aiv_castle_value: |-
+  无法保存 AIV 城堡：
+
+  {{message}}
+replace_value_with: 将 {{value1}} 替换为
+value_locked_placementvalue_will_stay_unchanged: '{{quantityvalue2}} 将保持不变'
+value_placementvalue_across_value_item_typevalue_choose_one_replacement_: '{{quantityvalue2}}，共 {{quantityvalue4}}。每种类型选择一个替换项。'
+invalid_replacement_for_value: '{{value1}} 的替换项无效。'
+no_room_for_value_value: 没有空间放置 {{value1}}：{{reason}}
+value_would_also_replace_an_item_outside_the_selected_area: '{{value1}} 还会替换选区之外的元素。'
+replaced_value_placementvalue_across_value_target_typevalue: 已替换 {{quantityvalue4}} 中的 {{quantityvalue2}}
+deleted_value_placementvalue: 已删除 {{quantityvalue2}}
+value_locked_and_left_alone: （{{gesperrt}} 个已锁定并保留不变）
+selected_value_placements_shift_adds_ctrl_click_toggles_a_connected_grou: 已选择 {{size}} 个放置项。Shift 追加；Ctrl+点击切换连通组。切换至“选择 / 移动”后可拖动。
+flood_deleted_value_connected_value_placements: 已删除 {{size}} 个连通的 {{value2}} 放置项
+value_value_placements_in_value_steps: '{{value1}} — {{size}} 个步骤中的 {{count}} 个放置项'
+merged_value_item_types_at_their_earliest_selected_steps: 已将 {{length}} 种元素合并到各自最早的所选步骤
+value_can_only_be_placed_with_the_line_tool: '{{value1}} 只能用直线工具放置。'
+placed_value_rallypoint_value_at_value: '已在 {{off}} 放置 {{value1}} 集结点 #{{value2}}'
+placed_value_at_value: 已在 {{off}} 放置 {{value1}}
+value_ready_value_value_steps_release_to_place: '{{value1}} 就绪 — {{length}}/{{length3}} 步 — 松开以放置'
+value_placed_nothing: '{{toolName}} 未放置任何内容。'
+could_not_build_the_value_sequence: 无法创建 {{value1}} 序列。
+value_placed_value_consecutive_stair_steps: '{{value1}}：已放置 {{length}} 个连续台阶'
+value_placed_value_value_rallypoints: '{{toolName}}：已放置 {{length}} 个 {{value3}} 集结点'
+value_placed_value_value_in_consecutive_build_steps: '{{toolName}}：已在连续建造步骤中放置 {{length}} 个 {{value3}}'
+copy_blocked_by_value: 复制被 {{value1}} 阻挡。
+value_build_stepvalue: '{{quantityvalue2}}'
+placed_copy_of_value_placementvalue_as_value: 已将 {{quantityvalue2}} 的副本放置为 {{details}}
+copied_value_placementvalue_ctrl_v_puts_it_where_the_cursor_is: 已复制 {{placements}} — Ctrl+V 将其粘贴到光标位置
+cut_value_placementvalue_ctrl_v_pastes_at_the_cursor: 已剪切 {{quantityvalue2}} — Ctrl+V 粘贴到光标位置
+move_blocked_by_value: 移动被 {{value1}} 阻挡。
+moved_value_placementvalue: 已移动 {{quantityvalue2}}
+selected_value_click_the_map_to_place: 已选择 {{value1}} — 点击地图以放置
+line_only_up_to_value_consecutive_steps: 仅限直线 · 最多 {{length}} 个连续步骤
+no_items_in_value: '{{value1}} 中没有元素。'
+line_up_to_value_steps: 直线 · 最多 {{length}} 个步骤
+step_value: 步骤 {{value1}}
+selected_value_build_steps_drag_or_use_the_arrows_to_move_them_together: 已选择 {{length}} 个建造步骤 — 拖动或使用箭头一起移动
+selected_build_step_value_new_buildings_will_be_inserted_after_it: 已选择建造步骤 {{value1}} — 新建筑将插入在其后
+value_build_stepvalue_moved_together: 已一起移动 {{quantityvalue2}}
+value_locked_and_left_alone_2: （{{festgehalten}} 个已锁定并保留不变）
+set_png_skin_for_value: 为 {{value1}} 设置 PNG 外观
+removed_skin_for_value: 已移除 {{value1}} 的外观
+could_not_load_background_value: 无法加载背景：{{message}}
+temporary_blueprint_loaded_value: 已加载临时蓝图：{{blueprintFileName}}
+paths_value_value_reachable_open_gates_value_cyan_dots_reachable_entranc: 路径：{{length}}/{{length2}} 可达。假设城门打开；{{value3}}。青色点表示可达入口，红色点表示受阻。仅为静态估算。
+selected_value_placementvalue: 已选择 {{quantityvalue2}}
+drag_from_x_value_y_value_to_choose_the_value_direction: 从 x={{x}}、y={{y}} 拖动以选择 {{value3}} 的方向。
+copy_ready_at_x_value_y_value_click_to_place: 副本已在 x={{x}}、y={{y}} 就绪 — 点击放置
+value_unit_keep_placementvalue_ignored: （已忽略 {{quantityvalue2}}）
+copied_selection_prepared_value_placementvaluevalue_move_the_cursor_and_: 复制选区已准备好：{{quantityvalue2}}{{ignoredNote}} — 移动光标并点击放置
+deleted_value_placementvalue_2: 已删除 {{quantityvalue2}}
+start_place_value: 起始位置 {{value1}}
+map_loaded_rotation_unavailable_value: 地图已加载；旋转不可用：{{nativeError}}
+whole_map_value_ready_value_different_tiles: 完整地图“{{name}}”已就绪 · {{kacheln}} 种不同地块
+could_not_load_map_value_select_game_map_to_retry: 无法加载地图：{{message}}。请选择“游戏地图”重试。
+could_not_read_the_map_tiles_value: 无法读取地图地块：{{message}}
+could_not_read_that_map_value: 无法读取此地图：{{message}}
+could_not_list_the_maps_value: 无法列出地图：{{message}}
+castle_built_on_value_at_value_value: 城堡建于 {{value1}}，坐标（{{x}}，{{y}}）
+the_game_turns_it_by_value_quarter_turnvalue: ' · 游戏会将其旋转 {{turns}}'
+castle_picture_saved_value: 城堡图片已保存：{{saved}}
+could_not_save_castle_picture_value: 无法保存城堡图片：{{message}}
+select_items_first_to_value: 请先选择元素，再执行 {{action}}。
+unsaved_castle: （未保存的城堡）
+select_something_on_the_map_first: 请先在地图上选择元素。
+no_groups_in_this_castle_yet_select_placements_on_the_map_give_them_a_na: 此城堡尚无分组。请在地图上选择放置项，命名并保存。
+copy_this_group_for_placement: 复制此分组以放置
+this_group_has_no_copyable_items: 此分组没有可复制元素。
+clipboard_emptied: 已清空剪贴板
+nothing_copied_yet_copy_something_with_ctrl_c_or_the_copy_tool: 尚未复制内容。请使用 Ctrl+C 或复制工具。
+paste_at_the_cursor: 粘贴到光标位置
+empty_the_clipboard: 清空剪贴板
+group_name: 分组名称
+save_group: 保存分组
+enter_a_group_name: 请输入分组名称。
+a_group_called_value_is_already_there: 已存在名为“{{name}}”的分组。
+group_value_saved_with_value_placementvalue: 分组“{{name}}”已保存，包含 {{quantityvalue3}}
+delete_group_value: 删除分组“{{name}}”
+value_placementvalue_copied_works_in_every_castle_click_then_click_on_th: 已复制 {{quantityvalue2}} — 可用于任意城堡。点击此处再点击地图，或按 Ctrl+V。
+castle_actions: 城堡操作
+no_item_categories_configured: 未配置元素分类。
+dock: 停靠
+groups: 分组
+cut_and_copy: 剪切并复制
+deselect: 取消选择

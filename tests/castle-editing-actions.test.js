@@ -3,7 +3,7 @@ const assert = require('node:assert/strict');
 const test = require('node:test');
 const fs = require('node:fs');
 const path = require('node:path');
-const vm = require('node:vm');
+const vm = require('./helpers/localized-vm');
 const geometry = require('../src/js/castle-geometry');
 const camera = require('../src/js/castle-camera');
 const palette = require('../src/js/castle-palette');
@@ -96,7 +96,7 @@ test('brush size controls work for every tool, retaining size limits', () => {
   const start = source.indexOf('  function updateBrushSizeUI()');
   const end = source.indexOf('\n  function ', start + 10);
   const state = { tool: 'select', brushSize: 5 };
-  const els = { brushSizeOut: { parentElement: { classList: { remove() {} } } }, brushMinus: {}, brushPlus: {} };
+  const els = { brushSizeInput: {}, brushMinus: {}, brushPlus: {} };
   const context = vm.createContext({ state, els, geometry });
   vm.runInContext(source.slice(start, end), context);
   for (const tool of ['single', 'brush', 'select', 'delete', 'copy', 'replace', 'line', 'bucket']) {
@@ -104,13 +104,17 @@ test('brush size controls work for every tool, retaining size limits', () => {
     vm.runInContext('updateBrushSizeUI()', context);
     assert.equal(els.brushMinus.disabled, false, tool);
     assert.equal(els.brushPlus.disabled, false, tool);
+    assert.equal(els.brushSizeInput.value, '5', tool);
+    assert.equal(els.brushSizeInput.max, String(geometry.GRID_SIZE), tool);
   }
   state.brushSize = 1;
   vm.runInContext('updateBrushSizeUI()', context);
   assert.equal(els.brushMinus.disabled, true);
+  assert.equal(els.brushSizeInput.value, '1');
   state.brushSize = 100;
   vm.runInContext('updateBrushSizeUI()', context);
   assert.equal(els.brushPlus.disabled, true);
+  assert.equal(els.brushSizeInput.value, '100');
 });
 
 test('every configured item has a readable name and every category has a persistent color', () => {
@@ -188,4 +192,20 @@ test('non-destructive connected selection can include a Keep while deletion stil
   const keep=placement('keep',43,56,61);
   assert.deepEqual(geometry.floodPlacementRefs(keep,[keep],p=>geometry.footprintRectsAtXY(p.type,p.x,p.y),()=>false,100,false),new Set(['keep']));
   assert.deepEqual(flood(keep,[keep]),new Set());
+});
+
+test('units without game art show a short name on a disc, Europeans blue and Arabians ochre', () => {
+  const categories = require('../config/aiv_categories.json');
+  const groups = categories.categories || categories;
+  for (const [faction, fill] of [['Europeans', '#3d6fb6'], ['Arabians', '#b8862f']]) {
+    for (const id of groups[faction]) {
+      const badge = palette.unitBadge(id);
+      assert.ok(badge, faction + ' ' + id);
+      assert.match(badge.text, /^[A-Za-z]{2,3}$/);
+      assert.equal(badge.fill, fill, faction + ' ' + id);
+    }
+  }
+  const texts = Array.from({ length: 21 }, (_, i) => palette.unitBadge(i + 1).text);
+  assert.equal(new Set(texts).size, 21, 'every unit has its own short name');
+  assert.equal(palette.unitBadge(61), null, 'buildings get no badge');
 });

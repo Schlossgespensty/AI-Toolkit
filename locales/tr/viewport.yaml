@@ -1,0 +1,25 @@
+rotation_unavailable: 'Döndürme kullanılamıyor: '
+loading_camera_views: Kamera görünümleri yükleniyor…
+loading_map: Harita yükleniyor…
+items: ' öğe'
+without_a_sprite: ' spritesız'
+tool: ' · araç: '
+middle_drag_pans_right_click_clears_camera_controls_match_map: ' · orta tuşla sürüklemek kaydırır · sağ tıklama temizler · kamera kontrolleri haritayla aynıdır'
+start_place: ' · başlangıç konumu '
+no_starting_place_village_in_the_middle_of_the_map: ' · başlangıç konumu yok; köy haritanın ortasında'
+quarter_turn: ' çeyrek tur'
+game_value: ' (oyun değeri '
+not_turned_game_value_0: ' · döndürülmedi (oyun değeri 0)'
+flat_ground_height: ' · düz zemin (yükseklik '
+ground_rises: ' · zemin yükselmesi '
+2_5d_view_ai_toolkit: 2.5B görünüm — AI Toolkit
+castle_moved_to_start_value_at_value_value: Kale ({{x}}, {{y}}) konumundaki {{nummer}} numaralı başlangıca taşındı
+start_value_at_value_value_click_to_build_here: 'Başlangıç {{value1}} ({{x}}, {{y}}): buraya inşa etmek için tıklayın'
+fit_the_castle_into_the_view: Kaleyi görünüme sığdır
+show_in_a_window_of_its_own: Ayrı pencerede göster
+click_to_show_drag_to_move_it_somewhere_else: Göstermek için tıklayın, başka yere taşımak için sürükleyin
+close_the_window_shown_here: Burada gösterilen pencereyi kapat
+no_window_open_one_from_the_toolbar: pencere yok; araç çubuğundan bir tane açın
+add_as_a_tab_here: Buraya sekme olarak ekle
+esc_cancels: ' · Esc iptal eder'
+is_missing: ' eksik'

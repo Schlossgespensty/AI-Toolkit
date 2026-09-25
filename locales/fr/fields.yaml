@@ -1,0 +1,232 @@
+StrengthMultiplier: Multiplicateur de vie du seigneur
+DotColour: Couleur des points
+DotCount: Nombre de points
+Type: Type
+ArabArcher: Archer arabe
+Slave: Esclave
+Slinger: Frondeur
+Assassin: Assassin
+HorseArcher: Archer monté
+ArabSwordsman: Épéiste arabe
+FireThrower: Lanceur de feu
+EuropArcher: Archer européen
+Spearman: Lancier
+Maceman: Massier
+Crossbowman: Arbalétrier
+Pikeman: Piquier
+Swordsman: Épéiste
+Knight: Chevalier
+Monk: Moine
+Engineer: Ingénieur
+WallDecoration: Décoration des murs
+Unknown001: Inconnu 001
+Unknown002: Inconnu 002
+Unknown003: Inconnu 003
+Unknown004: Inconnu 004
+Unknown005: Inconnu 005
+CriticalPopularity: Popularité critique
+LowestPopularity: Popularité minimale
+HighestPopularity: Popularité maximale
+TaxesMin: Impôts minimaux
+TaxesMax: Impôts maximaux
+Unknown011: Inconnu 011
+Farm1: Ferme 1
+Farm2: Ferme 2
+Farm3: Ferme 3
+Farm4: Ferme 4
+Farm5: Ferme 5
+Farm6: Ferme 6
+Farm7: Ferme 7
+Farm8: Ferme 8
+PopulationPerFarm: Population par ferme
+PopulationPerWoodcutter: Population par bûcheron
+PopulationPerQuarry: Population par carrière
+PopulationPerIronmine: Population par mine de fer
+PopulationPerPitchrig: Population par fosse à poix
+MaxQuarries: Carrières maximales
+MaxIronmines: Mines de fer maximales
+MaxWoodcutters: Bûcherons maximaux
+MaxPitchrigs: Fosses à poix maximales
+MaxFarms: Fermes maximales
+BuildInterval: Intervalle de construction
+ResourceRebuildDelay: Délai de reconstruction des bâtiments de ressources
+MaxFood: Nourriture maximale
+MinimumApples: Pommes minimales
+MinimumCheese: Fromage minimal
+MinimumBread: Pain minimal
+MinimumWheat: Blé minimal
+MinimumHop: Houblon minimal
+TradeAmountFood: Nourriture achetée par transaction
+TradeAmountEquipment: Équipement acheté par transaction
+AIRequestDelay: Délai des demandes d'IA
+MinimumGoodsRequiredAfterTrade: Stock minimal après échange
+DoubleRationsFoodThreshold: Seuil de nourriture pour doubles rations
+MaxWood: Bois maximal
+MaxStone: Pierre maximale
+MaxResourceOther: Autres ressources maximales
+MaxEquipment: Équipement maximal
+MaxBeer: Bière maximale
+MaxResourceVariance: Marge au-dessus des plafonds de stock
+RecruitGoldThreshold: Seuil d'or du recrutement
+BlacksmithSetting: Production de la forge
+FletcherSetting: Production de l'archerie
+PoleturnerSetting: Production de l'atelier de lances
+SellResource01: Ressource à vendre 01
+SellResource02: Ressource à vendre 02
+SellResource03: Ressource à vendre 03
+SellResource04: Ressource à vendre 04
+SellResource05: Ressource à vendre 05
+SellResource06: Ressource à vendre 06
+SellResource07: Ressource à vendre 07
+SellResource08: Ressource à vendre 08
+SellResource09: Ressource à vendre 09
+SellResource10: Ressource à vendre 10
+SellResource11: Ressource à vendre 11
+SellResource12: Ressource à vendre 12
+SellResource13: Ressource à vendre 13
+SellResource14: Ressource à vendre 14
+SellResource15: Ressource à vendre 15
+DefWallPatrolRallyTime: Pause des patrouilles sur les murs
+DefWallPatrolGroups: Groupes de patrouille des murs
+DefSiegeEngineGoldThreshold: Seuil d'or des engins défensifs
+DefSiegeEngineBuildDelay: Délai de construction des engins défensifs
+Unknown072: Inconnu 072
+Unknown073: Inconnu 073
+RecruitProbDefDefault: 'Poids de recrutement : défense (normale)'
+RecruitProbDefWeak: 'Poids de recrutement : défense (faible)'
+RecruitProbDefStrong: 'Poids de recrutement : défense (forte)'
+RecruitProbRaidDefault: 'Poids de recrutement : raid (normale)'
+RecruitProbRaidWeak: 'Poids de recrutement : raid (faible)'
+RecruitProbRaidStrong: 'Poids de recrutement : raid (forte)'
+RecruitProbAttackDefault: 'Poids de recrutement : attaque (normale)'
+RecruitProbAttackWeak: 'Poids de recrutement : attaque (faible)'
+RecruitProbAttackStrong: 'Poids de recrutement : attaque (forte)'
+SortieUnitRangedMin: Effectif minimal de la sortie à distance
+SortieUnitRanged: Unité de sortie à distance
+SortieUnitMeleeMin: Effectif des sorties de mêlée
+SortieUnitMelee: Unité de sortie de mêlée
+DefDiggingUnitMax: Unités défensives de creusement maximales
+DefDiggingUnit: Unité défensive de creusement
+RecruitInterval: Intervalle de recrutement
+RecruitIntervalWeak: Intervalle de recrutement (faible)
+RecruitIntervalStrong: Intervalle de recrutement (fort)
+DefTotal: Total des défenseurs
+OuterPatrolGroupsCount: Nombre de patrouilles extérieures
+OuterPatrolGroupsMove: Déplacement des patrouilles extérieures
+OuterPatrolRallyDelay: Pause des patrouilles extérieures
+DefWalls: Défenseurs des murs
+DefUnit1: Unité défensive 1
+DefUnit2: Unité défensive 2
+DefUnit3: Unité défensive 3
+DefUnit4: Unité défensive 4
+DefUnit5: Unité défensive 5
+DefUnit6: Unité défensive 6
+DefUnit7: Unité défensive 7
+DefUnit8: Unité défensive 8
+RaidUnitsBase: 'Raids : effectif de base'
+RaidUnitsRandom: 'Raids : effectif aléatoire'
+RaidUnit1: Unité de raid 1
+RaidUnit2: Unité de raid 2
+RaidUnit3: Unité de raid 3
+RaidUnit4: Unité de raid 4
+RaidUnit5: Unité de raid 5
+RaidUnit6: Unité de raid 6
+RaidUnit7: Unité de raid 7
+RaidUnit8: Unité de raid 8
+HarassingSiegeEngine1: Engin de harcèlement 1
+HarassingSiegeEngine2: Engin de harcèlement 2
+HarassingSiegeEngine3: Engin de harcèlement 3
+HarassingSiegeEngine4: Engin de harcèlement 4
+HarassingSiegeEngine5: Engin de harcèlement 5
+HarassingSiegeEngine6: Engin de harcèlement 6
+HarassingSiegeEngine7: Engin de harcèlement 7
+HarassingSiegeEngine8: Engin de harcèlement 8
+HarassingSiegeEnginesMax: Engins de harcèlement maximaux
+RaidRetargetDelay: Délai de changement de cible des raids
+AttForceBase: 'Attaque : effectif de base'
+AttForceRandom: 'Attaque : effectif aléatoire'
+AttForceSupportAllyThreshold: Seuil d'effectif pour aider un allié
+AttForceRallyPercentage: Pourcentage de rassemblement d'attaque
+Unknown129: Inconnu 129
+AttAssaultDelay: Délai avant l'assaut
+AttUnitPatrolRecommandDelay: Délai de repli après la victoire
+Unknown132: Inconnu 132
+SiegeEngine1: Engin de siège 1
+SiegeEngine2: Engin de siège 2
+SiegeEngine3: Engin de siège 3
+SiegeEngine4: Engin de siège 4
+SiegeEngine5: Engin de siège 5
+SiegeEngine6: Engin de siège 6
+SiegeEngine7: Engin de siège 7
+SiegeEngine8: Engin de siège 8
+CowThrowInterval: Tirs de pierres avant une vache
+Unknown142: Inconnu 142
+AttMaxEngineers: Ingénieurs d'attaque maximaux
+AttDiggingUnit: Unité de creusement d'attaque
+AttDiggingUnitMax: Unités de creusement d'attaque maximales
+AttUnitVanguard: Unité d'avant-garde
+AttUnitVanguardMax: Unités d'avant-garde maximales
+AttMaxAssassins: Assassins d'attaque maximaux
+AttMaxLaddermen: Porte-échelles maximaux
+AttMaxTunnelers: Tunneliers maximaux
+AttUnitPatrol: Unité de patrouille d'attaque
+AttUnitPatrolMax: Unités de patrouille d'attaque maximales
+AttUnitPatrolGroupsCount: Groupes de patrouille d'attaque
+AttUnitBackup: Unité de réserve
+AttUnitBackupMax: Unités de réserve maximales
+AttUnitBackupGroupsCount: Groupes de réserve
+AttUnitEngage: Unité d'interception
+AttUnitEngageMax: Unités d'interception maximales
+AttUnitSiegeDef: Unité de protection du siège
+AttUnitSiegeDefMax: Unités de protection du siège maximales
+AttUnitSiegeDefGroupsCount: Groupes de protection du siège
+AttUnitMain1: Unité d'assaut principale 1
+AttUnitMain2: Unité d'assaut principale 2
+AttUnitMain3: Unité d'assaut principale 3
+AttUnitMain4: Unité d'assaut principale 4
+AttMaxDefault: Priorité de recrutement des unités principales
+AttMainGroupsCount: Groupes d'assaut principaux
+TargetChoice: Choix de la cible
+AIOxTethers_DisableInitialOxTether: Désactiver l'attache à bœufs initiale
+AIOxTethers_Logic: Logique des attaches à bœufs
+AIOxTethers_MaxOxTethers: Attaches à bœufs maximales
+AIOxTethers_DynamicMaxOxTethers: Maximum dynamique d'attaches à bœufs
+AIOxTethers_MinimumOxTethersPerQuarry: Attaches minimales par carrière
+AIOxTethers_MaximumOxTethersPerQuarry: Attaches maximales par carrière
+AIOxTethers_ThresholdStoneLoad: Seuil de chargement de pierre
+RunningUnits_Macemen: Massiers en course
+RunningUnits_Spearmen: Lanciers en course
+RunningUnits_Slingers: Frondeurs en course
+RunningUnits_Slaves: Esclaves en course
+AIVTroops_InitialRole: 'Toutes les troupes : rôle initial'
+AIVTroops_Movement: 'Toutes les troupes : déplacement'
+AIVTroops_InitialRole_Engineer: 'Ingénieur : rôle initial'
+AIVTroops_Movement_Engineer: 'Ingénieur : déplacement'
+AIVTroops_InitialRole_Archer: 'Archer : rôle initial'
+AIVTroops_Movement_Archer: 'Archer : déplacement'
+AIVTroops_InitialRole_Crossbowman: 'Arbalétrier : rôle initial'
+AIVTroops_Movement_Crossbowman: 'Arbalétrier : déplacement'
+AIVTroops_InitialRole_Spearman: 'Lancier : rôle initial'
+AIVTroops_Movement_Spearman: 'Lancier : déplacement'
+AIVTroops_InitialRole_Pikeman: 'Piquier : rôle initial'
+AIVTroops_Movement_Pikeman: 'Piquier : déplacement'
+AIVTroops_InitialRole_Maceman: 'Massier : rôle initial'
+AIVTroops_Movement_Maceman: 'Massier : déplacement'
+AIVTroops_InitialRole_Swordsman: 'Épéiste : rôle initial'
+AIVTroops_Movement_Swordsman: 'Épéiste : déplacement'
+AIVTroops_InitialRole_Knight: 'Chevalier : rôle initial'
+AIVTroops_Movement_Knight: 'Chevalier : déplacement'
+AIVTroops_InitialRole_Slave: 'Esclave : rôle initial'
+AIVTroops_Movement_Slave: 'Esclave : déplacement'
+AIVTroops_InitialRole_Slinger: 'Frondeur : rôle initial'
+AIVTroops_Movement_Slinger: 'Frondeur : déplacement'
+AIVTroops_InitialRole_Assassin: 'Assassin : rôle initial'
+AIVTroops_Movement_Assassin: 'Assassin : déplacement'
+AIVTroops_InitialRole_ArabianArcher: 'Archer arabe : rôle initial'
+AIVTroops_Movement_ArabianArcher: 'Archer arabe : déplacement'
+AIVTroops_InitialRole_HorseArcher: 'Archer monté : rôle initial'
+AIVTroops_Movement_HorseArcher: 'Archer monté : déplacement'
+AIVTroops_InitialRole_ArabianSwordsman: 'Épéiste arabe : rôle initial'
+AIVTroops_Movement_ArabianSwordsman: 'Épéiste arabe : déplacement'
+AIVTroops_InitialRole_FireThrower: 'Lanceur de feu : rôle initial'
+AIVTroops_Movement_FireThrower: 'Lanceur de feu : déplacement'

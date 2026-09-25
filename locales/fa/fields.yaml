@@ -1,0 +1,232 @@
+StrengthMultiplier: ضریب قدرت
+DotColour: رنگ نقطه
+DotCount: تعداد نقطه‌ها
+Type: نوع
+ArabArcher: کماندار عرب
+Slave: برده
+Slinger: فلاخن‌انداز
+Assassin: حشاشین
+HorseArcher: کماندار سواره
+ArabSwordsman: شمشیرزن عرب
+FireThrower: آتش‌انداز
+EuropArcher: کماندار اروپایی
+Spearman: نیزه‌دار
+Maceman: گرزدار
+Crossbowman: کماندار زنبورکی
+Pikeman: نیزه‌دار زره‌پوش
+Swordsman: شمشیرزن
+Knight: شوالیه
+Monk: راهب
+Engineer: مهندس
+WallDecoration: تزئین دیوار
+Unknown001: ناشناخته 001
+Unknown002: ناشناخته 002
+Unknown003: ناشناخته 003
+Unknown004: ناشناخته 004
+Unknown005: ناشناخته 005
+CriticalPopularity: محبوبیت بحرانی
+LowestPopularity: کمترین محبوبیت
+HighestPopularity: بیشترین محبوبیت
+TaxesMin: کمترین مالیات
+TaxesMax: بیشترین مالیات
+Unknown011: ناشناخته 011
+Farm1: مزرعهٔ 1
+Farm2: مزرعهٔ 2
+Farm3: مزرعهٔ 3
+Farm4: مزرعهٔ 4
+Farm5: مزرعهٔ 5
+Farm6: مزرعهٔ 6
+Farm7: مزرعهٔ 7
+Farm8: مزرعهٔ 8
+PopulationPerFarm: جمعیت به‌ازای هر مزرعه
+PopulationPerWoodcutter: جمعیت به‌ازای هر چوب‌بری
+PopulationPerQuarry: جمعیت به‌ازای هر معدن سنگ
+PopulationPerIronmine: جمعیت به‌ازای هر معدن آهن
+PopulationPerPitchrig: جمعیت به‌ازای هر چاه قیر
+MaxQuarries: حداکثر معادن سنگ
+MaxIronmines: حداکثر معادن آهن
+MaxWoodcutters: حداکثر چوب‌بری‌ها
+MaxPitchrigs: حداکثر چاه‌های قیر
+MaxFarms: حداکثر مزارع
+BuildInterval: فاصلهٔ زمانی ساخت
+ResourceRebuildDelay: تأخیر بازسازی منابع
+MaxFood: حداکثر غذا
+MinimumApples: حداقل سیب
+MinimumCheese: حداقل پنیر
+MinimumBread: حداقل نان
+MinimumWheat: حداقل گندم
+MinimumHop: حداقل رازک
+TradeAmountFood: مقدار خرید غذا
+TradeAmountEquipment: مقدار خرید تجهیزات
+AIRequestDelay: فاصلهٔ درخواست هوش مصنوعی
+MinimumGoodsRequiredAfterTrade: حداقل کالا پس از معامله
+DoubleRationsFoodThreshold: آستانهٔ غذا برای جیرهٔ دوبرابر
+MaxWood: حداکثر چوب
+MaxStone: حداکثر سنگ
+MaxResourceOther: حداکثر سایر منابع
+MaxEquipment: حداکثر تجهیزات
+MaxBeer: حداکثر آبجو
+MaxResourceVariance: دامنهٔ تغییر سقف منابع
+RecruitGoldThreshold: آستانهٔ طلا برای سربازگیری
+BlacksmithSetting: تولید آهنگری
+FletcherSetting: تولید کمان‌سازی
+PoleturnerSetting: تولید نیزه‌سازی
+SellResource01: منبع فروشی 01
+SellResource02: منبع فروشی 02
+SellResource03: منبع فروشی 03
+SellResource04: منبع فروشی 04
+SellResource05: منبع فروشی 05
+SellResource06: منبع فروشی 06
+SellResource07: منبع فروشی 07
+SellResource08: منبع فروشی 08
+SellResource09: منبع فروشی 09
+SellResource10: منبع فروشی 10
+SellResource11: منبع فروشی 11
+SellResource12: منبع فروشی 12
+SellResource13: منبع فروشی 13
+SellResource14: منبع فروشی 14
+SellResource15: منبع فروشی 15
+DefWallPatrolRallyTime: زمان انتظار گشت دیوار
+DefWallPatrolGroups: گروه‌های گشت دیوار
+DefSiegeEngineGoldThreshold: آستانهٔ طلا برای ادوات دفاعی
+DefSiegeEngineBuildDelay: تأخیر ساخت ادوات دفاعی
+Unknown072: ناشناخته 072
+Unknown073: ناشناخته 073
+RecruitProbDefDefault: احتمال سربازگیری برای دفاع (عادی)
+RecruitProbDefWeak: احتمال سربازگیری برای دفاع (اقتصاد ضعیف)
+RecruitProbDefStrong: احتمال سربازگیری برای دفاع (اقتصاد قوی)
+RecruitProbRaidDefault: احتمال سربازگیری برای یورش کوچک (عادی)
+RecruitProbRaidWeak: احتمال سربازگیری برای یورش کوچک (اقتصاد ضعیف)
+RecruitProbRaidStrong: احتمال سربازگیری برای یورش کوچک (اقتصاد قوی)
+RecruitProbAttackDefault: احتمال سربازگیری برای حمله (عادی)
+RecruitProbAttackWeak: احتمال سربازگیری برای حمله (اقتصاد ضعیف)
+RecruitProbAttackStrong: احتمال سربازگیری برای حمله (اقتصاد قوی)
+SortieUnitRangedMin: حداقل تیراندازان یورش دفاعی
+SortieUnitRanged: تیرانداز یورش دفاعی
+SortieUnitMeleeMin: حداقل نیروهای نزدیک‌زن یورش دفاعی
+SortieUnitMelee: نیروی نزدیک‌زن یورش دفاعی
+DefDiggingUnitMax: حداکثر حفاران دفاعی
+DefDiggingUnit: حفار دفاعی
+RecruitInterval: فاصلهٔ سربازگیری
+RecruitIntervalWeak: فاصلهٔ سربازگیری با اقتصاد ضعیف
+RecruitIntervalStrong: فاصلهٔ سربازگیری با اقتصاد قوی
+DefTotal: کل مدافعان
+OuterPatrolGroupsCount: تعداد گروه‌های گشت بیرونی
+OuterPatrolGroupsMove: حرکت گروه‌های گشت بیرونی
+OuterPatrolRallyDelay: تأخیر تجمع گشت بیرونی
+DefWalls: مدافعان دیوار
+DefUnit1: نوع مدافع 1
+DefUnit2: نوع مدافع 2
+DefUnit3: نوع مدافع 3
+DefUnit4: نوع مدافع 4
+DefUnit5: نوع مدافع 5
+DefUnit6: نوع مدافع 6
+DefUnit7: نوع مدافع 7
+DefUnit8: نوع مدافع 8
+RaidUnitsBase: تعداد پایهٔ مهاجمان کوچک
+RaidUnitsRandom: تعداد تصادفی مهاجمان کوچک
+RaidUnit1: نوع مهاجم کوچک 1
+RaidUnit2: نوع مهاجم کوچک 2
+RaidUnit3: نوع مهاجم کوچک 3
+RaidUnit4: نوع مهاجم کوچک 4
+RaidUnit5: نوع مهاجم کوچک 5
+RaidUnit6: نوع مهاجم کوچک 6
+RaidUnit7: نوع مهاجم کوچک 7
+RaidUnit8: نوع مهاجم کوچک 8
+HarassingSiegeEngine1: ادوات آزاردهندهٔ 1
+HarassingSiegeEngine2: ادوات آزاردهندهٔ 2
+HarassingSiegeEngine3: ادوات آزاردهندهٔ 3
+HarassingSiegeEngine4: ادوات آزاردهندهٔ 4
+HarassingSiegeEngine5: ادوات آزاردهندهٔ 5
+HarassingSiegeEngine6: ادوات آزاردهندهٔ 6
+HarassingSiegeEngine7: ادوات آزاردهندهٔ 7
+HarassingSiegeEngine8: ادوات آزاردهندهٔ 8
+HarassingSiegeEnginesMax: حداکثر ادوات آزاردهنده
+RaidRetargetDelay: تأخیر تغییر هدف یورش
+AttForceBase: تعداد پایهٔ نیروهای حمله
+AttForceRandom: نیروهای تصادفی افزوده به حمله
+AttForceSupportAllyThreshold: آستانهٔ کمک به متحد
+AttForceRallyPercentage: درصد تجمع نیروهای حمله
+Unknown129: ناشناخته 129
+AttAssaultDelay: تأخیر تهاجم
+AttUnitPatrolRecommandDelay: تأخیر عقب‌نشینی پس از پیروزی
+Unknown132: ناشناخته 132
+SiegeEngine1: ادوات محاصرهٔ 1
+SiegeEngine2: ادوات محاصرهٔ 2
+SiegeEngine3: ادوات محاصرهٔ 3
+SiegeEngine4: ادوات محاصرهٔ 4
+SiegeEngine5: ادوات محاصرهٔ 5
+SiegeEngine6: ادوات محاصرهٔ 6
+SiegeEngine7: ادوات محاصرهٔ 7
+SiegeEngine8: ادوات محاصرهٔ 8
+CowThrowInterval: فاصلهٔ پرتاب گاو
+Unknown142: ناشناخته 142
+AttMaxEngineers: حداکثر مهندسان حمله
+AttDiggingUnit: حفار حمله
+AttDiggingUnitMax: حداکثر حفاران حمله
+AttUnitVanguard: نیروی پیش‌قراول
+AttUnitVanguardMax: حداکثر پیش‌قراولان
+AttMaxAssassins: حداکثر حشاشین حمله
+AttMaxLaddermen: حداکثر نردبان‌داران
+AttMaxTunnelers: حداکثر نقب‌زنان
+AttUnitPatrol: نیروی گشت حمله
+AttUnitPatrolMax: حداکثر نیروهای گشت حمله
+AttUnitPatrolGroupsCount: تعداد گروه‌های گشت حمله
+AttUnitBackup: نیروی ذخیرهٔ حمله
+AttUnitBackupMax: حداکثر نیروهای ذخیرهٔ حمله
+AttUnitBackupGroupsCount: تعداد گروه‌های ذخیرهٔ حمله
+AttUnitEngage: نیروی درگیری
+AttUnitEngageMax: حداکثر نیروهای درگیری
+AttUnitSiegeDef: نیروی محافظ اردوگاه محاصره
+AttUnitSiegeDefMax: حداکثر محافظان اردوگاه محاصره
+AttUnitSiegeDefGroupsCount: تعداد گروه‌های محافظ اردوگاه محاصره
+AttUnitMain1: نوع نیروی اصلی حملهٔ 1
+AttUnitMain2: نوع نیروی اصلی حملهٔ 2
+AttUnitMain3: نوع نیروی اصلی حملهٔ 3
+AttUnitMain4: نوع نیروی اصلی حملهٔ 4
+AttMaxDefault: تعداد نیروهای اصلی پیش از نیروهای تخصصی
+AttMainGroupsCount: تعداد گروه‌های سپاه اصلی
+TargetChoice: انتخاب هدف
+AIOxTethers_DisableInitialOxTether: غیرفعال کردن محل گاو آغازین
+AIOxTethers_Logic: منطق محل گاوها
+AIOxTethers_MaxOxTethers: حداکثر محل گاوها
+AIOxTethers_DynamicMaxOxTethers: حداکثر پویای محل گاوها
+AIOxTethers_MinimumOxTethersPerQuarry: حداقل محل گاو به‌ازای معدن سنگ
+AIOxTethers_MaximumOxTethersPerQuarry: حداکثر محل گاو به‌ازای معدن سنگ
+AIOxTethers_ThresholdStoneLoad: آستانهٔ بار سنگ
+RunningUnits_Macemen: دویدن گرزداران
+RunningUnits_Spearmen: دویدن نیزه‌داران
+RunningUnits_Slingers: دویدن فلاخن‌اندازان
+RunningUnits_Slaves: دویدن بردگان
+AIVTroops_InitialRole: نقش آغازین نیروهای AIV
+AIVTroops_Movement: حرکت نیروهای AIV
+AIVTroops_InitialRole_Engineer: نقش آغازین مهندس
+AIVTroops_Movement_Engineer: حرکت مهندس
+AIVTroops_InitialRole_Archer: نقش آغازین کماندار
+AIVTroops_Movement_Archer: حرکت کماندار
+AIVTroops_InitialRole_Crossbowman: نقش آغازین کماندار زنبورکی
+AIVTroops_Movement_Crossbowman: حرکت کماندار زنبورکی
+AIVTroops_InitialRole_Spearman: نقش آغازین نیزه‌دار
+AIVTroops_Movement_Spearman: حرکت نیزه‌دار
+AIVTroops_InitialRole_Pikeman: نقش آغازین نیزه‌دار زره‌پوش
+AIVTroops_Movement_Pikeman: حرکت نیزه‌دار زره‌پوش
+AIVTroops_InitialRole_Maceman: نقش آغازین گرزدار
+AIVTroops_Movement_Maceman: حرکت گرزدار
+AIVTroops_InitialRole_Swordsman: نقش آغازین شمشیرزن
+AIVTroops_Movement_Swordsman: حرکت شمشیرزن
+AIVTroops_InitialRole_Knight: نقش آغازین شوالیه
+AIVTroops_Movement_Knight: حرکت شوالیه
+AIVTroops_InitialRole_Slave: نقش آغازین برده
+AIVTroops_Movement_Slave: حرکت برده
+AIVTroops_InitialRole_Slinger: نقش آغازین فلاخن‌انداز
+AIVTroops_Movement_Slinger: حرکت فلاخن‌انداز
+AIVTroops_InitialRole_Assassin: نقش آغازین حشاشین
+AIVTroops_Movement_Assassin: حرکت حشاشین
+AIVTroops_InitialRole_ArabianArcher: نقش آغازین کماندار عرب
+AIVTroops_Movement_ArabianArcher: حرکت کماندار عرب
+AIVTroops_InitialRole_HorseArcher: نقش آغازین کماندار سواره
+AIVTroops_Movement_HorseArcher: حرکت کماندار سواره
+AIVTroops_InitialRole_ArabianSwordsman: نقش آغازین شمشیرزن عرب
+AIVTroops_Movement_ArabianSwordsman: حرکت شمشیرزن عرب
+AIVTroops_InitialRole_FireThrower: نقش آغازین آتش‌انداز
+AIVTroops_Movement_FireThrower: حرکت آتش‌انداز

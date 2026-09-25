@@ -1,0 +1,112 @@
+'1': Ingeniero de aceite
+'2': Mangonel
+'3': Balista
+'4': Trabuquete
+'5': Balista de fuego
+'6': Arquero
+'7': Ballestero
+'8': Lancero
+'9': Piquero
+'10': Macero
+'11': Espadachín
+'12': Caballero
+'13': Esclavo
+'14': Hondero
+'15': Asesino
+'16': Arquero árabe
+'17': Arquero a caballo
+'18': Espadachín árabe
+'19': Lanzafuego
+'20': Brasero
+'21': Bandera
+'25': Muralla alta
+'26': Almena alta
+'35': Almena baja
+'46': Muralla baja
+'50': Fabricante de arcos
+'51': Leñador
+'52': Almacén
+'53': Puesto beduino
+'54': Casa
+'55': Atadero de bueyes
+'56': Cantera
+'61': Torre del homenaje
+'65': Establos
+'70': Granja de trigo
+'71': Granja de lúpulo
+'72': Manzanar
+'73': Granja lechera
+'74': Molino
+'75': Panadería
+'76': Cervecería
+'77': Mercado
+'78': Puesto de cazador
+'79': Empalizada beduina
+'80': Granero
+'81': Armería
+'82': Fabricante de lanzas
+'83': Herrería
+'84': Fabricante de armaduras
+'85': Curtidor
+'86': Puesto de mercenarios
+'87': Cuartel
+'88': Gremio de ingenieros
+'89': Gremio de zapadores
+'90': Mina de hierro
+'91': Pozo de brea
+'92': Taberna
+'93': Curanderos
+'95': Capilla
+'96': Iglesia
+'97': Catedral
+'98': Fosa trampa
+'99': Brea
+'105': Puente levadizo
+'106': Foso ×1
+'110': Torre 1
+'111': Torre 2
+'112': Torre 3
+'113': Torre 4
+'114': Torre 5
+'144': Puerta pequeña N–S
+'145': Puerta pequeña E–O
+'146': Puerta grande N–S
+'147': Puerta grande E–O
+'166': Jardín comunitario
+'169': Jardín del pueblo
+'175': Árbol de mayo
+'176': Horca
+'177': Cepo
+'178': Puesto europeo
+'179': Puesto árabe
+'180': Caldera de aceite
+'181': Escalera 1 (más alta)
+'182': Escalera 2
+'183': Escalera 3
+'184': Escalera 4
+'185': Escalera 5 (más baja)
+'186': Escalera 6 (suelo)
+'200': Paso de pausa
+'301': Pozo negro
+'305': Hoguera
+'306': Jaula de castigo
+'307': Mazmorra
+'308': Potro de tortura
+'310': Tajo de ejecución
+'311': Pozo de castigo
+'312': Perros de guerra enjaulados
+'313': Estatua
+'318': Santuario
+'324': Oso bailarín
+'330': Pozo
+'342': Cisterna
+'9022': Lancero en camello
+'9023': Curandero
+'9024': Eunuco
+'9025': Emboscador
+'9026': Hostigador
+'9027': Camello pesado
+'9028': Zapador
+'9029': Demoledor
+'10001': Escalera alta
+'10002': Escalera baja

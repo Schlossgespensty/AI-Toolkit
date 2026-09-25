@@ -1,0 +1,24 @@
+balance_profile: Se esperaba un perfil de balance con una sección buildings, resources, units, population o castle.
+balance_section: La sección {{section}} no es válida.
+balance_building: 'Edificio no válido: {{name}}'
+balance_health: '{{name}}: health debe ser un número entero no negativo.'
+balance_housing: '{{name}}: housing debe ser un número entero no negativo.'
+balance_cost: '{{name}}: cost debe contener cinco enteros no negativos (madera, piedra, hierro, brea y oro).'
+balance_resource: 'Recurso no válido: {{name}}'
+balance_delivery: '{{name}}: la cantidad entregada debe estar entre 0 y 255.'
+balance_bonus: '{{name}}: skirmishBonus debe ser true o false.'
+balance_ditch: castle.ditch_per_pitch debe ser 1, 2, 3 o 4.
+frames_array: Los pasos del castillo deben ser un array.
+tile_offset: '{{label}}: posición de casilla no válida.'
+step_object: 'Paso {{step}}: se esperaba un objeto.'
+step_positions: 'Paso {{step}}: elemento o posiciones no válidos.'
+step_pause: 'Paso {{step}}: indicador de pausa no válido.'
+step: Paso {{step}}
+markers_array: Los marcadores del castillo deben ser un array.
+marker_invalid: Marcador de castillo no válido.
+marker: Marcador de castillo
+pause_delay: Duración de pausa no válida.
+classic_empty_steps: El formato AIV clásico no conserva los pasos de construcción vacíos.
+classic_item: El formato AIV clásico no admite {{name}}.
+classic_pauses: Las pausas por paso están desactivadas en el editor clásico.
+classic_marker: El formato AIV clásico no puede conservar {{name}}.

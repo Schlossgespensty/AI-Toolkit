@@ -1,0 +1,92 @@
+name: Native preview
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Optional snapshot tag (defaults to snapshot-native-<commit>)'
+        type: string
+        default: ''
+      publish:
+        description: 'Publish the verified artifacts as an experimental prerelease'
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: native-preview-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: windows-latest
+    outputs:
+      tag: ${{ steps.identity.outputs.tag }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12
+          cache: npm
+      - name: Select preview identity
+        id: identity
+        shell: pwsh
+        env:
+          REQUESTED_TAG: ${{ inputs.tag }}
+        run: |
+          $tag = if ($env:REQUESTED_TAG) { $env:REQUESTED_TAG } else { "snapshot-native-$($env:GITHUB_SHA.Substring(0, 8))" }
+          if ($tag -notmatch '^snapshot-[a-zA-Z0-9][a-zA-Z0-9._-]{0,100}$') { throw 'Use a snapshot-* prerelease tag.' }
+          "tag=$tag" >> $env:GITHUB_OUTPUT
+          "AI_TOOLKIT_RELEASE_TAG=$tag" >> $env:GITHUB_ENV
+          "AI_TOOLKIT_RELEASE_REPO=$env:GITHUB_REPOSITORY" >> $env:GITHUB_ENV
+      - name: Install stable Rust
+        run: |
+          rustup toolchain install stable --profile minimal
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          rustup default stable
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            src-tauri/target
+          key: native-windows-${{ hashFiles('src-tauri/Cargo.lock') }}
+          restore-keys: native-windows-
+      - run: npm ci
+      - run: npm run check
+      - run: npm run check:locales
+      - name: Check native bridge types
+        run: npx tsc --project tsconfig.desktop.json --noEmit
+      - name: Prepare the embedded frontend for native tests
+        run: node scripts/build-desktop.mjs
+      - name: Native tests
+        run: cargo test --locked --manifest-path src-tauri/Cargo.toml
+      - name: Build and verify setup and portable artifacts
+        run: npm run package:native
+      - uses: actions/upload-artifact@v4
+        with:
+          name: native-preview
+          path: release/native/*
+          if-no-files-found: error
+          retention-days: 14
+
+  publish:
+    if: inputs.publish
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: native-preview
+          path: release
+      - name: Publish experimental snapshot
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          SNAPSHOT_TAG: ${{ needs.build.outputs.tag }}
+        run: |
+          gh release create "$SNAPSHOT_TAG" release/* --target "$GITHUB_SHA" --prerelease --title "Native preview $SNAPSHOT_TAG" --notes "Experimental Tauri preview. The portable ZIP supports both the existing Electron updater and native updates; choose the experimental fork channel. Setup is available for manual installation. Missing WebView2 is downloaded separately from Microsoft. See the included README, checksums and package audit."

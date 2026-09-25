@@ -1,0 +1,232 @@
+StrengthMultiplier: Множитель здоровья
+DotColour: Цвет точек
+DotCount: Количество точек
+Type: Тип
+ArabArcher: Арабский лучник
+Slave: Раб
+Slinger: Пращник
+Assassin: Ассасин
+HorseArcher: Конный лучник
+ArabSwordsman: Арабский мечник
+FireThrower: Огнеметатель
+EuropArcher: Европейский лучник
+Spearman: Копейщик
+Maceman: Дубинщик
+Crossbowman: Арбалетчик
+Pikeman: Пикинер
+Swordsman: Мечник
+Knight: Рыцарь
+Monk: Монах
+Engineer: Инженер
+WallDecoration: Украшения стен
+Unknown001: Неизвестно 001
+Unknown002: Неизвестно 002
+Unknown003: Неизвестно 003
+Unknown004: Неизвестно 004
+Unknown005: Неизвестно 005
+CriticalPopularity: Критическая популярность
+LowestPopularity: Минимальная популярность
+HighestPopularity: Максимальная популярность
+TaxesMin: Минимальные налоги
+TaxesMax: Максимальные налоги
+Unknown011: Неизвестно 011
+Farm1: Ферма 1
+Farm2: Ферма 2
+Farm3: Ферма 3
+Farm4: Ферма 4
+Farm5: Ферма 5
+Farm6: Ферма 6
+Farm7: Ферма 7
+Farm8: Ферма 8
+PopulationPerFarm: Жителей на ферму
+PopulationPerWoodcutter: Жителей на лесоруба
+PopulationPerQuarry: Жителей на каменоломню
+PopulationPerIronmine: Жителей на рудник
+PopulationPerPitchrig: Жителей на смоляную яму
+MaxQuarries: Максимум каменоломен
+MaxIronmines: Максимум железных рудников
+MaxWoodcutters: Максимум лесорубов
+MaxPitchrigs: Максимум смоляных ям
+MaxFarms: Максимум ферм
+BuildInterval: Интервал строительства
+ResourceRebuildDelay: Задержка восстановления производства
+MaxFood: Максимум пищи
+MinimumApples: Минимум яблок
+MinimumCheese: Минимум сыра
+MinimumBread: Минимум хлеба
+MinimumWheat: Минимум пшеницы
+MinimumHop: Минимум хмеля
+TradeAmountFood: Объем торговли пищей
+TradeAmountEquipment: Объем торговли снаряжением
+AIRequestDelay: Интервал запросов ИИ
+MinimumGoodsRequiredAfterTrade: Минимум товаров после торговли
+DoubleRationsFoodThreshold: Порог пищи для двойного пайка
+MaxWood: Максимум дерева
+MaxStone: Максимум камня
+MaxResourceOther: Максимум прочих ресурсов
+MaxEquipment: Максимум снаряжения
+MaxBeer: Максимум эля
+MaxResourceVariance: Разброс максимума ресурсов
+RecruitGoldThreshold: Порог золота для найма
+BlacksmithSetting: Режим кузницы
+FletcherSetting: Режим лучной мастерской
+PoleturnerSetting: Режим копейной мастерской
+SellResource01: Ресурс на продажу 01
+SellResource02: Ресурс на продажу 02
+SellResource03: Ресурс на продажу 03
+SellResource04: Ресурс на продажу 04
+SellResource05: Ресурс на продажу 05
+SellResource06: Ресурс на продажу 06
+SellResource07: Ресурс на продажу 07
+SellResource08: Ресурс на продажу 08
+SellResource09: Ресурс на продажу 09
+SellResource10: Ресурс на продажу 10
+SellResource11: Ресурс на продажу 11
+SellResource12: Ресурс на продажу 12
+SellResource13: Ресурс на продажу 13
+SellResource14: Ресурс на продажу 14
+SellResource15: Ресурс на продажу 15
+DefWallPatrolRallyTime: Ожидание патруля на стенах
+DefWallPatrolGroups: Группы патруля стен
+DefSiegeEngineGoldThreshold: Порог золота для защитных машин
+DefSiegeEngineBuildDelay: Задержка постройки защитных машин
+Unknown072: Неизвестно 072
+Unknown073: Неизвестно 073
+RecruitProbDefDefault: Вероятность найма для защиты (обычная)
+RecruitProbDefWeak: Вероятность найма для защиты (при слабой экономике)
+RecruitProbDefStrong: Вероятность найма для защиты (при сильной экономике)
+RecruitProbRaidDefault: Вероятность найма для набега (обычная)
+RecruitProbRaidWeak: Вероятность найма для набега (при слабой экономике)
+RecruitProbRaidStrong: Вероятность найма для набега (при сильной экономике)
+RecruitProbAttackDefault: Вероятность найма для атаки (обычная)
+RecruitProbAttackWeak: Вероятность найма для атаки (при слабой экономике)
+RecruitProbAttackStrong: Вероятность найма для атаки (при сильной экономике)
+SortieUnitRangedMin: Минимум стрелков для вылазки
+SortieUnitRanged: Стрелки для вылазки
+SortieUnitMeleeMin: Минимум бойцов для вылазки
+SortieUnitMelee: Бойцы для вылазки
+DefDiggingUnitMax: Максимум защитников-землекопов
+DefDiggingUnit: Защитники-землекопы
+RecruitInterval: Интервал найма
+RecruitIntervalWeak: Интервал найма при слабой экономике
+RecruitIntervalStrong: Интервал найма при сильной экономике
+DefTotal: Всего защитников
+OuterPatrolGroupsCount: Число внешних патрульных групп
+OuterPatrolGroupsMove: Движение внешнего патруля
+OuterPatrolRallyDelay: Задержка сбора внешнего патруля
+DefWalls: Защитники стен
+DefUnit1: Тип защитников 1
+DefUnit2: Тип защитников 2
+DefUnit3: Тип защитников 3
+DefUnit4: Тип защитников 4
+DefUnit5: Тип защитников 5
+DefUnit6: Тип защитников 6
+DefUnit7: Тип защитников 7
+DefUnit8: Тип защитников 8
+RaidUnitsBase: Базовое число бойцов набега
+RaidUnitsRandom: Случайная добавка к набегу
+RaidUnit1: Тип бойцов набега 1
+RaidUnit2: Тип бойцов набега 2
+RaidUnit3: Тип бойцов набега 3
+RaidUnit4: Тип бойцов набега 4
+RaidUnit5: Тип бойцов набега 5
+RaidUnit6: Тип бойцов набега 6
+RaidUnit7: Тип бойцов набега 7
+RaidUnit8: Тип бойцов набега 8
+HarassingSiegeEngine1: Машина для обстрела 1
+HarassingSiegeEngine2: Машина для обстрела 2
+HarassingSiegeEngine3: Машина для обстрела 3
+HarassingSiegeEngine4: Машина для обстрела 4
+HarassingSiegeEngine5: Машина для обстрела 5
+HarassingSiegeEngine6: Машина для обстрела 6
+HarassingSiegeEngine7: Машина для обстрела 7
+HarassingSiegeEngine8: Машина для обстрела 8
+HarassingSiegeEnginesMax: Максимум машин для обстрела
+RaidRetargetDelay: Задержка смены цели набега
+AttForceBase: Базовое число атакующих
+AttForceRandom: Случайная добавка к атаке
+AttForceSupportAllyThreshold: Порог помощи союзнику
+AttForceRallyPercentage: Доля атакующих для сбора
+Unknown129: Неизвестно 129
+AttAssaultDelay: Задержка штурма
+AttUnitPatrolRecommandDelay: Задержка отступления после победы
+Unknown132: Неизвестно 132
+SiegeEngine1: Осадная машина 1
+SiegeEngine2: Осадная машина 2
+SiegeEngine3: Осадная машина 3
+SiegeEngine4: Осадная машина 4
+SiegeEngine5: Осадная машина 5
+SiegeEngine6: Осадная машина 6
+SiegeEngine7: Осадная машина 7
+SiegeEngine8: Осадная машина 8
+CowThrowInterval: Интервал бросков коров
+Unknown142: Неизвестно 142
+AttMaxEngineers: Максимум инженеров для атаки
+AttDiggingUnit: Атакующие землекопы
+AttDiggingUnitMax: Максимум атакующих землекопов
+AttUnitVanguard: Авангард
+AttUnitVanguardMax: Максимум бойцов авангарда
+AttMaxAssassins: Максимум ассасинов для атаки
+AttMaxLaddermen: Максимум лестничников
+AttMaxTunnelers: Максимум подкопщиков
+AttUnitPatrol: Атакующий патруль
+AttUnitPatrolMax: Максимум бойцов атакующего патруля
+AttUnitPatrolGroupsCount: Группы атакующего патруля
+AttUnitBackup: Резерв атаки
+AttUnitBackupMax: Максимум резерва атаки
+AttUnitBackupGroupsCount: Группы резерва атаки
+AttUnitEngage: Бойцы нападения
+AttUnitEngageMax: Максимум бойцов нападения
+AttUnitSiegeDef: Охрана осадного лагеря
+AttUnitSiegeDefMax: Максимум охраны осадного лагеря
+AttUnitSiegeDefGroupsCount: Группы охраны осадного лагеря
+AttUnitMain1: Тип бойцов основной армии 1
+AttUnitMain2: Тип бойцов основной армии 2
+AttUnitMain3: Тип бойцов основной армии 3
+AttUnitMain4: Тип бойцов основной армии 4
+AttMaxDefault: Лимит основных войск до специалистов
+AttMainGroupsCount: Группы основной армии
+TargetChoice: Выбор цели
+AIOxTethers_DisableInitialOxTether: Не строить начальную привязь вола
+AIOxTethers_Logic: Логика привязей волов
+AIOxTethers_MaxOxTethers: Максимум привязей волов
+AIOxTethers_DynamicMaxOxTethers: Динамический максимум привязей волов
+AIOxTethers_MinimumOxTethersPerQuarry: Минимум привязей на каменоломню
+AIOxTethers_MaximumOxTethersPerQuarry: Максимум привязей на каменоломню
+AIOxTethers_ThresholdStoneLoad: Порог загрузки камнем
+RunningUnits_Macemen: Бег дубинщиков
+RunningUnits_Spearmen: Бег копейщиков
+RunningUnits_Slingers: Бег пращников
+RunningUnits_Slaves: Бег рабов
+AIVTroops_InitialRole: Начальная роль войск AIV
+AIVTroops_Movement: Передвижение войск AIV
+AIVTroops_InitialRole_Engineer: "Инженер: начальная роль"
+AIVTroops_Movement_Engineer: "Инженер: передвижение"
+AIVTroops_InitialRole_Archer: "Лучник: начальная роль"
+AIVTroops_Movement_Archer: "Лучник: передвижение"
+AIVTroops_InitialRole_Crossbowman: "Арбалетчик: начальная роль"
+AIVTroops_Movement_Crossbowman: "Арбалетчик: передвижение"
+AIVTroops_InitialRole_Spearman: "Копейщик: начальная роль"
+AIVTroops_Movement_Spearman: "Копейщик: передвижение"
+AIVTroops_InitialRole_Pikeman: "Пикинер: начальная роль"
+AIVTroops_Movement_Pikeman: "Пикинер: передвижение"
+AIVTroops_InitialRole_Maceman: "Дубинщик: начальная роль"
+AIVTroops_Movement_Maceman: "Дубинщик: передвижение"
+AIVTroops_InitialRole_Swordsman: "Мечник: начальная роль"
+AIVTroops_Movement_Swordsman: "Мечник: передвижение"
+AIVTroops_InitialRole_Knight: "Рыцарь: начальная роль"
+AIVTroops_Movement_Knight: "Рыцарь: передвижение"
+AIVTroops_InitialRole_Slave: "Раб: начальная роль"
+AIVTroops_Movement_Slave: "Раб: передвижение"
+AIVTroops_InitialRole_Slinger: "Пращник: начальная роль"
+AIVTroops_Movement_Slinger: "Пращник: передвижение"
+AIVTroops_InitialRole_Assassin: "Ассасин: начальная роль"
+AIVTroops_Movement_Assassin: "Ассасин: передвижение"
+AIVTroops_InitialRole_ArabianArcher: "Арабский лучник: начальная роль"
+AIVTroops_Movement_ArabianArcher: "Арабский лучник: передвижение"
+AIVTroops_InitialRole_HorseArcher: "Конный лучник: начальная роль"
+AIVTroops_Movement_HorseArcher: "Конный лучник: передвижение"
+AIVTroops_InitialRole_ArabianSwordsman: "Арабский мечник: начальная роль"
+AIVTroops_Movement_ArabianSwordsman: "Арабский мечник: передвижение"
+AIVTroops_InitialRole_FireThrower: "Огнеметатель: начальная роль"
+AIVTroops_Movement_FireThrower: "Огнеметатель: передвижение"

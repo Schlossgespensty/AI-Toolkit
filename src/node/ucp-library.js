@@ -9,18 +9,7 @@ const MANAGED_PLUGIN = Object.freeze({
   folderName: 'aiv-mod-editor-local-1.0.0'
 });
 
-const DEFAULT_LINE_KEYS = Object.freeze([
-  'ai_name',
-  'title_1', 'title_2', 'title_3', 'title_4', 'title_5', 'title_6', 'title_7', 'title_8',
-  'description', 'unknown_1',
-  'taunt_1', 'taunt_2', 'taunt_3', 'taunt_4',
-  'anger_1', 'anger_2', 'plead', 'nervous_1', 'nervous_2',
-  'victory_1', 'victory_2', 'victory_3', 'victory_4',
-  'request', 'thanks', 'ally_death', 'congrats', 'boast', 'help', 'extra',
-  'kick_player', 'add_player', 'siege',
-  'no_attack_1', 'no_attack_2', 'no_help_1', 'no_help_2',
-  'no_sent', 'sent', 'team_winning', 'team_losing', 'help_sent', 'will_attack'
-]);
+const DEFAULT_LINE_KEYS = Object.freeze(require('../shared/ai-line-keys.json'));
 
 function defaultLines(aiName) {
   return Object.fromEntries(DEFAULT_LINE_KEYS.map(key => [key, key === 'ai_name' ? String(aiName || '') : '']));

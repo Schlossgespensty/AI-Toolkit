@@ -1,0 +1,24 @@
+missing_sprites: 'Hiányzó sprite-ok: {{count}}'
+playing: '{{name}} lejátszása'
+replaced_media: '✓ {{name}} lecserélve ({{size}})'
+choosing: '{{name}} kiválasztása…'
+saved_label: '{{name}} (mentve)'
+file_label: 'Fájl: {{name}}'
+loaded_label: 'Betöltve: {{name}}'
+balance_help: Az UCP-egyensúly gombbal frissítheted a kiválasztott telepítés adatait. Az EXE + UCP mód a lemezen lévő játékfájlból olvassa ki a költségtáblát, és alkalmazza a beállított rebalancer profilt; nem a futó játékból olvas.
+item: '{{id}}. elem'
+tool: '{{name}} eszköz'
+shortcut: 'Gyorsbillentyű: {{key}}'
+rally_points: 'Gyülekezési pontok: {{count}}'
+rally_point: Gyülekezési pont
+keep_footprint: '{{width}}×{{height}} + kötelező 5×5-ös raktár'
+placement_info: '{{name}} [{{id}}] · {{kind}} · {{size}} · átfedés: {{overlap}} · max.: {{maximum}}'
+overlap_allow: engedélyezett
+overlap_block: tiltott
+overlap_replace: lecseréli
+resize: Átméretezés
+castle_slot: '{{slot}}. vár'
+replacing_character: '{{name}} karakterének lecserélése…'
+opening: '{{name}} megnyitása…'
+opened: '{{name}} megnyitva.'
+with_castle: ' – vár: {{name}}'

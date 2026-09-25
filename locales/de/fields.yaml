@@ -1,0 +1,232 @@
+StrengthMultiplier: Stärkefaktor
+DotColour: Punktfarbe
+DotCount: Punktanzahl
+Type: Typ
+ArabArcher: Arabischer Bogenschütze
+Slave: Sklave
+Slinger: Schleuderschütze
+Assassin: Meuchelmörder
+HorseArcher: Berittener Bogenschütze
+ArabSwordsman: Arabischer Schwertkämpfer
+FireThrower: Feuerwerfer
+EuropArcher: Europäischer Bogenschütze
+Spearman: Lanzenträger
+Maceman: Streitkolbenkämpfer
+Crossbowman: Armbrustschütze
+Pikeman: Pikenier
+Swordsman: Schwertkämpfer
+Knight: Ritter
+Monk: Mönch
+Engineer: Ingenieur
+WallDecoration: Mauerschmuck
+Unknown001: Unbekannt 001
+Unknown002: Unbekannt 002
+Unknown003: Unbekannt 003
+Unknown004: Unbekannt 004
+Unknown005: Unbekannt 005
+CriticalPopularity: Kritische Beliebtheit
+LowestPopularity: Untere Beliebtheitsgrenze
+HighestPopularity: Obere Beliebtheitsgrenze
+TaxesMin: Mindeststeuern
+TaxesMax: Höchststeuern
+Unknown011: Unbekannt 011
+Farm1: Farm 1
+Farm2: Farm 2
+Farm3: Farm 3
+Farm4: Farm 4
+Farm5: Farm 5
+Farm6: Farm 6
+Farm7: Farm 7
+Farm8: Farm 8
+PopulationPerFarm: Bevölkerung je Farm
+PopulationPerWoodcutter: Bevölkerung je Holzfäller
+PopulationPerQuarry: Bevölkerung je Steinbruch
+PopulationPerIronmine: Bevölkerung je Eisenmine
+PopulationPerPitchrig: Bevölkerung je Pechgrube
+MaxQuarries: Max. Steinbrüche
+MaxIronmines: Max. Eisenminen
+MaxWoodcutters: Max. Holzfäller
+MaxPitchrigs: Max. Pechgruben
+MaxFarms: Max. Farmen
+BuildInterval: Bauintervall
+ResourceRebuildDelay: Wartezeit für Wiederaufbau
+MaxFood: Max. Nahrung
+MinimumApples: Mindestbestand Äpfel
+MinimumCheese: Mindestbestand Käse
+MinimumBread: Mindestbestand Brot
+MinimumWheat: Mindestbestand Weizen
+MinimumHop: Mindestbestand Hopfen
+TradeAmountFood: Nahrung je Kauf
+TradeAmountEquipment: Ausrüstung je Kauf
+AIRequestDelay: Wartezeit für KI-Anfragen
+MinimumGoodsRequiredAfterTrade: Mindestbestand nach Handel
+DoubleRationsFoodThreshold: Nahrungsschwelle für doppelte Rationen
+MaxWood: Max. Holz
+MaxStone: Max. Stein
+MaxResourceOther: Max. sonstige Rohstoffe
+MaxEquipment: Max. Ausrüstung
+MaxBeer: Max. Bier
+MaxResourceVariance: Vorratstoleranz
+RecruitGoldThreshold: Goldschwelle für Rekrutierung
+BlacksmithSetting: Produktion der Schmiede
+FletcherSetting: Produktion der Pfeilmacherei
+PoleturnerSetting: Produktion der Pikenmacherei
+SellResource01: Verkaufsressource 01
+SellResource02: Verkaufsressource 02
+SellResource03: Verkaufsressource 03
+SellResource04: Verkaufsressource 04
+SellResource05: Verkaufsressource 05
+SellResource06: Verkaufsressource 06
+SellResource07: Verkaufsressource 07
+SellResource08: Verkaufsressource 08
+SellResource09: Verkaufsressource 09
+SellResource10: Verkaufsressource 10
+SellResource11: Verkaufsressource 11
+SellResource12: Verkaufsressource 12
+SellResource13: Verkaufsressource 13
+SellResource14: Verkaufsressource 14
+SellResource15: Verkaufsressource 15
+DefWallPatrolRallyTime: Wartezeit der Mauerpatrouillen
+DefWallPatrolGroups: Mauerpatrouillengruppen
+DefSiegeEngineGoldThreshold: Goldschwelle für Verteidigungsgeräte
+DefSiegeEngineBuildDelay: Baupause für Verteidigungsgeräte
+Unknown072: Unbekannt 072
+Unknown073: Unbekannt 073
+RecruitProbDefDefault: 'Rekrutierungsgewicht: Verteidigung (normal)'
+RecruitProbDefWeak: 'Rekrutierungsgewicht: Verteidigung (schwach)'
+RecruitProbDefStrong: 'Rekrutierungsgewicht: Verteidigung (stark)'
+RecruitProbRaidDefault: 'Rekrutierungsgewicht: Überfall (normal)'
+RecruitProbRaidWeak: 'Rekrutierungsgewicht: Überfall (schwach)'
+RecruitProbRaidStrong: 'Rekrutierungsgewicht: Überfall (stark)'
+RecruitProbAttackDefault: 'Rekrutierungsgewicht: Angriff (normal)'
+RecruitProbAttackWeak: 'Rekrutierungsgewicht: Angriff (schwach)'
+RecruitProbAttackStrong: 'Rekrutierungsgewicht: Angriff (stark)'
+SortieUnitRangedMin: Mindestzahl Fernkampfeinheiten beim Ausfall
+SortieUnitRanged: Fernkampfeinheit für Ausfälle
+SortieUnitMeleeMin: Nahkampfeinheiten je Ausfall
+SortieUnitMelee: Nahkampfeinheit für Ausfälle
+DefDiggingUnitMax: Max. defensive Grabeneinheiten
+DefDiggingUnit: Defensive Grabeneinheit
+RecruitInterval: Rekrutierungsintervall
+RecruitIntervalWeak: Rekrutierungsintervall (schwach)
+RecruitIntervalStrong: Rekrutierungsintervall (stark)
+DefTotal: Verteidiger gesamt
+OuterPatrolGroupsCount: Äußere Patrouillengruppen
+OuterPatrolGroupsMove: Bewegung äußerer Patrouillen
+OuterPatrolRallyDelay: Wartezeit der Außenpatrouillen
+DefWalls: Mauerverteidiger
+DefUnit1: Verteidigungseinheit 1
+DefUnit2: Verteidigungseinheit 2
+DefUnit3: Verteidigungseinheit 3
+DefUnit4: Verteidigungseinheit 4
+DefUnit5: Verteidigungseinheit 5
+DefUnit6: Verteidigungseinheit 6
+DefUnit7: Verteidigungseinheit 7
+DefUnit8: Verteidigungseinheit 8
+RaidUnitsBase: 'Überfalltruppen: Grundzahl'
+RaidUnitsRandom: 'Überfalltruppen: Zufallszahl'
+RaidUnit1: Überfalleinheit 1
+RaidUnit2: Überfalleinheit 2
+RaidUnit3: Überfalleinheit 3
+RaidUnit4: Überfalleinheit 4
+RaidUnit5: Überfalleinheit 5
+RaidUnit6: Überfalleinheit 6
+RaidUnit7: Überfalleinheit 7
+RaidUnit8: Überfalleinheit 8
+HarassingSiegeEngine1: Störangriffsgerät 1
+HarassingSiegeEngine2: Störangriffsgerät 2
+HarassingSiegeEngine3: Störangriffsgerät 3
+HarassingSiegeEngine4: Störangriffsgerät 4
+HarassingSiegeEngine5: Störangriffsgerät 5
+HarassingSiegeEngine6: Störangriffsgerät 6
+HarassingSiegeEngine7: Störangriffsgerät 7
+HarassingSiegeEngine8: Störangriffsgerät 8
+HarassingSiegeEnginesMax: Max. Störangriffsgeräte
+RaidRetargetDelay: Wartezeit für Überfallzielwechsel
+AttForceBase: 'Angriffsstärke: Grundzahl'
+AttForceRandom: 'Angriffsstärke: Zufallszahl'
+AttForceSupportAllyThreshold: Truppenschwelle für Verbündetenhilfe
+AttForceRallyPercentage: Sammelanteil der Angriffstruppe
+Unknown129: Unbekannt 129
+AttAssaultDelay: Wartezeit vor Sturmangriff
+AttUnitPatrolRecommandDelay: Rückzugspause nach einem Sieg
+Unknown132: Unbekannt 132
+SiegeEngine1: Belagerungsgerät 1
+SiegeEngine2: Belagerungsgerät 2
+SiegeEngine3: Belagerungsgerät 3
+SiegeEngine4: Belagerungsgerät 4
+SiegeEngine5: Belagerungsgerät 5
+SiegeEngine6: Belagerungsgerät 6
+SiegeEngine7: Belagerungsgerät 7
+SiegeEngine8: Belagerungsgerät 8
+CowThrowInterval: Intervall für Kuhwürfe
+Unknown142: Unbekannt 142
+AttMaxEngineers: Max. Angriffsingenieure
+AttDiggingUnit: Angriffs-Grabeneinheit
+AttDiggingUnitMax: Max. Angriffs-Grabeneinheiten
+AttUnitVanguard: Vorhuteinheit
+AttUnitVanguardMax: Max. Vorhuteinheiten
+AttMaxAssassins: Max. Angriffsassassinen
+AttMaxLaddermen: Max. Leiterträger
+AttMaxTunnelers: Max. Tunnelgräber
+AttUnitPatrol: Angriffspatrouillen-Einheit
+AttUnitPatrolMax: Max. Angriffspatrouillen-Einheiten
+AttUnitPatrolGroupsCount: Angriffspatrouillengruppen
+AttUnitBackup: Reserveeinheit
+AttUnitBackupMax: Max. Reserveeinheiten
+AttUnitBackupGroupsCount: Reservegruppen
+AttUnitEngage: Abfangeinheit
+AttUnitEngageMax: Max. Abfangeinheiten
+AttUnitSiegeDef: Belagerungsschutz-Einheit
+AttUnitSiegeDefMax: Max. Belagerungsschutz-Einheiten
+AttUnitSiegeDefGroupsCount: Belagerungsschutzgruppen
+AttUnitMain1: Hauptangriffseinheit 1
+AttUnitMain2: Hauptangriffseinheit 2
+AttUnitMain3: Hauptangriffseinheit 3
+AttUnitMain4: Hauptangriffseinheit 4
+AttMaxDefault: Haupttruppen vor Spezialisten
+AttMainGroupsCount: Hauptangriffsgruppen
+TargetChoice: Zielwahl
+AIOxTethers_DisableInitialOxTether: Automatisches Ochsenjoch beim Steinbruchbau aus
+AIOxTethers_Logic: Ochsenjoch-Logik
+AIOxTethers_MaxOxTethers: Max. Ochsenjoche
+AIOxTethers_DynamicMaxOxTethers: Dynamisches Maximum je Steinbruch
+AIOxTethers_MinimumOxTethersPerQuarry: Min. Ochsenjoche je Steinbruch
+AIOxTethers_MaximumOxTethersPerQuarry: Max. Ochsenjoche je Steinbruch
+AIOxTethers_ThresholdStoneLoad: Steinbestand je Ochsenjoch
+RunningUnits_Macemen: Streitkolbenkämpfer rennen
+RunningUnits_Spearmen: Lanzenträger rennen
+RunningUnits_Slingers: Schleuderschütze rennen
+RunningUnits_Slaves: Sklaven rennen
+AIVTroops_InitialRole: 'Alle Truppen: Startaufgabe'
+AIVTroops_Movement: 'Alle Truppen: Bewegung'
+AIVTroops_InitialRole_Engineer: 'Ingenieur: Startaufgabe'
+AIVTroops_Movement_Engineer: 'Ingenieur: Bewegung'
+AIVTroops_InitialRole_Archer: 'Bogenschütze: Startaufgabe'
+AIVTroops_Movement_Archer: 'Bogenschütze: Bewegung'
+AIVTroops_InitialRole_Crossbowman: 'Armbrustschütze: Startaufgabe'
+AIVTroops_Movement_Crossbowman: 'Armbrustschütze: Bewegung'
+AIVTroops_InitialRole_Spearman: 'Lanzenträger: Startaufgabe'
+AIVTroops_Movement_Spearman: 'Lanzenträger: Bewegung'
+AIVTroops_InitialRole_Pikeman: 'Pikenier: Startaufgabe'
+AIVTroops_Movement_Pikeman: 'Pikenier: Bewegung'
+AIVTroops_InitialRole_Maceman: 'Streitkolbenkämpfer: Startaufgabe'
+AIVTroops_Movement_Maceman: 'Streitkolbenkämpfer: Bewegung'
+AIVTroops_InitialRole_Swordsman: 'Schwertkämpfer: Startaufgabe'
+AIVTroops_Movement_Swordsman: 'Schwertkämpfer: Bewegung'
+AIVTroops_InitialRole_Knight: 'Ritter: Startaufgabe'
+AIVTroops_Movement_Knight: 'Ritter: Bewegung'
+AIVTroops_InitialRole_Slave: 'Sklave: Startaufgabe'
+AIVTroops_Movement_Slave: 'Sklave: Bewegung'
+AIVTroops_InitialRole_Slinger: 'Schleuderschütze: Startaufgabe'
+AIVTroops_Movement_Slinger: 'Schleuderschütze: Bewegung'
+AIVTroops_InitialRole_Assassin: 'Meuchelmörder: Startaufgabe'
+AIVTroops_Movement_Assassin: 'Meuchelmörder: Bewegung'
+AIVTroops_InitialRole_ArabianArcher: 'Arabischer Bogenschütze: Startaufgabe'
+AIVTroops_Movement_ArabianArcher: 'Arabischer Bogenschütze: Bewegung'
+AIVTroops_InitialRole_HorseArcher: 'Berittener Bogenschütze: Startaufgabe'
+AIVTroops_Movement_HorseArcher: 'Berittener Bogenschütze: Bewegung'
+AIVTroops_InitialRole_ArabianSwordsman: 'Arabischer Schwertkämpfer: Startaufgabe'
+AIVTroops_Movement_ArabianSwordsman: 'Arabischer Schwertkämpfer: Bewegung'
+AIVTroops_InitialRole_FireThrower: 'Feuerwerfer: Startaufgabe'
+AIVTroops_Movement_FireThrower: 'Feuerwerfer: Bewegung'

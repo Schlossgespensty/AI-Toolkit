@@ -61,7 +61,7 @@ test('building fill aligns with local room edges regardless of clicked grid phas
 
 
 test('completed fills do not remain as a duplicate live placement preview',()=>{
- const fs=require('node:fs'),vm=require('node:vm'),source=fs.readFileSync(editor,'utf8');
+ const fs=require('node:fs'),vm=require('./helpers/localized-vm'),source=fs.readFileSync(editor,'utf8');
  const begin=source.indexOf('    getPlacementPreview() {'),end=source.indexOf('    getMarquee()',begin);
  const state={tool:'bucket',currentItemType:106,gesture:null,brushOffsets:[1,2,3],brushTypes:[],hoverTile:null};
  const context=vm.createContext({state,isPlacementTool:()=>true,lineSequence:()=>[],offsetToXY:off=>({x:off,y:0})});

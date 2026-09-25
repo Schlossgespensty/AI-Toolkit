@@ -1,0 +1,71 @@
+adding_the_castle_was_cancelled: 已取消添加城堡。
+no_castles_available: 无可用城堡
+unmapped: 未映射
+missing: （缺失）
+open_an_ai_project_before_editing_its_castle_mapping: 请先打开 AI 项目，再编辑城堡映射
+unused: 未使用
+no_ais_match_this_search: 没有符合搜索条件的 AI。
+no_ais_match_this_view: 此视图下没有 AI。
+my_ais: 我的 AI
+active: ' · 已启用'
+no_mapped_binary_castles_were_found_the_character_can_still_be_opened: 没有找到已映射的二进制城堡，仍可打开角色。
+binary_aiv_ready: 二进制 AIV 已就绪
+json_fallback_available: 有可用的 JSON 后备文件
+no_description_provided: 未提供说明。
+my_ai: 我的 AI
+active_plugin: 已启用的插件
+inactive_plugin: 未启用的插件
+loads_the_managed_character_castle_1_lines_and_portraits_switch_castles_: 加载管理中的角色、城堡 1、对白与头像。在城堡编辑器中可切换城堡。
+character_data_is_ready_enable_castles_audio_all_ais_above_before_openin: 角色数据已就绪。打开前请在上方启用城堡、音频及所有 AI 访问权限，以包含二进制城堡和声音文件。
+loads_this_ai_directly_from_its_source_plugin_changes_can_be_saved_back_: 直接从来源插件加载 AI，修改可保存回该插件。
+safely_update_the_managed_ucp_plugin_from_the_loaded_editors: 安全地使用已加载编辑器的内容更新管理中的 UCP 插件。
+open_this_ai_in_the_editors_first: 请先在编辑器中打开此 AI。
+scanning_installed_ucp_plugins: 正在扫描已安装的 UCP 插件…
+full_ai_access_enabled: 完整 AI 访问权限已启用 ✓
+enable_castles_audio_all_ais: 启用城堡、音频及所有 AI…
+select_the_stronghold_crusader_ucp_plugins_folder_ucp_requires_this_perm: 选择 Stronghold Crusader/ucp/plugins 文件夹。UCP 需要此权限来读取二进制城堡、音频、视频及未启用插件。
+enable_full_ai_access_to_load_castles_audio_video_and_inactive_plugins: ' 启用完整 AI 访问权限以加载城堡、音频、视频及未启用插件。'
+full_ai_file_access_is_enabled: ' 完整 AI 文件访问权限已启用。'
+castle_1_is_mapped_but_ucp_cannot_read_its_binary_file_yet_click_enable_: 城堡 1 已映射，但 UCP 暂时无法读取其二进制文件。点击“启用城堡、音频及所有 AI”，并选择 ucp/plugins 文件夹。
+opening_this_ai_project: 打开此 AI 项目
+switching_castles: 切换城堡
+the_cloned_ai_could_not_be_found_after_installation: 安装后无法找到克隆的 AI。
+the_new_ai_could_not_be_found_after_creation: 创建后无法找到新 AI。
+open_this_my_ai_project_before_updating_it: 更新前请先打开此“我的 AI”项目。
+the_character_editor_is_showing_another_file_open_this_ai_project_again_: 角色编辑器正在显示其他文件，请先重新打开此 AI 项目。
+the_castle_editor_is_showing_another_file_open_the_ai_project_again_firs: 城堡编辑器正在显示其他文件，请先重新打开 AI 项目。
+the_last_ai_project_is_unavailable_in_this_installation_choose_a_project: 此安装中没有上次的 AI 项目，请选择项目继续。
+value_s_character_was_replaced: 已替换 {{name}} 的角色。
+could_not_add_character_to_value_value: 无法向 {{name}} 添加角色：{{message}}
+adding_castle_to_value: 正在向 {{name}} 添加城堡…
+value_was_added_to_value: 已将 {{fileName}} 添加到 {{name}}。
+could_not_add_castle_to_value_value: 无法向 {{name}} 添加城堡：{{message}}
+choose_the_aiv_used_in_each_of_value_s_eight_castle_slots_the_same_file_: 为 {{name}} 的八个城堡栏位分别选择 AIV。同一文件可重复选择。
+saving_value_s_castle_mapping: 正在保存 {{name}} 的城堡映射…
+value_s_castle_mapping_saved: ✓ 已保存 {{name}} 的城堡映射
+could_not_save_castle_mapping_value: 无法保存城堡映射：{{message}}
+value_of_value_ais_shown: 显示 {{length}} / {{length2}} 个 AI
+value_castle_mappingvalue_found_enable_castles_audio_all_ais_above_to_re: 找到 {{quantityvalue2}} · 请在上方启用城堡、音频及所有 AI，以读取二进制 AIV 文件。
+value_castlevalue_available_but_castle_1_was_not_found_the_character_wil: 有 {{quantityvalue2}} 可用，但未找到城堡 1。打开角色时城堡编辑器将为空。
+value_castlevalue_available_castle_1_opens_first_value_value: 有 {{quantityvalue2}} 可用 · 首先打开城堡 1 · {{fileName}} · {{source}}
+folder_access_is_active_for_this_editor_sessionvalue: 本次编辑器会话的文件夹访问权限已启用{{value1}}。
+value_package_issue_s_were_skipped: ' 已跳过 {{length}} 个软件包问题。'
+found_value_ai_packagevalue_in_value_pluginvalue_valuevalue: 在 {{quantityvalue4}} 中找到 {{quantityvalue2}}。{{diagnosticNote}}{{accessNote}}
+could_not_scan_ucp_value: 无法扫描 UCP：{{message}}
+could_not_use_that_folder_value: 无法使用此文件夹：{{message}}
+the_last_castle_value_is_no_longer_in_this_project_choose_a_castle_to_op: 上次的城堡“{{requestedCastle}}”已不在此项目中。请选择要打开的城堡。
+value_opened_for_editingvalue: 已打开 {{name}} 进行编辑{{value2}}。
+could_not_open_ai_project_value: 无法打开 AI 项目：{{message}}
+castle_value_could_not_be_loaded: 无法加载城堡“{{fileName}}”。
+could_not_switch_castle_value: 无法切换城堡：{{message}}
+cloning_value_into_my_ais: 正在将 {{name}} 克隆到“我的 AI”…
+value_was_installed_in_my_ais_activate_the_plugin_in_the_ucp_gui_when_re: '{{name}} 已安装到“我的 AI”。准备好后可在 UCP 界面中启用插件。'
+could_not_clone_ai_value: 无法克隆 AI：{{message}}
+creating_value_in_my_ais: 正在“我的 AI”中创建 {{name}}…
+value_was_created_in_my_ais: 已在“我的 AI”中创建 {{name}}。
+could_not_create_ai_value: 无法创建 AI：{{message}}
+updating_value_through_a_staging_folder: 正在通过暂存文件夹更新 {{name}}…
+value_is_installed_and_up_to_date_in_my_ais: '{{name}} 已安装在“我的 AI”中并已是最新状态。'
+could_not_update_my_ai_value: 无法更新我的 AI：{{message}}
+could_not_open_folder_value: 无法打开文件夹：{{message}}
+could_not_restore_the_ucp_installation_value: 无法恢复 UCP 安装：{{message}}

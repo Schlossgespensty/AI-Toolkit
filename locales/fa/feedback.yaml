@@ -1,0 +1,24 @@
+missing_sprites: 'تعداد اسپرایت‌های پیدا‌نشده: {{count}}'
+playing: 'در حال پخش {{name}}'
+replaced_media: '✓ {{name}} جایگزین شد ({{size}})'
+choosing: 'در حال انتخاب {{name}}…'
+saved_label: '{{name}} (ذخیره‌شده)'
+file_label: 'پرونده: {{name}}'
+loaded_label: 'بارگذاری‌شده: {{name}}'
+balance_help: برای به‌روزرسانی اطلاعات نصب انتخاب‌شده، از «توازن UCP» استفاده کنید. حالت EXE + UCP جدول هزینه‌ها را از پروندهٔ بازی روی دیسک می‌خواند و نمایهٔ تنظیم‌شدهٔ rebalancer را اعمال می‌کند؛ اطلاعات از بازی در حال اجرا خوانده نمی‌شود.
+item: 'مورد {{id}}'
+tool: 'ابزار {{name}}'
+shortcut: 'میانبر: {{key}}'
+rally_points: 'نقاط تجمع: {{count}}'
+rally_point: نقطهٔ تجمع
+keep_footprint: '{{width}}×{{height}} + انبار ضروری 5×5'
+placement_info: '{{name}} [{{id}}] · {{kind}} · {{size}} · هم‌پوشانی: {{overlap}} · حداکثر: {{maximum}}'
+overlap_allow: مجاز
+overlap_block: غیرمجاز
+overlap_replace: جایگزینی
+resize: تغییر اندازه
+castle_slot: 'قلعهٔ {{slot}}'
+replacing_character: 'در حال جایگزینی شخصیت {{name}}…'
+opening: 'در حال باز کردن {{name}}…'
+opened: '{{name}} باز شد.'
+with_castle: ' همراه با قلعهٔ {{name}}'

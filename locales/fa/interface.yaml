@@ -1,0 +1,250 @@
+experimental_snapshots: نسخه‌های آزمایشی
+toolkit_fork_owner_repository: انشعاب Toolkit (مالک/مخزن)
+fork_builds_are_experimental_switching_sources_does_not_install_a_build_unti: نسخه‌های انشعاب آزمایشی‌اند. تغییر منبع تا زمانی که «نصب» را نزنید، نسخه‌ای نصب نمی‌کند.
+cancel: لغو
+use_fork: استفاده از انشعاب
+editor_workspace: فضای کاری ویرایشگر
+application_menus: منوهای برنامه
+file_alt_f: پرونده (Alt+F)
+file: پرونده
+edit_alt_e: ویرایش (Alt+E)
+edit: ویرایش
+view_alt_v: نما (Alt+V)
+view: نما
+ucp_ai_library: کتابخانهٔ هوش مصنوعی UCP
+character: شخصیت
+castle: قلعه
+ai_content: محتوای هوش مصنوعی
+update_source: منبع به‌روزرسانی
+official_releases: انتشارهای رسمی
+check_official_releases: بررسی انتشارهای رسمی
+check_updates: بررسی به‌روزرسانی
+character_editor: ویرایشگر شخصیت
+no_character_loaded: شخصیتی بارگذاری نشده است
+open_a_character_json_file_or_choose_an_ai_from_the_library: پروندهٔ character.json را باز کنید یا از کتابخانه یک هوش مصنوعی برگزینید.
+open_character: باز کردن شخصیت
+save_character: ذخیرهٔ شخصیت
+save_as: ذخیره با نام
+plugins: افزونه‌ها
+ai_ox_tethers: گاوهای هوش مصنوعی
+controls_the_amount_of_ox_tethers_built: تعداد محل‌های بستن گاو را کنترل می‌کند
+running_units: دویدن نیروها
+controls_whether_some_units_will_run_or_walk: تعیین می‌کند بعضی نیروها بدوند یا راه بروند.
+ai_troop_behaviour: رفتار نیروهای هوش مصنوعی
+include_aiv_troop_behaviour_overrides: گنجاندن تنظیمات سفارشی رفتار نیروهای AIV
+population: جمعیت
+available_population: جمعیت در دسترس
+decrease_available_population_by_8: کاهش جمعیت در دسترس به اندازهٔ ۸
+increase_available_population_by_8: افزایش جمعیت در دسترس به اندازهٔ ۸
+use_the_population_provided_by_the_currently_loaded_castle: استفاده از ظرفیت جمعیت قلعهٔ بارگذاری‌شده
+use_castle_pop: جمعیت قلعه
+maximum_workers_used: حداکثر کارگران مورد استفاده
+max_workers_used_at_set_population: حداکثر کارگران در جمعیت تعیین‌شده
+worker_breakdown: تفکیک کارگران
+farms: مزارع
+woodcutters: چوب‌بری‌ها
+quarries: معادن سنگ
+ox_tethers_up_to: محل گاوها (تا)
+iron_mines: معادن آهن
+pitch_rigs: چاه‌های قیر
+workers_left_after_castle: کارگران باقی‌مانده پس از قلعه
+left_after_castle_character: باقی‌مانده پس از قلعه و شخصیت
+fear_factor: عامل ترس
+stockpile_space: فضای انبار
+find_setting: یافتن تنظیم
+search_character_fields: جست‌وجوی تنظیمات شخصیت…
+section_visibility: نمایش بخش‌ها
+expand_all: گسترش همه
+collapse_all: جمع کردن همه
+character_field_order: ترتیب تنظیمات شخصیت
+standard_template: الگوی استاندارد
+ordered_template: الگوی مرتب‌شده
+castle_files: پرونده‌های قلعه
+open_castle: باز کردن قلعه
+save_castle: ذخیرهٔ قلعه
+export_a_definitive_edition_castle_aivjson: خروجی قلعهٔ Definitive Edition با قالب aivjson
+export_de: خروجی DE
+new: جدید
+castle_views: نماهای قلعه
+show_or_close_the_map_seen_from_above: نمایش یا بستن نمای نقشه از بالا
+map: نقشه
+show_or_close_the_slanted_view_drag_a_tab_to_move_a_window: نمایش یا بستن نمای مورب؛ برای جابه‌جایی پنجره زبانه را بکشید
+2_5d_view: نمای ۲٫۵بعدی
+ai_castle_selection: انتخاب قلعهٔ هوش مصنوعی
+ai_castle: قلعهٔ هوش مصنوعی
+no_ai_project: پروژهٔ هوش مصنوعی موجود نیست
+placement_tools: ابزارهای جای‌گذاری
+shortcut_1_or_s: "میانبر: 1 یا S"
+single: تکی
+shortcut_6_or_l: "میانبر: 6 یا L"
+line: خط
+shortcut_2_or_b: "میانبر: 2 یا B"
+brush: قلم‌مو
+how_wide_the_brush_paints_and_make_it_smaller_and_bigger: پهنای قلم‌مو؛ - و + آن را کوچک‌تر و بزرگ‌تر می‌کنند.
+smaller_brush: قلم‌موی کوچک‌تر
+bigger_brush: قلم‌موی بزرگ‌تر
+fills_everything_up_to_a_wall_the_edge_of_the_map_counts_as_one_shortcut_7_o: "فضا را تا دیوار پر می‌کند؛ لبهٔ نقشه هم دیوار محسوب می‌شود. میانبر: 7 یا F"
+fill: پر کردن
+selection_and_editing_tools: ابزارهای انتخاب و ویرایش
+shortcut_3_or_v: "میانبر: 3 یا V"
+select_move: انتخاب / جابه‌جایی
+select_mode: حالت انتخاب
+flood_selects_connected_placements_of_the_same_type_including_diagonals_shif: >-
+  موارد هم‌نوع متصل، حتی قطری، را انتخاب می‌کند. Shift به انتخاب می‌افزاید؛ Ctrl+کلیک انتخاب گروه متصل را
+  تغییر می‌دهد.
+border: مرز
+flood_fill: انتخاب پیوسته
+delete_mode: حالت حذف
+area: ناحیه
+flood_fill_2: پر کردن پیوسته
+display_overlays: نمایش لایه‌های کمکی
+overlays: لایه‌های کمکی
+item_names: نام موارد
+unit_order: ترتیب نیروها
+guide_lines: خطوط راهنما
+estimated_worker_paths_through_the_current_castle: مسیرهای تخمینی کارگران در قلعهٔ فعلی
+path_map: نقشهٔ مسیر
+estimated_fire_spread_around_flammable_buildings: گسترش تخمینی آتش پیرامون ساختمان‌های آتش‌گیر
+firespread: گسترش آتش
+build_order: ترتیب ساخت
+0_steps: ۰ گام
+current_position: موقعیت فعلی
+no_step_selected: گامی انتخاب نشده است
+select_and_scroll_to_a_build_step: انتخاب گام ساخت و رفتن به آن
+drag_steps_to_reorder_ctrl_click_or_shift_click_selects_several_steps_right_: >-
+  برای تغییر ترتیب، گام‌ها را بکشید. Ctrl+کلیک یا Shift+کلیک چند گام را انتخاب می‌کند. راست‌کلیک برای ادغام یا
+  قفل موقعیت‌ها.
+population_up_to_the_selected_build_step: جمعیت تا گام ساخت انتخاب‌شده
+population_at_current_step: جمعیت در گام فعلی
+about_the_population_overview: دربارهٔ نمای جمعیت
+provided_by_castle: ظرفیت قلعه
+required_by_castle: نیاز قلعه
+required_by_character_aic: نیاز شخصیت (AIC)
+free: آزاد
+these_values_include_only_the_build_steps_up_to_the_current_position: این مقادیر فقط گام‌های ساخت تا موقعیت فعلی را در بر می‌گیرند.
+2d_map_controls: کنترل‌های نقشهٔ دوبعدی
+use_picture_as_background: استفاده از تصویر به‌عنوان پس‌زمینه
+save_the_whole_castle_as_a_full_resolution_png: ذخیرهٔ کل قلعه به‌صورت PNG با وضوح کامل
+snapshot: تصویر
+temporary_castle_blueprint: نقشهٔ موقت قلعه
+show_or_hide_the_temporary_blueprint: نمایش یا پنهان کردن نقشهٔ موقت
+show: نمایش
+blueprint_opacity: میزان تیرگی نقشهٔ راهنما
+opacity: تیرگی
+2_5d_view_controls: کنترل‌های نمای ۲٫۵بعدی
+lay_a_map_of_the_game_under_the_slanted_view_to_scale_one_field_of_the_map_o: قرار دادن نقشهٔ بازی زیر نمای مورب با مقیاس یک خانهٔ نقشه به یک خانهٔ ویرایشگر
+game_map: نقشهٔ بازی
+which_starting_place_of_the_map_the_castle_is_built_on: محل آغازین نقشه که قلعه روی آن ساخته می‌شود
+map_starting_place: محل آغازین نقشه
+take_the_map_of_the_game_away: برداشتن نقشهٔ بازی
+remove_game_map: حذف نقشهٔ بازی
+100_by_100_tile_castle_map: نقشهٔ قلعه با ۱۰۰ در ۱۰۰ خانه
+the_castle_seen_from_an_angle: نمای زاویه‌دار قلعه
+no_castle_loaded: قلعه‌ای بارگذاری نشده است
+ready: آماده
+building_categories: دسته‌های ساختمان
+select_an_item: یک مورد انتخاب کنید
+castle_costs_up_to_the_selected_build_step: هزینهٔ قلعه تا گام ساخت انتخاب‌شده
+assets_and_dialogue: دارایی‌ها و گفت‌وگو
+save_lines_json: ذخیرهٔ lines.json
+open_an_ai_from_the_library_first: ابتدا یک هوش مصنوعی از کتابخانه باز کنید.
+no_ai_project_loaded: پروژهٔ هوش مصنوعی بارگذاری نشده است
+open_an_installed_ai_or_create_one_from_the_ucp_ai_library: یک هوش مصنوعی نصب‌شده را باز کنید یا از کتابخانهٔ UCP یکی بسازید.
+lines_json: lines.json
+text_used_for_the_ai_s_name_titles_description_and_reactions: متن نام، عنوان‌ها، توضیح و واکنش‌های هوش مصنوعی.
+saved: ذخیره‌شده
+portraits: چهره‌ها
+images_use_nearest_neighbor_resizing_transparency_is_kept_strictly_on_or_off: اندازهٔ تصاویر با روش نزدیک‌ترین همسایه تغییر می‌کند؛ شفافیت فقط کاملاً روشن یا خاموش حفظ می‌شود.
+ai_portrait: چهرهٔ هوش مصنوعی
+portrait_png: portrait.png
+saved_as_72_72_pixels: با اندازهٔ ۷۲×۷۲ پیکسل ذخیره می‌شود.
+change_portrait: تغییر چهره
+small_ai_portrait: چهرهٔ کوچک هوش مصنوعی
+portrait_small_png: portrait_small.png
+saved_as_36_36_pixels: با اندازهٔ ۳۶×۳۶ پیکسل ذخیره می‌شود.
+change_small_portrait: تغییر چهرهٔ کوچک
+speech: گفتار
+mapped_wav_files_can_play_here_or_open_in_your_normal_audio_program: پرونده‌های WAV نگاشت‌شده را می‌توان اینجا پخش کرد یا در پخش‌کنندهٔ معمول صدا باز کرد.
+language: زبان
+no_speech: بدون گفتار
+bink_videos: ویدئوهای Bink
+bik_playback_is_handed_to_the_program_associated_with_bink_files_on_windows: پخش BIK در ویندوز به برنامهٔ مرتبط با پرونده‌های Bink سپرده می‌شود.
+project_browser: مرورگر پروژه
+browse_and_edit_installed_ai_packages_or_keep_separate_variants_in_my_ais: بسته‌های هوش مصنوعی نصب‌شده را مرور و ویرایش کنید یا نسخه‌های جداگانه را در «هوش‌های مصنوعی من» نگه دارید.
+create_new_ai: ساخت هوش مصنوعی جدید
+choose_game_folder: انتخاب پوشهٔ بازی
+open_plugins_folder: باز کردن پوشهٔ افزونه‌ها
+refresh: تازه‌سازی
+no_ucp_installation_selected: نصب UCP انتخاب نشده است
+choose_your_stronghold_crusader_folder_to_begin: برای شروع، پوشهٔ Stronghold Crusader را انتخاب کنید.
+installed_ais: هوش‌های مصنوعی نصب‌شده
+search: جست‌وجو
+name_author_or_plugin: نام، سازنده یا افزونه…
+all_installed_ais: همهٔ هوش‌های مصنوعی نصب‌شده
+active_plugins_only: فقط افزونه‌های فعال
+my_ais_only: فقط هوش‌های مصنوعی من
+no_installation_selected: نصبی انتخاب نشده است.
+your_existing_editors_stay_unchanged: ویرایشگرهای فعلی شما تغییر نمی‌کنند
+select_an_installed_ai_to_load_and_edit_its_character_castles_lines_and_port: یک هوش مصنوعی نصب‌شده را انتخاب کنید تا شخصیت، قلعه‌ها، متن‌ها و چهره‌های آن با هم بارگذاری و ویرایش شوند.
+installed: نصب‌شده
+inactive: غیرفعال
+author: سازنده
+version: نسخه
+source_plugin: افزونهٔ منبع
+folder_id: شناسهٔ پوشه
+open_ai_project: باز کردن پروژهٔ هوش مصنوعی
+loads_the_character_and_castle_1_together_switch_castles_from_the_castle_edi: شخصیت و قلعهٔ ۱ را با هم بارگذاری می‌کند. قلعه را از ویرایشگر قلعه تغییر دهید.
+open_in_editors: باز کردن در ویرایشگرها
+open_source_folder: باز کردن پوشهٔ منبع
+clone_to_my_ais: رونوشت در هوش‌های مصنوعی من
+the_complete_ai_package_is_copied_into_the_editor_owned_ucp_plugin_so_you_ca: کل بستهٔ هوش مصنوعی در افزونهٔ UCP متعلق به ویرایشگر کپی می‌شود تا بتوانید نسخهٔ جداگانه‌ای بسازید.
+ai_name: نام هوش مصنوعی
+install_update_in_ucp: نصب / به‌روزرسانی در UCP
+writes_the_character_and_currently_open_castle_through_a_staging_folder_then: >-
+  شخصیت و قلعهٔ باز را ابتدا در پوشهٔ موقت می‌نویسد و فقط پس از اعتبارسنجی موفق، افزونهٔ مدیریت‌شده را جایگزین
+  می‌کند.
+activate_ai_toolkit_my_ais_in_the_ucp_gui_to_use_it_with_ai_swapper: برای استفاده در AI Swapper، افزونهٔ «AI Toolkit - My AIs» را در رابط UCP فعال کنید.
+creates_a_complete_blank_ai_inside_ai_toolkit_my_ais: یک هوش مصنوعی خالی و کامل در AI Toolkit - My AIs می‌سازد.
+create_ai: ساخت هوش مصنوعی
+castle_mapping: نگاشت قلعه‌ها
+choose_the_aiv_used_in_each_of_the_ai_s_eight_castle_slots_the_same_file_may: پروندهٔ AIV هر یک از هشت جایگاه قلعهٔ هوش مصنوعی را انتخاب کنید. یک پرونده می‌تواند چند بار انتخاب شود.
+save_mapping: ذخیرهٔ نگاشت
+castle_shortcuts: میانبرهای قلعه
+select_a_field_and_press_a_key_optionally_with_ctrl_alt_or_shift_one_shortcu: >-
+  یک کادر را انتخاب کنید و کلیدی، در صورت نیاز همراه Ctrl، Alt یا Shift، بزنید. هر عمل یک میانبر دارد و هر
+  ترکیب فقط یک بار قابل انتساب است. Backspace کادر را پاک می‌کند. اعمال بدون میانبر همچنان در رابط موجودند.
+camera: دوربین
+photoshop_controls: کنترل‌های فتوشاپ
+arrow_keys_wheel_zoom: کلیدهای جهت + بزرگ‌نمایی با چرخ
+mouse_wheel: چرخ ماوس
+scroll_pans_alt_scroll_zooms_both_views: چرخ برای جابه‌جایی، Alt+چرخ برای بزرگ‌نمایی (هر دو نما)
+scroll_zooms_alt_shift_scroll_pans: چرخ برای بزرگ‌نمایی، Alt/Shift+چرخ برای جابه‌جایی
+ctrl_scroll_pans_horizontally_in_wheel_zoom_mode_alt_scroll_or_shift_scroll_: >-
+  Ctrl+چرخ نما را افقی جابه‌جا می‌کند. در حالت بزرگ‌نمایی با چرخ، Alt+چرخ یا Shift+چرخ جابه‌جایی عمودی دارد.
+  کشیدن با دکمهٔ وسط نما را جابه‌جا می‌کند. کلیدهای دوربین ترکیب Ctrl/Alt/Shift را نیز می‌پذیرند؛ Backspace
+  پاک می‌کند. برای حرکت سریع‌تر Shift را نگه دارید.
+left: چپ
+right: راست
+up: بالا
+down: پایین
+pan_speed_pixels_per_keypress: سرعت جابه‌جایی (پیکسل در هر بار فشردن کلید)
+restore_defaults: بازگرداندن پیش‌فرض‌ها
+save_shortcuts: ذخیرهٔ میانبرها
+build_step_actions: عملیات گام ساخت
+merge_selected_steps: ادغام گام‌های انتخاب‌شده…
+lock_positions: قفل موقعیت‌ها
+save_castle_picture: ذخیرهٔ تصویر قلعه
+save_png: ذخیرهٔ PNG
+picture_size: "اندازه"
+full_resolution: "وضوح کامل"
+floor_plan_100x100_1_px_per_tile: "نقشهٔ کف ۱۰۰×۱۰۰ (۱ پیکسل برای هر خانه)"
+merge_placements_by_item_type: ادغام موارد بر اساس نوع
+merge: ادغام
+replace_selected_items: جایگزینی موارد انتخاب‌شده
+choose_a_replacement_for_each_item_type_inside_the_box: برای هر نوع مورد در کادر یک جایگزین انتخاب کنید.
+apply_replacements: اعمال جایگزینی‌ها
+map_of_the_game: نقشهٔ بازی
+the_chosen_map_is_laid_under_the_slanted_view_to_scale_one_field_of_the_map_: "نقشهٔ انتخاب‌شده با مقیاس درست زیر نمای مورب قرار می‌گیرد: هر خانهٔ نقشه برابر یک خانهٔ ویرایشگر است."
+filter_by_name: فیلتر بر اساس نام
+
+brush_size: اندازهٔ قلم‌مو

@@ -1,0 +1,435 @@
+/* Layer order is declared once by combined.css. Packs only supply tokens and
+   texture slots; shared roles paint every workspace, including detached views. */
+@layer tokens {
+:root {
+  --texture-control: none;
+  --texture-control-hover: none;
+  --texture-control-pressed: none;
+  --texture-panel: none;
+  --texture-panel-surface: none;
+  --texture-checkbox: none;
+  --texture-checkbox-checked: none;
+  --texture-sidebar: url('../../assets/themes/default/textures/sidebar.png');
+  --texture-backdrop: url('../../assets/themes/default/textures/backdrop.png');
+}
+}
+
+@layer theme {
+.windowControl {
+  border: 0; border-radius: 0; background: transparent;
+  color: var(--semantic-content-on-chrome);
+}
+.windowControl:hover { background: color-mix(in srgb, currentColor 12%, transparent); }
+.windowControl[data-window-action="close"]:hover {
+  background: var(--semantic-status-danger); color: var(--semantic-content-on-accent);
+}
+
+/* Logical command groups stay in the markup; their decoration and density are
+   one pack-owned component, including flat groups with no surrounding frame. */
+.castleToolbar {
+  min-height: var(--component-toolbar-min-height);
+  gap: var(--component-toolbar-gap);
+  padding: var(--component-toolbar-padding-block) var(--component-toolbar-padding-inline);
+  background: var(--component-toolbar-image), var(--component-toolbar-surface);
+  color: var(--component-toolbar-content);
+  border-bottom: 1px solid var(--component-toolbar-border);
+  box-shadow: var(--component-toolbar-shadow);
+}
+.castleToolbar > .toolbarGroup {
+  --group-accent: var(--component-toolbar-group-border);
+  gap: var(--component-toolbar-group-gap);
+  padding: var(--component-toolbar-group-padding-block) var(--component-toolbar-group-padding-inline);
+  border: var(--component-toolbar-group-border-width) solid var(--component-toolbar-group-border);
+  border-inline-start-width: var(--component-toolbar-group-accent-width);
+  border-inline-start-color: var(--group-accent);
+  border-radius: var(--component-toolbar-group-radius);
+  background: var(--component-toolbar-group-surface);
+  box-shadow: var(--component-toolbar-group-shadow);
+}
+.castleToolbar > .toolbarFileGroup { --group-accent: var(--component-toolbar-group-file-accent); }
+.castleToolbar > .castleViewGroup { --group-accent: var(--component-toolbar-group-view-accent); }
+.castleToolbar > .castleProjectGroup { --group-accent: var(--component-toolbar-group-project-accent); }
+.castleToolbar > .castlePlacementGroup { --group-accent: var(--component-toolbar-group-placement-accent); }
+.castleToolbar > .castleEditGroup { --group-accent: var(--component-toolbar-group-edit-accent); }
+.castleToolbar > .castleOverlayGroup { --group-accent: var(--component-toolbar-group-overlay-accent); }
+.castleToolbar > .castleExtrasGroup { --group-accent: var(--component-toolbar-group-extras-accent); }
+html[data-themed-controls="true"] .castleToolbar > .toolbarGroup + .toolbarGroup {
+  border-inline-start: var(--component-toolbar-group-separator-width) solid var(--component-toolbar-group-border);
+  padding-inline-start: var(--component-toolbar-group-separator-gap);
+}
+@media (max-width: 1100px) {
+  .castleToolbar { gap: var(--component-toolbar-compact-gap); }
+}
+
+/* UCP's bevelled commands use an actual 8px border, so the frame cannot paint
+   over the label. Flat menu/list/icon controls deliberately have another role. */
+html[data-themed-controls="true"] :is(button, .castleToolbar summary):not(:where(.paletteCategoryButton, .paletteItem, .ucpAiListItem, .titlebarMenus button, .castlePieMenu button, .workspaceTab, .windowControl, .releaseUpdateButton, .buildStepControls button, .areaTabs button, .isoViewControls button, #isoWindowDockBtn, .infoButton, .helpButton, .helpBtn, .castleOverviewInfoButton, .editorCardToggle, #castleBrushMinus, #castleBrushPlus)) {
+
+  border: var(--texture-control-width) solid transparent;
+  border-image: var(--texture-control) var(--texture-control-slice) / var(--texture-control-width) / 0 stretch;
+  border-radius: 0;
+  padding: 2px 7px;
+  min-height: 32px;
+  background: transparent;
+  color: var(--component-button-content);
+  box-shadow: none;
+  font-family: var(--font-ui);
+  line-height: 1.15;
+
+  &:hover:not(:disabled) { border-image-source: var(--texture-control-hover); color: var(--component-button-content); background: transparent; }
+  &:is(:active, [aria-pressed="true"], .active) { border-image-source: var(--texture-control-pressed); color: var(--component-button-content); background: transparent; }
+}
+html[data-themed-controls="true"] button:disabled { opacity: .55; }
+
+/* Compact command chrome is a separate role from framed dialog buttons. */
+html[data-themed-controls="true"] .castleToolbar :is(.toolbarGroup > button, .toolbarGroup > details > summary) {
+  min-height: var(--component-toolbar-command-min-height);
+  padding-block-start: var(--component-toolbar-command-padding-block-start);
+  padding-block-end: var(--component-toolbar-command-padding-block-end);
+  padding-inline: var(--component-toolbar-command-padding-inline);
+  border-width: var(--component-toolbar-command-border-width);
+  border-color: var(--component-toolbar-command-border);
+  border-image: var(--component-toolbar-command-frame);
+  background: var(--component-toolbar-command-surface);
+  white-space: nowrap;
+  &:hover:not(:disabled) {
+    border-image: var(--component-toolbar-command-frame);
+    border-color: var(--semantic-action-selected);
+    background: var(--component-toolbar-command-hover);
+  }
+  &:is(.active, [aria-pressed="true"], .primaryAction) {
+    border-image: var(--component-toolbar-command-frame);
+    border-color: var(--semantic-action-selected);
+    background: var(--component-toolbar-command-selected);
+  }
+}
+
+/* Workspace navigation retains UCP's ornate tab frame, separate from commands. */
+html[data-themed-controls="true"] .workspaceTabs { background: var(--semantic-surface-chrome); box-shadow: none; }
+html[data-themed-tabs="true"] .workspaceTab {
+  border: 8px solid transparent;
+  border-bottom: 0;
+  border-image: var(--texture-tab) var(--texture-tab-slice) / 8px 8px 0 / 0 stretch;
+  border-radius: 0;
+  padding: 1px 7px 5px;
+  margin-top: 4px;
+  background: transparent;
+  color: var(--component-tab-content);
+  box-shadow: none;
+}
+html[data-themed-tabs="true"] .workspaceTab:is(:hover, .active) { border-image-source: var(--texture-tab-active); background: transparent; color: var(--component-tab-content); box-shadow: none; }
+/* The source UCP active tab stands taller, remaining distinct from a hovered tab. */
+html[data-themed-tabs="true"] .workspaceTab.active { margin-top: 0; }
+html[data-themed-controls="true"] :is(.titlebarMenus button, .workspaceStatus, .appIdentity) { color: var(--semantic-content-on-chrome); }
+html[data-themed-controls="true"] .titlebarMenus button:hover { color: var(--semantic-content-on-chrome); background: #ffffff18; }
+html[data-themed-controls="true"] .titlebarMenus { border-color: #ffffff40; }
+html[data-themed-controls="true"] .appIdentity { border-color: #ffffff40; }
+html[data-themed-controls="true"] .appIdentity span { color: inherit; }
+
+/* UCP GUI main-page/ucp-tabs: a dark shell surrounds framed reading areas.
+   config-editor.tsx uses the light parchment only inside the content panel. */
+html[data-themed-panels="true"] #appRoot {
+  background: linear-gradient(115deg, #000e 15%, #0005 70%), var(--texture-backdrop) center / cover no-repeat, var(--app-bg);
+}
+html[data-themed-panels="true"] :is(.characterApp, .characterMain, .characterSidebar, .characterEditorPanel, .castleBuildPanel, .ucpLibraryApp, .ucpLibraryMain, .aiContentApp, .aiContentEditor) {
+  background: transparent;
+}
+html[data-themed-panels="true"] :is(.workspaceCommandBar, .characterControlBar, .panelHeader, .areaTabs, .dockTitlebar, .buildScrubber, .buildHint) {
+  background: var(--semantic-surface-chrome);
+  color: var(--semantic-content-on-chrome);
+}
+/* These aliases are local to paper. The surrounding shell keeps its own contrast. */
+html[data-themed-panels="true"] :is(.characterSidebar > .editorCard, .characterForm, .castleBuildList, .castleOverviewPanel, .castleSidebarOverviews, .ucpLibraryListPanel, .ucpLibraryDetails, .aiLinesPanel, .aiPortraitPanel, dialog, .helpBox, .castleContextMenu, .castleBuildContextMenu, .castleToolOptions) {
+  --text-main: var(--component-panel-content);
+  --text-soft: var(--component-panel-soft);
+  --text-muted: var(--component-panel-muted);
+  --line: var(--component-panel-border);
+  --line-strong: var(--component-panel-border);
+  --accent: var(--component-panel-accent);
+  --accent-strong: var(--component-panel-accent);
+  --selected: var(--component-panel-selected);
+  --accent-soft: color-mix(in srgb, var(--component-panel-accent) 15%, transparent);
+  --valid: var(--component-panel-success);
+  --danger: var(--component-panel-danger);
+  --surface-1: transparent;
+  --surface-2: #9b9b9b30;
+  --surface-3: #f5f5e36b;
+  --surface-raised: #f5f5e3a0;
+  color-scheme: light;
+  color: var(--text-main);
+  border: var(--texture-panel-width) solid transparent;
+  border-image: var(--texture-panel) var(--texture-panel-slice) / auto / 0 round;
+  border-radius: 0;
+  background: var(--component-panel-surface) var(--texture-panel-surface) repeat;
+  box-shadow: none;
+}
+html[data-themed-panels="true"] :is(.characterForm, .castleBuildList, .castleOverviewPanel, .castleSidebarOverviews, .ucpLibraryListPanel, .ucpLibraryDetails, .aiLinesPanel, .aiPortraitPanel) { margin: 8px; }
+/* The overviews scroll together, so they share one frame like the build list
+   and its chain runs inside the frame; each overview is a section of it. */
+html[data-themed-panels="true"] .castleSidebarOverviews > .castleOverviewPanel { margin: 0; border: 0; border-image: none; background: transparent; }
+html[data-themed-panels="true"] .castleSidebarOverviews > .castleOverviewPanel:not([hidden]) ~ .castleOverviewPanel:not([hidden]) { border-top: 1px solid var(--line); }
+html[data-themed-panels="true"] .characterForm { padding: 12px; }
+html[data-themed-panels="true"] :is(.editorCardHeading, #characterWorkspace summary) { background: #9b9b9b30; color: var(--text-main); }
+html[data-themed-panels="true"] #characterWorkspace .characterForm details { background: transparent; border: 0; border-bottom: 1px solid var(--line); border-radius: 0; box-shadow: none; }
+html[data-themed-panels="true"] #characterWorkspace .field > span { font-family: var(--font-ui); }
+html[data-themed-panels="true"] :is(.aiPortraitCard, .aiMediaCard) { background: #f5f5e36b; box-shadow: none; border-radius: 0; }
+html[data-themed-panels="true"] .helpText { background: #f5f5e36b; }
+html[data-themed-panels="true"] .ucpAiListItem { color: var(--text-main); }
+html[data-themed-controls="true"] .castleToolbar kbd { border-color: #ffffff35; background: #ffffff10; }
+
+/* Text fields and numerical values use their respective original UCP assets. */
+html[data-themed-fields="true"] :is(input:not([type="checkbox"], [type="radio"], [type="range"], [type="color"]), textarea) {
+  border: var(--texture-input-width) solid transparent;
+  border-image: var(--texture-input) var(--texture-input-slice) / var(--texture-input-width) / 0 stretch;
+  border-radius: 0;
+  background: var(--component-input-surface);
+  color: var(--component-input-content);
+  font-family: var(--font-ui);
+}
+html[data-themed-fields="true"] :is(input[type="number"], input[inputmode="numeric"], input[inputmode="decimal"], .numberInput) {
+  border-image: var(--texture-value) var(--texture-value-slice) / var(--texture-value-width) / 0 stretch;
+  background: var(--component-value-surface);
+  color: var(--component-value-content);
+  color-scheme: var(--component-value-color-scheme);
+}
+html[data-themed-fields="true"] select {
+  /* UCP's selects use the native indicator. dropdown_sel is a separate folder
+     expander in the source GUI; packs can opt into that art with a nonzero size. */
+  appearance: var(--component-select-appearance);
+  color-scheme: var(--component-select-color-scheme);
+  border: 1px solid var(--line-strong);
+  border-radius: 2px;
+  color: var(--component-input-content);
+  background: var(--component-input-surface) var(--texture-dropdown) right var(--component-select-indicator-inset) center / var(--component-select-indicator-size) auto no-repeat;
+  padding-inline-end: var(--component-select-padding-inline-end);
+  font-family: var(--font-ui);
+}
+/* On panels a dropdown wears the same frame as the text and number fields
+   beside it, so a form reads as one set of boxes. A filled frame would paint
+   over the arrow, so the dropdown draws the frame's edges, shades its own
+   middle like the field art and puts the arrow on top in the text colour. */
+html[data-themed-fields="true"] select:not(:is(.workspaceTabs, .castleToolbar, .areaTabs, .isoViewControls) select) {
+  appearance: none;
+  padding-block: 4px;
+  padding-inline: 7px 24px;
+  border: var(--texture-input-width) solid transparent;
+  border-image: var(--texture-input) var(--texture-input-edge-slice) / var(--texture-input-width) / 0 stretch;
+  border-radius: 0;
+  background:
+    linear-gradient(45deg, transparent 50%, currentColor 50%) right 13px center / 5px 5px no-repeat,
+    linear-gradient(-45deg, transparent 50%, currentColor 50%) right 8px center / 5px 5px no-repeat,
+    linear-gradient(to right, #0000001f, transparent 18%, transparent 82%, #0000001f),
+    linear-gradient(#00000019, transparent 30%, transparent 70%, #00000019),
+    var(--component-input-surface);
+}
+html[data-themed-fields="true"] :is(.workspaceTabs, .castleToolbar, .areaTabs, .isoViewControls) select {
+  background-color: var(--component-select-chrome-surface);
+  color: var(--component-select-chrome-content);
+  color-scheme: var(--component-select-chrome-color-scheme);
+}
+html[data-themed-fields="true"] select option {
+  background: var(--component-select-option-surface);
+  color: var(--component-select-option-content);
+}
+html[data-themed-fields="true"] :is(input, textarea)::placeholder { color: var(--component-panel-muted); opacity: 1; }
+html[data-themed-fields="true"] select:disabled { opacity: .55; }
+
+/* Categories retain their domain colours; hover must never replace the face
+   while retaining category-colour text (white on beige was unreadable). */
+html[data-themed-controls="true"] .castlePanel .paletteCategoryButton {
+  border: 2px solid transparent;
+  border-image: var(--texture-outline) var(--texture-outline-slice) / 2px / 0 stretch;
+  border-radius: 0;
+  color: var(--category-text, #fff);
+  background: var(--category-color, #505050);
+  box-shadow: none;
+}
+html[data-themed-controls="true"] .castlePanel .paletteCategoryButton:is(:hover, .active) {
+  color: var(--category-text, #fff);
+  background: var(--category-color, #505050);
+  filter: none;
+  box-shadow: inset 0 0 0 2px var(--category-text, #fff);
+}
+html[data-themed-controls="true"] .castlePanel .paletteItem { border-image: none; background: transparent; color: var(--text-main); box-shadow: none; }
+html[data-themed-controls="true"] .castlePanel .paletteItem:is(:hover, .selected) { background: var(--accent-soft); color: var(--text-main); }
+html[data-themed-controls="true"] .castlePanel .paletteItem.selected { box-shadow: inset 3px 0 0 var(--selected); }
+html[data-themed-controls="true"] .paletteItemMeta { color: var(--text-muted); }
+
+/* Small viewport actions are quiet controls. Main navigation carries the frame. */
+html[data-themed-controls="true"] :is(.areaTabs button, .isoViewControls button, #isoWindowDockBtn, .infoButton, .helpButton, .editorCardToggle) {
+  border: 1px solid var(--line-strong);
+  border-image: none;
+  border-radius: 2px;
+  background: var(--surface-3);
+  color: var(--text-main);
+  box-shadow: none;
+}
+html[data-themed-controls="true"] :is(.areaTabs button, .isoViewControls button, #isoWindowDockBtn, .infoButton, .helpButton, .editorCardToggle):is(:hover, [aria-pressed="true"], .active) { background: var(--surface-raised); color: var(--text-main); border-color: var(--accent); border-image: none; }
+
+/* The same up/down action uses UCP's arrow sprite in every build-order row. */
+html[data-themed-reorder="true"] .buildStep .buildStepControls button {
+  --step-arrow: var(--texture-move-down);
+  --step-arrow-hover: var(--texture-move-down-hover);
+  --step-arrow-pressed: var(--texture-move-down-pressed);
+  width: 24px; height: 24px; min-height: 24px; padding: 0;
+  border: 0; border-image: none; border-radius: 0;
+  background: transparent var(--step-arrow) center / auto no-repeat;
+  color: transparent; font-size: 0; box-shadow: none;
+}
+html[data-themed-reorder="true"] .buildStepControls button:first-of-type { --step-arrow: var(--texture-move-up); --step-arrow-hover: var(--texture-move-up-hover); --step-arrow-pressed: var(--texture-move-up-pressed); }
+html[data-themed-reorder="true"] .buildStepControls button:hover { background-image: var(--step-arrow-hover); background-color: transparent; }
+html[data-themed-reorder="true"] .buildStepControls button:active { background-image: var(--step-arrow-pressed); border-image: none; }
+
+
+/* A single numeric state supports either external +/- buttons or a native
+   spinner. Pack tokens choose the face; keyboard/input semantics are shared. */
+.numberStepper {
+  padding: var(--component-number-stepper-group-padding);
+  border: var(--component-number-stepper-group-border-width) solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--component-number-stepper-group-surface);
+}
+.numberStepper > button { display: var(--component-number-stepper-button-display); }
+.numberStepperLabel {
+  display: var(--component-number-stepper-label-display);
+  padding-inline: 3px;
+  color: var(--text-soft);
+  font: var(--component-number-stepper-font);
+  white-space: nowrap;
+}
+html[data-themed-controls="true"] .numberStepper > button {
+  width: 24px; height: 26px; min-height: 26px; padding: 0;
+  justify-content: center; align-items: center;
+  border: 0; border-image: none; background: transparent;
+  color: var(--component-number-stepper-content);
+  font: 600 16px var(--font-ui);
+  box-shadow: none;
+}
+html[data-themed-controls="true"] .castleToolbar > .toolbarGroup { flex-wrap: nowrap; }
+/* The population steps sit flush against their field: same height, a frame
+   as slim as the field's, and the label centred instead of pushed aside. */
+html[data-themed-controls="true"] button:is(.populationStepButtonLeft, .populationStepButtonRight) {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-height: 0; padding: 0 4px;
+  border-width: var(--texture-input-width);
+  border-image-width: var(--texture-input-width);
+  font: 650 13px/1 var(--font-data);
+}
+:root .numberStepper input[type="number"] {
+  appearance: var(--component-number-stepper-appearance);
+  width: var(--component-number-stepper-width);
+  padding: var(--component-number-stepper-padding);
+  border: var(--component-number-stepper-border-width) solid var(--component-number-stepper-border);
+  border-image: none;
+  border-radius: var(--component-number-stepper-radius);
+  background: var(--component-number-stepper-surface);
+  color: var(--component-number-stepper-content);
+  color-scheme: var(--component-number-stepper-color-scheme);
+  text-align: var(--component-number-stepper-text-align);
+  font: var(--component-number-stepper-font);
+}
+.numberStepper input[type="number"]::-webkit-inner-spin-button,
+.numberStepper input[type="number"]::-webkit-outer-spin-button {
+  display: var(--component-number-stepper-spinner-display);
+  opacity: 1;
+}
+
+/* Range controls and scrollbars keep native interaction; only their paint changes. */
+html[data-themed-range="true"] input[type="range"] { appearance: none; height: 20px; padding: 0; border: 0; background: transparent; }
+html[data-themed-range="true"] input[type="range"]::-webkit-slider-runnable-track {
+  height: 11px; border: 0;
+  background-image: var(--texture-range-start), var(--texture-range-end), var(--texture-range-track);
+  background-position: left center, right center, center;
+  background-repeat: no-repeat, no-repeat, repeat-x;
+}
+html[data-themed-range="true"] input[type="range"]::-webkit-slider-thumb { appearance: none; width: 12px; height: 20px; margin-top: -4px; border: 0; border-radius: 0; background: transparent var(--texture-range-thumb) center / 9px 20px no-repeat; }
+html[data-themed-range="true"] input[type="range"]::-webkit-slider-thumb:active { background-image: var(--texture-range-thumb-active); }
+/* UCP website paint rule: links and hook occupy separate areas. A native start
+   track ends at the thumb CENTER, so painting links on the thumb would duplicate
+   them. Reserve half the centered hook on the track; keep the native hit target. */
+html[data-themed-scrollbars="true"] * { scrollbar-width: auto; scrollbar-color: auto; }
+html[data-themed-scrollbars="true"] *::-webkit-scrollbar { width: var(--component-scrollbar-width); height: var(--component-scrollbar-horizontal-height); background: transparent; }
+html[data-themed-scrollbars="true"] *::-webkit-scrollbar-button { display: none; width: 0; height: 0; }
+html[data-themed-scrollbars="true"] *::-webkit-scrollbar-track,
+html[data-themed-scrollbars="true"] *::-webkit-scrollbar-track-piece,
+html[data-themed-scrollbars="true"] *::-webkit-scrollbar-thumb,
+html[data-themed-scrollbars="true"] *::-webkit-scrollbar-corner { border: 0; border-radius: 0; background: transparent; box-shadow: none; }
+html[data-themed-scrollbars="true"] *::-webkit-scrollbar-track-piece:start:vertical {
+  background: var(--texture-scroll-track) center bottom / auto repeat-y;
+  border-bottom: calc(var(--component-scrollbar-cap-height) / 2) solid transparent;
+  background-origin: padding-box;
+  background-clip: padding-box;
+}
+html[data-themed-scrollbars="true"] *::-webkit-scrollbar-thumb:vertical {
+  min-height: var(--component-scrollbar-cap-height);
+  background: var(--texture-scroll-thumb) center / auto no-repeat;
+}
+html[data-themed-scrollbars="true"] *::-webkit-scrollbar-track:horizontal {
+  border: 0 solid transparent; border-top-width: 2px;
+  border-image: var(--texture-outline) 2 / auto 0 0 0 / 0 stretch;
+  background-color: #0008;
+}
+html[data-themed-scrollbars="true"] *::-webkit-scrollbar-thumb:horizontal {
+  border: 7px solid transparent; border-width: 7px 8px 0;
+  border-image: var(--texture-ornament) 7 8 / auto auto 0 / 0 round;
+}
+html[data-themed-scrollbars="true"] *::-webkit-scrollbar-corner {
+  border: 0 solid transparent; border-width: 7px 0 0 8px;
+  border-image: var(--texture-ornament) 7 8 / auto 0 0 auto / 0 round;
+}
+/* The view toolbars always keep their scrollbar's room; with nothing to
+   scroll it stays invisible, in every theme. */
+.isoViewControls::-webkit-scrollbar-track:horizontal:disabled { border-image: none; background: transparent; }
+
+/* Keep the real form control: labels, Tab, Space, checked and mixed semantics survive. */
+html[data-themed-checkboxes="true"] input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  display: inline-block;
+  flex: 0 0 auto;
+  inline-size: 22px;
+  block-size: 22px;
+  min-inline-size: 22px;
+  min-block-size: 22px;
+  padding: 0;
+  border: 0;
+  border-radius: 2px;
+  background: transparent var(--texture-checkbox) center / contain no-repeat;
+  vertical-align: middle;
+  cursor: pointer;
+}
+html[data-themed-checkboxes="true"] input[type="checkbox"]:checked { background-image: var(--texture-checkbox-checked); }
+html[data-themed-checkboxes="true"] input[type="checkbox"]:indeterminate {
+  background-image: linear-gradient(var(--semantic-action-selected), var(--semantic-action-selected)), var(--texture-checkbox);
+  background-size: 45% 3px, contain;
+}
+html[data-themed-checkboxes="true"] input[type="checkbox"]:disabled { opacity: .5; cursor: default; }
+}
+
+@layer accessibility {
+html :is(button, input, select, textarea, summary, [tabindex]):focus-visible {
+  outline: 2px solid var(--semantic-action-selected);
+  outline-offset: 2px;
+}
+.windowControl:focus-visible { outline-offset: -3px; }
+
+@media (forced-colors: active) {
+  html[data-themed-checkboxes="true"] input[type="checkbox"] { appearance: auto; background: none; }
+  html[data-themed-controls="true"] button { border-image: none; border: 1px solid ButtonText; color: ButtonText; background: ButtonFace; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html *, html *::before, html *::after { scroll-behavior: auto !important; transition-duration: 0s !important; animation-duration: 0s !important; }
+}
+
+}
+
+@layer components {
+/* Only text changes reading direction; interface geometry and world space do not. */
+.i18nText, [data-i18n], [data-bidi="text"], :is(span, small, strong, p, h1, h2, h3, h4, option, th, td, dt, dd) { unicode-bidi: plaintext; }
+:is(code, kbd, [data-bidi="ltr"], input[type="number"], input[type="range"]) { direction: ltr; unicode-bidi: isolate; }
+
+.castlePieMenu { position: fixed; z-index: 10000; width: 224px; height: 224px; border-radius: 50%; background: var(--component-menu-surface); box-shadow: 0 3px 18px #0009; border: 1px solid var(--accent); color: var(--component-menu-content); font: 600 13px var(--font-ui); }
+.castlePieMenu button { position: absolute; width: 84px; height: 40px; border: 0; border-radius: 20px; background: transparent; color: inherit; font: inherit; cursor: pointer; }
+.castlePieMenu small { display: block; font-size: 10px; font-weight: 400; opacity: .8; }
+
+}

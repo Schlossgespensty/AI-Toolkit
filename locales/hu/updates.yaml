@@ -1,0 +1,18 @@
+checking_updates: Frissítések keresése…
+up_to_date: Naprakész
+no_published_builds: Nincs közzétett verzió
+no_compatible_build: Nincs kompatibilis verzió
+retry_updates: Frissítések újraellenőrzése
+experimental_snapshot: Kísérleti előzetes
+official_release: Hivatalos kiadás
+downloading_update: Frissítés letöltése…
+installing_the_selected_build_and_restarting_toolkit: a kijelölt verzió telepítése és a Toolkit újraindítása
+restarting: Újraindítás…
+retry_update: Frissítés újrapróbálása
+other_fork: Másik fork…
+update_source_value: "Frissítési forrás: {{repo}}"
+install_value: "{{latest}} telepítése"
+value_from_value_value_download_install_and_restart_installed_value: "{{value1}} innen: {{repo}}: {{latest}}. Letöltés, telepítés és újraindítás. Telepített: {{installed}}."
+installed_value_value_checked_on_startup_and_hourly: "Telepítve: {{repo}} {{latest}}. Ellenőrzés induláskor és óránként."
+no_installable_windows_zip_with_a_checksum_found_in_value: A(z) {{repo}} tárolóban nem található telepíthető, ellenőrző összeggel ellátott Windows ZIP.
+install_value_2: "{{version}} telepítése"

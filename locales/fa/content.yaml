@@ -1,0 +1,56 @@
+character_name: نام شخصیت.
+character_description: توضیح شخصیت.
+the_ai_s_attack_has_been_repelled: حملهٔ هوش مصنوعی دفع شده است.
+one_of_the_ai_s_buildings_has_been_destroyed: یکی از ساختمان‌های هوش مصنوعی ویران شده است.
+the_ai_has_been_defeated_if_enemy: هوش مصنوعی شکست خورده است (اگر دشمن باشد).
+the_ai_has_successfully_defended_itself: هوش مصنوعی با موفقیت از خود دفاع کرده است.
+the_ai_destroys_a_building: هوش مصنوعی ساختمانی را ویران می‌کند.
+the_ai_has_killed_the_player: هوش مصنوعی بازیکن را کشته است.
+the_ai_defeats_another_enemy_ai: هوش مصنوعی یک هوش مصنوعی دشمن دیگر را شکست می‌دهد.
+the_ai_requests_goods: هوش مصنوعی کالا درخواست می‌کند.
+the_player_sends_goods_to_the_ai: بازیکن برای هوش مصنوعی کالا می‌فرستد.
+the_ai_has_been_defeated_if_ally: هوش مصنوعی شکست خورده است (اگر متحد باشد).
+the_player_defeats_an_enemy_while_allied_with_this_ai: بازیکن در اتحاد با این هوش مصنوعی دشمنی را شکست می‌دهد.
+the_allied_ai_defeats_an_enemy: هوش مصنوعی متحد دشمنی را شکست می‌دهد.
+the_ai_is_under_attack_and_asks_for_help: هوش مصنوعی زیر حمله است و کمک می‌خواهد.
+the_game_has_been_going_on_for_a_long_time: بازی مدت زیادی ادامه داشته است.
+a_player_is_removed_from_the_map: بازیکنی از نقشه حذف می‌شود.
+a_player_is_added_to_the_map: بازیکنی به نقشه افزوده می‌شود.
+not_used: استفاده نمی‌شود.
+the_ai_does_not_send_the_requested_goods: هوش مصنوعی کالای درخواستی را نمی‌فرستد.
+the_ai_sends_the_requested_goods: هوش مصنوعی کالای درخواستی را می‌فرستد.
+the_team_is_winning: تیم در حال پیروزی است.
+the_team_is_losing: تیم در حال شکست است.
+the_ai_sends_the_requested_help: هوش مصنوعی کمک درخواستی را می‌فرستد.
+the_ai_will_attack_the_requested_enemy: هوش مصنوعی به دشمن درخواست‌شده حمله خواهد کرد.
+character_title_include_quotation_marks_for_a_quoted_title: عنوان شخصیت (اگر عنوان نقل‌قول است، علامت نقل‌قول را هم وارد کنید).
+character_name_followed_by_the_title_include_quotation_marks_for_a_quote: نام شخصیت و سپس عنوان (اگر عنوان نقل‌قول است، علامت نقل‌قول را هم وارد کنید).
+the_ai_attacks_the_player: هوش مصنوعی به بازیکن حمله می‌کند.
+the_player_attacks_the_ai: بازیکن به هوش مصنوعی حمله می‌کند.
+the_ai_refuses_to_attack_the_requested_enemy: هوش مصنوعی از حمله به دشمن درخواست‌شده خودداری می‌کند.
+the_ai_refuses_a_request_for_help: هوش مصنوعی درخواست کمک را رد می‌کند.
+replay: پخش دوباره
+play: پخش
+media_replacement_cancelled: جایگزینی رسانه لغو شد
+wav_speech: گفتار WAV
+bink_video: ویدئوی Bink
+missing: موجود نیست
+mapped_asset: دارایی نگاشت‌شده
+open_externally: باز کردن در برنامهٔ دیگر
+open_play: باز کردن / پخش
+saving_lines_json: در حال ذخیرهٔ lines.json…
+portrait_change_cancelled: تغییر چهره لغو شد
+loading_value: در حال بارگذاری {{fileName}}…
+could_not_play_value_here_value_use_open_externally: "پخش {{fileName}} در اینجا ممکن نیست: {{message}} از «باز کردن در برنامهٔ دیگر» استفاده کنید."
+downloaded_value_open_it_with_its_associated_program: "{{fileName}} دریافت شد. آن را با برنامهٔ مرتبط باز کنید."
+opened_value_in_its_associated_program: "{{fileName}} در برنامهٔ مرتبط باز شد."
+could_not_open_value_value: "باز کردن {{fileName}} ناموفق بود: {{message}}"
+choosing_a_replacement_for_value: در حال انتخاب جایگزین {{fileName}}…
+could_not_replace_value_value: "جایگزینی {{fileName}} ناموفق بود: {{message}}"
+no_mapped_wav_speech_files_found_for_value: پروندهٔ گفتار WAV نگاشت‌شده‌ای برای {{value1}} پیدا نشد.
+no_mapped_value_files_found: پروندهٔ {{value1}} نگاشت‌شده‌ای پیدا نشد.
+this_wav_codec_cannot_play_in_the_editor_use_open_externally: این کدک WAV در ویرایشگر قابل پخش نیست. از «باز کردن در برنامهٔ دیگر» استفاده کنید.
+value_content_loaded: محتوای {{value1}} بارگذاری شد
+could_not_save_lines_json_value: "ذخیرهٔ lines.json ناموفق بود: {{message}}"
+value_saved_as_value_value: ✓ {{value1}} با اندازهٔ {{width}}×{{height}} ذخیره شد
+could_not_change_portrait_value: "تغییر چهره ناموفق بود: {{message}}"

@@ -1,0 +1,32 @@
+ai_name: AI 名称
+description: 描述
+title: 头衔
+complete_title: 姓名与头衔
+unknown: 未知台词
+anger_1: 进攻被击退
+anger_2: 己方建筑被摧毁
+plead: 作为敌方被击败
+victory_1: 成功防守
+victory_2: 摧毁敌方建筑
+victory_3: 击败玩家
+victory_4: 击败敌方 AI
+request: 请求资源
+thanks: 收到资源
+ally_death: 作为盟友被击败
+congrats: 祝贺盟友
+boast: 宣布胜利
+help: 请求援助
+extra: 对局持续很久
+kick_player: 玩家被移出
+add_player: 玩家加入
+siege: 未使用的攻城台词
+no_sent: 拒绝提供资源
+sent: 已送出资源
+team_winning: 队伍占优
+team_losing: 队伍处于劣势
+help_sent: 已派出援助
+will_attack: 同意进攻
+taunt: 进攻嘲讽
+nervous: 遭到进攻
+no_attack: 拒绝进攻
+no_help: 拒绝援助

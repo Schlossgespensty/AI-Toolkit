@@ -1,0 +1,24 @@
+missing_sprites: 缺失图像：{{count}}
+playing: 正在播放 {{name}}
+replaced_media: ✓ 已替换 {{name}}（{{size}}）
+choosing: 正在选择 {{name}}…
+saved_label: '{{name}}（已保存）'
+file_label: 文件：{{name}}
+loaded_label: 已加载：{{name}}
+balance_help: “使用 UCP 平衡设置”会重新读取所选游戏安装目录。“EXE + UCP”从磁盘上的游戏文件读取造价表，并应用已配置的平衡调整方案，不会读取正在运行的游戏。
+item: 物件 {{id}}
+tool: '{{name}}工具'
+shortcut: 快捷键：{{key}}
+rally_points: 集结点：{{count}}
+rally_point: 集结点
+keep_footprint: '{{width}}×{{height}}，另需 5×5 储料场'
+placement_info: '{{name}} [{{id}}] · {{kind}} · {{size}} · 重叠：{{overlap}} · 上限：{{maximum}}'
+overlap_allow: 允许
+overlap_block: 禁止
+overlap_replace: 替换现有物件
+resize: 调整大小
+castle_slot: 城堡 {{slot}}
+replacing_character: 正在替换 {{name}} 的角色…
+opening: 正在打开 {{name}}…
+opened: 已打开 {{name}}。
+with_castle: ，使用城堡 {{name}}

@@ -1,0 +1,18 @@
+checking_updates: در حال بررسی به‌روزرسانی…
+up_to_date: به‌روز است
+no_published_builds: نسخه‌ای منتشر نشده است
+no_compatible_build: نسخهٔ سازگار موجود نیست
+retry_updates: بررسی دوبارهٔ به‌روزرسانی
+experimental_snapshot: نسخهٔ آزمایشی
+official_release: انتشار رسمی
+downloading_update: در حال دریافت به‌روزرسانی…
+installing_the_selected_build_and_restarting_toolkit: نصب نسخهٔ انتخاب‌شده و راه‌اندازی دوبارهٔ Toolkit
+restarting: در حال راه‌اندازی دوباره…
+retry_update: تلاش دوباره برای به‌روزرسانی
+other_fork: انشعاب دیگر…
+update_source_value: "منبع به‌روزرسانی: {{repo}}"
+install_value: نصب {{latest}}
+value_from_value_value_download_install_and_restart_installed_value: "{{value1}} از {{repo}}: {{latest}}. دریافت، نصب و راه‌اندازی دوباره. نصب‌شده: {{installed}}."
+installed_value_value_checked_on_startup_and_hourly: "{{repo}} {{latest}} نصب شده است. هنگام شروع و هر ساعت بررسی می‌شود."
+no_installable_windows_zip_with_a_checksum_found_in_value: در {{repo}} پروندهٔ ZIP قابل‌نصب ویندوز همراه با مجموع مقابله پیدا نشد.
+install_value_2: نصب {{version}}

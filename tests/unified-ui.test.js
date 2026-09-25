@@ -14,7 +14,8 @@ test('all editor workspaces use the shared application visual language', () => {
   assert.match(html, /class="workspaceHeader aiContentHeader"/);
   assert.match(html, /class="workspaceHeader ucpLibraryHeader"/);
   assert.match(html, /class="appIdentity"/);
-  assert.match(css, /--accent:\s*(?:#b98542|rgba?\(185,\s*133,\s*66(?:,\s*1)?\))/);
+  assert.match(css, /@import url\("\.\.\/\.\.\/assets\/themes\/default\/variables\.css"\)/);
+  assert.match(css, /--accent:\s*var\(--semantic-action-accent\)/);
   assert.match(css, /\.workspaceHeader\s*\{/);
   assert.match(css, /\.workspaceEyebrow,/);
 });

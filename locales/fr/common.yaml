@@ -1,0 +1,28 @@
+actions:
+  cancel: Annuler
+  save: Enregistrer
+  close: Fermer
+  open: Ouvrir
+  delete: Supprimer
+  remove: Retirer
+  apply: Appliquer
+  reset: Réinitialiser
+  replace: Remplacer
+  merge: Fusionner
+  copy: Copier
+  cut: Couper
+  paste: Coller
+  undo: Annuler
+  redo: Rétablir
+preferences:
+  theme: Thème
+  language: Langue
+  system: Système
+  defaultTheme: Par défaut
+state:
+  loading: Chargement…
+  saved: Enregistré
+  unsaved: Non enregistré
+  error: Erreur
+  none: Aucun
+  vanilla: Vanilla

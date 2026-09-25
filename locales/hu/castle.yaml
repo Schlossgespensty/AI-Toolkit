@@ -1,0 +1,190 @@
+the_aiv_castle_document_is_invalid: Az AIV-várdokumentum érvénytelen.
+the_aiv_file_must_contain_a_frames_array: Az AIV-fájlnak tartalmaznia kell egy 'frames' tömböt.
+that_build_step_is_locked: Ez az építési lépés zárolva van.
+overlaps_another_item_in_this_brush_stroke: Átfed egy másik elemet ebben az ecsetvonásban.
+nothing_to_undo: Nincs visszavonható művelet
+nothing_to_redo: Nincs megismételhető művelet
+creating_a_new_castle: új vár létrehozása
+new_castle: Új vár
+opening_another_castle: másik vár megnyitása
+definitive_edition_json: Definitive Edition JSON
+castle_document: várdokumentum
+castle_was_not_saved: A vár nincs mentve
+nothing_selected_to_replace: Nincs kijelölt cserélendő elem.
+keep_cannot_be_replaced: Az öregtorony nem cserélhető le
+locked: Zárolva
+the_selection_contains_only_locked_placements_or_the_keep: A kijelölés csak zárolt elhelyezéseket vagy az öregtornyot tartalmazza.
+buildings_can_only_replace_buildings_and_rallypoints_can_only_replace_ra: Épületek csak épületekre, gyülekezőpontok csak gyülekezőpontokra cserélhetők.
+choose_at_least_one_different_replacement: Válasszon legalább egy eltérő cserét.
+build_step: 'Építési lépés '
+locked_2: zárolva
+open_again: újra megnyitás
+locked_unlock_the_build_step_first: Zárolva – először oldja fel az építési lépést.
+click_an_unlocked_placement_to_flood_delete_its_connected_type_the_keep_: Kattintson egy feloldott elhelyezésre az összefüggő, azonos típusú elemek törléséhez. Az öregtorony védett.
+merge_checked_placements_inside_the_box_at_their_earliest_step_separatel: A kereten belüli bejelölt elhelyezések egyesítése a legkorábbi lépésüknél, típusonként külön. A kereten kívüli elemek és a zárolt lépések változatlanok maradnak.
+merge_checked_types_from_the_selected_steps_at_their_earliest_step_separ: A kijelölt lépések bejelölt típusainak egyesítése a legkorábbi lépésüknél, típusonként külön. A zárolt lépések változatlanok maradnak.
+no_mergeable_type_spans_two_unlocked_steps_in_this_selection: A kijelölésben nincs két feloldott lépésen átívelő, egyesíthető típus.
+the_castle_changed_cancel_and_select_the_placements_again: A vár megváltozott. Szakítsa meg, és jelölje ki újra az elhelyezéseket.
+these_de_steps_contain_pauses_merge_would_change_their_timing: Ezek a DE-lépések szüneteket tartalmaznak. Az egyesítés megváltoztatná az időzítésüket.
+unlock_positions: Helyek feloldása
+choose_an_item_first: Először válasszon egy elemet.
+drag_over_items_to_copy_first: Először húzással jelölje ki a másolandó elemeket.
+nothing_to_copy_yet_drag_a_box_over_the_placements_first: Még nincs mit másolni – először húzzon keretet az elhelyezések köré
+select_unlocked_building_placements_to_cut_the_keep_and_rally_points_sta: Válasszon feloldott épületelhelyezéseket a kivágáshoz. Az öregtorony és a gyülekezőpontok a helyükön maradnak.
+move_the_cursor_onto_the_map_then_press_ctrl_v: Vigye a kurzort a térképre, majd nyomja meg a Ctrl+V billentyűket
+this_item_is_drawn_as_a_line_not_poured: Ez az elem vonallal helyezhető el, nem kitöltéssel.
+nothing_to_fill_here_that_tile_is_taken: Itt nincs mit kitölteni – a mező foglalt.
+nothing_could_be_placed_there: Ott semmit sem lehetett elhelyezni.
+filled: 'Kitöltve '
+selection_cleared: Kijelölés törölve
+copy_selection: Kijelölés másolása
+replace_area: Terület cseréje
+merge_area: Terület egyesítése
+delete_area: Terület törlése
+castle_shortcuts_saved: Várgyorsbillentyűk mentve
+multiple_per_step: több egy lépésben
+single_per_step: egy lépésenként
+empty_step: Üres lépés
+move_selected_step_s_up: Kijelölt lépések feljebb mozgatása
+move_selected_step_s_down: Kijelölt lépések lejjebb mozgatása
+temporary_blueprint_cleared: Ideiglenes terv törölve
+background_image: háttérkép
+could_not_open_the_selected_blueprint_image: A kijelölt tervkép nem nyitható meg
+could_not_calculate_overlays: Nem sikerült kiszámítani a fedvényeket.
+calculating_overlays: Fedvények számítása…
+map_terrain_included: a térkép terepe figyelembe véve
+flat_terrain_no_map_data: sík terep (nincs térképadat)
+tiles_to_delivery_point: ' mező a szállítási pontig'
+ground_passage_and_raised_walkway: Talajszinti átjáró és magasított járda
+raised_walkway: Magasított járda
+walkable_ground: Járható talaj
+blocked_tile: Blokkolt mező
+outside_map: Térképen kívül
+no_unobstructed_route_to_that_tile: Nincs akadálymentes útvonal ahhoz a mezőhöz.
+nothing_copyable_selected_units_and_the_keep_are_ignored: Nincs kijelölt másolható elem. Az egységek és az öregtorony kimaradnak.
+nothing_selected_to_copy: Nincs kijelölt másolandó elem.
+castle_editor_configuration_failed_to_load: A várszerkesztő beállításai nem tölthetők be
+loading_map_views: Térképnézetek betöltése…
+no_map_of_that_name: Nincs ilyen nevű térkép.
+no_maps_found_choose_the_game_folder_under_ucp_first: Nem találhatók térképek. Először válassza ki a játékmappát az UCP alatt.
+reading_the_map: Térkép olvasása…
+the_starting_place: a kezdőhely
+not_turned: ' · nincs elforgatva'
+starting_place_changed: Kezdőhely megváltoztatva
+map_of_the_game_taken_away: Játéktérkép eltávolítva
+temporary_blueprint_shown: Ideiglenes terv megjelenítve
+temporary_blueprint_hidden: Ideiglenes terv elrejtve
+unassigned: Nincs hozzárendelve
+use_a_key_optionally_combined_with_ctrl_alt_or_shift: Használjon billentyűt, szükség esetén Ctrl, Alt vagy Shift kombinációval.
+map_rotation_needs_the_game_generated_camera_layers_wait_for_loading_to_: A térképforgatáshoz a játék által létrehozott kamerarétegek kellenek. Várja meg a betöltést, vagy töltse be újra a térképet.
+frame_value_is_not_an_object: A(z) {{value1}}. lépés nem objektum.
+frame_value_has_no_valid_itemtype: A(z) {{value1}}. lépésnek nincs érvényes itemType értéke.
+frame_value_tilepositionofsets_must_be_an_array: '{{value1}}. lépés: a tilePositionOfsets értékének tömbnek kell lennie.'
+frame_value_invalid_tile_offset_value: '{{value1}}. lépés: érvénytelen mezőeltolás: {{off}}.'
+misc_item_value_is_not_an_object: A(z) {{value1}}. egyéb elem nem objektum.
+misc_item_value_has_no_valid_itemtype: A(z) {{value1}}. egyéb elemnek nincs érvényes itemType értéke.
+misc_item_value_invalid_positionofset_value: '{{value1}}. egyéb elem: érvénytelen positionOfset: {{positionOfset}}.'
+value_would_extend_outside_the_100_100_field: '{{value1}} túlnyúlna a 100×100-as területen.'
+maximum_amount_for_value_is_value: '{{value1}} legnagyobb mennyisége: {{maximum}}.'
+blocked_by_value: 'Akadály: {{value1}}.'
+new_castle_added_to_the_loaded_ai_as_value: 'Új vár hozzáadva a betöltött MI-hez ezen a néven: {{fileName}}'
+value_added_to_the_loaded_ai: '{{fileName}} hozzáadva a betöltött MI-hez'
+removed_value_empty_legacy_stepvalue: ' — eltávolítva: {{quantityvalue2}}'
+disabled_value_build_step_pause_s: ' — kikapcsolt építésilépés-szünetek: {{removedPauses}}'
+opened_value_value_build_steps_valuevaluevalue: '{{value1}} megnyitva — {{length}} építési lépés · {{formatNote}}{{legacyNote}}{{pauseNote}}'
+could_not_open_aiv_castle_value: |-
+  Nem sikerült megnyitni az AIV-várat:
+
+  {{message}}
+could_not_import_aivjson_castle_value: |-
+  Nem sikerült importálni az AIVJSON-várat:
+
+  {{message}}
+saved_value: '{{name}} mentve'
+could_not_save_aiv_castle_value: |-
+  Nem sikerült menteni az AIV-várat:
+
+  {{message}}
+replace_value_with: '{{value1}} cseréje erre:'
+value_locked_placementvalue_will_stay_unchanged: 'Változatlan marad: {{quantityvalue2}}'
+value_placementvalue_across_value_item_typevalue_choose_one_replacement_: '{{quantityvalue2}}, {{quantityvalue4}} között. Válasszon típusonként egy cserét.'
+invalid_replacement_for_value: 'Érvénytelen csere ehhez: {{value1}}.'
+no_room_for_value_value: 'Nincs hely ennek: {{value1}}. {{reason}}'
+value_would_also_replace_an_item_outside_the_selected_area: '{{value1}} a kijelölt területen kívüli elemet is lecserélne.'
+replaced_value_placementvalue_across_value_target_typevalue: 'Lecserélve: {{quantityvalue2}}, {{quantityvalue4}} között'
+deleted_value_placementvalue: 'Törölve: {{quantityvalue2}}'
+value_locked_and_left_alone: ' ({{gesperrt}} zárolva és változatlanul hagyva)'
+selected_value_placements_shift_adds_ctrl_click_toggles_a_connected_grou: 'Kijelölve: {{size}} elhelyezés. Shift: hozzáadás; Ctrl+kattintás: összefüggő csoport kapcsolása. Húzáshoz váltson Kijelölés / mozgatás módra.'
+flood_deleted_value_connected_value_placements: 'Kitöltéssel törölve: {{size}} összefüggő {{value2}} elhelyezés'
+value_value_placements_in_value_steps: '{{value1}} — {{count}} elhelyezés {{size}} lépésben'
+merged_value_item_types_at_their_earliest_selected_steps: '{{length}} elemtípus egyesítve a legkorábbi kijelölt lépéseknél'
+value_can_only_be_placed_with_the_line_tool: '{{value1}} csak a Vonal eszközzel helyezhető el.'
+placed_value_rallypoint_value_at_value: '{{value1}} gyülekezőpont #{{value2}} elhelyezve itt: {{off}}'
+placed_value_at_value: '{{value1}} elhelyezve itt: {{off}}'
+value_ready_value_value_steps_release_to_place: '{{value1}} kész — {{length}}/{{length3}} lépés — engedje el az elhelyezéshez'
+value_placed_nothing: '{{toolName}} nem helyezett el semmit.'
+could_not_build_the_value_sequence: Nem sikerült felépíteni a(z) {{value1}} sorozatot.
+value_placed_value_consecutive_stair_steps: '{{value1}}: {{length}} egymást követő lépcsőfok elhelyezve'
+value_placed_value_value_rallypoints: '{{toolName}}: {{length}} {{value3}} gyülekezőpont elhelyezve'
+value_placed_value_value_in_consecutive_build_steps: '{{toolName}}: {{length}} {{value3}} elhelyezve egymást követő építési lépésekben'
+copy_blocked_by_value: 'Másolási akadály: {{value1}}.'
+value_build_stepvalue: '{{quantityvalue2}}'
+placed_copy_of_value_placementvalue_as_value: '{{quantityvalue2}} másolata elhelyezve: {{details}}'
+copied_value_placementvalue_ctrl_v_puts_it_where_the_cursor_is: 'Másolva: {{placements}} — a Ctrl+V a kurzor helyére illeszti'
+cut_value_placementvalue_ctrl_v_pastes_at_the_cursor: 'Kivágva: {{quantityvalue2}} — Ctrl+V a kurzornál illeszti be'
+move_blocked_by_value: 'Mozgatási akadály: {{value1}}.'
+moved_value_placementvalue: 'Áthelyezve: {{quantityvalue2}}'
+selected_value_click_the_map_to_place: '{{value1}} kijelölve — kattintson a térképre az elhelyezéshez'
+line_only_up_to_value_consecutive_steps: csak vonal · legfeljebb {{length}} egymást követő lépés
+no_items_in_value: 'Nincsenek elemek itt: {{value1}}.'
+line_up_to_value_steps: Vonal · legfeljebb {{length}} lépés
+step_value: '{{value1}}. lépés'
+selected_value_build_steps_drag_or_use_the_arrows_to_move_them_together: '{{length}} építési lépés kijelölve — húzza vagy a nyilakkal mozgassa őket együtt'
+selected_build_step_value_new_buildings_will_be_inserted_after_it: A(z) {{value1}}. építési lépés kijelölve — az új épületek ezután kerülnek be
+value_build_stepvalue_moved_together: 'Együtt áthelyezve: {{quantityvalue2}}'
+value_locked_and_left_alone_2: ' ({{festgehalten}} zárolva és változatlanul hagyva)'
+set_png_skin_for_value: 'PNG-kép beállítva ehhez: {{value1}}'
+removed_skin_for_value: '{{value1}} képe eltávolítva'
+could_not_load_background_value: 'Nem sikerült betölteni a hátteret: {{message}}'
+temporary_blueprint_loaded_value: 'Ideiglenes terv betöltve: {{blueprintFileName}}'
+paths_value_value_reachable_open_gates_value_cyan_dots_reachable_entranc: 'Útvonalak: {{length}}/{{length2}} elérhető. Nyitott kapuk; {{value3}}. Cián pont: elérhető bejárat; piros: blokkolt. Statikus becslés.'
+selected_value_placementvalue: 'Kijelölve: {{quantityvalue2}}'
+drag_from_x_value_y_value_to_choose_the_value_direction: Húzza az x={{x}}, y={{y}} ponttól a(z) {{value3}} irány kiválasztásához.
+copy_ready_at_x_value_y_value_click_to_place: Másolat kész az x={{x}}, y={{y}} helyen — kattintson az elhelyezéshez
+value_unit_keep_placementvalue_ignored: ' (kihagyva: {{quantityvalue2}})'
+copied_selection_prepared_value_placementvaluevalue_move_the_cursor_and_: 'Másolt kijelölés előkészítve: {{quantityvalue2}}{{ignoredNote}} — mozgassa a kurzort, majd kattintson az elhelyezéshez'
+deleted_value_placementvalue_2: 'Törölve: {{quantityvalue2}}'
+start_place_value: '{{value1}}. kezdőhely'
+map_loaded_rotation_unavailable_value: 'Térkép betöltve; forgatás nem érhető el: {{nativeError}}'
+whole_map_value_ready_value_different_tiles: A teljes „{{name}}” térkép kész · {{kacheln}} különböző mező
+could_not_load_map_value_select_game_map_to_retry: 'Nem sikerült betölteni a térképet: {{message}}. Újrapróbáláshoz válassza a Játéktérképet.'
+could_not_read_the_map_tiles_value: 'Nem sikerült olvasni a térképmezőket: {{message}}'
+could_not_read_that_map_value: 'Nem sikerült olvasni ezt a térképet: {{message}}'
+could_not_list_the_maps_value: 'Nem sikerült listázni a térképeket: {{message}}'
+castle_built_on_value_at_value_value: 'Vár elhelyezve itt: {{value1}}, ({{x}}, {{y}})'
+the_game_turns_it_by_value_quarter_turnvalue: ' · játékbeli elforgatás: {{turns}}'
+castle_picture_saved_value: 'Várkép mentve: {{saved}}'
+could_not_save_castle_picture_value: 'Nem sikerült menteni a várképet: {{message}}'
+select_items_first_to_value: 'Először jelöljön ki elemeket ehhez: {{action}}.'
+unsaved_castle: (nem mentett vár)
+select_something_on_the_map_first: Először jelöljön ki valamit a térképen.
+no_groups_in_this_castle_yet_select_placements_on_the_map_give_them_a_na: Ebben a várban még nincsenek csoportok. Jelölje ki az elhelyezéseket a térképen, adjon nevet, majd mentse.
+copy_this_group_for_placement: Csoport másolása elhelyezéshez
+this_group_has_no_copyable_items: Ebben a csoportban nincsenek másolható elemek.
+clipboard_emptied: Vágólap kiürítve
+nothing_copied_yet_copy_something_with_ctrl_c_or_the_copy_tool: Még semmi nincs másolva. Másoljon a Ctrl+C billentyűkkel vagy a Másolás eszközzel.
+paste_at_the_cursor: Beillesztés a kurzornál
+empty_the_clipboard: Vágólap ürítése
+group_name: Csoport neve
+save_group: Csoport mentése
+enter_a_group_name: Adja meg a csoport nevét.
+a_group_called_value_is_already_there: Már létezik „{{name}}” nevű csoport.
+group_value_saved_with_value_placementvalue: 'A(z) „{{name}}” csoport mentve ezzel: {{quantityvalue3}}'
+delete_group_value: A(z) „{{name}}” csoport törlése
+value_placementvalue_copied_works_in_every_castle_click_then_click_on_th: 'Másolva: {{quantityvalue2}} — minden várban használható. Kattintson ide, majd a térképre, vagy nyomja meg a Ctrl+V billentyűket.'
+castle_actions: Várműveletek
+no_item_categories_configured: Nincsenek beállított elemkategóriák.
+dock: Dokkolás
+groups: Csoportok
+cut_and_copy: Kivágás és másolás
+deselect: Kijelölés megszüntetése

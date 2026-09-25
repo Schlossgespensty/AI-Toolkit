@@ -1,0 +1,44 @@
+replace: Değiştir
+merge: Birleştir
+delete: Sil
+undo: Geri al
+redo: Yinele
+openCastle: Kale aç
+saveCastle: Kaleyi kaydet
+map: Harita
+iso: 2.5B görünüm
+single: Tek
+line: Çizgi
+brush: Fırça
+brushSmaller: Daha küçük fırça
+bucket: Doldur
+select: Seç / Taşı
+names: Öğe adları
+units: Birim sırası
+guides: Kılavuz çizgiler
+paths: Yol haritası
+fire: Yangın yayılımı
+exportDe: DE dışa aktar
+newCastle: Yeni kale
+brushLarger: Daha büyük fırça
+overlays: Katman menüsü
+groups: Gruplar
+paste: Pano / Yapıştır
+clearClipboard: Panoyu temizle
+gameMap: '2.5B: oyun haritası'
+resetMap: '2.5B: oyun haritasını kaldır'
+rotateLeft: '2.5B: sola döndür'
+rotateRight: '2.5B: sağa döndür'
+saveAs: Farklı kaydet
+copy: Seçimi kopyala
+cut: Seçimi kes
+pause: Duraklama adımı
+deleteSelected: Seçili öğeleri sil
+deselect: Seçimi kaldır
+invalid: '{{label}} için geçersiz kısayol.'
+reserved: '{{key}} uygulama menüleri için ayrılmıştır.'
+duplicate: '{{key}} birden fazla kez atanmış.'
+wheelMode: Bir tekerlek modu seçin.
+cameraSpeed: Kamera hızı 1 ile 200 piksel arasında olmalıdır.
+invalidCamera: Geçersiz kamera kısayolu.
+assigned: '{{key}} tuşu zaten atanmış veya ayrılmış.'

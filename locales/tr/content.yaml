@@ -1,0 +1,56 @@
+character_name: Karakter adı.
+character_description: Karakter açıklaması.
+the_ai_s_attack_has_been_repelled: Yapay zekânın saldırısı püskürtüldü.
+one_of_the_ai_s_buildings_has_been_destroyed: Yapay zekânın bir binası yıkıldı.
+the_ai_has_been_defeated_if_enemy: Yapay zekâ yenildi (düşmansa)
+the_ai_has_successfully_defended_itself: Yapay zekâ kendini başarıyla savundu.
+the_ai_destroys_a_building: Yapay zekâ bir bina yıkıyor.
+the_ai_has_killed_the_player: Yapay zekâ oyuncuyu öldürdü.
+the_ai_defeats_another_enemy_ai: Yapay zekâ başka bir düşman yapay zekâyı yeniyor.
+the_ai_requests_goods: Yapay zekâ mal istiyor.
+the_player_sends_goods_to_the_ai: Oyuncu yapay zekâya mal gönderiyor.
+the_ai_has_been_defeated_if_ally: Yapay zekâ yenildi (müttefikse)
+the_player_defeats_an_enemy_while_allied_with_this_ai: Oyuncu bu yapay zekâyla müttefikken bir düşmanı yeniyor.
+the_allied_ai_defeats_an_enemy: Müttefik yapay zekâ bir düşmanı yeniyor.
+the_ai_is_under_attack_and_asks_for_help: Yapay zekâ saldırı altında ve yardım istiyor.
+the_game_has_been_going_on_for_a_long_time: Oyun uzun süredir devam ediyor.
+a_player_is_removed_from_the_map: Bir oyuncu haritadan kaldırılıyor.
+a_player_is_added_to_the_map: Haritaya bir oyuncu ekleniyor.
+not_used: Kullanılmıyor.
+the_ai_does_not_send_the_requested_goods: Yapay zekâ istenen malları göndermiyor.
+the_ai_sends_the_requested_goods: Yapay zekâ istenen malları gönderiyor.
+the_team_is_winning: Takım kazanıyor.
+the_team_is_losing: Takım kaybediyor.
+the_ai_sends_the_requested_help: Yapay zekâ istenen yardımı gönderiyor.
+the_ai_will_attack_the_requested_enemy: Yapay zekâ belirtilen düşmana saldıracak.
+character_title_include_quotation_marks_for_a_quoted_title: Karakter unvanı (tırnak içindeki unvanlarda tırnak işaretlerini ekleyin).
+character_name_followed_by_the_title_include_quotation_marks_for_a_quote: Karakter adı ve ardından unvanı (gerekiyorsa tırnak işaretlerini ekleyin).
+the_ai_attacks_the_player: Yapay zekâ oyuncuya saldırıyor.
+the_player_attacks_the_ai: Oyuncu yapay zekâya saldırıyor.
+the_ai_refuses_to_attack_the_requested_enemy: Yapay zekâ belirtilen düşmana saldırmayı reddediyor.
+the_ai_refuses_a_request_for_help: Yapay zekâ yardım isteğini reddediyor.
+replay: Yeniden oynat
+play: Oynat
+media_replacement_cancelled: Medya değiştirme iptal edildi
+wav_speech: WAV konuşması
+bink_video: Bink videosu
+missing: Eksik
+mapped_asset: Eşlenmiş varlık
+open_externally: Harici programda aç
+open_play: Aç / oynat
+saving_lines_json: lines.json kaydediliyor…
+portrait_change_cancelled: Portre değiştirme iptal edildi
+loading_value: '{{fileName}} yükleniyor…'
+could_not_play_value_here_value_use_open_externally: '{{fileName}} burada oynatılamadı: {{message}} Harici programda aç seçeneğini kullanın.'
+downloaded_value_open_it_with_its_associated_program: '{{fileName}} indirildi. İlişkilendirilmiş programda açın.'
+opened_value_in_its_associated_program: '{{fileName}} ilişkilendirilmiş programda açıldı.'
+could_not_open_value_value: '{{fileName}} açılamadı: {{message}}'
+choosing_a_replacement_for_value: '{{fileName}} için yeni dosya seçiliyor…'
+could_not_replace_value_value: '{{fileName}} değiştirilemedi: {{message}}'
+no_mapped_wav_speech_files_found_for_value: '{{value1}} için eşlenmiş WAV konuşma dosyası bulunamadı.'
+no_mapped_value_files_found: Eşlenmiş {{value1}} dosyası bulunamadı.
+this_wav_codec_cannot_play_in_the_editor_use_open_externally: Bu WAV codec'i düzenleyicide oynatılamaz. Harici programda aç seçeneğini kullanın.
+value_content_loaded: '{{value1}} içeriği yüklendi'
+could_not_save_lines_json_value: 'lines.json kaydedilemedi: {{message}}'
+value_saved_as_value_value: ✓ {{value1}}, {{width}}×{{height}} olarak kaydedildi
+could_not_change_portrait_value: 'Portre değiştirilemedi: {{message}}'

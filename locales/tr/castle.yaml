@@ -1,0 +1,190 @@
+new_castle: Yeni kale
+groups: Gruplar
+deselect: Seçimi kaldır
+the_aiv_castle_document_is_invalid: AIV kale belgesi geçersiz.
+the_aiv_file_must_contain_a_frames_array: AIV dosyası bir 'frames' dizisi içermelidir.
+that_build_step_is_locked: Bu inşa adımı kilitli.
+overlaps_another_item_in_this_brush_stroke: Bu fırça darbesindeki başka bir öğeyle örtüşüyor.
+nothing_to_undo: Geri alınacak işlem yok
+nothing_to_redo: Yinelenecek işlem yok
+creating_a_new_castle: yeni kale oluşturma
+opening_another_castle: başka kale açma
+definitive_edition_json: Definitive Edition JSON
+castle_document: kale belgesi
+castle_was_not_saved: Kale kaydedilmedi
+nothing_selected_to_replace: Değiştirilecek öğe seçilmedi.
+keep_cannot_be_replaced: İç kale değiştirilemez
+locked: Kilitli
+the_selection_contains_only_locked_placements_or_the_keep: Seçim yalnızca kilitli yerleşimler veya iç kaleyi içeriyor.
+buildings_can_only_replace_buildings_and_rallypoints_can_only_replace_ra: Binalar yalnızca binaların, toplanma noktaları yalnızca toplanma noktalarının yerine geçebilir.
+choose_at_least_one_different_replacement: En az bir farklı yerine konacak öğe seçin.
+build_step: 'İnşa adımı '
+locked_2: kilitli
+open_again: yeniden açık
+locked_unlock_the_build_step_first: 'Kilitli: önce inşa adımının kilidini açın.'
+click_an_unlocked_placement_to_flood_delete_its_connected_type_the_keep_: Bağlantılı aynı türü silmek için kilitsiz bir yerleşime tıklayın. İç kale korunur.
+merge_checked_placements_inside_the_box_at_their_earliest_step_separatel: Kutudaki işaretli yerleşimleri türlerine göre ilk adımlarında birleştirir. Kutunun dışındakiler ve kilitli adımlar değişmez.
+merge_checked_types_from_the_selected_steps_at_their_earliest_step_separ: Seçili adımlardaki işaretli türleri türlerine göre ilk adımlarında birleştirir. Kilitli adımlar değişmez.
+no_mergeable_type_spans_two_unlocked_steps_in_this_selection: Bu seçimde birleştirilebilir hiçbir tür iki kilitsiz adıma yayılmıyor.
+the_castle_changed_cancel_and_select_the_placements_again: Kale değişti. İptal edip yerleşimleri yeniden seçin.
+these_de_steps_contain_pauses_merge_would_change_their_timing: Bu DE adımları duraklamalar içeriyor. Birleştirmek zamanlamalarını değiştirir.
+unlock_positions: Konum kilitlerini aç
+choose_an_item_first: Önce bir öğe seçin.
+drag_over_items_to_copy_first: Önce kopyalanacak öğelerin üzerinde sürükleyin.
+nothing_to_copy_yet_drag_a_box_over_the_placements_first: Henüz kopyalanacak öğe yok; önce yerleşimlerin üzerinde kutu sürükleyin
+select_unlocked_building_placements_to_cut_the_keep_and_rally_points_sta: Kesmek için kilitsiz bina yerleşimlerini seçin. İç kale ve toplanma noktaları yerinde kalır.
+move_the_cursor_onto_the_map_then_press_ctrl_v: İmleci haritaya taşıyıp Ctrl+V'ye basın
+this_item_is_drawn_as_a_line_not_poured: Bu öğe çizgi olarak çizilir, doldurulmaz.
+nothing_to_fill_here_that_tile_is_taken: Burada doldurulacak yer yok; kare dolu.
+nothing_could_be_placed_there: Oraya hiçbir şey yerleştirilemedi.
+filled: 'Dolduruldu '
+selection_cleared: Seçim temizlendi
+copy_selection: Seçimi kopyala
+replace_area: Alanı değiştir
+merge_area: Alanı birleştir
+delete_area: Alanı sil
+castle_shortcuts_saved: Kale kısayolları kaydedildi
+multiple_per_step: adım başına birden fazla
+single_per_step: adım başına bir
+empty_step: Boş adım
+move_selected_step_s_up: Seçili adımları yukarı taşı
+move_selected_step_s_down: Seçili adımları aşağı taşı
+temporary_blueprint_cleared: Geçici plan temizlendi
+background_image: arka plan resmi
+could_not_open_the_selected_blueprint_image: Seçili plan resmi açılamadı
+could_not_calculate_overlays: Katmanlar hesaplanamadı.
+calculating_overlays: Katmanlar hesaplanıyor…
+map_terrain_included: harita arazisi dahil
+flat_terrain_no_map_data: düz arazi (harita verisi yok)
+tiles_to_delivery_point: ' teslimat noktasına kare'
+ground_passage_and_raised_walkway: Zemin geçidi ve yükseltilmiş yol
+raised_walkway: Yükseltilmiş yol
+walkable_ground: Yürünebilir zemin
+blocked_tile: Engelli kare
+outside_map: Harita dışında
+no_unobstructed_route_to_that_tile: Bu kareye engelsiz yol yok.
+nothing_copyable_selected_units_and_the_keep_are_ignored: Kopyalanabilir öğe seçilmedi. Birimler ve iç kale yok sayılır.
+nothing_selected_to_copy: Kopyalanacak öğe seçilmedi.
+castle_editor_configuration_failed_to_load: Kale düzenleyicisi yapılandırması yüklenemedi
+loading_map_views: Harita görünümleri yükleniyor…
+no_map_of_that_name: Bu adda harita yok.
+no_maps_found_choose_the_game_folder_under_ucp_first: Harita bulunamadı. Önce UCP altında oyun klasörünü seçin.
+reading_the_map: Harita okunuyor…
+the_starting_place: başlangıç konumu
+not_turned: ' · döndürülmedi'
+starting_place_changed: Başlangıç konumu değişti
+map_of_the_game_taken_away: Oyun haritası kaldırıldı
+temporary_blueprint_shown: Geçici plan gösteriliyor
+temporary_blueprint_hidden: Geçici plan gizlendi
+unassigned: Atanmadı
+use_a_key_optionally_combined_with_ctrl_alt_or_shift: Gerekirse Ctrl, Alt veya Shift ile birlikte bir tuş kullanın.
+map_rotation_needs_the_game_generated_camera_layers_wait_for_loading_to_: Harita döndürme, oyun tarafından oluşturulan kamera katmanlarına ihtiyaç duyar. Yüklemenin bitmesini bekleyin veya haritayı yeniden yükleyin.
+frame_value_is_not_an_object: '{{value1}} adımı bir nesne değil.'
+frame_value_has_no_valid_itemtype: '{{value1}} adımında geçerli itemType yok.'
+frame_value_tilepositionofsets_must_be_an_array: 'Adım {{value1}}: tilePositionOfsets bir dizi olmalıdır.'
+frame_value_invalid_tile_offset_value: 'Adım {{value1}}: geçersiz kare ofseti {{off}}.'
+misc_item_value_is_not_an_object: Ek öğe {{value1}} bir nesne değil.
+misc_item_value_has_no_valid_itemtype: Ek öğe {{value1}} geçerli itemType içermiyor.
+misc_item_value_invalid_positionofset_value: 'Ek öğe {{value1}}: geçersiz positionOfset {{positionOfset}}.'
+value_would_extend_outside_the_100_100_field: '{{value1}}, 100×100 alanının dışına taşar.'
+maximum_amount_for_value_is_value: '{{value1}} için en yüksek miktar {{maximum}}.'
+blocked_by_value: 'Engelleyen: {{value1}}.'
+new_castle_added_to_the_loaded_ai_as_value: Yüklü yapay zekâya {{fileName}} olarak yeni kale eklendi
+value_added_to_the_loaded_ai: '{{fileName}}, yüklü yapay zekâya eklendi'
+removed_value_empty_legacy_stepvalue: ' — {{quantityvalue2}} kaldırıldı'
+disabled_value_build_step_pause_s: ' — {{removedPauses}} inşa adımı duraklaması devre dışı bırakıldı'
+opened_value_value_build_steps_valuevaluevalue: '{{value1}} açıldı — {{length}} inşa adımı · {{formatNote}}{{legacyNote}}{{pauseNote}}'
+could_not_open_aiv_castle_value: |-
+  AIV kalesi açılamadı:
+
+  {{message}}
+could_not_import_aivjson_castle_value: |-
+  AIVJSON kalesi içe aktarılamadı:
+
+  {{message}}
+saved_value: '{{name}} kaydedildi'
+could_not_save_aiv_castle_value: |-
+  AIV kalesi kaydedilemedi:
+
+  {{message}}
+replace_value_with: '{{value1}} yerine konacak öğe'
+value_locked_placementvalue_will_stay_unchanged: 'Değişmeyecek: {{quantityvalue2}}'
+value_placementvalue_across_value_item_typevalue_choose_one_replacement_: '{{quantityvalue4}} içinde {{quantityvalue2}}. Her tür için bir yeni öğe seçin.'
+invalid_replacement_for_value: '{{value1}} için geçersiz değişim.'
+no_room_for_value_value: '{{value1}} için yer yok: {{reason}}'
+value_would_also_replace_an_item_outside_the_selected_area: '{{value1}}, seçili alan dışındaki bir öğeyi de değiştirir.'
+replaced_value_placementvalue_across_value_target_typevalue: 'Değiştirildi: {{quantityvalue4}} içindeki {{quantityvalue2}}'
+deleted_value_placementvalue: 'Silindi: {{quantityvalue2}}'
+value_locked_and_left_alone: ' ({{gesperrt}} kilitli ve değiştirilmedi)'
+selected_value_placements_shift_adds_ctrl_click_toggles_a_connected_grou: '{{size}} yerleşim seçildi. Shift ekler; Ctrl+tıklama bağlantılı grubu seçer veya bırakır. Sürüklemek için Seç / Taşı''ya geçin.'
+flood_deleted_value_connected_value_placements: '{{size}} bağlantılı {{value2}} yerleşimi silindi'
+value_value_placements_in_value_steps: '{{value1}} — {{size}} adımda {{count}} yerleşim'
+merged_value_item_types_at_their_earliest_selected_steps: '{{length}} öğe türü ilk seçili adımlarında birleştirildi'
+value_can_only_be_placed_with_the_line_tool: '{{value1}} yalnızca Çizgi aracıyla yerleştirilebilir.'
+placed_value_rallypoint_value_at_value: '{{value1}} toplanma noktası #{{value2}}, {{off}} konumuna yerleştirildi'
+placed_value_at_value: '{{value1}}, {{off}} konumuna yerleştirildi'
+value_ready_value_value_steps_release_to_place: '{{value1}} hazır — {{length}}/{{length3}} adım — yerleştirmek için bırakın'
+value_placed_nothing: '{{toolName}} hiçbir şey yerleştirmedi.'
+could_not_build_the_value_sequence: '{{value1}} dizisi oluşturulamadı.'
+value_placed_value_consecutive_stair_steps: '{{value1}}: {{length}} ardışık merdiven basamağı yerleştirildi'
+value_placed_value_value_rallypoints: '{{toolName}}: {{length}} {{value3}} toplanma noktası yerleştirildi'
+value_placed_value_value_in_consecutive_build_steps: '{{toolName}}: ardışık inşa adımlarına {{length}} {{value3}} yerleştirildi'
+copy_blocked_by_value: 'Kopyalamayı engelleyen: {{value1}}.'
+value_build_stepvalue: '{{quantityvalue2}}'
+placed_copy_of_value_placementvalue_as_value: '{{quantityvalue2}} kopyası {{details}} olarak yerleştirildi'
+copied_value_placementvalue_ctrl_v_puts_it_where_the_cursor_is: '{{placements}} kopyalandı — Ctrl+V imlecin konumuna yapıştırır'
+cut_value_placementvalue_ctrl_v_pastes_at_the_cursor: 'Kesildi: {{quantityvalue2}} — Ctrl+V imlecin olduğu yere yapıştırır'
+move_blocked_by_value: 'Taşımayı engelleyen: {{value1}}.'
+moved_value_placementvalue: 'Taşındı: {{quantityvalue2}}'
+selected_value_click_the_map_to_place: '{{value1}} seçildi — yerleştirmek için haritaya tıklayın'
+line_only_up_to_value_consecutive_steps: yalnızca çizgi · en fazla {{length}} ardışık adım
+no_items_in_value: '{{value1}} içinde öğe yok.'
+line_up_to_value_steps: Çizgi · en fazla {{length}} adım
+step_value: Adım {{value1}}
+selected_value_build_steps_drag_or_use_the_arrows_to_move_them_together: '{{length}} inşa adımı seçildi — birlikte taşımak için sürükleyin veya okları kullanın'
+selected_build_step_value_new_buildings_will_be_inserted_after_it: İnşa adımı {{value1}} seçildi — yeni binalar sonrasına eklenecek
+value_build_stepvalue_moved_together: 'Birlikte taşındı: {{quantityvalue2}}'
+value_locked_and_left_alone_2: ' ({{festgehalten}} kilitli ve değiştirilmedi)'
+set_png_skin_for_value: '{{value1}} için PNG görünümü ayarlandı'
+removed_skin_for_value: '{{value1}} görünümü kaldırıldı'
+could_not_load_background_value: 'Arka plan yüklenemedi: {{message}}'
+temporary_blueprint_loaded_value: 'Geçici plan yüklendi: {{blueprintFileName}}'
+paths_value_value_reachable_open_gates_value_cyan_dots_reachable_entranc: 'Yollar: {{length}}/{{length2}} erişilebilir. Kapılar açık; {{value3}}. Camgöbeği noktalar: erişilebilir girişler; kırmızılar: engelli. Statik tahmin.'
+selected_value_placementvalue: 'Seçildi: {{quantityvalue2}}'
+drag_from_x_value_y_value_to_choose_the_value_direction: '{{value3}} yönünü seçmek için x={{x}}, y={{y}} konumundan sürükleyin.'
+copy_ready_at_x_value_y_value_click_to_place: Kopya x={{x}}, y={{y}} konumunda hazır — yerleştirmek için tıklayın
+value_unit_keep_placementvalue_ignored: ' (yok sayıldı: {{quantityvalue2}})'
+copied_selection_prepared_value_placementvaluevalue_move_the_cursor_and_: 'Kopyalanan seçim hazır: {{quantityvalue2}}{{ignoredNote}} — imleci taşıyıp yerleştirmek için tıklayın'
+deleted_value_placementvalue_2: 'Silindi: {{quantityvalue2}}'
+start_place_value: Başlangıç konumu {{value1}}
+map_loaded_rotation_unavailable_value: 'Harita yüklendi; döndürme kullanılamıyor: {{nativeError}}'
+whole_map_value_ready_value_different_tiles: Tüm "{{name}}" haritası hazır · {{kacheln}} farklı kare
+could_not_load_map_value_select_game_map_to_retry: 'Harita yüklenemedi: {{message}}. Yeniden denemek için Oyun haritası''nı seçin.'
+could_not_read_the_map_tiles_value: 'Harita kareleri okunamadı: {{message}}'
+could_not_read_that_map_value: 'Bu harita okunamadı: {{message}}'
+could_not_list_the_maps_value: 'Haritalar listelenemedi: {{message}}'
+castle_built_on_value_at_value_value: Kale {{value1}} üzerinde ({{x}}, {{y}}) konumunda kuruldu
+the_game_turns_it_by_value_quarter_turnvalue: ' · oyun bunu {{turns}} döndürür'
+castle_picture_saved_value: 'Kale resmi kaydedildi: {{saved}}'
+could_not_save_castle_picture_value: 'Kale resmi kaydedilemedi: {{message}}'
+select_items_first_to_value: '{{action}} için önce öğeleri seçin.'
+unsaved_castle: (kaydedilmemiş kale)
+select_something_on_the_map_first: Önce haritada bir şey seçin.
+no_groups_in_this_castle_yet_select_placements_on_the_map_give_them_a_na: Bu kalede henüz grup yok. Haritada yerleşimler seçin, ad verin ve kaydedin.
+copy_this_group_for_placement: Yerleştirmek için bu grubu kopyala
+this_group_has_no_copyable_items: Bu grupta kopyalanabilir öğe yok.
+clipboard_emptied: Pano temizlendi
+nothing_copied_yet_copy_something_with_ctrl_c_or_the_copy_tool: Henüz bir şey kopyalanmadı. Ctrl+C veya Kopyala aracıyla bir şey kopyalayın.
+paste_at_the_cursor: İmlece yapıştır
+empty_the_clipboard: Panoyu temizle
+group_name: Grup adı
+save_group: Grubu kaydet
+enter_a_group_name: Bir grup adı girin.
+a_group_called_value_is_already_there: '"{{name}}" adlı grup zaten var.'
+group_value_saved_with_value_placementvalue: '"{{name}}" grubu {{quantityvalue3}} ile kaydedildi'
+delete_group_value: '"{{name}}" grubunu sil'
+value_placementvalue_copied_works_in_every_castle_click_then_click_on_th: 'Kopyalandı: {{quantityvalue2}} — her kalede çalışır. Önce buraya, sonra haritaya tıklayın veya Ctrl+V''ye basın.'
+castle_actions: Kale eylemleri
+no_item_categories_configured: Öğe kategorileri yapılandırılmadı.
+dock: Yerleştir
+cut_and_copy: Kes ve kopyala

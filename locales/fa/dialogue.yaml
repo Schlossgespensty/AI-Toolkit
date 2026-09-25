@@ -1,0 +1,32 @@
+ai_name: نام هوش مصنوعی
+description: توضیح
+title: عنوان
+complete_title: نام و عنوان
+unknown: گفتار ناشناخته
+anger_1: حمله‌اش دفع شده
+anger_2: ساختمان خودش ویران شده
+plead: شکست در نقش دشمن
+victory_1: دفاع موفق
+victory_2: ساختمان دشمن ویران شده
+victory_3: بازیکن شکست خورده
+victory_4: هوش مصنوعی دشمن شکست خورده
+request: درخواست کالا
+thanks: کالا دریافت شده
+ally_death: شکست در نقش متحد
+congrats: تبریک به متحد
+boast: اعلام پیروزی
+help: درخواست کمک
+extra: بازی طولانی
+kick_player: بازیکن حذف شده
+add_player: بازیکن پیوسته
+siege: گفتار محاصرهٔ استفاده‌نشده
+no_sent: رد درخواست کالا
+sent: کالا فرستاده شده
+team_winning: تیم در حال پیروزی
+team_losing: تیم در حال شکست
+help_sent: کمک فرستاده شده
+will_attack: پذیرش درخواست حمله
+taunt: طعنه هنگام حمله
+nervous: زیر حمله
+no_attack: رد درخواست حمله
+no_help: رد درخواست کمک

@@ -1,0 +1,18 @@
+checking_updates: 正在检查更新…
+up_to_date: 已是最新版本
+no_published_builds: 没有已发布版本
+no_compatible_build: 没有兼容版本
+retry_updates: 重新检查更新
+experimental_snapshot: 实验性快照
+official_release: 官方版本
+downloading_update: 正在下载更新…
+installing_the_selected_build_and_restarting_toolkit: 安装所选版本并重启 Toolkit
+restarting: 正在重启…
+retry_update: 重试更新
+other_fork: 其他分支仓库…
+update_source_value: 更新来源：{{repo}}
+install_value: 安装 {{latest}}
+value_from_value_value_download_install_and_restart_installed_value: 来自 {{repo}} 的{{value1}}：{{latest}}。下载、安装并重启。当前安装：{{installed}}。
+installed_value_value_checked_on_startup_and_hourly: 已安装 {{repo}} {{latest}}。启动时及每小时检查更新。
+no_installable_windows_zip_with_a_checksum_found_in_value: '{{repo}} 中没有包含校验和的可安装 Windows ZIP 文件。'
+install_value_2: 安装 {{version}}

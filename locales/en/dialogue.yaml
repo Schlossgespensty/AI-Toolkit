@@ -1,0 +1,32 @@
+ai_name: AI name
+description: Description
+title: Title
+complete_title: Name and title
+unknown: Unknown line
+anger_1: Attack repelled
+anger_2: Own building destroyed
+plead: Defeat as an enemy
+victory_1: Successful defence
+victory_2: Enemy building destroyed
+victory_3: Player defeated
+victory_4: Enemy AI defeated
+request: Request goods
+thanks: Goods received
+ally_death: Defeat as an ally
+congrats: Congratulate an ally
+boast: Announce victory
+help: Request help
+extra: Long match
+kick_player: Player removed
+add_player: Player joined
+siege: Unused siege line
+no_sent: Goods refused
+sent: Goods sent
+team_winning: Team winning
+team_losing: Team losing
+help_sent: Help sent
+will_attack: Attack agreed
+taunt: Attack taunt
+nervous: Under attack
+no_attack: Attack refused
+no_help: Help refused

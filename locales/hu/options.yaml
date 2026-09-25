@@ -1,0 +1,64 @@
+None: Nincs
+ArabArcher: Arab íjász
+Slave: Rabszolga
+Slinger: Parittyás
+Assassin: Orgyilkos
+HorseArcher: Lovasíjász
+ArabSwordsman: Arab kardforgató
+FireThrower: Tűzhajító
+EuropArcher: Európai íjász
+Spearman: Lándzsás
+Maceman: Buzogányos
+Crossbowman: Számszeríjász
+Pikeman: Pikás
+Swordsman: Kardforgató
+Knight: Lovag
+Monk: Szerzetes
+Tunneler: Alagútásó
+Engineer: Mérnök
+FireBallista: Tüzes balliszta
+Catapult: Katapult
+Trebuchet: Ellensúlyos hajítógép
+BatteringRam: Faltörő kos
+SiegeTower: Ostromtorony
+Shield: Pajzs
+WheatFarm: Búzaföld
+DairyFarm: Tehenészet
+AppleFarm: Almáskert
+HopFarm: Komlóföld
+Wheat: Búza
+Flour: Liszt
+Hop: Komló
+Beer: Sör
+Spears: Lándzsák
+Pikes: Pikák
+Bows: Íjak
+Crossbows: Számszeríjak
+Swords: Kardok
+Maces: Buzogányok
+LeatherArmors: Bőrpáncélok
+IronArmors: Vaspáncélok
+Iron: Vas
+Pitch: Szurok
+Stone: Kő
+Wood: Fa
+Cheese: Sajt
+Meat: Hús
+Bread: Kenyér
+Apples: Alma
+"True": Igaz
+"False": Hamis
+Yellow: Sárga
+Blue: Kék
+Europ: Európai
+Arab: Arab
+Both: Mindkettő
+Balanced: Kiegyensúlyozott
+Closest: Legközelebbi
+Gold: Arany
+Any: Bármelyik
+Player: Játékos
+defend: védelem
+dig: ásás
+hold: helyben maradás
+patrol: járőrözés

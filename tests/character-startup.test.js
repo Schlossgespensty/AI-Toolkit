@@ -3,7 +3,7 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
-const vm = require('node:vm');
+const vm = require('./helpers/localized-vm');
 const source = fs.readFileSync(path.join(__dirname,'../src/js/character-editor.js'),'utf8');
 test('character readiness waits for every config, including legacy names, before project loading', async () => {
   let release; const first = new Promise(resolve => { release = resolve; });
@@ -16,7 +16,8 @@ test('character readiness waits for every config, including legacy names, before
   const ready=vm.runInContext('characterReady',context);
   assert.equal(rendered,false); assert.equal(loaded.length,0);
   release(); await ready;
-  assert.equal(rendered,true); assert.equal(loaded.length,11);
+  assert.equal(rendered,true); assert.equal(loaded.length,10);
+  assert.ok(!loaded.includes('helpTexts.json'), 'help is supplied by the central locale catalog');
   assert.equal(vm.runInContext('legacyKeyMap.old',context),'lord');
   const library=fs.readFileSync(path.join(__dirname,'../src/js/ucp-library.js'),'utf8');
   assert.ok(library.indexOf('await window.characterEditor.ready') < library.indexOf('window.characterEditor.loadFromContent'));

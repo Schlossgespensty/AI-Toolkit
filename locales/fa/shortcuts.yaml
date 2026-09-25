@@ -1,0 +1,44 @@
+openCastle: باز کردن قلعه
+saveCastle: ذخیرهٔ قلعه
+newCastle: قلعهٔ جدید
+map: نقشه
+iso: نمای ۲٫۵بعدی
+single: تکی
+line: خط
+brush: قلم‌مو
+brushSmaller: قلم‌موی کوچک‌تر
+brushLarger: قلم‌موی بزرگ‌تر
+bucket: پر کردن
+select: انتخاب / جابه‌جایی
+replace: جایگزینی
+merge: ادغام
+delete: حذف
+overlays: منوی لایه‌های کمکی
+groups: گروه‌ها
+paste: بریده‌دان / چسباندن
+clearClipboard: پاک کردن بریده‌دان
+names: نام موارد
+units: ترتیب نیروها
+guides: خطوط راهنما
+paths: نقشهٔ مسیر
+fire: گسترش آتش
+gameMap: "۲٫۵بعدی: نقشهٔ بازی"
+resetMap: "۲٫۵بعدی: حذف نقشهٔ بازی"
+rotateLeft: "۲٫۵بعدی: چرخش به چپ"
+rotateRight: "۲٫۵بعدی: چرخش به راست"
+saveAs: ذخیره با نام
+undo: واگرد
+redo: بازانجام
+copy: رونوشت انتخاب
+cut: برش انتخاب
+exportDe: خروجی DE
+pause: گام مکث
+deleteSelected: حذف انتخاب‌شده‌ها
+deselect: لغو انتخاب
+invalid: میانبر {{label}} نامعتبر است.
+reserved: "{{key}} برای منوهای برنامه رزرو شده است."
+duplicate: "{{key}} بیش از یک بار اختصاص یافته است."
+wheelMode: حالت چرخ را انتخاب کنید.
+cameraSpeed: سرعت دوربین باید بین ۱ تا ۲۰۰ پیکسل باشد.
+invalidCamera: میانبر دوربین نامعتبر است.
+assigned: کلید {{key}} از قبل اختصاص یافته یا رزرو شده است.

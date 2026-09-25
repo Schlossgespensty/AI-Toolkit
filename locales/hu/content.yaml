@@ -1,0 +1,56 @@
+character_name: Karakter neve.
+character_description: Karakter leírása.
+the_ai_s_attack_has_been_repelled: Az MI támadását visszaverték.
+one_of_the_ai_s_buildings_has_been_destroyed: Az MI egyik épülete megsemmisült.
+the_ai_has_been_defeated_if_enemy: Az MI vereséget szenvedett (ellenségként).
+the_ai_has_successfully_defended_itself: Az MI sikeresen megvédte magát.
+the_ai_destroys_a_building: Az MI elpusztít egy épületet.
+the_ai_has_killed_the_player: Az MI megölte a játékost.
+the_ai_defeats_another_enemy_ai: Az MI legyőz egy másik ellenséges MI-t.
+the_ai_requests_goods: Az MI árukat kér.
+the_player_sends_goods_to_the_ai: A játékos árukat küld az MI-nek.
+the_ai_has_been_defeated_if_ally: Az MI vereséget szenvedett (szövetségesként).
+the_player_defeats_an_enemy_while_allied_with_this_ai: A játékos ennek az MI-nek a szövetségeseként legyőz egy ellenséget.
+the_allied_ai_defeats_an_enemy: A szövetséges MI legyőz egy ellenséget.
+the_ai_is_under_attack_and_asks_for_help: Az MI-t támadják, és segítséget kér.
+the_game_has_been_going_on_for_a_long_time: A játék már régóta tart.
+a_player_is_removed_from_the_map: Egy játékost eltávolítottak a térképről.
+a_player_is_added_to_the_map: Egy játékost hozzáadtak a térképhez.
+not_used: Nincs használatban.
+the_ai_does_not_send_the_requested_goods: Az MI nem küldi el a kért árukat.
+the_ai_sends_the_requested_goods: Az MI elküldi a kért árukat.
+the_team_is_winning: A csapat nyerésre áll.
+the_team_is_losing: A csapat vesztésre áll.
+the_ai_sends_the_requested_help: Az MI elküldi a kért segítséget.
+the_ai_will_attack_the_requested_enemy: Az MI megtámadja a kért ellenséget.
+character_title_include_quotation_marks_for_a_quoted_title: Karakter címe (idézett címnél az idézőjeleket is írja be).
+character_name_followed_by_the_title_include_quotation_marks_for_a_quote: Karakter neve, utána a címe (idézett címnél az idézőjeleket is írja be).
+the_ai_attacks_the_player: Az MI megtámadja a játékost.
+the_player_attacks_the_ai: A játékos megtámadja az MI-t.
+the_ai_refuses_to_attack_the_requested_enemy: Az MI megtagadja a kért ellenség megtámadását.
+the_ai_refuses_a_request_for_help: Az MI elutasítja a segítségkérést.
+replay: Újrajátszás
+play: Lejátszás
+media_replacement_cancelled: Médiacsere megszakítva
+wav_speech: WAV-beszéd
+bink_video: Bink-videó
+missing: Hiányzik
+mapped_asset: Hozzárendelt média
+open_externally: Megnyitás külső programmal
+open_play: Megnyitás / lejátszás
+saving_lines_json: lines.json mentése…
+portrait_change_cancelled: Arcképcsere megszakítva
+loading_value: "{{fileName}} betöltése…"
+could_not_play_value_here_value_use_open_externally: "A(z) {{fileName}} itt nem játszható le: {{message}}. Használja a külső megnyitást."
+downloaded_value_open_it_with_its_associated_program: "{{fileName}} letöltve. Nyissa meg a hozzá társított programmal."
+opened_value_in_its_associated_program: "{{fileName}} megnyitva a hozzá társított programmal."
+could_not_open_value_value: "Nem sikerült megnyitni: {{fileName}}. {{message}}"
+choosing_a_replacement_for_value: "Csere kiválasztása ehhez: {{fileName}}…"
+could_not_replace_value_value: "Nem sikerült lecserélni: {{fileName}}. {{message}}"
+no_mapped_wav_speech_files_found_for_value: "Nem található hozzárendelt WAV-beszéd ehhez: {{value1}}."
+no_mapped_value_files_found: Nem találhatók hozzárendelt {{value1}} fájlok.
+this_wav_codec_cannot_play_in_the_editor_use_open_externally: Ez a WAV-kodek nem játszható le a szerkesztőben. Használja a külső megnyitást.
+value_content_loaded: "{{value1}} tartalma betöltve"
+could_not_save_lines_json_value: "Nem sikerült menteni a lines.json fájlt: {{message}}"
+value_saved_as_value_value: ✓ {{value1}} mentve {{width}}×{{height}} méretben
+could_not_change_portrait_value: "Nem sikerült az arcképcsere: {{message}}"

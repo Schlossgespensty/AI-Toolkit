@@ -1,0 +1,232 @@
+StrengthMultiplier: Életerő-szorzó
+DotColour: Pontok színe
+DotCount: Pontok száma
+Type: Típus
+ArabArcher: Arab íjász
+Slave: Rabszolga
+Slinger: Parittyás
+Assassin: Orgyilkos
+HorseArcher: Lovasíjász
+ArabSwordsman: Arab kardforgató
+FireThrower: Tűzhajító
+EuropArcher: Európai íjász
+Spearman: Lándzsás
+Maceman: Buzogányos
+Crossbowman: Számszeríjász
+Pikeman: Pikás
+Swordsman: Kardforgató
+Knight: Lovag
+Monk: Szerzetes
+Engineer: Mérnök
+WallDecoration: Faldíszítés
+Unknown001: Ismeretlen 001
+Unknown002: Ismeretlen 002
+Unknown003: Ismeretlen 003
+Unknown004: Ismeretlen 004
+Unknown005: Ismeretlen 005
+CriticalPopularity: Kritikus népszerűség
+LowestPopularity: Legalacsonyabb népszerűség
+HighestPopularity: Legmagasabb népszerűség
+TaxesMin: Legkisebb adó
+TaxesMax: Legnagyobb adó
+Unknown011: Ismeretlen 011
+Farm1: Gazdaság 1
+Farm2: Gazdaság 2
+Farm3: Gazdaság 3
+Farm4: Gazdaság 4
+Farm5: Gazdaság 5
+Farm6: Gazdaság 6
+Farm7: Gazdaság 7
+Farm8: Gazdaság 8
+PopulationPerFarm: Lakos gazdaságonként
+PopulationPerWoodcutter: Lakos favágónként
+PopulationPerQuarry: Lakos kőfejtőnként
+PopulationPerIronmine: Lakos vasbányánként
+PopulationPerPitchrig: Lakos szurokkitermelőnként
+MaxQuarries: Kőfejtők felső határa
+MaxIronmines: Vasbányák felső határa
+MaxWoodcutters: Favágók felső határa
+MaxPitchrigs: Szurokkitermelők felső határa
+MaxFarms: Gazdaságok felső határa
+BuildInterval: Építési időköz
+ResourceRebuildDelay: Termelőépületek újjáépítési késleltetése
+MaxFood: Élelmiszer felső határa
+MinimumApples: Alma alsó határa
+MinimumCheese: Sajt alsó határa
+MinimumBread: Kenyér alsó határa
+MinimumWheat: Búza alsó határa
+MinimumHop: Komló alsó határa
+TradeAmountFood: Élelmiszer kereskedelmi mennyisége
+TradeAmountEquipment: Felszerelés kereskedelmi mennyisége
+AIRequestDelay: MI-kérések késleltetése
+MinimumGoodsRequiredAfterTrade: Kereskedés utáni minimális készlet
+DoubleRationsFoodThreshold: Dupla fejadag élelmiszerküszöbe
+MaxWood: Fa felső határa
+MaxStone: Kő felső határa
+MaxResourceOther: Egyéb nyersanyagok felső határa
+MaxEquipment: Felszerelés felső határa
+MaxBeer: Sör felső határa
+MaxResourceVariance: Erőforrásmaximum eltérése
+RecruitGoldThreshold: Toborzás aranyküszöbe
+BlacksmithSetting: Kovácsműhely beállítása
+FletcherSetting: Íjkészítő beállítása
+PoleturnerSetting: Lándzsakészítő beállítása
+SellResource01: Eladandó erőforrás 01
+SellResource02: Eladandó erőforrás 02
+SellResource03: Eladandó erőforrás 03
+SellResource04: Eladandó erőforrás 04
+SellResource05: Eladandó erőforrás 05
+SellResource06: Eladandó erőforrás 06
+SellResource07: Eladandó erőforrás 07
+SellResource08: Eladandó erőforrás 08
+SellResource09: Eladandó erőforrás 09
+SellResource10: Eladandó erőforrás 10
+SellResource11: Eladandó erőforrás 11
+SellResource12: Eladandó erőforrás 12
+SellResource13: Eladandó erőforrás 13
+SellResource14: Eladandó erőforrás 14
+SellResource15: Eladandó erőforrás 15
+DefWallPatrolRallyTime: Faljárőrök várakozási ideje
+DefWallPatrolGroups: Fali járőrcsoportok
+DefSiegeEngineGoldThreshold: Védelmi ostromgépek aranyküszöbe
+DefSiegeEngineBuildDelay: Védelmi ostromgépek építési késleltetése
+Unknown072: Ismeretlen 072
+Unknown073: Ismeretlen 073
+RecruitProbDefDefault: "Toborzási esély: védők (normál)"
+RecruitProbDefWeak: "Toborzási esély: védők (gyenge gazdaság)"
+RecruitProbDefStrong: "Toborzási esély: védők (erős gazdaság)"
+RecruitProbRaidDefault: "Toborzási esély: portyázók (normál)"
+RecruitProbRaidWeak: "Toborzási esély: portyázók (gyenge gazdaság)"
+RecruitProbRaidStrong: "Toborzási esély: portyázók (erős gazdaság)"
+RecruitProbAttackDefault: "Toborzási esély: támadók (normál)"
+RecruitProbAttackWeak: "Toborzási esély: támadók (gyenge gazdaság)"
+RecruitProbAttackStrong: "Toborzási esély: támadók (erős gazdaság)"
+SortieUnitRangedMin: Kitörő távolsági egységek minimuma
+SortieUnitRanged: Kitörő távolsági egység
+SortieUnitMeleeMin: Kitörő közelharci egységek minimuma
+SortieUnitMelee: Kitörő közelharci egység
+DefDiggingUnitMax: Védekező ásók felső határa
+DefDiggingUnit: Védekező ásóegység
+RecruitInterval: Toborzási időköz
+RecruitIntervalWeak: Toborzási időköz gyenge gazdaságnál
+RecruitIntervalStrong: Toborzási időköz erős gazdaságnál
+DefTotal: Összes védő
+OuterPatrolGroupsCount: Külső járőrcsoportok száma
+OuterPatrolGroupsMove: Külső járőrök mozgása
+OuterPatrolRallyDelay: Külső járőr gyülekezési késleltetése
+DefWalls: Falvédők
+DefUnit1: Védőegység 1
+DefUnit2: Védőegység 2
+DefUnit3: Védőegység 3
+DefUnit4: Védőegység 4
+DefUnit5: Védőegység 5
+DefUnit6: Védőegység 6
+DefUnit7: Védőegység 7
+DefUnit8: Védőegység 8
+RaidUnitsBase: Portyázók alaplétszáma
+RaidUnitsRandom: Portyázók véletlen többlete
+RaidUnit1: Portyázóegység 1
+RaidUnit2: Portyázóegység 2
+RaidUnit3: Portyázóegység 3
+RaidUnit4: Portyázóegység 4
+RaidUnit5: Portyázóegység 5
+RaidUnit6: Portyázóegység 6
+RaidUnit7: Portyázóegység 7
+RaidUnit8: Portyázóegység 8
+HarassingSiegeEngine1: Zaklató ostromgép 1
+HarassingSiegeEngine2: Zaklató ostromgép 2
+HarassingSiegeEngine3: Zaklató ostromgép 3
+HarassingSiegeEngine4: Zaklató ostromgép 4
+HarassingSiegeEngine5: Zaklató ostromgép 5
+HarassingSiegeEngine6: Zaklató ostromgép 6
+HarassingSiegeEngine7: Zaklató ostromgép 7
+HarassingSiegeEngine8: Zaklató ostromgép 8
+HarassingSiegeEnginesMax: Zaklató ostromgépek felső határa
+RaidRetargetDelay: Portyázás célváltási késleltetése
+AttForceBase: Támadók alaplétszáma
+AttForceRandom: Támadók véletlen többlete
+AttForceSupportAllyThreshold: Szövetséges támogatási küszöbe
+AttForceRallyPercentage: Támadók gyülekezési aránya
+Unknown129: Ismeretlen 129
+AttAssaultDelay: Roham késleltetése
+AttUnitPatrolRecommandDelay: Visszavonulási késleltetés győzelem után
+Unknown132: Ismeretlen 132
+SiegeEngine1: Ostromgép 1
+SiegeEngine2: Ostromgép 2
+SiegeEngine3: Ostromgép 3
+SiegeEngine4: Ostromgép 4
+SiegeEngine5: Ostromgép 5
+SiegeEngine6: Ostromgép 6
+SiegeEngine7: Ostromgép 7
+SiegeEngine8: Ostromgép 8
+CowThrowInterval: Tehénhajítás időköze
+Unknown142: Ismeretlen 142
+AttMaxEngineers: Támadó mérnökök felső határa
+AttDiggingUnit: Támadó ásóegység
+AttDiggingUnitMax: Támadó ásók felső határa
+AttUnitVanguard: Elővéd egysége
+AttUnitVanguardMax: Elővéd felső határa
+AttMaxAssassins: Támadó orgyilkosok felső határa
+AttMaxLaddermen: Létrások felső határa
+AttMaxTunnelers: Alagútásók felső határa
+AttUnitPatrol: Támadó járőregység
+AttUnitPatrolMax: Támadó járőrök felső határa
+AttUnitPatrolGroupsCount: Támadó járőrcsoportok száma
+AttUnitBackup: Támadó tartalékegység
+AttUnitBackupMax: Támadó tartalék felső határa
+AttUnitBackupGroupsCount: Támadó tartalékcsoportok száma
+AttUnitEngage: Harcba lépő egység
+AttUnitEngageMax: Harcba lépő egységek felső határa
+AttUnitSiegeDef: Ostromtábor védőegysége
+AttUnitSiegeDefMax: Ostromtábor védőinek felső határa
+AttUnitSiegeDefGroupsCount: Ostromtábort védő csoportok száma
+AttUnitMain1: Fősereg egysége 1
+AttUnitMain2: Fősereg egysége 2
+AttUnitMain3: Fősereg egysége 3
+AttUnitMain4: Fősereg egysége 4
+AttMaxDefault: Fősereg létszáma a specialisták előtt
+AttMainGroupsCount: Fősereg csoportjainak száma
+TargetChoice: Célpontválasztás
+AIOxTethers_DisableInitialOxTether: Kezdeti ökörkarám kikapcsolása
+AIOxTethers_Logic: Ökörkarámok működési szabálya
+AIOxTethers_MaxOxTethers: Ökörkarámok felső határa
+AIOxTethers_DynamicMaxOxTethers: Ökörkarámok dinamikus felső határa
+AIOxTethers_MinimumOxTethersPerQuarry: Ökörkarámok minimuma kőfejtőnként
+AIOxTethers_MaximumOxTethersPerQuarry: Ökörkarámok maximuma kőfejtőnként
+AIOxTethers_ThresholdStoneLoad: Kőrakomány küszöbe
+RunningUnits_Macemen: Buzogányosok futása
+RunningUnits_Spearmen: Lándzsások futása
+RunningUnits_Slingers: Parittyások futása
+RunningUnits_Slaves: Rabszolgák futása
+AIVTroops_InitialRole: AIV-csapatok kezdeti szerepe
+AIVTroops_Movement: AIV-csapatok mozgása
+AIVTroops_InitialRole_Engineer: "Mérnök: kezdeti szerep"
+AIVTroops_Movement_Engineer: "Mérnök: mozgás"
+AIVTroops_InitialRole_Archer: "Íjász: kezdeti szerep"
+AIVTroops_Movement_Archer: "Íjász: mozgás"
+AIVTroops_InitialRole_Crossbowman: "Számszeríjász: kezdeti szerep"
+AIVTroops_Movement_Crossbowman: "Számszeríjász: mozgás"
+AIVTroops_InitialRole_Spearman: "Lándzsás: kezdeti szerep"
+AIVTroops_Movement_Spearman: "Lándzsás: mozgás"
+AIVTroops_InitialRole_Pikeman: "Pikás: kezdeti szerep"
+AIVTroops_Movement_Pikeman: "Pikás: mozgás"
+AIVTroops_InitialRole_Maceman: "Buzogányos: kezdeti szerep"
+AIVTroops_Movement_Maceman: "Buzogányos: mozgás"
+AIVTroops_InitialRole_Swordsman: "Kardforgató: kezdeti szerep"
+AIVTroops_Movement_Swordsman: "Kardforgató: mozgás"
+AIVTroops_InitialRole_Knight: "Lovag: kezdeti szerep"
+AIVTroops_Movement_Knight: "Lovag: mozgás"
+AIVTroops_InitialRole_Slave: "Rabszolga: kezdeti szerep"
+AIVTroops_Movement_Slave: "Rabszolga: mozgás"
+AIVTroops_InitialRole_Slinger: "Parittyás: kezdeti szerep"
+AIVTroops_Movement_Slinger: "Parittyás: mozgás"
+AIVTroops_InitialRole_Assassin: "Orgyilkos: kezdeti szerep"
+AIVTroops_Movement_Assassin: "Orgyilkos: mozgás"
+AIVTroops_InitialRole_ArabianArcher: "Arab íjász: kezdeti szerep"
+AIVTroops_Movement_ArabianArcher: "Arab íjász: mozgás"
+AIVTroops_InitialRole_HorseArcher: "Lovasíjász: kezdeti szerep"
+AIVTroops_Movement_HorseArcher: "Lovasíjász: mozgás"
+AIVTroops_InitialRole_ArabianSwordsman: "Arab kardforgató: kezdeti szerep"
+AIVTroops_Movement_ArabianSwordsman: "Arab kardforgató: mozgás"
+AIVTroops_InitialRole_FireThrower: "Tűzhajító: kezdeti szerep"
+AIVTroops_Movement_FireThrower: "Tűzhajító: mozgás"

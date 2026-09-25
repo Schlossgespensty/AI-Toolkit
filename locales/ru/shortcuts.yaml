@@ -1,0 +1,44 @@
+openCastle: Открыть замок
+saveCastle: Сохранить замок
+newCastle: Новый замок
+map: Карта
+iso: Вид 2.5D
+single: Одиночно
+line: Линия
+brush: Кисть
+brushSmaller: Уменьшить кисть
+brushLarger: Увеличить кисть
+bucket: Заливка
+select: Выделить / переместить
+replace: Заменить
+merge: Объединить
+delete: Удалить
+overlays: Меню наложений
+groups: Группы
+paste: Буфер / вставка
+clearClipboard: Очистить буфер
+names: Названия объектов
+units: Порядок войск
+guides: Направляющие
+paths: Карта путей
+fire: Распространение огня
+gameMap: "2.5D: игровая карта"
+resetMap: "2.5D: убрать игровую карту"
+rotateLeft: "2.5D: повернуть влево"
+rotateRight: "2.5D: повернуть вправо"
+saveAs: Сохранить как
+undo: Отменить
+redo: Повторить
+copy: Копировать выделение
+cut: Вырезать выделение
+exportDe: Экспорт DE
+pause: Шаг паузы
+deleteSelected: Удалить выделенное
+deselect: Снять выделение
+invalid: Недопустимые клавиши для {{label}}.
+reserved: "{{key}} зарезервировано для меню приложения."
+duplicate: "{{key}} назначено несколько раз."
+wheelMode: Выберите режим колеса.
+cameraSpeed: Скорость камеры должна быть от 1 до 200 пикселей.
+invalidCamera: Недопустимые клавиши камеры.
+assigned: Клавиша {{key}} уже назначена или зарезервирована.

@@ -1,0 +1,85 @@
+adding_the_castle_was_cancelled: Ajout du château annulé.
+no_castles_available: Aucun château disponible
+unmapped: Non associé
+missing: ' (absent)'
+open_an_ai_project_before_editing_its_castle_mapping: Ouvrez un projet d'IA avant de modifier ses châteaux associés
+unused: Inutilisé
+no_ais_match_this_search: Aucune IA ne correspond à cette recherche.
+no_ais_match_this_view: Aucune IA ne correspond à cette vue.
+my_ais: Mes IA
+active: ' · actif'
+no_mapped_binary_castles_were_found_the_character_can_still_be_opened: Aucun château binaire associé trouvé. Le personnage peut tout de même être ouvert.
+binary_aiv_ready: AIV binaire prêt
+json_fallback_available: Solution de repli JSON disponible
+no_description_provided: Aucune description fournie.
+my_ai: Mon IA
+active_plugin: Plugin actif
+inactive_plugin: Plugin inactif
+loads_the_managed_character_castle_1_lines_and_portraits_switch_castles_: >-
+  Charge le personnage géré, le château 1, les textes et les portraits. Changez de château dans l'éditeur de
+  château.
+character_data_is_ready_enable_castles_audio_all_ais_above_before_openin: >-
+  Les données du personnage sont prêtes. Activez l'accès aux châteaux, à l'audio et à toutes les IA ci-dessus
+  avant l'ouverture pour inclure leurs fichiers binaires et sonores.
+loads_this_ai_directly_from_its_source_plugin_changes_can_be_saved_back_: Charge cette IA directement depuis son plugin source. Les modifications peuvent y être enregistrées.
+safely_update_the_managed_ucp_plugin_from_the_loaded_editors: Met à jour le plugin UCP géré depuis les éditeurs chargés en toute sécurité.
+open_this_ai_in_the_editors_first: Ouvrez d'abord cette IA dans les éditeurs.
+scanning_installed_ucp_plugins: Analyse des plugins UCP installés…
+full_ai_access_enabled: Accès complet aux IA activé ✓
+enable_castles_audio_all_ais: Activer châteaux, audio et toutes les IA…
+select_the_stronghold_crusader_ucp_plugins_folder_ucp_requires_this_perm: >-
+  Sélectionnez le dossier Stronghold Crusader/ucp/plugins. UCP a besoin de cette autorisation pour les
+  châteaux binaires, l'audio, la vidéo et les plugins inactifs.
+enable_full_ai_access_to_load_castles_audio_video_and_inactive_plugins: ' Activez l''accès complet aux IA pour charger châteaux, audio, vidéo et plugins inactifs.'
+full_ai_file_access_is_enabled: ' L''accès complet aux fichiers d''IA est activé.'
+castle_1_is_mapped_but_ucp_cannot_read_its_binary_file_yet_click_enable_: >-
+  Le château 1 est associé, mais UCP ne peut pas encore lire son fichier binaire. Cliquez sur « Activer
+  châteaux, audio et toutes les IA » et sélectionnez ucp/plugins.
+opening_this_ai_project: ouverture de ce projet d'IA
+switching_castles: changement de château
+the_cloned_ai_could_not_be_found_after_installation: L'IA clonée n'a pas été trouvée après l'installation.
+the_new_ai_could_not_be_found_after_creation: La nouvelle IA n'a pas été trouvée après sa création.
+open_this_my_ai_project_before_updating_it: Ouvrez ce projet de « Mes IA » avant de le mettre à jour.
+the_character_editor_is_showing_another_file_open_this_ai_project_again_: L'éditeur de personnage affiche un autre fichier. Rouvrez d'abord ce projet d'IA.
+the_castle_editor_is_showing_another_file_open_the_ai_project_again_firs: L'éditeur de château affiche un autre fichier. Rouvrez d'abord le projet d'IA.
+the_last_ai_project_is_unavailable_in_this_installation_choose_a_project: Le dernier projet d'IA n'est pas disponible dans cette installation. Choisissez un projet pour continuer.
+value_s_character_was_replaced: Le personnage de {{name}} a été remplacé.
+could_not_add_character_to_value_value: 'Impossible d''ajouter le personnage à {{name}} : {{message}}'
+adding_castle_to_value: Ajout du château à {{name}}…
+value_was_added_to_value: '{{fileName}} a été ajouté à {{name}}.'
+could_not_add_castle_to_value_value: 'Impossible d''ajouter le château à {{name}} : {{message}}'
+choose_the_aiv_used_in_each_of_value_s_eight_castle_slots_the_same_file_: >-
+  Choisissez l'AIV utilisé pour chacun des huit emplacements de château de {{name}}. Un fichier peut être
+  sélectionné plusieurs fois.
+saving_value_s_castle_mapping: Enregistrement des châteaux associés de {{name}}…
+value_s_castle_mapping_saved: ✓ Châteaux associés de {{name}} enregistrés
+could_not_save_castle_mapping_value: 'Impossible d''enregistrer les châteaux associés : {{message}}'
+value_of_value_ais_shown: '{{length}} IA affichées sur {{length2}}'
+value_castle_mappingvalue_found_enable_castles_audio_all_ais_above_to_re: >-
+  {{quantityvalue2}} trouvés · activez châteaux, audio et toutes les IA ci-dessus pour lire les fichiers AIV
+  binaires.
+value_castlevalue_available_but_castle_1_was_not_found_the_character_wil: >-
+  {{quantityvalue2}} disponibles, mais le château 1 est absent. Le personnage s'ouvrira avec un éditeur de
+  château vide.
+value_castlevalue_available_castle_1_opens_first_value_value: '{{quantityvalue2}} disponibles · le château 1 s''ouvre en premier · {{fileName}} · {{source}}'
+folder_access_is_active_for_this_editor_sessionvalue: L'accès aux dossiers est actif pour cette session d'édition{{value1}}.
+value_package_issue_s_were_skipped: ' {{length}} problème(s) de paquet ignoré(s).'
+found_value_ai_packagevalue_in_value_pluginvalue_valuevalue: '{{quantityvalue2}} trouvés dans {{quantityvalue4}}.{{diagnosticNote}}{{accessNote}}'
+could_not_scan_ucp_value: 'Impossible d''analyser UCP : {{message}}'
+could_not_use_that_folder_value: 'Impossible d''utiliser ce dossier : {{message}}'
+the_last_castle_value_is_no_longer_in_this_project_choose_a_castle_to_op: Le dernier château « {{requestedCastle}} » n'est plus dans ce projet. Choisissez un château à ouvrir.
+value_opened_for_editingvalue: '{{name}} ouvert pour modification{{value2}}.'
+could_not_open_ai_project_value: 'Impossible d''ouvrir le projet d''IA : {{message}}'
+castle_value_could_not_be_loaded: Impossible de charger le château « {{fileName}} ».
+could_not_switch_castle_value: 'Impossible de changer de château : {{message}}'
+cloning_value_into_my_ais: Clonage de {{name}} dans Mes IA…
+value_was_installed_in_my_ais_activate_the_plugin_in_the_ucp_gui_when_re: '{{name}} a été installé dans Mes IA. Activez le plugin dans l''interface UCP lorsque vous êtes prêt.'
+could_not_clone_ai_value: 'Impossible de cloner l''IA : {{message}}'
+creating_value_in_my_ais: Création de {{name}} dans Mes IA…
+value_was_created_in_my_ais: '{{name}} a été créé dans Mes IA.'
+could_not_create_ai_value: 'Impossible de créer l''IA : {{message}}'
+updating_value_through_a_staging_folder: Mise à jour de {{name}} via un dossier intermédiaire…
+value_is_installed_and_up_to_date_in_my_ais: '{{name}} est installé et à jour dans Mes IA.'
+could_not_update_my_ai_value: 'Impossible de mettre à jour Mon IA : {{message}}'
+could_not_open_folder_value: 'Impossible d''ouvrir le dossier : {{message}}'
+could_not_restore_the_ucp_installation_value: 'Impossible de restaurer l''installation UCP : {{message}}'

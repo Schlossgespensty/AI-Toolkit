@@ -1,0 +1,56 @@
+character_name: Name des Charakters.
+character_description: Beschreibung des Charakters.
+the_ai_s_attack_has_been_repelled: Der Angriff der KI wurde abgewehrt.
+one_of_the_ai_s_buildings_has_been_destroyed: Ein Gebäude der KI wurde zerstört.
+the_ai_has_been_defeated_if_enemy: Die KI wurde besiegt (als Gegner)
+the_ai_has_successfully_defended_itself: Die KI hat sich erfolgreich verteidigt.
+the_ai_destroys_a_building: Die KI zerstört ein Gebäude.
+the_ai_has_killed_the_player: Die KI hat den Spieler besiegt.
+the_ai_defeats_another_enemy_ai: Die KI besiegt eine andere gegnerische KI.
+the_ai_requests_goods: Die KI bittet um Waren.
+the_player_sends_goods_to_the_ai: Der Spieler sendet der KI Waren.
+the_ai_has_been_defeated_if_ally: Die KI wurde besiegt (als Verbündeter)
+the_player_defeats_an_enemy_while_allied_with_this_ai: Der Spieler besiegt einen Gegner, während er mit dieser KI verbündet ist.
+the_allied_ai_defeats_an_enemy: Die verbündete KI besiegt einen Gegner.
+the_ai_is_under_attack_and_asks_for_help: Die KI wird angegriffen und bittet um Hilfe.
+the_game_has_been_going_on_for_a_long_time: Die Partie dauert bereits lange.
+a_player_is_removed_from_the_map: Ein Spieler wird von der Karte entfernt.
+a_player_is_added_to_the_map: Ein Spieler wird zur Karte hinzugefügt.
+not_used: Nicht verwendet.
+the_ai_does_not_send_the_requested_goods: Die KI sendet die angeforderten Waren nicht.
+the_ai_sends_the_requested_goods: Die KI sendet die angeforderten Waren.
+the_team_is_winning: Das Team liegt in Führung.
+the_team_is_losing: Das Team liegt zurück.
+the_ai_sends_the_requested_help: Die KI sendet die angeforderte Hilfe.
+the_ai_will_attack_the_requested_enemy: Die KI wird den gewünschten Gegner angreifen.
+character_title_include_quotation_marks_for_a_quoted_title: Titel des Charakters (gegebenenfalls Anführungszeichen mit angeben).
+character_name_followed_by_the_title_include_quotation_marks_for_a_quote: Charaktername mit anschließendem Titel (gegebenenfalls Anführungszeichen mit angeben).
+the_ai_attacks_the_player: Die KI greift den Spieler an.
+the_player_attacks_the_ai: Der Spieler greift die KI an.
+the_ai_refuses_to_attack_the_requested_enemy: Die KI weigert sich, den gewünschten Gegner anzugreifen.
+the_ai_refuses_a_request_for_help: Die KI lehnt eine Bitte um Hilfe ab.
+replay: Erneut abspielen
+play: Abspielen
+media_replacement_cancelled: Medienersetzung abgebrochen
+wav_speech: WAV-Sprachausgabe
+bink_video: Bink-Video
+missing: Fehlt
+mapped_asset: Zugeordnete Datei
+open_externally: Extern öffnen
+open_play: Öffnen / abspielen
+saving_lines_json: lines.json wird gespeichert…
+portrait_change_cancelled: Porträtänderung abgebrochen
+loading_value: "{{fileName}} wird geladen…"
+could_not_play_value_here_value_use_open_externally: "{{fileName}} kann hier nicht abgespielt werden: {{message}} Verwende „Extern öffnen“."
+downloaded_value_open_it_with_its_associated_program: "{{fileName}} heruntergeladen. Öffne die Datei mit dem zugeordneten Programm."
+opened_value_in_its_associated_program: "{{fileName}} wurde im zugeordneten Programm geöffnet."
+could_not_open_value_value: "{{fileName}} konnte nicht geöffnet werden: {{message}}"
+choosing_a_replacement_for_value: Ersatz für {{fileName}} wählen…
+could_not_replace_value_value: "{{fileName}} konnte nicht ersetzt werden: {{message}}"
+no_mapped_wav_speech_files_found_for_value: Keine zugeordneten WAV-Sprachdateien für {{value1}} gefunden.
+no_mapped_value_files_found: Keine zugeordneten {{value1}}-Dateien gefunden.
+this_wav_codec_cannot_play_in_the_editor_use_open_externally: Dieser WAV-Codec wird im Editor nicht unterstützt. Verwende „Extern öffnen“.
+value_content_loaded: Inhalte von {{value1}} geladen
+could_not_save_lines_json_value: "lines.json konnte nicht gespeichert werden: {{message}}"
+value_saved_as_value_value: ✓ {{value1}} als {{width}}×{{height}} gespeichert
+could_not_change_portrait_value: "Porträt konnte nicht geändert werden: {{message}}"

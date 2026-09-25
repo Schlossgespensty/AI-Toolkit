@@ -1,0 +1,32 @@
+failed_to_load_config_files: بارگذاری پرونده‌های تنظیمات ناموفق بود.
+all_troops: همهٔ نیروها
+initial_role: نقش آغازین
+unsupported_value: "مقدار پشتیبانی‌نشده: "
+no_description_yet: هنوز توضیحی موجود نیست.
+initial_roles: نقش‌های آغازین
+unknown_parameters_found: |+
+  پارامترهای ناشناخته پیدا شدند:
+
+opening_another_character_file: باز کردن پروندهٔ شخصیت دیگر
+creating_a_new_character: ساخت شخصیت جدید
+new_character_added_to_the_loaded_ai: شخصیت جدید به هوش مصنوعی بارگذاری‌شده افزوده شد
+new_character: شخصیت جدید
+saving: در حال ذخیره…
+saved: ذخیره شد!
+error: خطا!
+open_an_ai_from_the_library_to_edit_its_content: برای ویرایش محتوا، یک هوش مصنوعی از کتابخانه باز کنید
+ai_content_belongs_to_the_loaded_ai_project: محتوا متعلق به پروژهٔ هوش مصنوعی بارگذاری‌شده است
+no_file_loadedvalue: پرونده‌ای بارگذاری نشده است{{dirtyMarker}}
+leather_armor: زره چرمی
+iron_armor: زره آهنی
+capacity: ظرفیت
+needed_at_limits: نیاز در سقف ذخیره
+production: تولید
+recruitment_purchase: خرید برای سربازگیری
+maxfood_variance: MaxFood + دامنهٔ تغییر
+no_relevant_production: تولید مرتبط ندارد
+or_recruitment: " یا سربازگیری"
+positive_negative: مثبت / منفی
+net_buildings: خالص ساختمان‌ها
+population_groups_of_16: جمعیت / گروه‌های ۱۶تایی
+movement: حرکت

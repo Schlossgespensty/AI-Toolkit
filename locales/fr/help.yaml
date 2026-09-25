@@ -1,0 +1,805 @@
+StrengthMultiplier: |-
+  Multiplie les points de vie du seigneur.
+  Rat = 0,5
+  Standard = 1
+  Loup = 1,5
+DotColour: |-
+  Couleur des points indiquant la force du seigneur.
+  Vanilla utilise le jaune pour les IA faibles et le bleu pour les fortes.
+DotCount: |-
+  Nombre de points indiquant la force du seigneur.
+  Vanilla utilise un point par tranche de 0,1 du multiplicateur.
+Type: Type de seigneur apparaissant dans le donjon.
+ArabArcher: Nombre d'unités (Archer arabe) apparaissant près du donjon au début de la partie.
+Slave: Nombre d'unités (Esclave) apparaissant près du donjon au début de la partie.
+Slinger: Nombre d'unités (Frondeur) apparaissant près du donjon au début de la partie.
+Assassin: Nombre d'unités (Assassin) apparaissant près du donjon au début de la partie.
+HorseArcher: Nombre d'unités (Archer monté) apparaissant près du donjon au début de la partie.
+ArabSwordsman: Nombre d'unités (Épéiste arabe) apparaissant près du donjon au début de la partie.
+FireThrower: Nombre d'unités (Lanceur de feu) apparaissant près du donjon au début de la partie.
+EuropArcher: Nombre d'unités (Archer européen) apparaissant près du donjon au début de la partie.
+Spearman: Nombre d'unités (Lancier) apparaissant près du donjon au début de la partie.
+Maceman: Nombre d'unités (Massier) apparaissant près du donjon au début de la partie.
+Crossbowman: Nombre d'unités (Arbalétrier) apparaissant près du donjon au début de la partie.
+Pikeman: Nombre d'unités (Piquier) apparaissant près du donjon au début de la partie.
+Swordsman: Nombre d'unités (Épéiste) apparaissant près du donjon au début de la partie.
+Knight: Nombre d'unités (Chevalier) apparaissant près du donjon au début de la partie.
+Monk: Nombre d'unités (Moine) apparaissant près du donjon au début de la partie.
+WallDecoration: |-
+  Décoration du seigneur lors du placement de « flg » dans l'éditeur AIV.
+
+  8 = huile enflammée déversée
+  9 = flammes
+  10 = petit drapeau
+  11 = grand drapeau
+  12 = drapeau moyen
+  13 = drapeau croisé
+  14 = braseros
+  15 = crânes décoratifs
+  21 = nuages de vapeur
+  22 = nuages de maladie
+  26 = explosions de feu
+  28 = corbeaux descendant
+  29 = pierres moyennes dans l'eau
+  30 = petites pierres frappant des structures
+  31 = petites pierres dans l'eau
+  40 = message flottant de zéro or
+  41 = message flottant de zéro popularité
+  42 = message flottant vide
+  43 = message flottant vide
+Unknown001: Valeur inutilisée.
+Unknown002: Valeur inutilisée.
+Unknown003: Valeur inutilisée.
+Unknown004: Valeur inutilisée.
+Unknown005: Valeur inutilisée.
+CriticalPopularity: |-
+  Sous cette popularité, l'IA vend massivement des marchandises pour obtenir de l'or.
+
+  10000 = 100 de popularité.
+  5000 = 50 de popularité.
+LowestPopularity: >-
+  Sous cette popularité, l'IA réduit les impôts vers TaxesMin et donne des rations supplémentaires jusqu'à
+  HighestPopularity.
+
+
+  10000 = 100 de popularité.
+
+  5000 = 50 de popularité.
+HighestPopularity: >-
+  Au-dessus de cette popularité, l'IA augmente les impôts jusqu'à un modificateur de popularité stable allant
+  jusqu'à −3.
+
+
+  10000 = 100 de popularité.
+
+  5000 = 50 de popularité.
+TaxesMin: |-
+  Niveau d'impôt minimal autorisé.
+  0 = subventions maximales
+  11 = impôts maximaux
+TaxesMax: |-
+  Niveau d'impôt maximal autorisé.
+  0 = subventions maximales
+  11 = impôts maximaux
+Unknown011: Valeur inutilisée.
+Farm1: |-
+  Ferme n° 1 construite par l'IA.
+
+  Les fermes détruites ne sont pas remplacées par le même type, mais par le suivant dans la liste.
+Farm2: |-
+  Ferme n° 2 construite par l'IA.
+
+  Les fermes détruites ne sont pas remplacées par le même type, mais par le suivant dans la liste.
+Farm3: |-
+  Ferme n° 3 construite par l'IA.
+
+  Les fermes détruites ne sont pas remplacées par le même type, mais par le suivant dans la liste.
+Farm4: |-
+  Ferme n° 4 construite par l'IA.
+
+  Les fermes détruites ne sont pas remplacées par le même type, mais par le suivant dans la liste.
+Farm5: |-
+  Ferme n° 5 construite par l'IA.
+
+  Les fermes détruites ne sont pas remplacées par le même type, mais par le suivant dans la liste.
+Farm6: |-
+  Ferme n° 6 construite par l'IA.
+
+  Les fermes détruites ne sont pas remplacées par le même type, mais par le suivant dans la liste.
+Farm7: |-
+  Ferme n° 7 construite par l'IA.
+
+  Les fermes détruites ne sont pas remplacées par le même type, mais par le suivant dans la liste.
+Farm8: |-
+  Ferme n° 8 construite par l'IA. Après Farm8, la liste reprend au début.
+
+  Les fermes détruites ne sont pas remplacées par le même type, mais par le suivant dans la liste.
+PopulationPerFarm: >-
+  L'IA construit une ferme par tranche de cette capacité de logement. La première est toujours construite à
+  population 0.
+
+
+  Les fermes de houblon ne comptent pas et sont construites dès que leur tour arrive.
+PopulationPerWoodcutter: >-
+  L'IA construit un bûcheron par tranche de cette capacité de logement. Au premier seuil atteint, elle en
+  construit deux.
+PopulationPerQuarry: >-
+  L'IA construit une carrière par tranche de cette capacité de logement. Au premier seuil atteint, elle en
+  construit deux.
+PopulationPerIronmine: >-
+  L'IA construit une mine de fer par tranche de cette capacité de logement. Au premier seuil atteint, elle en
+  construit deux.
+PopulationPerPitchrig: L'IA construit une fosse à poix par tranche de cette capacité de logement.
+MaxQuarries: Nombre maximal de carrières construites par l'IA.
+MaxIronmines: Nombre maximal de mines de fer construites par l'IA.
+MaxWoodcutters: Nombre maximal de bûcherons construits par l'IA.
+MaxPitchrigs: Nombre maximal de fosses à poix construites par l'IA.
+MaxFarms: |-
+  Nombre maximal de fermes construites par l'IA.
+
+  Les fermes de houblon ne comptent pas.
+BuildInterval: |-
+  Vitesse de construction de l'IA. S'applique aux bâtiments AIV, hors AIV et à toutes les réparations.
+
+  1 est la valeur la plus rapide.
+ResourceRebuildDelay: Délai avant de tenter de reconstruire un bâtiment de ressources hors AIV.
+MaxFood: |-
+  Stock maximal de pommes, fromage, viande, pain et blé, plus ResourceVariance.
+
+  La valeur s'applique à chaque type, PAS au total.
+MinimumApples: |-
+  Sous ce stock de pommes, l'IA achète [TradeAmountFood] pommes à la fois jusqu'à atteindre ce seuil.
+
+  À 0, elle n'achète jamais de pommes.
+MinimumCheese: |-
+  Sous ce stock de fromage, l'IA achète [TradeAmountFood] fromages à la fois jusqu'à atteindre ce seuil.
+
+  À 0, elle n'achète jamais de fromage.
+MinimumBread: |-
+  Sous ce stock de pain, l'IA achète [TradeAmountFood] pains à la fois jusqu'à atteindre ce seuil.
+
+  À 0, elle n'achète jamais de pain.
+
+  Avec une chaîne de boulangerie, 0 peut être préférable pour acheter du blé à la place.
+MinimumWheat: |-
+  Sous ce stock de blé, l'IA achète [TradeAmountFood] blés à la fois jusqu'à atteindre ce seuil.
+
+  À 0, elle n'achète jamais de blé.
+MinimumHop: >-
+  Sous ce stock de houblon, l'IA achète [TradeAmountFood] houblons à la fois jusqu'à atteindre ce seuil. À 0,
+  elle n'en achète jamais.
+TradeAmountFood: >-
+  Quantité de nourriture par achat. L'IA n'achète qu'un type à la fois.
+
+
+  Une faible valeur rend chaque achat moins cher et plus probable, mais peut exiger plus d'achats :
+  réapprovisionnement plus lent et pénuries brèves possibles.
+TradeAmountEquipment: >-
+  Quantité d'armes par achat. L'IA n'achète qu'un type d'équipement à la fois.
+
+
+  Une faible valeur rend chaque achat moins cher et plus probable, mais peut exiger plus d'achats :
+  réapprovisionnement plus lent et pénuries brèves possibles.
+AIRequestDelay: Fréquence des demandes de ressources au joueur. Valeur plus basse → demandes plus fréquentes.
+MinimumGoodsRequiredAfterTrade: Stock minimal d'une ressource devant rester à l'IA après un échange avec le joueur. Sinon, elle refuse.
+DoubleRationsFoodThreshold: Lorsque le total de pommes, fromage, viande et pain dépasse cette valeur, l'IA donne des rations doubles.
+MaxWood: Stock maximal de bois, plus ResourceVariance.
+MaxStone: Stock maximal de pierre, plus ResourceVariance.
+MaxResourceOther: |-
+  Stock maximal de fer, poix, houblon et farine, plus ResourceVariance.
+
+  S'applique à chaque type, pas au total.
+MaxEquipment: Stock maximal d'armes et d'armures, plus ResourceVariance. S'applique à chaque type, pas au total.
+MaxBeer: Stock maximal de bière, plus ResourceVariance.
+MaxResourceVariance: Écart autorisé par rapport à chaque valeur « Max[Resource] ».
+RecruitGoldThreshold: Or minimal requis avant que l'IA commence à recruter.
+BlacksmithSetting: >-
+  Définit la production des forges. Avec « Les deux », la première produit des épées, la deuxième des masses,
+  la troisième des épées, etc.
+FletcherSetting: >-
+  Définit la production des archeries. Avec « Les deux », la première produit des arcs, la deuxième des
+  arbalètes, la troisième des arcs, etc.
+PoleturnerSetting: >-
+  Définit la production des ateliers de lances. Avec « Les deux », le premier produit des lances, le deuxième
+  des piques, le troisième des lances, etc.
+SellResource01: Cette ressource est toujours vendue immédiatement par l'IA dès son obtention.
+SellResource02: Cette ressource est toujours vendue immédiatement par l'IA dès son obtention.
+SellResource03: Cette ressource est toujours vendue immédiatement par l'IA dès son obtention.
+SellResource04: Cette ressource est toujours vendue immédiatement par l'IA dès son obtention.
+SellResource05: Cette ressource est toujours vendue immédiatement par l'IA dès son obtention.
+SellResource06: Cette ressource est toujours vendue immédiatement par l'IA dès son obtention.
+SellResource07: Cette ressource est toujours vendue immédiatement par l'IA dès son obtention.
+SellResource08: Cette ressource est toujours vendue immédiatement par l'IA dès son obtention.
+SellResource09: Cette ressource est toujours vendue immédiatement par l'IA dès son obtention.
+SellResource10: Cette ressource est toujours vendue immédiatement par l'IA dès son obtention.
+SellResource11: Cette ressource est toujours vendue immédiatement par l'IA dès son obtention.
+SellResource12: Cette ressource est toujours vendue immédiatement par l'IA dès son obtention.
+SellResource13: Cette ressource est toujours vendue immédiatement par l'IA dès son obtention.
+SellResource14: Cette ressource est toujours vendue immédiatement par l'IA dès son obtention.
+SellResource15: Cette ressource est toujours vendue immédiatement par l'IA dès son obtention.
+DefWallPatrolRallyTime: >-
+  Temps d'attente des défenseurs des murs avant de rejoindre le prochain emplacement AIV. Tous ne peuvent pas
+  patrouiller.
+DefWallPatrolGroups: Nombre de groupes de défenseurs des murs patrouillant entre leurs emplacements AIV.
+DefSiegeEngineGoldThreshold: Or requis pour construire des engins de siège AIV.
+DefSiegeEngineBuildDelay: Délai avant de reconstruire des engins de siège AIV détruits. Valeur plus basse → délai plus court.
+Unknown072: Valeur inutilisée.
+Unknown073: Valeur inutilisée.
+RecruitProbDefDefault: |-
+  Probabilité de recruter des défenseurs à l'état « Normal ».
+
+  Faible : presque jamais actif, surtout près de la défaite.
+  Normal : surtout les premières années.
+  Fort : le plus fréquent, souvent atteint dès que population et effectif dépassent 40.
+RecruitProbDefWeak: |-
+  Probabilité de recruter des défenseurs à l'état « Faible ».
+
+  Faible : presque jamais actif, surtout près de la défaite.
+  Normal : surtout les premières années.
+  Fort : le plus fréquent, souvent atteint dès que population et effectif dépassent 40.
+RecruitProbDefStrong: |-
+  Probabilité de recruter des défenseurs à l'état « Fort ».
+
+  Faible : presque jamais actif, surtout près de la défaite.
+  Normal : surtout les premières années.
+  Fort : le plus fréquent, souvent atteint dès que population et effectif dépassent 40.
+RecruitProbRaidDefault: |-
+  Probabilité de recruter des unités de raid à l'état « Normal ».
+
+  Faible : presque jamais actif, surtout près de la défaite.
+  Normal : surtout les premières années.
+  Fort : le plus fréquent, souvent atteint dès que population et effectif dépassent 40.
+RecruitProbRaidWeak: |-
+  Probabilité de recruter des unités de raid à l'état « Faible ».
+
+  Faible : presque jamais actif, surtout près de la défaite.
+  Normal : surtout les premières années.
+  Fort : le plus fréquent, souvent atteint dès que population et effectif dépassent 40.
+RecruitProbRaidStrong: |-
+  Probabilité de recruter des unités de raid à l'état « Fort ».
+
+  Faible : presque jamais actif, surtout près de la défaite.
+  Normal : surtout les premières années.
+  Fort : le plus fréquent, souvent atteint dès que population et effectif dépassent 40.
+RecruitProbAttackDefault: |-
+  Probabilité de recruter des unités d'attaque à l'état « Normal ».
+
+  Faible : presque jamais actif, surtout près de la défaite.
+  Normal : surtout les premières années.
+  Fort : le plus fréquent, souvent atteint dès que population et effectif dépassent 40.
+RecruitProbAttackWeak: |-
+  Probabilité de recruter des unités d'attaque à l'état « Faible ».
+
+  Faible : presque jamais actif, surtout près de la défaite.
+  Normal : surtout les premières années.
+  Fort : le plus fréquent, souvent atteint dès que population et effectif dépassent 40.
+RecruitProbAttackStrong: |-
+  Probabilité de recruter des unités d'attaque à l'état « Fort ».
+
+  Faible : presque jamais actif, surtout près de la défaite.
+  Normal : surtout les premières années.
+  Fort : le plus fréquent, souvent atteint dès que population et effectif dépassent 40.
+Unknown142: Valeur inutilisée.
+SortieUnitRangedMin: |-
+  Nombre minimal d'unités envoyées pour une sortie à distance.
+
+  Faible : presque jamais actif, surtout près de la défaite.
+  Normal : surtout les premières années.
+  Fort : le plus fréquent, souvent dès que population et effectif dépassent 40.
+SortieUnitRanged: >-
+  Type d'unité de sortie à distance. Ces unités se placent hors du château où des travailleurs sont morts.
+  Leurs effectifs augmentent après des pertes répétées ; environ 25 unités de plus sont généralement recrutées
+  plus tard.
+
+
+  Le recrutement a lieu même à 0. Pour le désactiver, choisissez un type impossible à recruter.
+
+
+  Les sorties ont toujours priorité sur tout autre recrutement.
+SortieUnitMeleeMin: Nombre exact d'unités de sortie de mêlée envoyées.
+SortieUnitMelee: >-
+  Type d'unité de sortie interceptant les troupes qui détruisent des bâtiments. Elles reviennent au sommet du
+  donjon après la mort de leur cible.
+
+
+  Les sorties ont toujours priorité sur tout autre recrutement.
+DefDiggingUnitMax: >-
+  Nombre maximal d'unités de creusement recrutées. Tant que l'IA ou un allié prévoit des douves, elles ont
+  priorité sur la défense, les raids et l'attaque.
+DefDiggingUnit: Type d'unité creusant les douves de l'IA ou d'un allié.
+RecruitInterval: >-
+  Délai avant le prochain recrutement à l'état « Normal ». 1 est le plus rapide.
+
+
+  Faible : presque jamais actif, surtout près de la défaite. Normal : surtout les premières années. Fort : le
+  plus fréquent, souvent dès que population et effectif dépassent 40.
+RecruitIntervalWeak: >-
+  Délai avant le prochain recrutement à l'état « Faible ». 1 est le plus rapide.
+
+
+  Faible : presque jamais actif, surtout près de la défaite. Normal : surtout les premières années. Fort : le
+  plus fréquent, souvent dès que population et effectif dépassent 40.
+RecruitIntervalStrong: >-
+  Délai avant le prochain recrutement à l'état « Fort ». 1 est le plus rapide.
+
+
+  Faible : presque jamais actif, surtout près de la défaite. Normal : surtout les premières années. Fort : le
+  plus fréquent, souvent dès que population et effectif dépassent 40.
+DefTotal: Nombre total d'unités défensives recrutées par l'IA.
+OuterPatrolGroupsCount: Nombre de groupes défensifs patrouillant autour de l'économie.
+OuterPatrolGroupsMove: >-
+  Détermine si les défenseurs hors des murs patrouillent autour de l'économie ou restent immobiles, souvent
+  près des carrières.
+OuterPatrolRallyDelay: Délai d'attente des défenseurs hors des murs avant de rejoindre le prochain emplacement.
+DefWalls: >-
+  Nombre de défenseurs des murs pris dans l'effectif défensif total. Ils rejoignent leurs emplacements AIV ;
+  les autres patrouillent l'économie.
+DefUnit1: |-
+  unité défensive n° 1 dans l'ordre de recrutement.
+
+  Si l'IA ne peut pas financer un emplacement, elle essaie le suivant.
+DefUnit2: |-
+  unité défensive n° 2 dans l'ordre de recrutement.
+
+  Si l'IA ne peut pas financer un emplacement, elle essaie le suivant.
+DefUnit3: |-
+  unité défensive n° 3 dans l'ordre de recrutement.
+
+  Si l'IA ne peut pas financer un emplacement, elle essaie le suivant.
+DefUnit4: |-
+  unité défensive n° 4 dans l'ordre de recrutement.
+
+  Si l'IA ne peut pas financer un emplacement, elle essaie le suivant.
+DefUnit5: |-
+  unité défensive n° 5 dans l'ordre de recrutement.
+
+  Si l'IA ne peut pas financer un emplacement, elle essaie le suivant.
+DefUnit6: |-
+  unité défensive n° 6 dans l'ordre de recrutement.
+
+  Si l'IA ne peut pas financer un emplacement, elle essaie le suivant.
+DefUnit7: |-
+  unité défensive n° 7 dans l'ordre de recrutement.
+
+  Si l'IA ne peut pas financer un emplacement, elle essaie le suivant.
+DefUnit8: |-
+  unité défensive n° 8 dans l'ordre de recrutement.
+
+  Si l'IA ne peut pas financer un emplacement, elle essaie le suivant.
+
+  Après DefUnit8, la liste reprend au début.
+RaidUnitsBase: Nombre d'unités utilisées pour les raids contre les bâtiments adverses.
+RaidUnitsRandom: Effectif pouvant s'ajouter à RaidUnitsBase si l'IA se sent forte et possède beaucoup d'or.
+RaidUnit1: |-
+  unité de raid n° 1 dans l'ordre de recrutement.
+
+  Si l'IA ne peut pas financer un emplacement, elle essaie le suivant.
+RaidUnit2: |-
+  unité de raid n° 2 dans l'ordre de recrutement.
+
+  Si l'IA ne peut pas financer un emplacement, elle essaie le suivant.
+RaidUnit3: |-
+  unité de raid n° 3 dans l'ordre de recrutement.
+
+  Si l'IA ne peut pas financer un emplacement, elle essaie le suivant.
+RaidUnit4: |-
+  unité de raid n° 4 dans l'ordre de recrutement.
+
+  Si l'IA ne peut pas financer un emplacement, elle essaie le suivant.
+RaidUnit5: |-
+  unité de raid n° 5 dans l'ordre de recrutement.
+
+  Si l'IA ne peut pas financer un emplacement, elle essaie le suivant.
+RaidUnit6: |-
+  unité de raid n° 6 dans l'ordre de recrutement.
+
+  Si l'IA ne peut pas financer un emplacement, elle essaie le suivant.
+RaidUnit7: |-
+  unité de raid n° 7 dans l'ordre de recrutement.
+
+  Si l'IA ne peut pas financer un emplacement, elle essaie le suivant.
+RaidUnit8: |-
+  unité de raid n° 8 dans l'ordre de recrutement.
+
+  Si l'IA ne peut pas financer un emplacement, elle essaie le suivant.
+
+  Après RaidUnit8, la liste reprend au début.
+HarassingSiegeEngine1: >-
+  Engin de harcèlement n° 1. Il rejoint le château ennemi depuis la guilde des ingénieurs en tirant sur les
+  bâtiments en chemin ; les balistes incendiaires visent aussi les unités.
+HarassingSiegeEngine2: >-
+  Engin de harcèlement n° 2. Il rejoint le château ennemi depuis la guilde des ingénieurs en tirant sur les
+  bâtiments en chemin ; les balistes incendiaires visent aussi les unités.
+HarassingSiegeEngine3: >-
+  Engin de harcèlement n° 3. Il rejoint le château ennemi depuis la guilde des ingénieurs en tirant sur les
+  bâtiments en chemin ; les balistes incendiaires visent aussi les unités.
+HarassingSiegeEngine4: >-
+  Engin de harcèlement n° 4. Il rejoint le château ennemi depuis la guilde des ingénieurs en tirant sur les
+  bâtiments en chemin ; les balistes incendiaires visent aussi les unités.
+HarassingSiegeEngine5: >-
+  Engin de harcèlement n° 5. Il rejoint le château ennemi depuis la guilde des ingénieurs en tirant sur les
+  bâtiments en chemin ; les balistes incendiaires visent aussi les unités.
+HarassingSiegeEngine6: >-
+  Engin de harcèlement n° 6. Il rejoint le château ennemi depuis la guilde des ingénieurs en tirant sur les
+  bâtiments en chemin ; les balistes incendiaires visent aussi les unités.
+HarassingSiegeEngine7: >-
+  Engin de harcèlement n° 7. Il rejoint le château ennemi depuis la guilde des ingénieurs en tirant sur les
+  bâtiments en chemin ; les balistes incendiaires visent aussi les unités.
+HarassingSiegeEngine8: >-
+  Engin de harcèlement n° 8. Il rejoint le château ennemi depuis la guilde des ingénieurs en tirant sur les
+  bâtiments en chemin ; les balistes incendiaires visent aussi les unités.
+
+
+  Après HarassingSiegeEngine8, la liste reprend au début.
+HarassingSiegeEnginesMax: Nombre maximal d'engins de harcèlement présents simultanément.
+RaidRetargetDelay: Délai des troupes de raid avant de viser un nouveau bâtiment.
+AttForceBase: >-
+  Nombre d'unités d'attaque recrutées avant d'attaquer. Augmente à chaque attaque selon le réglage UCP, de 5
+  en vanilla.
+AttForceRandom: Effectif pouvant s'ajouter à AttForceBase si l'IA se sent forte et possède beaucoup d'or.
+AttForceSupportAllyThreshold: Nombre d'unités d'attaque nécessaires avant que l'IA exécute les ordres d'attaque ou d'aide du joueur.
+AttForceRallyPercentage: Pourcentage d'unités devant atteindre le point de ralliement avant le début de l'attaque.
+Unknown129: >-
+  Impact presque nul. Pourcentage d'unités devant atteindre le ralliement avant le repli si l'attaque est
+  jugée trop faible.
+
+
+  Également le pourcentage de ces unités devant revenir au donjon avant le recrutement de la prochaine
+  attaque.
+AttAssaultDelay: Temps d'attente des unités et engins au ralliement après le début de l'attaque avant leur envoi au combat.
+AttUnitPatrolRecommandDelay: |-
+  Délai avant le retour après une attaque réussie.
+
+  Normalement 0 : l'IA n'a aucune raison d'attendre sur la tombe adverse.
+Unknown132: >-
+  Probabilité en % d'attendre l'attaque d'un allié. Plus tard, peut aussi déclencher une attaque avant le
+  recrutement complet pour rejoindre un allié qui attaque.
+SiegeEngine1: Engin de siège n° 1 recruté pour les attaques.
+SiegeEngine2: Engin de siège n° 2 recruté pour les attaques.
+SiegeEngine3: Engin de siège n° 3 recruté pour les attaques.
+SiegeEngine4: Engin de siège n° 4 recruté pour les attaques.
+SiegeEngine5: Engin de siège n° 5 recruté pour les attaques.
+SiegeEngine6: Engin de siège n° 6 recruté pour les attaques.
+SiegeEngine7: Engin de siège n° 7 recruté pour les attaques.
+SiegeEngine8: Engin de siège n° 8 recruté pour les attaques. Huit engins de siège d'attaque au maximum sont possibles.
+CowThrowInterval: Nombre de pierres lancées par une catapulte avant de lancer une vache.
+AttMaxEngineers: >-
+  Nombre maximal d'ingénieurs affectés aux emplacements SiegeEngine. Il doit au moins couvrir les besoins
+  cumulés des engins.
+AttDiggingUnit: Unité comblant les douves ennemies pendant une attaque.
+AttDiggingUnitMax: Nombre maximal d'unités de creusement recrutées par attaque.
+AttUnitVanguard: Unité qui fonce vers le château ennemi avant toutes les autres.
+AttUnitVanguardMax: Nombre maximal d'unités d'avant-garde recrutées par attaque.
+AttMaxAssassins: Nombre maximal d'assassins escaladant les corps de garde ennemis pendant un siège.
+AttMaxLaddermen: Nombre maximal de porte-échelles plaçant leurs échelles contre les murs pendant un siège.
+AttMaxTunnelers: Nombre maximal de tunneliers creusant vers le donjon ennemi.
+AttUnitPatrol: Unités patrouillant autour du château ennemi et tirant sur ses unités.
+AttUnitPatrolMax: Nombre maximal d'unités de patrouille recrutées par attaque.
+AttUnitPatrolGroupsCount: Nombre de groupes formés par les patrouilles au début de l'attaque.
+AttUnitBackup: >-
+  Unités restant au ralliement et attaquant seulement si un chemin vers le donjon ennemi existe. Elles se
+  replient si tous les autres attaquants meurent.
+AttUnitBackupMax: Nombre maximal d'unités de réserve recrutées par attaque.
+AttUnitBackupGroupsCount: Nombre de groupes de réserve lors de l'attaque du donjon ennemi.
+AttUnitEngage: Unités attaquant les unités et paysans ennemis plutôt que les murs.
+AttUnitEngageMax: Nombre maximal d'unités d'interception recrutées par attaque.
+AttUnitSiegeDef: >-
+  La protection du siège reste près des engins durant l'attaque, y compris parfois les engins de harcèlement
+  et de défense.
+AttUnitSiegeDefMax: Nombre maximal d'unités de protection du siège recrutées par attaque.
+AttUnitSiegeDefGroupsCount: Nombre de groupes de protection du siège pendant l'attaque.
+AttUnitMain1: |-
+  Unité n° 1 du groupe d'assaut principal. Seules ces unités augmentent sans limite.
+
+  Si l'IA ne peut pas financer un emplacement, elle essaie le suivant.
+AttUnitMain2: |-
+  Unité n° 2 du groupe d'assaut principal. Seules ces unités augmentent sans limite.
+
+  Si l'IA ne peut pas financer un emplacement, elle essaie le suivant.
+AttUnitMain3: |-
+  Unité n° 3 du groupe d'assaut principal. Seules ces unités augmentent sans limite.
+
+  Si l'IA ne peut pas financer un emplacement, elle essaie le suivant.
+AttUnitMain4: |-
+  Unité n° 4 du groupe d'assaut principal. Seules ces unités augmentent sans limite.
+
+  Si l'IA ne peut pas financer un emplacement, elle essaie le suivant.
+
+  Après AttUnitMain4, la liste reprend au début.
+AttMaxDefault: >-
+  Nombre d'unités principales pouvant être recrutées avant de compléter TOUS les spécialistes (AttLaddermen,
+  AttAssassins, AttUnitPatrol, etc.).
+
+  À 0, tous les spécialistes doivent être recrutés avant toute unité AttUnitMain.
+AttMainGroupsCount: Nombre de groupes formés par les unités AttUnitMain pendant l'attaque.
+TargetChoice: |-
+  Définit le choix de la cible.
+
+  Or : ennemi possédant le plus d'or.
+
+  Équilibré : score calculé de faiblesse, choix le plus complexe et nuancé.
+
+  Le plus proche : ennemi le plus proche, mesuré de donjon à donjon.
+
+  N'importe lequel : prochain ennemi de la liste interne. Peut sembler aléatoire, mais suit un ordre fixe.
+
+  Joueur : priorité aux humains. Sans ennemi humain, utilise « Le plus proche ».
+AIOxTethers_DisableInitialOxTether: >-
+  « Non » conserve le comportement vanilla. « Oui » empêche la construction automatique d'une attache à bœufs
+  à chaque (re)construction de carrière.
+AIOxTethers_Logic: |-
+  Logique appliquée.
+  Non = vanilla, Oui = dynamique.
+AIOxTethers_MaxOxTethers: Le total d'attaches à bœufs de cette IA ne dépasse jamais cette valeur.
+AIOxTethers_DynamicMaxOxTethers: Le total d'attaches à bœufs ne dépasse jamais cette valeur multipliée par le nombre de carrières.
+AIOxTethers_MinimumOxTethersPerQuarry: Si moins de ce nombre d'attaches liées transportent la pierre d'une carrière, une autre y est construite.
+AIOxTethers_MaximumOxTethersPerQuarry: Si le nombre d'attaches liées à une carrière dépasse cette valeur, aucune autre n'y est construite.
+AIOxTethers_ThresholdStoneLoad: Si pierres / attaches liées dépasse cette valeur pour une carrière, une autre attache y est construite.
+RunningUnits_Macemen: >-
+  Avec « Oui », les massiers courent toujours, même dans un groupe plus lent. Avec « Non », leur vitesse suit
+  l'unité la plus lente du groupe, comme en vanilla.
+RunningUnits_Spearmen: >-
+  Avec « Oui », les lanciers courent toujours, même dans un groupe plus lent. Avec « Non », leur vitesse suit
+  l'unité la plus lente du groupe, comme en vanilla.
+RunningUnits_Slingers: >-
+  Avec « Oui », les frondeurs courent toujours, même dans un groupe plus lent. Avec « Non », leur vitesse suit
+  l'unité la plus lente du groupe, comme en vanilla.
+RunningUnits_Slaves: >-
+  Avec « Oui », les esclaves courent toujours, même dans un groupe plus lent. Avec « Non », leur vitesse suit
+  l'unité la plus lente du groupe, comme en vanilla.
+AIVTroops_InitialRole: >-
+  Affectation initiale des troupes de départ/scénario non affectées. Creuser exige la capacité réelle et des
+  cases de douves ; sinon la défense est utilisée.
+
+
+  Valeur commune à toutes les troupes prises en charge. Vanilla omet ce champ à l'enregistrement et utilise le
+  prochain réglage commun/menu applicable. Exige aiv-troops-behaviour avec réglages des troupes et
+  remplacements AIC activés. Redémarrez UCP et lancez une nouvelle partie après modification.
+AIVTroops_Movement: >-
+  Déplacement défensif entre emplacements AIV. La patrouille utilise DefWallPatrolGroups et
+  DefWallPatrolRallyTime ; zéro groupe reste immobile.
+
+
+  Valeur commune à toutes les troupes prises en charge. Vanilla omet ce champ à l'enregistrement et utilise le
+  prochain réglage commun/menu applicable. Exige aiv-troops-behaviour avec réglages des troupes et
+  remplacements AIC activés. Redémarrez UCP et lancez une nouvelle partie après modification.
+AIVTroops_InitialRole_Engineer: >-
+  Affectation initiale des troupes de départ/scénario non affectées. Creuser exige la capacité réelle et des
+  cases de douves ; sinon la défense est utilisée.
+
+
+  Ce réglage propre à l'unité prime sur le champ AIC commun. Vanilla omet le champ à l'enregistrement et
+  utilise le prochain réglage commun/menu applicable. Exige aiv-troops-behaviour avec réglages des troupes et
+  remplacements AIC activés. Redémarrez UCP et lancez une nouvelle partie après modification.
+AIVTroops_Movement_Engineer: >-
+  Déplacement défensif entre emplacements AIV. La patrouille utilise DefWallPatrolGroups et
+  DefWallPatrolRallyTime ; zéro groupe reste immobile.
+
+
+  Ce réglage propre à l'unité prime sur le champ AIC commun. Vanilla omet le champ à l'enregistrement et
+  utilise le prochain réglage commun/menu applicable. Exige aiv-troops-behaviour avec réglages des troupes et
+  remplacements AIC activés. Redémarrez UCP et lancez une nouvelle partie après modification.
+AIVTroops_InitialRole_Archer: >-
+  Affectation initiale des troupes de départ/scénario non affectées. Creuser exige la capacité réelle et des
+  cases de douves ; sinon la défense est utilisée.
+
+
+  Ce réglage propre à l'unité prime sur le champ AIC commun. Vanilla omet le champ à l'enregistrement et
+  utilise le prochain réglage commun/menu applicable. Exige aiv-troops-behaviour avec réglages des troupes et
+  remplacements AIC activés. Redémarrez UCP et lancez une nouvelle partie après modification.
+AIVTroops_Movement_Archer: >-
+  Déplacement défensif entre emplacements AIV. La patrouille utilise DefWallPatrolGroups et
+  DefWallPatrolRallyTime ; zéro groupe reste immobile.
+
+
+  Ce réglage propre à l'unité prime sur le champ AIC commun. Vanilla omet le champ à l'enregistrement et
+  utilise le prochain réglage commun/menu applicable. Exige aiv-troops-behaviour avec réglages des troupes et
+  remplacements AIC activés. Redémarrez UCP et lancez une nouvelle partie après modification.
+AIVTroops_InitialRole_Crossbowman: >-
+  Affectation initiale des troupes de départ/scénario non affectées. Creuser exige la capacité réelle et des
+  cases de douves ; sinon la défense est utilisée.
+
+
+  Ce réglage propre à l'unité prime sur le champ AIC commun. Vanilla omet le champ à l'enregistrement et
+  utilise le prochain réglage commun/menu applicable. Exige aiv-troops-behaviour avec réglages des troupes et
+  remplacements AIC activés. Redémarrez UCP et lancez une nouvelle partie après modification.
+AIVTroops_Movement_Crossbowman: >-
+  Déplacement défensif entre emplacements AIV. La patrouille utilise DefWallPatrolGroups et
+  DefWallPatrolRallyTime ; zéro groupe reste immobile.
+
+
+  Ce réglage propre à l'unité prime sur le champ AIC commun. Vanilla omet le champ à l'enregistrement et
+  utilise le prochain réglage commun/menu applicable. Exige aiv-troops-behaviour avec réglages des troupes et
+  remplacements AIC activés. Redémarrez UCP et lancez une nouvelle partie après modification.
+AIVTroops_InitialRole_Spearman: >-
+  Affectation initiale des troupes de départ/scénario non affectées. Creuser exige la capacité réelle et des
+  cases de douves ; sinon la défense est utilisée.
+
+
+  Ce réglage propre à l'unité prime sur le champ AIC commun. Vanilla omet le champ à l'enregistrement et
+  utilise le prochain réglage commun/menu applicable. Exige aiv-troops-behaviour avec réglages des troupes et
+  remplacements AIC activés. Redémarrez UCP et lancez une nouvelle partie après modification.
+AIVTroops_Movement_Spearman: >-
+  Déplacement défensif entre emplacements AIV. La patrouille utilise DefWallPatrolGroups et
+  DefWallPatrolRallyTime ; zéro groupe reste immobile.
+
+
+  Ce réglage propre à l'unité prime sur le champ AIC commun. Vanilla omet le champ à l'enregistrement et
+  utilise le prochain réglage commun/menu applicable. Exige aiv-troops-behaviour avec réglages des troupes et
+  remplacements AIC activés. Redémarrez UCP et lancez une nouvelle partie après modification.
+AIVTroops_InitialRole_Pikeman: >-
+  Affectation initiale des troupes de départ/scénario non affectées. Creuser exige la capacité réelle et des
+  cases de douves ; sinon la défense est utilisée.
+
+
+  Ce réglage propre à l'unité prime sur le champ AIC commun. Vanilla omet le champ à l'enregistrement et
+  utilise le prochain réglage commun/menu applicable. Exige aiv-troops-behaviour avec réglages des troupes et
+  remplacements AIC activés. Redémarrez UCP et lancez une nouvelle partie après modification.
+AIVTroops_Movement_Pikeman: >-
+  Déplacement défensif entre emplacements AIV. La patrouille utilise DefWallPatrolGroups et
+  DefWallPatrolRallyTime ; zéro groupe reste immobile.
+
+
+  Ce réglage propre à l'unité prime sur le champ AIC commun. Vanilla omet le champ à l'enregistrement et
+  utilise le prochain réglage commun/menu applicable. Exige aiv-troops-behaviour avec réglages des troupes et
+  remplacements AIC activés. Redémarrez UCP et lancez une nouvelle partie après modification.
+AIVTroops_InitialRole_Maceman: >-
+  Affectation initiale des troupes de départ/scénario non affectées. Creuser exige la capacité réelle et des
+  cases de douves ; sinon la défense est utilisée.
+
+
+  Ce réglage propre à l'unité prime sur le champ AIC commun. Vanilla omet le champ à l'enregistrement et
+  utilise le prochain réglage commun/menu applicable. Exige aiv-troops-behaviour avec réglages des troupes et
+  remplacements AIC activés. Redémarrez UCP et lancez une nouvelle partie après modification.
+AIVTroops_Movement_Maceman: >-
+  Déplacement défensif entre emplacements AIV. La patrouille utilise DefWallPatrolGroups et
+  DefWallPatrolRallyTime ; zéro groupe reste immobile.
+
+
+  Ce réglage propre à l'unité prime sur le champ AIC commun. Vanilla omet le champ à l'enregistrement et
+  utilise le prochain réglage commun/menu applicable. Exige aiv-troops-behaviour avec réglages des troupes et
+  remplacements AIC activés. Redémarrez UCP et lancez une nouvelle partie après modification.
+AIVTroops_InitialRole_Swordsman: >-
+  Affectation initiale des troupes de départ/scénario non affectées. Creuser exige la capacité réelle et des
+  cases de douves ; sinon la défense est utilisée.
+
+
+  Ce réglage propre à l'unité prime sur le champ AIC commun. Vanilla omet le champ à l'enregistrement et
+  utilise le prochain réglage commun/menu applicable. Exige aiv-troops-behaviour avec réglages des troupes et
+  remplacements AIC activés. Redémarrez UCP et lancez une nouvelle partie après modification.
+AIVTroops_Movement_Swordsman: >-
+  Déplacement défensif entre emplacements AIV. La patrouille utilise DefWallPatrolGroups et
+  DefWallPatrolRallyTime ; zéro groupe reste immobile.
+
+
+  Ce réglage propre à l'unité prime sur le champ AIC commun. Vanilla omet le champ à l'enregistrement et
+  utilise le prochain réglage commun/menu applicable. Exige aiv-troops-behaviour avec réglages des troupes et
+  remplacements AIC activés. Redémarrez UCP et lancez une nouvelle partie après modification.
+AIVTroops_InitialRole_Knight: >-
+  Affectation initiale des troupes de départ/scénario non affectées. Creuser exige la capacité réelle et des
+  cases de douves ; sinon la défense est utilisée.
+
+
+  Ce réglage propre à l'unité prime sur le champ AIC commun. Vanilla omet le champ à l'enregistrement et
+  utilise le prochain réglage commun/menu applicable. Exige aiv-troops-behaviour avec réglages des troupes et
+  remplacements AIC activés. Redémarrez UCP et lancez une nouvelle partie après modification.
+AIVTroops_Movement_Knight: >-
+  Déplacement défensif entre emplacements AIV. La patrouille utilise DefWallPatrolGroups et
+  DefWallPatrolRallyTime ; zéro groupe reste immobile.
+
+
+  Ce réglage propre à l'unité prime sur le champ AIC commun. Vanilla omet le champ à l'enregistrement et
+  utilise le prochain réglage commun/menu applicable. Exige aiv-troops-behaviour avec réglages des troupes et
+  remplacements AIC activés. Redémarrez UCP et lancez une nouvelle partie après modification.
+AIVTroops_InitialRole_Slave: >-
+  Affectation initiale des troupes de départ/scénario non affectées. Creuser exige la capacité réelle et des
+  cases de douves ; sinon la défense est utilisée.
+
+
+  Ce réglage propre à l'unité prime sur le champ AIC commun. Vanilla omet le champ à l'enregistrement et
+  utilise le prochain réglage commun/menu applicable. Exige aiv-troops-behaviour avec réglages des troupes et
+  remplacements AIC activés. Redémarrez UCP et lancez une nouvelle partie après modification.
+AIVTroops_Movement_Slave: >-
+  Déplacement défensif entre emplacements AIV. La patrouille utilise DefWallPatrolGroups et
+  DefWallPatrolRallyTime ; zéro groupe reste immobile.
+
+
+  Ce réglage propre à l'unité prime sur le champ AIC commun. Vanilla omet le champ à l'enregistrement et
+  utilise le prochain réglage commun/menu applicable. Exige aiv-troops-behaviour avec réglages des troupes et
+  remplacements AIC activés. Redémarrez UCP et lancez une nouvelle partie après modification.
+AIVTroops_InitialRole_Slinger: >-
+  Affectation initiale des troupes de départ/scénario non affectées. Creuser exige la capacité réelle et des
+  cases de douves ; sinon la défense est utilisée.
+
+
+  Ce réglage propre à l'unité prime sur le champ AIC commun. Vanilla omet le champ à l'enregistrement et
+  utilise le prochain réglage commun/menu applicable. Exige aiv-troops-behaviour avec réglages des troupes et
+  remplacements AIC activés. Redémarrez UCP et lancez une nouvelle partie après modification.
+AIVTroops_Movement_Slinger: >-
+  Déplacement défensif entre emplacements AIV. La patrouille utilise DefWallPatrolGroups et
+  DefWallPatrolRallyTime ; zéro groupe reste immobile.
+
+
+  Ce réglage propre à l'unité prime sur le champ AIC commun. Vanilla omet le champ à l'enregistrement et
+  utilise le prochain réglage commun/menu applicable. Exige aiv-troops-behaviour avec réglages des troupes et
+  remplacements AIC activés. Redémarrez UCP et lancez une nouvelle partie après modification.
+AIVTroops_InitialRole_Assassin: >-
+  Affectation initiale des troupes de départ/scénario non affectées. Creuser exige la capacité réelle et des
+  cases de douves ; sinon la défense est utilisée.
+
+
+  Ce réglage propre à l'unité prime sur le champ AIC commun. Vanilla omet le champ à l'enregistrement et
+  utilise le prochain réglage commun/menu applicable. Exige aiv-troops-behaviour avec réglages des troupes et
+  remplacements AIC activés. Redémarrez UCP et lancez une nouvelle partie après modification.
+AIVTroops_Movement_Assassin: >-
+  Déplacement défensif entre emplacements AIV. La patrouille utilise DefWallPatrolGroups et
+  DefWallPatrolRallyTime ; zéro groupe reste immobile.
+
+
+  Ce réglage propre à l'unité prime sur le champ AIC commun. Vanilla omet le champ à l'enregistrement et
+  utilise le prochain réglage commun/menu applicable. Exige aiv-troops-behaviour avec réglages des troupes et
+  remplacements AIC activés. Redémarrez UCP et lancez une nouvelle partie après modification.
+AIVTroops_InitialRole_ArabianArcher: >-
+  Affectation initiale des troupes de départ/scénario non affectées. Creuser exige la capacité réelle et des
+  cases de douves ; sinon la défense est utilisée.
+
+
+  Ce réglage propre à l'unité prime sur le champ AIC commun. Vanilla omet le champ à l'enregistrement et
+  utilise le prochain réglage commun/menu applicable. Exige aiv-troops-behaviour avec réglages des troupes et
+  remplacements AIC activés. Redémarrez UCP et lancez une nouvelle partie après modification.
+AIVTroops_Movement_ArabianArcher: >-
+  Déplacement défensif entre emplacements AIV. La patrouille utilise DefWallPatrolGroups et
+  DefWallPatrolRallyTime ; zéro groupe reste immobile.
+
+
+  Ce réglage propre à l'unité prime sur le champ AIC commun. Vanilla omet le champ à l'enregistrement et
+  utilise le prochain réglage commun/menu applicable. Exige aiv-troops-behaviour avec réglages des troupes et
+  remplacements AIC activés. Redémarrez UCP et lancez une nouvelle partie après modification.
+AIVTroops_InitialRole_HorseArcher: >-
+  Affectation initiale des troupes de départ/scénario non affectées. Creuser exige la capacité réelle et des
+  cases de douves ; sinon la défense est utilisée.
+
+
+  Ce réglage propre à l'unité prime sur le champ AIC commun. Vanilla omet le champ à l'enregistrement et
+  utilise le prochain réglage commun/menu applicable. Exige aiv-troops-behaviour avec réglages des troupes et
+  remplacements AIC activés. Redémarrez UCP et lancez une nouvelle partie après modification.
+AIVTroops_Movement_HorseArcher: >-
+  Déplacement défensif entre emplacements AIV. La patrouille utilise DefWallPatrolGroups et
+  DefWallPatrolRallyTime ; zéro groupe reste immobile.
+
+
+  Ce réglage propre à l'unité prime sur le champ AIC commun. Vanilla omet le champ à l'enregistrement et
+  utilise le prochain réglage commun/menu applicable. Exige aiv-troops-behaviour avec réglages des troupes et
+  remplacements AIC activés. Redémarrez UCP et lancez une nouvelle partie après modification.
+AIVTroops_InitialRole_ArabianSwordsman: >-
+  Affectation initiale des troupes de départ/scénario non affectées. Creuser exige la capacité réelle et des
+  cases de douves ; sinon la défense est utilisée.
+
+
+  Ce réglage propre à l'unité prime sur le champ AIC commun. Vanilla omet le champ à l'enregistrement et
+  utilise le prochain réglage commun/menu applicable. Exige aiv-troops-behaviour avec réglages des troupes et
+  remplacements AIC activés. Redémarrez UCP et lancez une nouvelle partie après modification.
+AIVTroops_Movement_ArabianSwordsman: >-
+  Déplacement défensif entre emplacements AIV. La patrouille utilise DefWallPatrolGroups et
+  DefWallPatrolRallyTime ; zéro groupe reste immobile.
+
+
+  Ce réglage propre à l'unité prime sur le champ AIC commun. Vanilla omet le champ à l'enregistrement et
+  utilise le prochain réglage commun/menu applicable. Exige aiv-troops-behaviour avec réglages des troupes et
+  remplacements AIC activés. Redémarrez UCP et lancez une nouvelle partie après modification.
+AIVTroops_InitialRole_FireThrower: >-
+  Affectation initiale des troupes de départ/scénario non affectées. Creuser exige la capacité réelle et des
+  cases de douves ; sinon la défense est utilisée.
+
+
+  Ce réglage propre à l'unité prime sur le champ AIC commun. Vanilla omet le champ à l'enregistrement et
+  utilise le prochain réglage commun/menu applicable. Exige aiv-troops-behaviour avec réglages des troupes et
+  remplacements AIC activés. Redémarrez UCP et lancez une nouvelle partie après modification.
+AIVTroops_Movement_FireThrower: >-
+  Déplacement défensif entre emplacements AIV. La patrouille utilise DefWallPatrolGroups et
+  DefWallPatrolRallyTime ; zéro groupe reste immobile.
+
+
+  Ce réglage propre à l'unité prime sur le champ AIC commun. Vanilla omet le champ à l'enregistrement et
+  utilise le prochain réglage commun/menu applicable. Exige aiv-troops-behaviour avec réglages des troupes et
+  remplacements AIC activés. Redémarrez UCP et lancez une nouvelle partie après modification.

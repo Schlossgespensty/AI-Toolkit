@@ -1,0 +1,77 @@
+adding_the_castle_was_cancelled: Добавление замка отменено.
+no_castles_available: Нет доступных замков
+unmapped: Не назначено
+missing: " (отсутствует)"
+open_an_ai_project_before_editing_its_castle_mapping: Откройте проект ИИ перед настройкой назначения замков
+unused: Не используется
+no_ais_match_this_search: Нет ИИ, соответствующих поиску.
+no_ais_match_this_view: Нет ИИ для этого представления.
+my_ais: Мои ИИ
+active: " · активно"
+no_mapped_binary_castles_were_found_the_character_can_still_be_opened: Назначенные двоичные замки не найдены. Персонажа все равно можно открыть.
+binary_aiv_ready: двоичный AIV готов
+json_fallback_available: доступна резервная версия JSON
+no_description_provided: Описание отсутствует.
+my_ai: Мой ИИ
+active_plugin: Активный плагин
+inactive_plugin: Неактивный плагин
+loads_the_managed_character_castle_1_lines_and_portraits_switch_castles_: Открывает управляемого персонажа, замок 1, реплики и портреты. Переключайте замки в редакторе замков.
+character_data_is_ready_enable_castles_audio_all_ais_above_before_openin: >-
+  Данные персонажа готовы. До открытия включите выше доступ к замкам, звуку и всем ИИ, чтобы загрузить
+  двоичный замок и аудиофайлы.
+loads_this_ai_directly_from_its_source_plugin_changes_can_be_saved_back_: Загружает ИИ прямо из исходного плагина. Изменения можно сохранить в этот плагин.
+safely_update_the_managed_ucp_plugin_from_the_loaded_editors: Безопасно обновить управляемый плагин UCP из открытых редакторов.
+open_this_ai_in_the_editors_first: Сначала откройте этот ИИ в редакторах.
+scanning_installed_ucp_plugins: Сканирование установленных плагинов UCP…
+full_ai_access_enabled: Полный доступ к ИИ включен ✓
+enable_castles_audio_all_ais: Разрешить замки, звук и все ИИ…
+select_the_stronghold_crusader_ucp_plugins_folder_ucp_requires_this_perm: >-
+  Выберите папку Stronghold Crusader/ucp/plugins. UCP требует это разрешение для двоичных замков, звука, видео
+  и неактивных плагинов.
+enable_full_ai_access_to_load_castles_audio_video_and_inactive_plugins: " Включите полный доступ к ИИ для загрузки замков, звука, видео и неактивных плагинов."
+full_ai_file_access_is_enabled: " Полный доступ к файлам ИИ включен."
+castle_1_is_mapped_but_ucp_cannot_read_its_binary_file_yet_click_enable_: >-
+  Замок 1 назначен, но UCP пока не может прочитать его двоичный файл. Нажмите «Разрешить замки, звук и все ИИ»
+  и выберите папку ucp/plugins.
+opening_this_ai_project: открыть этот проект ИИ
+switching_castles: сменить замок
+the_cloned_ai_could_not_be_found_after_installation: Скопированный ИИ не найден после установки.
+the_new_ai_could_not_be_found_after_creation: Новый ИИ не найден после создания.
+open_this_my_ai_project_before_updating_it: Откройте этот проект «Мои ИИ» перед обновлением.
+the_character_editor_is_showing_another_file_open_this_ai_project_again_: В редакторе персонажей открыт другой файл. Сначала снова откройте этот проект ИИ.
+the_castle_editor_is_showing_another_file_open_the_ai_project_again_firs: В редакторе замков открыт другой файл. Сначала снова откройте проект ИИ.
+the_last_ai_project_is_unavailable_in_this_installation_choose_a_project: Последний проект ИИ недоступен в этой установке. Выберите проект для продолжения.
+value_s_character_was_replaced: Персонаж {{name}} заменен.
+could_not_add_character_to_value_value: "Не удалось добавить персонажа в {{name}}: {{message}}"
+adding_castle_to_value: Добавление замка в {{name}}…
+value_was_added_to_value: "{{fileName}} добавлен в {{name}}."
+could_not_add_castle_to_value_value: "Не удалось добавить замок в {{name}}: {{message}}"
+choose_the_aiv_used_in_each_of_value_s_eight_castle_slots_the_same_file_: Выберите AIV для каждого из восьми замков {{name}}. Один файл можно использовать несколько раз.
+saving_value_s_castle_mapping: Сохранение назначений замков {{name}}…
+value_s_castle_mapping_saved: ✓ Назначения замков {{name}} сохранены
+could_not_save_castle_mapping_value: "Не удалось сохранить назначения замков: {{message}}"
+value_of_value_ais_shown: "Показано ИИ: {{length}} из {{length2}}"
+value_castle_mappingvalue_found_enable_castles_audio_all_ais_above_to_re: "Найдено: {{quantityvalue2}} · включите выше замки, звук и все ИИ для чтения двоичных AIV."
+value_castlevalue_available_but_castle_1_was_not_found_the_character_wil: "Доступно: {{quantityvalue2}}, но замок 1 не найден. Персонаж откроется с пустым редактором замков."
+value_castlevalue_available_castle_1_opens_first_value_value: "Доступно: {{quantityvalue2}} · сначала открывается замок 1 · {{fileName}} · {{source}}"
+folder_access_is_active_for_this_editor_sessionvalue: Доступ к папке действует в текущем сеансе редактора{{value1}}.
+value_package_issue_s_were_skipped: " Пропущено проблем пакетов: {{length}}."
+found_value_ai_packagevalue_in_value_pluginvalue_valuevalue: "Найдено: {{quantityvalue2}} в {{quantityvalue4}}.{{diagnosticNote}}{{accessNote}}"
+could_not_scan_ucp_value: "Не удалось просканировать UCP: {{message}}"
+could_not_use_that_folder_value: "Не удалось использовать эту папку: {{message}}"
+the_last_castle_value_is_no_longer_in_this_project_choose_a_castle_to_op: Последнего замка «{{requestedCastle}}» больше нет в проекте. Выберите замок для открытия.
+value_opened_for_editingvalue: "{{name}} открыт для редактирования{{value2}}."
+could_not_open_ai_project_value: "Не удалось открыть проект ИИ: {{message}}"
+castle_value_could_not_be_loaded: Не удалось загрузить замок «{{fileName}}».
+could_not_switch_castle_value: "Не удалось переключить замок: {{message}}"
+cloning_value_into_my_ais: Копирование {{name}} в «Мои ИИ»…
+value_was_installed_in_my_ais_activate_the_plugin_in_the_ucp_gui_when_re: "{{name}} установлен в «Мои ИИ». Когда будете готовы, включите плагин в UCP GUI."
+could_not_clone_ai_value: "Не удалось скопировать ИИ: {{message}}"
+creating_value_in_my_ais: Создание {{name}} в «Мои ИИ»…
+value_was_created_in_my_ais: "{{name}} создан в «Мои ИИ»."
+could_not_create_ai_value: "Не удалось создать ИИ: {{message}}"
+updating_value_through_a_staging_folder: Обновление {{name}} через промежуточную папку…
+value_is_installed_and_up_to_date_in_my_ais: "{{name}} установлен и обновлен в «Мои ИИ»."
+could_not_update_my_ai_value: "Не удалось обновить «Мой ИИ»: {{message}}"
+could_not_open_folder_value: "Не удалось открыть папку: {{message}}"
+could_not_restore_the_ucp_installation_value: "Не удалось восстановить установку UCP: {{message}}"

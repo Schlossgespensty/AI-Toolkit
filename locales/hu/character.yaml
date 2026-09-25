@@ -1,0 +1,32 @@
+failed_to_load_config_files: Nem sikerült betölteni a beállításfájlokat.
+all_troops: Minden csapat
+initial_role: kezdeti szerep
+unsupported_value: "Nem támogatott érték: "
+no_description_yet: Még nincs leírás.
+initial_roles: Kezdeti szerepek
+unknown_parameters_found: |+
+  Ismeretlen paraméterek találhatók:
+
+opening_another_character_file: másik karakterfájl megnyitása
+creating_a_new_character: új karakter létrehozása
+new_character_added_to_the_loaded_ai: Új karakter hozzáadva a betöltött MI-hez
+new_character: Új karakter
+saving: Mentés…
+saved: Mentve!
+error: Hiba!
+open_an_ai_from_the_library_to_edit_its_content: A tartalom szerkesztéséhez nyisson meg egy MI-t a könyvtárból
+ai_content_belongs_to_the_loaded_ai_project: Az MI tartalma a betöltött MI-projekthez tartozik
+no_file_loadedvalue: Nincs betöltött fájl{{dirtyMarker}}
+leather_armor: Bőrpáncél
+iron_armor: Vaspáncél
+capacity: Kapacitás
+needed_at_limits: Szükséges a felső határon
+production: termelés
+recruitment_purchase: toborzási vásárlás
+maxfood_variance: MaxFood + eltérés
+no_relevant_production: Nincs megfelelő termelés
+or_recruitment: " vagy toborzás"
+positive_negative: Pozitív / negatív
+net_buildings: Épületek egyenlege
+population_groups_of_16: Népesség / 16 fős csoportok
+movement: Mozgás

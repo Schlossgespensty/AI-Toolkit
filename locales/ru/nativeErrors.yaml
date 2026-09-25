@@ -1,0 +1,62 @@
+an_ai_with_that_folder_id_already_exists: ИИ с таким идентификатором папки уже существует
+castle_already_exists: Замок уже существует
+castle_file_does_not_exist_in_this_ai: У этого ИИ нет такого файла замка
+castle_mapping_must_contain_at_most_eight_slots: Список замков может содержать не более восьми позиций
+castle_slots_must_be_an_array: Позиции замков должны быть заданы массивом
+choose_a_fork_of_the_official_ai_toolkit: Выберите форк официального репозитория AI Toolkit
+choose_the_stronghold_crusader_installation: Выберите установленную Stronghold Crusader
+close_other_editor_windows_before_updating: Перед обновлением закройте остальные окна редактора
+download_the_release_first: Сначала скачайте выпуск
+editor_did_not_close_no_files_were_replaced: Редактор не закрылся; файлы не заменены
+editor_window_not_found: Окно редактора не найдено
+enter_an_ai_name: Введите имя ИИ
+expected_a_ucp_installation_containing_ucp_plugins: Нужна установка UCP с папкой ucp/plugins
+expected_an_aiv_castle_filename: Ожидается имя файла замка AIV
+expected_one_ai_toolkit_executable: В пакете должен быть ровно один исполняемый файл AI Toolkit
+incomplete_download: Загрузка не завершена
+invalid_ai_folder_id: Неверный идентификатор папки ИИ
+invalid_archive_path: Недопустимый путь к архиву
+invalid_destination: Недопустимое место назначения
+invalid_executable_path: Недопустимый путь к исполняемому файлу
+invalid_filename: Недопустимое имя файла
+invalid_github_repository: Неверный репозиторий GitHub
+invalid_github_response: Некорректный ответ GitHub
+invalid_installation_root: Неверная папка установки
+invalid_item_type: Недопустимый тип объекта
+invalid_manifest_path: Недопустимый путь к манифесту
+invalid_package_path: Недопустимый путь к пакету
+invalid_png: Некорректное изображение PNG
+invalid_portrait_image: Некорректное изображение портрета
+invalid_project_path: Недопустимый путь к проекту
+invalid_release_url: Некорректная ссылка на выпуск
+invalid_resource_directory: Недопустимая папка ресурсов
+invalid_settings_document: Некорректный файл настроек
+invalid_staging_path: Недопустимый путь к промежуточной папке
+media_exceeds_playback_limit: Размер медиафайла превышает предел воспроизведения
+media_not_mapped: Этот медиафайл не указан в сопоставлениях проекта.
+missing_dialog_choices: В диалоге отсутствуют варианты выбора
+missing_install_manifest: Манифест установки отсутствует
+missing_installation_path: Путь установки не указан
+missing_release_size: Размер выпуска не указан
+missing_release_url: Ссылка на выпуск отсутствует
+no_eligible_snapshot_newer_than_the_official_release: Подходящих экспериментальных сборок новее официального выпуска нет
+operation_failed: Не удалось выполнить операцию.
+missing_argument: 'Отсутствует аргумент: {{name}}'
+missing_resource: 'Отсутствует ресурс приложения: {{path}}'
+unexpected_package_entry: 'Неожиданный элемент пакета: {{path}}'
+path_is_outside_the_selected_project: Путь находится вне выбранного проекта
+release_checksum_mismatch: Контрольная сумма выпуска не совпадает
+release_does_not_contain_ai_toolkit_exe: Выпуск не содержит AI Toolkit.exe
+release_exceeds_size_limits: Размер выпуска превышает допустимый предел
+selected_image_exceeds_128_mb: Выбранное изображение больше 128 МБ
+staged_update_changed: Подготовленное обновление изменилось
+the_ai_project_no_longer_exists: Проект ИИ больше не существует
+the_media_file_type_does_not_match: Тип медиафайла не соответствует ожидаемому
+the_selected_release_changed_check_again: Выбранный выпуск изменился; проверьте ещё раз
+this_ai_has_no_aiv_folder: У этого ИИ нет папки aiv
+too_many_github_results: Слишком много результатов GitHub
+unexpected_download_size: Размер загрузки не соответствует ожидаемому
+unknown_configuration_file: Неизвестный файл настроек
+unknown_language: Неизвестный язык
+unknown_theme: Неизвестная тема
+use_open_externally_for_bink_video: Для видео Bink используйте «Открыть во внешней программе»

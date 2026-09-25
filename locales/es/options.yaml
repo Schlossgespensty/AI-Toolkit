@@ -1,0 +1,64 @@
+None: Ninguno
+ArabArcher: Arquero árabe
+Slave: Esclavo
+Slinger: Hondero
+Assassin: Asesino
+HorseArcher: Arquero a caballo
+ArabSwordsman: Espadachín árabe
+FireThrower: Lanzafuego
+EuropArcher: Arquero europeo
+Spearman: Lancero
+Maceman: Macero
+Crossbowman: Ballestero
+Pikeman: Piquero
+Swordsman: Espadachín
+Knight: Caballero
+Monk: Monje
+Tunneler: Zapador
+Engineer: Ingeniero
+FireBallista: Balista de fuego
+Catapult: Catapulta
+Trebuchet: Trabuquete
+BatteringRam: Ariete
+SiegeTower: Torre de asedio
+Shield: Escudo
+WheatFarm: Granja de trigo
+DairyFarm: Granja lechera
+AppleFarm: Manzanar
+HopFarm: Granja de lúpulo
+Wheat: Trigo
+Flour: Harina
+Hop: Lúpulo
+Beer: Cerveza
+Spears: Lanzas
+Pikes: Picas
+Bows: Arcos
+Crossbows: Ballestas
+Swords: Espadas
+Maces: Mazas
+LeatherArmors: Armaduras de cuero
+IronArmors: Armaduras de hierro
+Iron: Hierro
+Pitch: Brea
+Stone: Piedra
+Wood: Madera
+Cheese: Queso
+Meat: Carne
+Bread: Pan
+Apples: Manzanas
+'True': Verdadero
+'False': Falso
+Yellow: Amarillo
+Blue: Azul
+Europ: Europeo
+Arab: Árabe
+Both: Ambos
+Balanced: Equilibrado
+Closest: Más cercano
+Gold: Oro
+Any: Cualquiera
+Player: Jugador
+defend: Defender
+dig: Cavar
+hold: Mantener posición
+patrol: Patrullar

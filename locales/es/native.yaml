@@ -1,0 +1,60 @@
+castle_files: Archivos de castillo
+new: Nuevo
+save_as: Guardar como
+classic_export_failed: |-
+  No se puede exportar este castillo como AIV clásico:
+  {{issues}}
+  Guárdalo como Definitive Edition para conservarlo.
+images: Imágenes
+choose_game: Selecciona la instalación de Stronghold Crusader
+unsaved_title: Cambios sin guardar
+unsaved_message: |-
+  {{name}} tiene cambios sin guardar.
+  ¿Guardarlos antes de continuar?
+  Siguiente acción: {{action}}.
+document: documento
+continue: continuar
+discard: Descartar
+add_to_ai: Añadir a la IA
+edit_separately: Editar por separado
+add_document_message: ¿Añadir este documento a {{name}}? Añadir un personaje reemplaza el archivo de personaje existente.
+new_window: Añadir ventana
+open_new_window: Abrir en nueva ventana
+clear_background: Quitar fondo
+castle_mapping: Editar asignación de castillos…
+shortcuts: Personalizar atajos del castillo…
+toggle_ox: Alternar ataderos de bueyes de la IA
+toggle_running: Alternar unidades que corren
+standard_order: Aplicar orden estándar
+ordered_order: Aplicar orden organizado
+toggle_sections: Expandir/contraer todo
+replace_castle: '{{name}} ya existe. ¿Reemplazar el archivo del castillo?'
+overviews: Resúmenes del castillo
+show_population: Mostrar población
+show_costs: Mostrar costes del castillo
+population_side: Lado del panel de población
+costs_side: Lado del panel de costes
+reload: Recargar
+fullscreen: Pantalla completa
+developer_tools: Herramientas de desarrollo
+zoom_in: Acercar
+zoom_out: Alejar
+reset_zoom: Tamaño real
+classic_castle: Castillo AIV clásico
+choose_castle_format: Elige el formato del archivo de castillo.
+add_castle_message: |-
+  ¿Añadir este castillo a {{name}}?
+  Añadir a la IA lo copia en la carpeta aiv de la IA y mantiene abierto el proyecto.
+  Editar por separado cierra el proyecto de IA y permite guardar el castillo en otra ubicación.
+new_castle_message: |-
+  ¿Crear un castillo en {{name}}?
+  Añadir a la IA lo guarda en la carpeta aiv de la IA y mantiene abierto el proyecto.
+  Editar por separado cierra el proyecto de IA y permite guardar el castillo en otra ubicación.
+replace_character_message: |-
+  ¿Usar este personaje para {{name}}?
+  Añadir a la IA sustituye permanentemente su archivo character.json actual.
+  Editar por separado cierra el proyecto de IA y conserva su archivo de personaje actual.
+new_character_message: |-
+  ¿Crear un personaje para {{name}}?
+  Añadir a la IA sustituye permanentemente su archivo character.json actual.
+  Editar por separado cierra el proyecto de IA y conserva su archivo de personaje actual.

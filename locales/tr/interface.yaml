@@ -1,0 +1,254 @@
+cancel: İptal
+castle: Kale
+saved: Kaydedildi
+language: Dil
+merge: Birleştir
+experimental_snapshots: Deneysel sürümler
+toolkit_fork_owner_repository: Toolkit çatalı (sahip/depo)
+fork_builds_are_experimental_switching_sources_does_not_install_a_build_unti: Çatal derlemeler deneyseldir. Kaynağı değiştirmek, Yükle'ye basana kadar bir sürüm yüklemez.
+use_fork: Çatalı kullan
+editor_workspace: Düzenleyici çalışma alanı
+application_menus: Uygulama menüleri
+file_alt_f: Dosya (Alt+F)
+file: Dosya
+edit_alt_e: Düzenle (Alt+E)
+edit: Düzenle
+view_alt_v: Görünüm (Alt+V)
+view: Görünüm
+ucp_ai_library: UCP yapay zekâ kitaplığı
+character: Karakter
+ai_content: Yapay zekâ içeriği
+update_source: Güncelleme kaynağı
+official_releases: Resmî sürümler
+check_official_releases: Resmî sürümleri denetle
+check_updates: Güncellemeleri denetle
+character_editor: Karakter düzenleyicisi
+no_character_loaded: Karakter yüklenmedi
+open_a_character_json_file_or_choose_an_ai_from_the_library: Bir character.json dosyası açın veya kitaplıktan bir yapay zekâ seçin.
+open_character: Karakter aç
+save_character: Karakteri kaydet
+save_as: Farklı kaydet
+plugins: Eklentiler
+ai_ox_tethers: Yapay zekâ öküz bağlama yerleri
+controls_the_amount_of_ox_tethers_built: Yapılan öküz bağlama yeri sayısını belirler
+running_units: Koşan birimler
+controls_whether_some_units_will_run_or_walk: Bazı birimlerin koşmasını veya yürümesini belirler.
+ai_troop_behaviour: Yapay zekâ birlik davranışları
+include_aiv_troop_behaviour_overrides: AIV birlik davranışı değişikliklerini dahil et
+population: Nüfus
+available_population: Kullanılabilir nüfus
+decrease_available_population_by_8: Kullanılabilir nüfusu 8 azalt
+increase_available_population_by_8: Kullanılabilir nüfusu 8 artır
+use_the_population_provided_by_the_currently_loaded_castle: Yüklü kalenin sağladığı nüfusu kullan
+use_castle_pop: Kale nüfusunu kullan
+maximum_workers_used: Kullanılan en fazla işçi
+max_workers_used_at_set_population: Seçili nüfusta kullanılan en fazla işçi
+worker_breakdown: İşçi dağılımı
+farms: Çiftlikler
+woodcutters: Oduncular
+quarries: Taş ocakları
+ox_tethers_up_to: Öküz bağlama yerleri (en fazla)
+iron_mines: Demir madenleri
+pitch_rigs: Zift kuyuları
+workers_left_after_castle: Kale sonrası kalan işçiler
+left_after_castle_character: Kale ve karakter sonrası kalan
+fear_factor: Korku faktörü
+stockpile_space: Stok alanı kapasitesi
+find_setting: Ayar bul
+search_character_fields: Karakter alanlarında ara…
+section_visibility: Bölüm görünürlüğü
+expand_all: Tümünü genişlet
+collapse_all: Tümünü daralt
+character_field_order: Karakter alanı sırası
+standard_template: Standart şablon
+ordered_template: Sıralı şablon
+castle_files: Kale dosyaları
+open_castle: Kale aç
+save_castle: Kaleyi kaydet
+export_a_definitive_edition_castle_aivjson: Definitive Edition kalesini dışa aktar (.aivjson)
+export_de: DE dışa aktar
+new: Yeni
+castle_views: Kale görünümleri
+show_or_close_the_map_seen_from_above: Üstten harita görünümünü aç veya kapat
+map: Harita
+show_or_close_the_slanted_view_drag_a_tab_to_move_a_window: Eğik görünümü aç veya kapat; pencereyi taşımak için sekmeyi sürükleyin
+2_5d_view: 2.5B görünüm
+ai_castle_selection: Yapay zekâ kalesi seçimi
+ai_castle: Yapay zekâ kalesi
+no_ai_project: Yapay zekâ projesi yok
+placement_tools: Yerleştirme araçları
+shortcut_1_or_s: 'Kısayol: 1 veya S'
+single: Tek
+shortcut_6_or_l: 'Kısayol: 6 veya L'
+line: Çizgi
+shortcut_2_or_b: 'Kısayol: 2 veya B'
+brush: Fırça
+how_wide_the_brush_paints_and_make_it_smaller_and_bigger: Fırça genişliği. - ve + küçültür ve büyütür.
+smaller_brush: Daha küçük fırça
+bigger_brush: Daha büyük fırça
+fills_everything_up_to_a_wall_the_edge_of_the_map_counts_as_one_shortcut_7_o: 'Bir sura kadar her şeyi doldurur; harita kenarı da sınır sayılır. Kısayol: 7 veya F'
+fill: Doldur
+selection_and_editing_tools: Seçim ve düzenleme araçları
+shortcut_3_or_v: 'Kısayol: 3 veya V'
+select_move: Seç / Taşı
+select_mode: Seçim modu
+flood_selects_connected_placements_of_the_same_type_including_diagonals_shif: >-
+  Köşegenler dahil aynı türden bağlantılı yerleşimleri seçer. Shift ekler; Ctrl+tıklama bağlantılı grubu seçer
+  veya seçimini kaldırır.
+border: Sınır
+flood_fill: Bağlantılı doldurma
+delete_mode: Silme modu
+area: Alan
+flood_fill_2: Bağlantılı doldurma
+display_overlays: Katmanları göster
+overlays: Katmanlar
+item_names: Öğe adları
+unit_order: Birim sırası
+guide_lines: Kılavuz çizgiler
+estimated_worker_paths_through_the_current_castle: Geçerli kaledeki tahmini işçi yolları
+path_map: Yol haritası
+estimated_fire_spread_around_flammable_buildings: Yanıcı binaların çevresindeki tahmini yangın yayılımı
+firespread: Yangın yayılımı
+build_order: İnşa sırası
+0_steps: 0 adım
+current_position: Geçerli konum
+no_step_selected: Adım seçilmedi
+select_and_scroll_to_a_build_step: Bir inşa adımı seç ve ona kaydır
+drag_steps_to_reorder_ctrl_click_or_shift_click_selects_several_steps_right_: >-
+  Adımları sürükleyerek sıralayın. Ctrl+tıklama veya Shift+tıklama birden fazla adım seçer. Birleştirmek veya
+  konumları kilitlemek için sağ tıklayın.
+population_up_to_the_selected_build_step: Seçili inşa adımına kadarki nüfus
+population_at_current_step: Geçerli adımdaki nüfus
+about_the_population_overview: Nüfus özeti hakkında
+provided_by_castle: Kalenin sağladığı
+required_by_castle: Kalenin gerektirdiği
+required_by_character_aic: Karakterin gerektirdiği (AIC)
+free: Boş
+these_values_include_only_the_build_steps_up_to_the_current_position: Bu değerler yalnızca geçerli konuma kadarki inşa adımlarını içerir.
+2d_map_controls: 2B harita kontrolleri
+use_picture_as_background: Resmi arka plan olarak kullan
+save_the_whole_castle_as_a_full_resolution_png: Kalenin tamamını tam çözünürlüklü PNG olarak kaydet
+snapshot: Görüntü
+temporary_castle_blueprint: Geçici kale planı
+show_or_hide_the_temporary_blueprint: Geçici planı göster veya gizle
+show: Göster
+blueprint_opacity: Plan opaklığı
+opacity: Opaklık
+2_5d_view_controls: 2.5B görünüm kontrolleri
+lay_a_map_of_the_game_under_the_slanted_view_to_scale_one_field_of_the_map_o: 'Eğik görünümün altına ölçekli oyun haritası koy: her harita karesi bir düzenleyici karesine karşılık gelir'
+game_map: Oyun haritası
+which_starting_place_of_the_map_the_castle_is_built_on: Kalenin haritadaki hangi başlangıç konumuna yapılacağı
+map_starting_place: Harita başlangıç konumu
+take_the_map_of_the_game_away: Oyun haritasını kaldır
+remove_game_map: Oyun haritasını kaldır
+100_by_100_tile_castle_map: 100 × 100 karelik kale haritası
+the_castle_seen_from_an_angle: Kalenin eğik görünümü
+no_castle_loaded: Kale yüklenmedi
+ready: Hazır
+building_categories: Bina kategorileri
+select_an_item: Bir öğe seçin
+castle_costs_up_to_the_selected_build_step: Seçili inşa adımına kadarki kale maliyeti
+assets_and_dialogue: Varlıklar ve diyaloglar
+save_lines_json: lines.json kaydet
+open_an_ai_from_the_library_first: Önce kitaplıktan bir yapay zekâ açın.
+no_ai_project_loaded: Yapay zekâ projesi yüklenmedi
+open_an_installed_ai_or_create_one_from_the_ucp_ai_library: Yüklü bir yapay zekâ açın veya UCP yapay zekâ kitaplığından bir tane oluşturun.
+lines_json: lines.json
+text_used_for_the_ai_s_name_titles_description_and_reactions: Yapay zekânın adı, unvanları, açıklaması ve tepkilerinde kullanılan metin.
+portraits: Portreler
+images_use_nearest_neighbor_resizing_transparency_is_kept_strictly_on_or_off: Resimler en yakın komşu yöntemiyle ölçeklenir; saydamlık yalnızca açık veya kapalı olur.
+ai_portrait: Yapay zekâ portresi
+portrait_png: portrait.png
+saved_as_72_72_pixels: 72×72 piksel olarak kaydedilir.
+change_portrait: Portreyi değiştir
+small_ai_portrait: Küçük yapay zekâ portresi
+portrait_small_png: portrait_small.png
+saved_as_36_36_pixels: 36×36 piksel olarak kaydedilir.
+change_small_portrait: Küçük portreyi değiştir
+speech: Konuşmalar
+mapped_wav_files_can_play_here_or_open_in_your_normal_audio_program: Atanmış WAV dosyaları burada çalınabilir veya varsayılan ses programında açılabilir.
+no_speech: Konuşma yok
+bink_videos: Bink videoları
+bik_playback_is_handed_to_the_program_associated_with_bink_files_on_windows: BIK oynatma, Windows'ta Bink dosyalarıyla ilişkilendirilmiş programa aktarılır.
+project_browser: Proje tarayıcısı
+browse_and_edit_installed_ai_packages_or_keep_separate_variants_in_my_ais: Yüklü yapay zekâ paketlerini inceleyin ve düzenleyin ya da Yapay zekâlarım içinde ayrı sürümler tutun.
+create_new_ai: Yeni yapay zekâ oluştur
+choose_game_folder: Oyun klasörünü seç
+open_plugins_folder: Eklenti klasörünü aç
+refresh: Yenile
+no_ucp_installation_selected: UCP kurulumu seçilmedi
+choose_your_stronghold_crusader_folder_to_begin: Başlamak için Stronghold Crusader klasörünüzü seçin.
+installed_ais: Yüklü yapay zekâlar
+search: Ara
+name_author_or_plugin: Ad, yazar veya eklenti…
+all_installed_ais: Tüm yüklü yapay zekâlar
+active_plugins_only: Yalnızca etkin eklentiler
+my_ais_only: Yalnızca yapay zekâlarım
+no_installation_selected: Kurulum seçilmedi.
+your_existing_editors_stay_unchanged: Mevcut düzenleyicileriniz değişmeden kalır
+select_an_installed_ai_to_load_and_edit_its_character_castles_lines_and_port: >-
+  Karakterini, kalelerini, konuşmalarını ve portrelerini birlikte yüklemek ve düzenlemek için yüklü bir yapay
+  zekâ seçin.
+installed: Yüklü
+inactive: Etkin değil
+author: Yazar
+version: Sürüm
+source_plugin: Kaynak eklenti
+folder_id: Klasör kimliği
+open_ai_project: Yapay zekâ projesi aç
+loads_the_character_and_castle_1_together_switch_castles_from_the_castle_edi: Karakteri ve Kale 1'i birlikte yükler. Kaleler arasında kale düzenleyicisinden geçiş yapın.
+open_in_editors: Düzenleyicilerde aç
+open_source_folder: Kaynak klasörünü aç
+clone_to_my_ais: Yapay zekâlarıma kopyala
+the_complete_ai_package_is_copied_into_the_editor_owned_ucp_plugin_so_you_ca: Ayrı bir sürüm oluşturabilmeniz için tüm yapay zekâ paketi düzenleyicinin UCP eklentisine kopyalanır.
+ai_name: Yapay zekâ adı
+install_update_in_ucp: UCP'ye yükle / güncelle
+writes_the_character_and_currently_open_castle_through_a_staging_folder_then: >-
+  Karakteri ve açık kaleyi geçici klasöre yazar, ardından yalnızca doğrulama başarılı olursa yönetilen
+  eklentiyi değiştirir.
+activate_ai_toolkit_my_ais_in_the_ucp_gui_to_use_it_with_ai_swapper: AI Swapper ile kullanmak için UCP arayüzünde “AI Toolkit - My AIs” eklentisini etkinleştirin.
+creates_a_complete_blank_ai_inside_ai_toolkit_my_ais: AI Toolkit - My AIs içinde eksiksiz boş bir yapay zekâ oluşturur.
+create_ai: Yapay zekâ oluştur
+castle_mapping: Kale eşlemesi
+choose_the_aiv_used_in_each_of_the_ai_s_eight_castle_slots_the_same_file_may: Yapay zekânın sekiz kale yuvasının her biri için AIV seçin. Aynı dosya birden fazla kez seçilebilir.
+save_mapping: Eşlemeyi kaydet
+castle_shortcuts: Kale kısayolları
+select_a_field_and_press_a_key_optionally_with_ctrl_alt_or_shift_one_shortcu: >-
+  Bir alan seçip gerekirse Ctrl, Alt veya Shift ile bir tuşa basın. Her eylemin tek kısayolu olabilir; her
+  birleşim yalnızca bir kez atanabilir. Backspace alanı temizler. Atanmayan eylemler arayüzden kullanılabilir.
+camera: Kamera
+photoshop_controls: Photoshop kontrolleri
+arrow_keys_wheel_zoom: Ok tuşları ve tekerlekle yakınlaştırma
+mouse_wheel: Fare tekerleği
+scroll_pans_alt_scroll_zooms_both_views: Tekerlek kaydırır, Alt+tekerlek yakınlaştırır (iki görünümde de)
+scroll_zooms_alt_shift_scroll_pans: Tekerlek yakınlaştırır, Alt/Shift+tekerlek kaydırır
+ctrl_scroll_pans_horizontally_in_wheel_zoom_mode_alt_scroll_or_shift_scroll_: >-
+  Ctrl+tekerlek yatay kaydırır. Tekerlekle yakınlaştırma modunda Alt+tekerlek veya Shift+tekerlek dikey
+  kaydırır. Orta tuşla sürüklemek kaydırır. Kamera tuşları Ctrl/Alt/Shift birleşimlerini destekler; Backspace
+  temizler. Daha hızlı kaydırmak için Shift'i basılı tutun.
+left: Sol
+right: Sağ
+up: Yukarı
+down: Aşağı
+pan_speed_pixels_per_keypress: Kaydırma hızı (tuş basımı başına piksel)
+restore_defaults: Varsayılanları geri yükle
+save_shortcuts: Kısayolları kaydet
+build_step_actions: İnşa adımı eylemleri
+merge_selected_steps: Seçili adımları birleştir…
+lock_positions: Konumları kilitle
+save_castle_picture: Kale resmini kaydet
+save_png: PNG kaydet
+picture_size: "Boyut"
+full_resolution: "Tam çözünürlük"
+floor_plan_100x100_1_px_per_tile: "Kat planı 100×100 (kare başına 1 px)"
+merge_placements_by_item_type: Yerleşimleri öğe türüne göre birleştir
+replace_selected_items: Seçili öğeleri değiştir
+choose_a_replacement_for_each_item_type_inside_the_box: Kutudaki her öğe türü için yeni bir öğe seçin.
+apply_replacements: Değişimleri uygula
+map_of_the_game: Oyun haritası
+the_chosen_map_is_laid_under_the_slanted_view_to_scale_one_field_of_the_map_: >-
+  Seçilen harita eğik görünümün altına ölçekli yerleştirilir: bir harita karesi bir düzenleyici karesine
+  karşılık gelir.
+filter_by_name: Ada göre süz
+
+brush_size: Fırça boyutu

@@ -1,0 +1,190 @@
+the_aiv_castle_document_is_invalid: سند قلعهٔ AIV معتبر نیست.
+the_aiv_file_must_contain_a_frames_array: فایل AIV باید آرایهٔ «frames» داشته باشد.
+that_build_step_is_locked: این مرحلهٔ ساخت قفل است.
+overlaps_another_item_in_this_brush_stroke: با شیء دیگری در همین حرکت قلم‌مو هم‌پوشانی دارد.
+nothing_to_undo: کاری برای واگردانی وجود ندارد
+nothing_to_redo: کاری برای انجام دوباره وجود ندارد
+creating_a_new_castle: ساخت قلعهٔ جدید
+new_castle: قلعهٔ جدید
+opening_another_castle: باز کردن قلعه‌ای دیگر
+definitive_edition_json: JSON نسخهٔ Definitive Edition
+castle_document: سند قلعه
+castle_was_not_saved: قلعه ذخیره نشد
+nothing_selected_to_replace: چیزی برای جایگزینی انتخاب نشده است.
+keep_cannot_be_replaced: برج اصلی را نمی‌توان جایگزین کرد
+locked: قفل‌شده
+the_selection_contains_only_locked_placements_or_the_keep: انتخاب فعلی فقط شامل موارد قفل‌شده یا برج اصلی است.
+buildings_can_only_replace_buildings_and_rallypoints_can_only_replace_ra: ساختمان‌ها فقط با ساختمان و نقاط تجمع فقط با نقطهٔ تجمع جایگزین می‌شوند.
+choose_at_least_one_different_replacement: دست‌کم یک جایگزین متفاوت انتخاب کنید.
+build_step: 'مرحلهٔ ساخت '
+locked_2: قفل‌شده
+open_again: قفل آن باز شد
+locked_unlock_the_build_step_first: قفل است؛ ابتدا قفل مرحلهٔ ساخت را باز کنید.
+click_an_unlocked_placement_to_flood_delete_its_connected_type_the_keep_: روی یک مورد قفل‌نشده کلیک کنید تا همهٔ موارد متصلِ هم‌نوع آن پاک شوند. برج اصلی محافظت می‌شود.
+merge_checked_placements_inside_the_box_at_their_earliest_step_separatel: موارد علامت‌خوردهٔ داخل کادر، به تفکیک نوع، در نخستین مرحلهٔ مربوط به خود ادغام می‌شوند. موارد بیرون کادر و مراحل قفل‌شده تغییری نمی‌کنند.
+merge_checked_types_from_the_selected_steps_at_their_earliest_step_separ: نوع‌های علامت‌خورده از مراحل انتخاب‌شده، به تفکیک نوع، در نخستین مرحلهٔ مربوط به خود ادغام می‌شوند. مراحل قفل‌شده تغییری نمی‌کنند.
+no_mergeable_type_spans_two_unlocked_steps_in_this_selection: در این انتخاب، هیچ نوع قابل‌ادغامی در دو مرحلهٔ قفل‌نشده وجود ندارد.
+the_castle_changed_cancel_and_select_the_placements_again: قلعه تغییر کرده است. لغو کنید و موارد را دوباره انتخاب کنید.
+these_de_steps_contain_pauses_merge_would_change_their_timing: این مراحل DE مکث دارند؛ ادغام، زمان‌بندی آن‌ها را تغییر می‌دهد.
+unlock_positions: باز کردن قفل موقعیت‌ها
+choose_an_item_first: ابتدا یک مورد انتخاب کنید.
+drag_over_items_to_copy_first: ابتدا با کشیدن ماوس مواردی را برای کپی انتخاب کنید.
+nothing_to_copy_yet_drag_a_box_over_the_placements_first: هنوز چیزی برای کپی انتخاب نشده؛ ابتدا دور موارد موردنظر کادر بکشید.
+select_unlocked_building_placements_to_cut_the_keep_and_rally_points_sta: ساختمان‌های قفل‌نشده را برای بریدن انتخاب کنید. برج اصلی و نقاط تجمع در جای خود می‌مانند.
+move_the_cursor_onto_the_map_then_press_ctrl_v: نشانگر را روی نقشه ببرید، سپس Ctrl+V را بزنید.
+this_item_is_drawn_as_a_line_not_poured: این مورد فقط با ابزار خط رسم می‌شود، نه ابزار پرکردن.
+nothing_to_fill_here_that_tile_is_taken: اینجا نمی‌توان پر کرد؛ خانه اشغال است.
+nothing_could_be_placed_there: چیزی در آن محل قابل‌قرارگیری نبود.
+filled: 'پر شد: '
+selection_cleared: انتخاب پاک شد
+copy_selection: کپی انتخاب
+replace_area: جایگزینی ناحیه
+merge_area: ادغام ناحیه
+delete_area: حذف ناحیه
+castle_shortcuts_saved: میان‌برهای قلعه ذخیره شدند
+multiple_per_step: چند مورد در هر مرحله
+single_per_step: یک مورد در هر مرحله
+empty_step: مرحلهٔ خالی
+move_selected_step_s_up: انتقال مراحل انتخاب‌شده به بالا
+move_selected_step_s_down: انتقال مراحل انتخاب‌شده به پایین
+temporary_blueprint_cleared: نقشهٔ راهنمای موقت پاک شد
+background_image: تصویر پس‌زمینه
+could_not_open_the_selected_blueprint_image: تصویر راهنمای انتخاب‌شده باز نشد
+could_not_calculate_overlays: محاسبهٔ لایه‌های کمکی انجام نشد.
+calculating_overlays: در حال محاسبهٔ لایه‌های کمکی…
+map_terrain_included: با در نظر گرفتن زمین نقشه
+flat_terrain_no_map_data: زمین مسطح؛ بدون دادهٔ نقشه
+tiles_to_delivery_point: ' خانه تا محل تحویل'
+ground_passage_and_raised_walkway: گذرگاه زمینی و مسیر مرتفع
+raised_walkway: مسیر مرتفع
+walkable_ground: زمین قابل‌عبور
+blocked_tile: خانهٔ مسدود
+outside_map: بیرون نقشه
+no_unobstructed_route_to_that_tile: مسیر بازی به آن خانه وجود ندارد.
+nothing_copyable_selected_units_and_the_keep_are_ignored: مورد قابل‌کپی انتخاب نشده است. نیروها و برج اصلی نادیده گرفته می‌شوند.
+nothing_selected_to_copy: چیزی برای کپی انتخاب نشده است.
+castle_editor_configuration_failed_to_load: بارگذاری تنظیمات ویرایشگر قلعه ناموفق بود
+loading_map_views: در حال بارگذاری نماهای نقشه…
+no_map_of_that_name: نقشه‌ای با این نام وجود ندارد.
+no_maps_found_choose_the_game_folder_under_ucp_first: نقشه‌ای پیدا نشد. ابتدا پوشهٔ بازی را در بخش UCP انتخاب کنید.
+reading_the_map: در حال خواندن نقشه…
+the_starting_place: محل شروع
+not_turned: ' · بدون چرخش'
+starting_place_changed: محل شروع تغییر کرد
+map_of_the_game_taken_away: نقشهٔ بازی از نما حذف شد
+temporary_blueprint_shown: نقشهٔ راهنمای موقت نمایش داده شد
+temporary_blueprint_hidden: نقشهٔ راهنمای موقت پنهان شد
+unassigned: تعیین‌نشده
+use_a_key_optionally_combined_with_ctrl_alt_or_shift: یک کلید انتخاب کنید؛ در صورت نیاز همراه با Ctrl، Alt یا Shift.
+map_rotation_needs_the_game_generated_camera_layers_wait_for_loading_to_: چرخاندن نقشه به لایه‌های دوربینِ تولیدشده توسط بازی نیاز دارد. صبر کنید بارگذاری تمام شود یا نقشه را دوباره بارگذاری کنید.
+frame_value_is_not_an_object: مرحلهٔ {{value1}} یک شیء معتبر نیست.
+frame_value_has_no_valid_itemtype: مرحلهٔ {{value1}} مقدار معتبر itemType ندارد.
+frame_value_tilepositionofsets_must_be_an_array: 'مرحلهٔ {{value1}}: مقدار tilePositionOfsets باید آرایه باشد.'
+frame_value_invalid_tile_offset_value: 'مرحلهٔ {{value1}}: موقعیت خانهٔ {{off}} معتبر نیست.'
+misc_item_value_is_not_an_object: مورد متفرقهٔ {{value1}} یک شیء معتبر نیست.
+misc_item_value_has_no_valid_itemtype: مورد متفرقهٔ {{value1}} مقدار معتبر itemType ندارد.
+misc_item_value_invalid_positionofset_value: 'مورد متفرقهٔ {{value1}}: مقدار positionOfset برابر {{positionOfset}} معتبر نیست.'
+value_would_extend_outside_the_100_100_field: '{{value1}} از محدودهٔ ۱۰۰×۱۰۰ بیرون می‌رود.'
+maximum_amount_for_value_is_value: حداکثر تعداد {{value1}} برابر {{maximum}} است.
+blocked_by_value: '{{value1}} مانع است.'
+new_castle_added_to_the_loaded_ai_as_value: قلعهٔ جدید با نام {{fileName}} به هوش مصنوعی بازشده اضافه شد
+value_added_to_the_loaded_ai: '{{fileName}} به هوش مصنوعی بازشده اضافه شد'
+removed_value_empty_legacy_stepvalue: ' — حذف شد: {{quantityvalue2}}'
+disabled_value_build_step_pause_s: ' — {{removedPauses}} مکثِ مرحلهٔ ساخت غیرفعال شد'
+opened_value_value_build_steps_valuevaluevalue: '{{value1}} باز شد — {{length}} مرحلهٔ ساخت · {{formatNote}}{{legacyNote}}{{pauseNote}}'
+could_not_open_aiv_castle_value: |-
+  قلعهٔ AIV باز نشد:
+
+  {{message}}
+could_not_import_aivjson_castle_value: |-
+  قلعهٔ AIVJSON وارد نشد:
+
+  {{message}}
+saved_value: '{{name}} ذخیره شد'
+could_not_save_aiv_castle_value: |-
+  قلعهٔ AIV ذخیره نشد:
+
+  {{message}}
+replace_value_with: جایگزینی {{value1}} با
+value_locked_placementvalue_will_stay_unchanged: '{{quantityvalue2}} بدون تغییر می‌ماند'
+value_placementvalue_across_value_item_typevalue_choose_one_replacement_: '{{quantityvalue2}} از {{quantityvalue4}}. برای هر نوع یک جایگزین انتخاب کنید.'
+invalid_replacement_for_value: جایگزین {{value1}} معتبر نیست.
+no_room_for_value_value: 'برای {{value1}} جا نیست: {{reason}}'
+value_would_also_replace_an_item_outside_the_selected_area: '{{value1}} موردی بیرون ناحیهٔ انتخاب‌شده را نیز جایگزین می‌کند.'
+replaced_value_placementvalue_across_value_target_typevalue: '{{quantityvalue2}} با {{quantityvalue4}} جایگزین شد'
+deleted_value_placementvalue: '{{quantityvalue2}} حذف شد'
+value_locked_and_left_alone: ' ({{gesperrt}} مورد قفل‌شده بدون تغییر ماند)'
+selected_value_placements_shift_adds_ctrl_click_toggles_a_connected_grou: '{{size}} مورد انتخاب شد. با Shift به انتخاب اضافه کنید؛ با Ctrl و کلیک، گروه متصل را انتخاب یا از انتخاب خارج کنید. برای جابه‌جایی، حالت «انتخاب / جابه‌جایی» را فعال کنید.'
+flood_deleted_value_connected_value_placements: '{{size}} مورد متصل از نوع {{value2}} حذف شد'
+value_value_placements_in_value_steps: '{{value1}} — {{count}} مورد در {{size}} مرحله'
+merged_value_item_types_at_their_earliest_selected_steps: '{{length}} نوع مورد در نخستین مراحل انتخاب‌شدهٔ مربوط به خود ادغام شد'
+value_can_only_be_placed_with_the_line_tool: '{{value1}} فقط با ابزار خط قرار می‌گیرد.'
+placed_value_rallypoint_value_at_value: نقطهٔ تجمع {{value1}}، شمارهٔ {{value2}} در {{off}} قرار گرفت
+placed_value_at_value: '{{value1}} در {{off}} قرار گرفت'
+value_ready_value_value_steps_release_to_place: '{{value1}} آماده است — {{length}} از {{length3}} مرحله — برای قرار دادن رها کنید'
+value_placed_nothing: '{{toolName}} چیزی قرار نداد.'
+could_not_build_the_value_sequence: دنبالهٔ {{value1}} ساخته نشد.
+value_placed_value_consecutive_stair_steps: '{{value1}}: {{length}} پلهٔ پیاپی قرار گرفت'
+value_placed_value_value_rallypoints: '{{toolName}}: {{length}} نقطهٔ تجمع {{value3}} قرار گرفت'
+value_placed_value_value_in_consecutive_build_steps: '{{toolName}}: {{length}} مورد {{value3}} در مراحل ساخت پیاپی قرار گرفت'
+copy_blocked_by_value: '{{value1}} مانع قرار دادن کپی است.'
+value_build_stepvalue: '{{quantityvalue2}}'
+placed_copy_of_value_placementvalue_as_value: کپیِ {{quantityvalue2}} به‌شکل {{details}} قرار گرفت
+copied_value_placementvalue_ctrl_v_puts_it_where_the_cursor_is: '{{placements}} کپی شد — با Ctrl+V در محل نشانگر بچسبانید'
+cut_value_placementvalue_ctrl_v_pastes_at_the_cursor: '{{quantityvalue2}} بریده شد — با Ctrl+V در محل نشانگر بچسبانید'
+move_blocked_by_value: '{{value1}} مانع جابه‌جایی است.'
+moved_value_placementvalue: '{{quantityvalue2}} جابه‌جا شد'
+selected_value_click_the_map_to_place: '{{value1}} انتخاب شد — برای قرار دادن روی نقشه کلیک کنید'
+line_only_up_to_value_consecutive_steps: فقط خط · تا {{length}} مرحلهٔ پیاپی
+no_items_in_value: در {{value1}} موردی وجود ندارد.
+line_up_to_value_steps: خط · تا {{length}} مرحله
+step_value: مرحلهٔ {{value1}}
+selected_value_build_steps_drag_or_use_the_arrows_to_move_them_together: '{{length}} مرحلهٔ ساخت انتخاب شد — برای جابه‌جایی هم‌زمان، بکشید یا از پیکان‌ها استفاده کنید'
+selected_build_step_value_new_buildings_will_be_inserted_after_it: مرحلهٔ ساخت {{value1}} انتخاب شد — ساختمان‌های جدید پس از آن درج می‌شوند
+value_build_stepvalue_moved_together: '{{quantityvalue2}} با هم جابه‌جا شد'
+value_locked_and_left_alone_2: ' ({{festgehalten}} مورد قفل‌شده بدون تغییر ماند)'
+set_png_skin_for_value: پوستهٔ PNG برای {{value1}} تنظیم شد
+removed_skin_for_value: پوستهٔ {{value1}} حذف شد
+could_not_load_background_value: 'پس‌زمینه بارگذاری نشد: {{message}}'
+temporary_blueprint_loaded_value: 'نقشهٔ راهنمای موقت بارگذاری شد: {{blueprintFileName}}'
+paths_value_value_reachable_open_gates_value_cyan_dots_reachable_entranc: 'مسیرها: {{length}} از {{length2}} قابل‌دسترسی. دروازه‌ها باز فرض شده‌اند؛ {{value3}}. نقاط فیروزه‌ای: ورودی قابل‌دسترسی؛ نقاط قرمز: مسدود. برآورد ثابت است.'
+selected_value_placementvalue: '{{quantityvalue2}} انتخاب شد'
+drag_from_x_value_y_value_to_choose_the_value_direction: از x={{x}}، y={{y}} بکشید تا جهت {{value3}} را انتخاب کنید.
+copy_ready_at_x_value_y_value_click_to_place: کپی در x={{x}}، y={{y}} آماده است — برای قرار دادن کلیک کنید
+value_unit_keep_placementvalue_ignored: ' ({{quantityvalue2}} نادیده گرفته شد)'
+copied_selection_prepared_value_placementvaluevalue_move_the_cursor_and_: 'کپی انتخاب آماده است: {{quantityvalue2}}{{ignoredNote}} — نشانگر را حرکت دهید و برای قرار دادن کلیک کنید'
+deleted_value_placementvalue_2: '{{quantityvalue2}} حذف شد'
+start_place_value: محل شروع {{value1}}
+map_loaded_rotation_unavailable_value: 'نقشه بارگذاری شد؛ چرخش در دسترس نیست: {{nativeError}}'
+whole_map_value_ready_value_different_tiles: کل نقشهٔ «{{name}}» آماده است · {{kacheln}} خانهٔ متفاوت
+could_not_load_map_value_select_game_map_to_retry: 'نقشه بارگذاری نشد: {{message}}. برای تلاش دوباره «نقشهٔ بازی» را انتخاب کنید.'
+could_not_read_the_map_tiles_value: 'خانه‌های نقشه خوانده نشدند: {{message}}'
+could_not_read_that_map_value: 'نقشه خوانده نشد: {{message}}'
+could_not_list_the_maps_value: 'فهرست نقشه‌ها خوانده نشد: {{message}}'
+castle_built_on_value_at_value_value: قلعه در {{value1}}، موقعیت ({{x}}، {{y}}) قرار گرفت
+the_game_turns_it_by_value_quarter_turnvalue: ' · بازی آن را {{turns}} می‌چرخاند'
+castle_picture_saved_value: 'تصویر قلعه ذخیره شد: {{saved}}'
+could_not_save_castle_picture_value: 'تصویر قلعه ذخیره نشد: {{message}}'
+select_items_first_to_value: برای {{action}} ابتدا مواردی را انتخاب کنید.
+unsaved_castle: (قلعهٔ ذخیره‌نشده)
+select_something_on_the_map_first: ابتدا چیزی روی نقشه انتخاب کنید.
+no_groups_in_this_castle_yet_select_placements_on_the_map_give_them_a_na: هنوز گروهی در این قلعه نیست. موارد را روی نقشه انتخاب کنید، نامی بدهید و ذخیره کنید.
+copy_this_group_for_placement: کپی این گروه برای قرار دادن
+this_group_has_no_copyable_items: این گروه مورد قابل‌کپی ندارد.
+clipboard_emptied: حافظهٔ کپی پاک شد
+nothing_copied_yet_copy_something_with_ctrl_c_or_the_copy_tool: هنوز چیزی کپی نشده است. با Ctrl+C یا ابزار کپی، چیزی را کپی کنید.
+paste_at_the_cursor: چسباندن در محل نشانگر
+empty_the_clipboard: پاک کردن حافظهٔ کپی
+group_name: نام گروه
+save_group: ذخیرهٔ گروه
+enter_a_group_name: نام گروه را وارد کنید.
+a_group_called_value_is_already_there: گروهی با نام «{{name}}» از قبل وجود دارد.
+group_value_saved_with_value_placementvalue: گروه «{{name}}» با {{quantityvalue3}} ذخیره شد
+delete_group_value: حذف گروه «{{name}}»
+value_placementvalue_copied_works_in_every_castle_click_then_click_on_th: '{{quantityvalue2}} کپی شد — در هر قلعه قابل‌استفاده است. کلیک کنید و سپس روی نقشه کلیک کنید، یا Ctrl+V را بزنید.'
+castle_actions: عملیات قلعه
+no_item_categories_configured: هیچ دسته‌ای برای موارد تعریف نشده است.
+dock: بازگرداندن به پنل
+groups: گروه‌ها
+cut_and_copy: برش و کپی
+deselect: لغو انتخاب

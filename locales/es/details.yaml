@@ -1,0 +1,83 @@
+castle_document: El castillo
+character_document: El personaje
+experimental_snapshot: Versión experimental
+official_release: Versión oficial
+native_aiv: AIV nativo
+step_locked: El paso {{step}} está bloqueado
+step_unlocked: El paso {{step}} está desbloqueado
+steps_locked: '{{steps}} bloqueados'
+steps_unlocked: '{{steps}} desbloqueados'
+fill_result: Se rellenaron {{tiles}} con {{item}}
+locked_stay: '{{placements}} permanecen en su sitio'
+map_terrain: terreno del mapa incluido
+flat_terrain: terreno plano (sin datos de mapa)
+fire_estimate: >-
+  Estimación del fuego: dos anillos rojos interiores; halo de amarillo a azul según los puntos de vida, hasta
+  8 casillas.
+start: inicio {{number}}
+starting_place: el punto de inicio
+map_name: ' · mapa: {{name}}'
+map_start: ' · inicio {{number}} ({{x}}, {{y}})'
+map_start_place: ' · punto de inicio {{number}} ({{x}}, {{y}})'
+map_rotation: ' · girado {{turns}} (valor del juego {{value}})'
+map_flat: ' · terreno llano (altura {{height}})'
+map_height: ' · desnivel de {{range}} puntos (altura de {{minimum}} a {{maximum}})'
+space_one: '{{count}} espacio'
+space_other: '{{count}} espacios'
+food_one: '{{count}} de alimento'
+food_other: '{{count}} de alimento'
+tile_one: '{{count}} casilla'
+tile_other: '{{count}} casillas'
+shortfall: Faltan {{count}}
+free: '{{count}} libres'
+resource: Recurso
+maximum: Máx.
+spaces: Espacios
+per_space: '{{count}} por espacio; {{source}}'
+none_produced: No hay producción relevante configurada.
+none_produced_or_bought: No hay producción ni reclutamiento relevante configurado.
+stockpiles: >-
+  Almacenes: {{count}} (incluido el de la torre del homenaje); 4 espacios cada uno. Se reservan todos los
+  límites de recursos.
+granaries: 'Graneros: {{count}}; capacidad de 250 alimentos por granero, compartida entre todos los tipos.'
+armories: 'Armerías: {{count}}; 10 pilas separadas de 5 armas cada una. Las compras se deducen de los ajustes de reclutamiento.'
+hops: Lúpulo
+fruit: Fruta
+wav_speech: Voz WAV
+bink_video: Vídeo Bink
+workshop: taller
+work_unknown: duración del trabajo desconocida
+cycle_ticks: '{{count}} ticks por ciclo de referencia'
+cost_table: la tabla de costes de construcción
+bundled_vanilla: valores originales incluidos
+saved_balance: la copia guardada de {{name}}
+year_one: '{{count}} año'
+year_other: '{{count}} años'
+month_one: '{{count}} mes'
+month_other: '{{count}} meses'
+day_one: '{{count}} día'
+day_other: '{{count}} días'
+quarry_one: '{{count}} cantera'
+quarry_other: '{{count}} canteras'
+iron_mine_one: '{{count}} mina de hierro'
+iron_mine_other: '{{count}} minas de hierro'
+woodcutter_one: '{{count}} leñador'
+woodcutter_other: '{{count}} leñadores'
+farm_one: '{{count}} granja'
+farm_other: '{{count}} granjas'
+pitch_rig_one: '{{count}} pozo de brea'
+pitch_rig_other: '{{count}} pozos de brea'
+ox_tether_one: '{{count}} amarre de bueyes'
+ox_tether_other: '{{count}} amarres de bueyes'
+hop_farms_one: '{{count}} de esas granjas cultiva lúpulo.'
+hop_farms_other: '{{count}} de esas granjas cultivan lúpulo.'
+open_character_error: 'No se pudo abrir el archivo del personaje: {{error}}'
+save_character_error: 'No se pudo guardar el archivo del personaje: {{error}}'
+recipe_bow: 2 de madera; regreso separado de la armería
+recipe_crossbow: 3 de madera; regreso separado de la armería
+recipe_spear: 1 de madera; solo consta que el trabajo dura menos de 1 mes
+recipe_pike: 2 de madera; recoge la primera tabla tras entregar en la armería
+recipe_iron: 1 de hierro; recoge la siguiente materia prima tras entregar en la armería
+recipe_leather: 3 entregas por vaca; solo consta que cada trabajo dura menos de 3 meses
+recipe_bread: 1 de harina; primero al granero, luego al almacén
+recipe_ale: 1 de lúpulo; entrada y salida del almacén

@@ -71,9 +71,10 @@ test('Temporary canvas and item selections cannot clear or replace the active bu
 
 test('Castle palette keeps clear category controls and compact full-height thumbnails', () => {
   const css = fs.readFileSync(path.join(root, 'src', 'css', 'combined.css'), 'utf8');
-  assert.match(css, /\.castlePanel \.paletteCategoryButton\s*\{[\s\S]*?min-height:\s*34px;[\s\S]*?font-size:\s*13px;/);
-  assert.match(css, /\.paletteItem\s*\{[\s\S]*?min-height:\s*42px;/);
-  assert.match(css, /\.paletteThumb\s*\{[\s\S]*?width:\s*42px;[\s\S]*?height:\s*100%;/);
+  assert.match(css, /\.castlePanel \.paletteCategoryButton\s*\{[^}]*min-height:\s*34px;[^}]*font-size:\s*14px;/);
+  assert.match(css, /\.paletteItem\s*\{[^}]*min-height:\s*44px;/);
+  assert.match(css, /\.paletteThumb\s*\{[^}]*position:\s*relative;[^}]*width:\s*44px;/);
+  assert.match(css, /\.paletteThumb img\s*\{[^}]*position:\s*absolute;[^}]*object-fit:\s*cover;/);
 });
 
 test('Temporary blueprint controls render an in-memory image beneath castle objects', () => {
@@ -331,6 +332,37 @@ test('a wide brush goes through the same check as a single tile', () => {
   assert.match(eines, /validatePlacement\(type, off/, 'und die steht unveraendert dort');
 });
 
+test('typed brush sizes, native steps and +/- buttons share one bounded value', () => {
+  const script = fs.readFileSync(path.join(root, 'src', 'js', 'castle-editor.js'), 'utf8');
+  const control = () => ({ disabled: false, handlers: {}, addEventListener(type, fn) { this.handlers[type] = fn; } });
+  const input = { ...control(), value: '1', get valueAsNumber() { return this.value === '' ? NaN : Number(this.value); } };
+  const state = { brushSize: 1 };
+  const els = { brushSizeInput: input, brushMinus: control(), brushPlus: control() };
+  const context = { state, els, geometry: { GRID_SIZE: 100 }, scheduleDraw() {} };
+  const start = script.indexOf("  if (els.brushMinus) els.brushMinus.addEventListener");
+  const end = script.indexOf("  els.buildSlider.addEventListener", start);
+  require('node:vm').runInNewContext(
+    functionBody(script, 'setBrushSize') + functionBody(script, 'updateBrushSizeUI') + script.slice(start, end), context);
+  for (const [typed, expected] of [['37', 37], ['1000', 100], ['0', 1], ['3.6', 4]]) {
+    input.value = typed; input.handlers.input();
+    assert.equal(state.brushSize, expected);
+    assert.equal(input.value, String(expected));
+    assert.equal(input.max, '100');
+  }
+  input.value = ''; input.handlers.input();
+  assert.equal(state.brushSize, 4, 'temporarily clearing the field preserves the active brush');
+  input.handlers.change();
+  assert.equal(state.brushSize, 1, 'committing an empty field restores a valid minimum');
+  assert.equal(els.brushMinus.disabled, true);
+  els.brushPlus.handlers.click();
+  assert.equal(state.brushSize, 2);
+  assert.equal(input.value, '2');
+  els.brushMinus.handlers.click();
+  assert.equal(input.value, '1');
+  input.value = '100'; input.handlers.input();
+  assert.equal(els.brushPlus.disabled, true);
+});
+
 test('the bucket fills through the brush, so it obeys the same rules', () => {
   const script = fs.readFileSync(path.join(root, 'src', 'js', 'castle-editor.js'), 'utf8');
   const eimer = functionBody(script, 'bucketFill');
@@ -349,7 +381,7 @@ test('the fill tool needs an item like the other placement tools', () => {
   assert.match(html, /data-tool="bucket"/, 'der Knopf steht in der Werkzeugleiste');
   assert.match(html, /id="castleBrushMinus"/);
   assert.match(html, /id="castleBrushPlus"/);
-  assert.deepEqual(require('../src/js/castle-shortcuts').defaults.bucket, ['7']);
+  assert.deepEqual(require('../src/js/castle-shortcuts').defaults.bucket, ['4']);
 });
 
 // -------------------------------------------- gesperrte Bauschritte
@@ -437,7 +469,8 @@ test('reordering a mixed selection moves the open steps and leaves the locked on
     'ist gar nichts offen, passiert nichts und es sagt warum');
   assert.match(umhaengen, /geometry\.moveBuildSteps\(frames\(\), beweglich, targetIndex\)/,
     'und die Geometrie bekommt nur die offenen zu sehen');
-  assert.match(umhaengen, /locked and left alone/, 'die Meldung sagt, wie viele stehen blieben');
+  assert.match(umhaengen, /castle:value_locked_and_left_alone_2/, 'die Meldung sagt, wie viele stehen blieben');
+  assert.match(require('../src/js/i18n').t('castle:value_locked_and_left_alone_2', { festgehalten: 2 }), /2 locked and left alone/);
 
   // Beide Wege, Pfeile und Ziehen, gehen durch dieselbe Stelle.
   const liste = functionBody(script, 'renderBuildList');
@@ -503,7 +536,8 @@ test('the context Replace action opens a per-item-type replacement dialog', () =
   assert.match(oeffnen, /selectionByType\(selectedRefs\)/);
   assert.match(oeffnen, /select\.dataset\.sourceType = String\(type\)/,
     'jeder vorhandene Typ bekommt seine eigene Zielauswahl');
-  assert.match(oeffnen, /Keep cannot be replaced/);
+  assert.match(oeffnen, /castle:keep_cannot_be_replaced/);
+  assert.equal(require('../src/js/i18n').t('castle:keep_cannot_be_replaced'), 'Keep cannot be replaced');
 
   const tausch = functionBody(script, 'replaceSelectionByType');
   assert.match(tausch, /validatePlacement\(change\.targetType, change\.off/,

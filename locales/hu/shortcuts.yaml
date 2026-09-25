@@ -1,0 +1,44 @@
+openCastle: Vár megnyitása
+saveCastle: Vár mentése
+newCastle: Új vár
+map: Térkép
+iso: 2.5D nézet
+single: Egyenként
+line: Vonal
+brush: Ecset
+brushSmaller: Kisebb ecset
+brushLarger: Nagyobb ecset
+bucket: Kitöltés
+select: Kijelölés / mozgatás
+replace: Csere
+merge: Egyesítés
+delete: Törlés
+overlays: Fedvénymenü
+groups: Csoportok
+paste: Vágólap / beillesztés
+clearClipboard: Vágólap ürítése
+names: Elemnevek
+units: Egységek sorrendje
+guides: Segédvonalak
+paths: Útvonaltérkép
+fire: Tűzterjedés
+gameMap: "2.5D: játéktérkép"
+resetMap: "2.5D: játéktérkép eltávolítása"
+rotateLeft: "2.5D: forgatás balra"
+rotateRight: "2.5D: forgatás jobbra"
+saveAs: Mentés másként
+undo: Visszavonás
+redo: Újra
+copy: Kijelölés másolása
+cut: Kijelölés kivágása
+exportDe: DE-export
+pause: Szünetlépés
+deleteSelected: Kijelöltek törlése
+deselect: Kijelölés megszüntetése
+invalid: "Érvénytelen gyorsbillentyű ehhez: {{label}}."
+reserved: A(z) {{key}} billentyű az alkalmazásmenük számára fenntartott.
+duplicate: A(z) {{key}} többször van hozzárendelve.
+wheelMode: Válasszon görgőmódot.
+cameraSpeed: A kamera sebessége 1 és 200 képpont közötti lehet.
+invalidCamera: Érvénytelen kameragyorsbillentyű.
+assigned: A(z) {{key}} billentyű már hozzá van rendelve, vagy fenntartott.

@@ -1,0 +1,32 @@
+ai_name: Yapay zekâ adı
+description: Açıklama
+title: Unvan
+complete_title: Ad ve unvan
+unknown: Bilinmeyen replik
+anger_1: Saldırı püskürtüldü
+anger_2: Kendi binası yıkıldı
+plead: Düşman olarak yenilgi
+victory_1: Başarılı savunma
+victory_2: Düşman binası yıkıldı
+victory_3: Oyuncu yenildi
+victory_4: Düşman yapay zekâ yenildi
+request: Mal isteği
+thanks: Mallar alındı
+ally_death: Müttefik olarak yenilgi
+congrats: Müttefiki kutlama
+boast: Zafer duyurusu
+help: Yardım isteği
+extra: Uzun süren oyun
+kick_player: Oyuncu çıkarıldı
+add_player: Oyuncu katıldı
+siege: Kullanılmayan kuşatma repliği
+no_sent: Mal gönderimi reddedildi
+sent: Mallar gönderildi
+team_winning: Takım kazanıyor
+team_losing: Takım kaybediyor
+help_sent: Yardım gönderildi
+will_attack: Saldırı kabul edildi
+taunt: Saldırı sataşması
+nervous: Saldırı altında
+no_attack: Saldırı reddedildi
+no_help: Yardım reddedildi

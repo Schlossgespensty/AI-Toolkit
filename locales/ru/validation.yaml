@@ -1,0 +1,24 @@
+balance_profile: Ожидался профиль rebalancer с разделом buildings, resources, units, population или castle.
+balance_section: 'Некорректный раздел {{section}}.'
+balance_building: 'Некорректное здание: {{name}}'
+balance_health: '{{name}}: health должно быть неотрицательным целым числом.'
+balance_housing: '{{name}}: housing должно быть неотрицательным целым числом.'
+balance_cost: '{{name}}: cost должно содержать пять неотрицательных целых чисел (дерево, камень, железо, смола, золото).'
+balance_resource: 'Некорректный ресурс: {{name}}'
+balance_delivery: '{{name}}: delivery должно помещаться в один байт (0–255).'
+balance_bonus: '{{name}}: skirmishBonus должно быть true или false.'
+balance_ditch: castle.ditch_per_pitch должно быть равно 1, 2, 3 или 4.
+frames_array: Шаги строительства замка должны быть массивом.
+tile_offset: '{{label}}: некорректное смещение клетки.'
+step_object: 'Шаг {{step}}: ожидался объект.'
+step_positions: 'Шаг {{step}}: некорректный объект или его позиции.'
+step_pause: 'Шаг {{step}}: некорректный флаг паузы.'
+step: 'Шаг {{step}}'
+markers_array: Метки замка должны быть массивом.
+marker_invalid: Некорректная метка замка.
+marker: Метка замка
+pause_delay: Некорректная длительность паузы.
+classic_empty_steps: Пустые шаги строительства нельзя сохранить в классическом AIV.
+classic_item: '{{name}} не поддерживается классическим AIV.'
+classic_pauses: Паузы между шагами строительства отключены в классическом редакторе.
+classic_marker: '{{name}} нельзя сохранить в классическом AIV.'

@@ -1,0 +1,4 @@
+{
+  "extends": "../../tsconfig.desktop.json",
+  "include": ["../../src/desktop/**/*.ts", "desktop-contracts.ts"]
+}

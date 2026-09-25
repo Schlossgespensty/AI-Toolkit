@@ -1,0 +1,28 @@
+{
+  "downloadBudget": 8000000,
+  "legacyResourceArchive": "resources/app.asar",
+  "executable": {
+    "path": "AI Toolkit.exe",
+    "aliases": ["AI Toolkit.exe", "AI-Toolkit.exe"]
+  },
+  "files": {
+    "README.txt": "docs/native-preview-readme.txt",
+    "THIRD_PARTY_NOTICES.txt": "THIRD_PARTY_NOTICES.txt",
+    "assets/aiv/iso/verzeichnis.json": "assets/aiv/iso/verzeichnis.json"
+  },
+  "configuration": {
+    "directory": "config",
+    "source": "config",
+    "stemPattern": "[A-Za-z0-9_-]+",
+    "extension": ".json"
+  },
+  "legacyUpdatePatterns": [
+    "\\.toolkit-release\\.json",
+    "[a-zA-Z0-9_.-]+\\.(dll|pak|bin|dat)",
+    "vk_swiftshader_icd\\.json",
+    "LICENSE[A-Za-z0-9_.-]*\\.(txt|html)",
+    "resources/app\\.asar",
+    "resources/elevate\\.exe",
+    "locales/[A-Za-z0-9_-]+\\.pak"
+  ]
+}

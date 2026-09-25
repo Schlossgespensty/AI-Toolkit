@@ -2,7 +2,7 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
-const vm = require('node:vm');
+const vm = require('./helpers/localized-vm');
 const source = fs.readFileSync(path.join(__dirname,'../src/js/castle-cost-panel.js'),'utf8');
 const methods = source.slice(source.indexOf('  function cancelBalanceRefresh()'),source.indexOf('  function goodSymbol('));
 function setup() {

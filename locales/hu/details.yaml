@@ -1,0 +1,83 @@
+castle_document: A vár
+character_document: A karakter
+experimental_snapshot: Kísérleti előzetes
+official_release: Hivatalos kiadás
+native_aiv: natív AIV
+step_locked: A(z) {{step}}. építési lépés zárolva
+step_unlocked: A(z) {{step}}. építési lépés feloldva
+steps_locked: 'Zárolva: {{steps}}'
+steps_unlocked: 'Feloldva: {{steps}}'
+fill_result: 'Kitöltve: {{tiles}}; elem: {{item}}'
+locked_stay: '{{placements}} a helyén marad'
+map_terrain: a térkép terepével
+flat_terrain: sík terep (nincs térképadat)
+fire_estimate: 'Tűzbecslés: két belső vörös gyűrű; életerőfüggő sárga–kék sáv, legfeljebb 8 mezőig.'
+start: '{{number}}. kezdőhely'
+starting_place: a kezdőhely
+map_name: ' · térkép: {{name}}'
+map_start: ' · {{number}}. kezdőhely ({{x}}, {{y}})'
+map_start_place: ' · {{number}}. kezdőpont ({{x}}, {{y}})'
+map_rotation: ' · elforgatás: {{turns}} (játékérték: {{value}})'
+map_flat: ' · sík terep (magasság: {{height}})'
+map_height: ' · szintkülönbség: {{range}} pont (magasság: {{minimum}}–{{maximum}})'
+space_one: '{{count}} rekesz'
+space_other: '{{count}} rekesz'
+food_one: '{{count}} élelem'
+food_other: '{{count}} élelem'
+tile_one: '{{count}} mező'
+tile_other: '{{count}} mező'
+shortfall: '{{count}} hiányzik'
+free: '{{count}} szabad'
+resource: Nyersanyag
+maximum: Max.
+spaces: Rekeszek
+per_space: '{{count}} rekeszenként; {{source}}'
+none_produced: Nincs idevágó termelés beállítva.
+none_produced_or_bought: Nincs idevágó termelés vagy toborzás beállítva.
+stockpiles: >-
+  {{count}} raktár a vártoronnyal együtt; egyenként 4 rekesz. Minden nyersanyagkorlát számára fenntartott
+  hely.
+granaries: '{{count}} magtár; egyenként 250 közös élelemkapacitás.'
+armories: >-
+  {{count}} fegyvertár; egyenként 10 külön rekesz, rekeszenként 5 darab. A vásárlást a toborzási beállítások
+  határozzák meg.
+hops: Komló
+fruit: Gyümölcs
+wav_speech: WAV-beszéd
+bink_video: Bink-videó
+workshop: műhely
+work_unknown: ismeretlen munkaidő
+cycle_ticks: '{{count}} ütem referencia-ciklusonként'
+cost_table: az építési költségek táblázata
+bundled_vanilla: beépített alapértékek
+saved_balance: '{{name}} mentett másolata'
+year_one: '{{count}} év'
+year_other: '{{count}} év'
+month_one: '{{count}} hónap'
+month_other: '{{count}} hónap'
+day_one: '{{count}} nap'
+day_other: '{{count}} nap'
+quarry_one: '{{count}} kőfejtő'
+quarry_other: '{{count}} kőfejtő'
+iron_mine_one: '{{count}} vasbánya'
+iron_mine_other: '{{count}} vasbánya'
+woodcutter_one: '{{count}} favágó'
+woodcutter_other: '{{count}} favágó'
+farm_one: '{{count}} farm'
+farm_other: '{{count}} farm'
+pitch_rig_one: '{{count}} szurokfúró'
+pitch_rig_other: '{{count}} szurokfúró'
+ox_tether_one: '{{count}} ökörkarám'
+ox_tether_other: '{{count}} ökörkarám'
+hop_farms_one: Ezek közül {{count}} farm komlót termeszt.
+hop_farms_other: Ezek közül {{count}} farm komlót termeszt.
+open_character_error: 'A karakterfájl nem nyitható meg: {{error}}'
+save_character_error: 'A karakterfájl nem menthető: {{error}}'
+recipe_bow: 2 fa; külön visszaút a fegyvertártól
+recipe_crossbow: 3 fa; külön visszaút a fegyvertártól
+recipe_spear: 1 fa; a munkaidőről csak annyi ismert, hogy 1 hónapnál rövidebb
+recipe_pike: 2 fa; az első deszkát a fegyvertári szállítás után veszi fel
+recipe_iron: 1 vas; a következő alapanyagot a fegyvertári szállítás után veszi fel
+recipe_leather: Tehenenként 3 szállítás; az egyes munkaidőkről csak annyi ismert, hogy 3 hónapnál rövidebbek
+recipe_bread: 1 liszt; magtár, majd raktár
+recipe_ale: 1 komló; alapanyag és termék a raktárban

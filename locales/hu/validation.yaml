@@ -1,0 +1,24 @@
+balance_profile: A rebalancer profilnak buildings, resources, units, population vagy castle szakaszt kell tartalmaznia.
+balance_section: 'Érvénytelen {{section}} szakasz.'
+balance_building: 'Érvénytelen épület: {{name}}'
+balance_health: '{{name}}: a health értéke nemnegatív egész szám kell legyen.'
+balance_housing: '{{name}}: a housing értéke nemnegatív egész szám kell legyen.'
+balance_cost: '{{name}}: a cost öt nemnegatív egész számot kell tartalmazzon (fa, kő, vas, szurok, arany).'
+balance_resource: 'Érvénytelen nyersanyag: {{name}}'
+balance_delivery: '{{name}}: a delivery értékének egy bájtban kell elférnie (0–255).'
+balance_bonus: '{{name}}: a skirmishBonus értéke true vagy false lehet.'
+balance_ditch: A castle.ditch_per_pitch értéke 1, 2, 3 vagy 4 lehet.
+frames_array: A vár építési lépéseit tömbként kell megadni.
+tile_offset: '{{label}}: érvénytelen mezőeltolás.'
+step_object: '{{step}}. lépés: objektumot kell megadni.'
+step_positions: '{{step}}. lépés: érvénytelen elem vagy pozíciók.'
+step_pause: '{{step}}. lépés: érvénytelen szünetjelző.'
+step: '{{step}}. lépés'
+markers_array: A vár jelölőit tömbként kell megadni.
+marker_invalid: Érvénytelen várjelölő.
+marker: Várjelölő
+pause_delay: Érvénytelen szünethossz.
+classic_empty_steps: Az üres építési lépések nem őrizhetők meg klasszikus AIV formátumban.
+classic_item: 'A klasszikus AIV nem támogatja ezt: {{name}}.'
+classic_pauses: Az építési lépések szünetei le vannak tiltva a klasszikus szerkesztőben.
+classic_marker: 'Klasszikus AIV formátumban nem őrizhető meg: {{name}}.'

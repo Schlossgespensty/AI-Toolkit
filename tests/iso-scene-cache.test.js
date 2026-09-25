@@ -1,7 +1,7 @@
 ﻿const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
-const vm = require('node:vm');
+const vm = require('./helpers/localized-vm');
 
 function renderer() {
   const source = fs.readFileSync(require.resolve('../src/js/iso-view.js'), 'utf8');

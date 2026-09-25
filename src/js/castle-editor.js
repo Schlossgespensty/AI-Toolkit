@@ -1,5 +1,6 @@
 (() => {
   'use strict';
+  const tr = (key, options) => globalThis.toolkitI18n.t(key, options);
 
   const GRID = 100;
   const MIN_CELL = 3;
@@ -46,7 +47,7 @@
     replaceCancel: document.getElementById('castleReplaceCancelBtn'),
     brushMinus: document.getElementById('castleBrushMinus'),
     brushPlus: document.getElementById('castleBrushPlus'),
-    brushSizeOut: document.getElementById('castleBrushSize'),
+    brushSizeInput: document.getElementById('castleBrushSize'),
     host: document.getElementById('castleCanvasHost'),
     palette: document.getElementById('castlePalette'),
     itemInfo: document.getElementById('castleSelectedItemInfo'),
@@ -82,12 +83,20 @@
   let ctx = displayCtx;
   const geometry = window.castleGeometry;
   const mapBackground = new Image();
+  mapBackground.crossOrigin = 'anonymous';
   mapBackground.onload = canvasAssetLoaded;
-  mapBackground.src = '../assets/aiv/background.png';
+  const refreshThemeBackground = () => {
+    const source = window.ToolkitTheme?.texture('backdrop') || '../assets/themes/default/textures/backdrop.png';
+    if (mapBackground.getAttribute('src') !== source) mapBackground.src = source;
+  };
+  refreshThemeBackground();
+  window.addEventListener('toolkit-theme-changed', refreshThemeBackground);
   const bundledKeepImage = new Image();
+  bundledKeepImage.crossOrigin = 'anonymous';
   bundledKeepImage.onload = canvasAssetLoaded;
   bundledKeepImage.src = '../assets/aiv/skins/61.png';
   const bundledStockpileImage = new Image();
+  bundledStockpileImage.crossOrigin = 'anonymous';
   bundledStockpileImage.onload = canvasAssetLoaded;
   bundledStockpileImage.src = '../assets/aiv/skins/52.png';
 
@@ -102,6 +111,7 @@
     format: 'aiv',
     dirty: false,
     tool: 'single',
+    drawTool: 'single',
     itemTools: Object.create(null),
     currentItemType: null,
     activeCategory: null,
@@ -112,6 +122,7 @@
     redo: [],
     cell: DEFAULT_CELL,
     snapshotLabels: false,
+    floorPlan: false,
     panX: 0,
     panY: 0,
     canvasWidth: 0,
@@ -264,8 +275,8 @@
       doc.miscItems ||= [];
       return doc;
     }
-    if (!doc || typeof doc !== 'object' || Array.isArray(doc)) throw new Error('The AIV castle document is invalid.');
-    if (!Array.isArray(doc.frames)) throw new Error("The AIV file must contain a 'frames' array.");
+    if (!doc || typeof doc !== 'object' || Array.isArray(doc)) throw new Error(tr("castle:the_aiv_castle_document_is_invalid"));
+    if (!Array.isArray(doc.frames)) throw new Error(tr("castle:the_aiv_file_must_contain_a_frames_array"));
     const normalizedFrames = [];
     doc.frames.forEach((frame, i) => {
       const emptyLegacyStep = frame == null || (
@@ -278,13 +289,13 @@
         if (diagnostics) diagnostics.removedLegacySteps = (diagnostics.removedLegacySteps || 0) + 1;
         return;
       }
-      if (!frame || typeof frame !== 'object' || Array.isArray(frame)) throw new Error(`Frame ${i + 1} is not an object.`);
-      if (!Number.isInteger(Number(frame.itemType))) throw new Error(`Frame ${i + 1} has no valid itemType.`);
-      if (!Array.isArray(frame.tilePositionOfsets)) throw new Error(`Frame ${i + 1}: tilePositionOfsets must be an array.`);
+      if (!frame || typeof frame !== 'object' || Array.isArray(frame)) throw new Error(tr("castle:frame_value_is_not_an_object", { value1: i + 1 }));
+      if (!Number.isInteger(Number(frame.itemType))) throw new Error(tr("castle:frame_value_has_no_valid_itemtype", { value1: i + 1 }));
+      if (!Array.isArray(frame.tilePositionOfsets)) throw new Error(tr("castle:frame_value_tilepositionofsets_must_be_an_array", { value1: i + 1 }));
       frame.itemType = Number(frame.itemType);
       frame.tilePositionOfsets = frame.tilePositionOfsets.map(off => {
         const n = Number(off);
-        if (!Number.isInteger(n) || n < 0 || n > 9999) throw new Error(`Frame ${i + 1}: invalid tile offset ${off}.`);
+        if (!Number.isInteger(n) || n < 0 || n > 9999) throw new Error(tr("castle:frame_value_invalid_tile_offset_value", { value1: i + 1, off: off }));
         return n;
       });
       if (frame.shouldPause && diagnostics) diagnostics.removedPauses = (diagnostics.removedPauses || 0) + 1;
@@ -294,10 +305,10 @@
     doc.frames = normalizedFrames;
     if (!Array.isArray(doc.miscItems)) doc.miscItems = [];
     doc.miscItems.forEach((item, i) => {
-      if (!item || typeof item !== 'object' || Array.isArray(item)) throw new Error(`Misc item ${i + 1} is not an object.`);
-      if (!Number.isInteger(Number(item.itemType))) throw new Error(`Misc item ${i + 1} has no valid itemType.`);
+      if (!item || typeof item !== 'object' || Array.isArray(item)) throw new Error(tr("castle:misc_item_value_is_not_an_object", { value1: i + 1 }));
+      if (!Number.isInteger(Number(item.itemType))) throw new Error(tr("castle:misc_item_value_has_no_valid_itemtype", { value1: i + 1 }));
       const offset = Number(item.positionOfset);
-      if (!Number.isInteger(offset) || offset < 0 || offset > 9999) throw new Error(`Misc item ${i + 1}: invalid positionOfset ${item.positionOfset}.`);
+      if (!Number.isInteger(offset) || offset < 0 || offset > 9999) throw new Error(tr("castle:misc_item_value_invalid_positionofset_value", { value1: i + 1, positionOfset: item.positionOfset }));
       item.itemType = Number(item.itemType);
       item.positionOfset = offset;
     });
@@ -488,7 +499,7 @@
 
   function boundsError(type, x, y) {
     if (!geometry.footprintIsInBounds(footprintRectsAtXY(type, x, y), GRID)) {
-      return `${itemName(type)} would extend outside the 100×100 field.`;
+      return tr("castle:value_would_extend_outside_the_100_100_field", { value1: itemName(type) });
     }
     return '';
   }
@@ -504,7 +515,7 @@
     if (checkMax) {
       const maximum = maxAmount(type);
       if (maximum != null && countType(type, ignore) >= Number(maximum)) {
-        return { ok: false, reason: `Maximum amount for ${itemName(type)} is ${maximum}.`, replacements: new Set() };
+        return { ok: false, reason: tr("castle:maximum_amount_for_value_is_value", { value1: itemName(type), maximum: maximum }), replacements: new Set() };
       }
     }
 
@@ -519,17 +530,17 @@
       if (existingMode === 'allow') continue;
       if (existingMode === 'replace') {
         // Ein gesperrter Bauschritt wird auch nicht ueberbaut.
-        if (refIsLocked(p.ref)) return { ok: false, reason: 'That build step is locked.', replacements: new Set() };
+        if (refIsLocked(p.ref)) return { ok: false, reason: tr("castle:that_build_step_is_locked"), replacements: new Set() };
         replacements.add(p.ref);
         continue;
       }
-      return { ok: false, reason: `Blocked by ${itemName(p.type)}.`, replacements: new Set() };
+      return { ok: false, reason: tr("castle:blocked_by_value", { value1: itemName(p.type) }), replacements: new Set() };
     }
 
     for (const other of extraNew) {
       if (overlapMode(other.type) === 'allow') continue;
       if (geometry.footprintsIntersect(proposedFootprint, footprintRects(other.type, other.off))) {
-        return { ok: false, reason: 'Overlaps another item in this brush stroke.', replacements: new Set() };
+        return { ok: false, reason: tr("castle:overlaps_another_item_in_this_brush_stroke"), replacements: new Set() };
       }
     }
     return { ok: true, reason: '', replacements };
@@ -578,7 +589,7 @@
   }
 
   function setStatus(text) {
-    els.status.textContent = text;
+    window.toolkitI18n.bindText(els.status, text);
     if (window.appWorkspace?.getActive() === 'castle') window.appWorkspace.setStatus(text);
   }
 
@@ -597,7 +608,7 @@
 
   function updateFileLabel() {
     const name = state.filePath ? state.filePath.split(/[\\/]/).pop() : 'Untitled.aiv';
-    els.fileLabel.textContent = `${name}${state.dirty ? ' *' : ''}`;
+    window.toolkitI18n.bindText(els.fileLabel, `${name}${state.dirty ? ' *' : ''}`, 'ltr');
     els.fileLabel.title = state.filePath || '';
     document.getElementById('castleSaveBtn').disabled = false;
   }
@@ -617,7 +628,7 @@
   }
 
   function undo() {
-    if (!state.undo.length) return setStatus('Nothing to undo');
+    if (!state.undo.length) return setStatus(() => tr("castle:nothing_to_undo"));
     const activeStep = state.insertionFrameIndex;
     state.redo.push(deepClone(state.document));
     state.document = state.undo.pop();
@@ -630,11 +641,11 @@
     setDirty(true);
     renderBuildList();
     scheduleDraw();
-    setStatus('Undo');
+    setStatus(() => tr("common:actions.undo"));
   }
 
   function redo() {
-    if (!state.redo.length) return setStatus('Nothing to redo');
+    if (!state.redo.length) return setStatus(() => tr("castle:nothing_to_redo"));
     const activeStep = state.insertionFrameIndex;
     state.undo.push(deepClone(state.document));
     state.document = state.redo.pop();
@@ -647,11 +658,11 @@
     setDirty(true);
     renderBuildList();
     scheduleDraw();
-    setStatus('Redo');
+    setStatus(() => tr("common:actions.redo"));
   }
 
   async function newFile() {
-    if (!await window.unsavedChanges?.confirmEditor('castle', 'creating a new castle')) return false;
+    if (!await window.unsavedChanges?.confirmEditor('castle', tr("castle:creating_a_new_castle"))) return false;
     const document = newCastleDocument();
     const disposition = await window.ucpLibrary?.chooseDocumentDisposition?.('castle', 'new') || 'separate';
     if (disposition === 'cancel') return false;
@@ -663,7 +674,7 @@
         source: 'aiv',
         sourceBytes: added.sourceBytes
       });
-      setStatus(`New castle added to the loaded AI as ${added.fileName}`);
+      setStatus(() => tr("castle:new_castle_added_to_the_loaded_ai_as_value", { fileName: added.fileName }));
       return true;
     }
     state.format = 'aiv';
@@ -682,12 +693,12 @@
     setDirty(false);
     renderBuildList();
     scheduleDraw();
-    setStatus('New castle');
+    setStatus(() => tr("castle:new_castle"));
     return true;
   }
 
   async function openFile() {
-    if (!await window.unsavedChanges?.confirmEditor('castle', 'opening another castle')) return false;
+    if (!await window.unsavedChanges?.confirmEditor('castle', tr("castle:opening_another_castle"))) return false;
     const result = await window.electronAPI.openFile('aiv');
     if (!result) return false;
     const disposition = await window.ucpLibrary?.chooseDocumentDisposition?.('castle', 'open') || 'separate';
@@ -706,7 +717,7 @@
         source: 'aiv',
         sourceBytes: added.sourceBytes
       });
-      setStatus(`${added.fileName} added to the loaded AI`);
+      setStatus(() => tr("castle:value_added_to_the_loaded_ai", { fileName: added.fileName }));
       return true;
     }
     loadDocument(result.document, result.path, { source: result.source, sourceBytes: result.sourceBytes });
@@ -738,17 +749,19 @@
       setDirty(Boolean(diagnostics.removedPauses));
       renderBuildList();
       centerMap();
-      const legacyNote = diagnostics.removedLegacySteps
-        ? ` — removed ${diagnostics.removedLegacySteps} empty legacy step${diagnostics.removedLegacySteps === 1 ? '' : 's'}`
-        : '';
-      const formatNote = options.source === 'aiv'
-        ? 'native AIV'
-        : options.source === 'aivjson' ? 'Definitive Edition JSON' : 'castle document';
-      const pauseNote = diagnostics.removedPauses ? ` — disabled ${diagnostics.removedPauses} build-step pause(s)` : '';
-      setStatus(`Opened ${path ? path.split(/[\\/]/).pop() : 'castle'} — ${frames().length} build steps · ${formatNote}${legacyNote}${pauseNote}`);
+      setStatus(() => {
+        const legacyNote = diagnostics.removedLegacySteps
+          ? tr("castle:removed_value_empty_legacy_stepvalue", { quantityvalue2: tr("quantity:empty_legacy_step", { count: diagnostics.removedLegacySteps }) })
+          : '';
+        const formatNote = options.source === 'aiv'
+          ? tr('details:native_aiv')
+          : options.source === 'aivjson' ? tr("castle:definitive_edition_json") : tr("castle:castle_document");
+        const pauseNote = diagnostics.removedPauses ? tr("castle:disabled_value_build_step_pause_s", { removedPauses: diagnostics.removedPauses }) : '';
+        return tr("castle:opened_value_value_build_steps_valuevaluevalue", { value1: path ? path.split(/[\\/]/).pop() : 'castle', length: frames().length, formatNote, legacyNote, pauseNote });
+      });
     } catch (err) {
       state.format = previousFormat;
-      alert(`Could not open AIV castle:\n\n${err.message}`);
+      alert(tr("castle:could_not_open_aiv_castle_value", { message: err.message }));
       console.error(err);
     }
   }
@@ -758,7 +771,7 @@
       const document = typeof content === 'string' ? JSON.parse(content) : content;
       loadDocument(document, path, { ...options, source: options.source || 'aivjson' });
     } catch (err) {
-      alert(`Could not import AIVJSON castle:\n\n${err.message}`);
+      alert(tr("castle:could_not_import_aivjson_castle_value", { message: err.message }));
       console.error(err);
     }
   }
@@ -793,13 +806,13 @@
       state.sourceBytes = retainSourceBytes(result.sourceBytes) || (result.native === false ? null : state.sourceBytes);
       setDirty(false);
       const name = state.filePath.split(/[\\/]/).pop();
-      const message = `Saved ${name}`;
+      const message = tr("castle:saved_value", { name: name });
       setStatus(message);
       showSaveNotice(`✓ ${message}`);
       return true;
     } catch (err) {
-      alert(`Could not save AIV castle:\n\n${err.message}`);
-      showSaveNotice('Castle was not saved', 'error');
+      alert(tr("castle:could_not_save_aiv_castle_value", { message: err.message }));
+      showSaveNotice(tr("castle:castle_was_not_saved"), 'error');
       return false;
     }
   }
@@ -822,13 +835,13 @@
       state.sourceBytes = retainSourceBytes(result.sourceBytes) || (result.native === false ? null : state.sourceBytes);
       setDirty(false);
       const name = state.filePath.split(/[\\/]/).pop();
-      const message = `Saved ${name}`;
+      const message = tr("castle:saved_value", { name: name });
       setStatus(message);
       showSaveNotice(`✓ ${message}`);
       return true;
     } catch (err) {
-      alert(`Could not save AIV castle:\n\n${err.message}`);
-      showSaveNotice('Castle was not saved', 'error');
+      alert(tr("castle:could_not_save_aiv_castle_value", { message: err.message }));
+      showSaveNotice(tr("castle:castle_was_not_saved"), 'error');
       return false;
     }
   }
@@ -874,7 +887,7 @@
   function openReplacementDialog(refs) {
     const selectedRefs = new Set(Array.from(refs || []).filter(refExists));
     if (!selectedRefs.size) {
-      setStatus('Nothing selected to replace.');
+      setStatus(() => tr("castle:nothing_selected_to_replace"));
       return false;
     }
     state.selected = selectedRefs;
@@ -901,7 +914,7 @@
       if (mutable) {
         const select = document.createElement('select');
         select.dataset.sourceType = String(type);
-        select.setAttribute('aria-label', `Replace ${itemName(type)} with`);
+        select.setAttribute('aria-label', tr("castle:replace_value_with", { value1: itemName(type) }));
         for (const target of replacementTargetsFor(type)) {
           const option = document.createElement('option');
           option.value = String(target);
@@ -914,21 +927,21 @@
       } else {
         const reason = document.createElement('span');
         reason.className = 'castleReplaceUnavailable';
-        reason.textContent = immutableKeep ? 'Keep cannot be replaced' : 'Locked';
+        reason.textContent = immutableKeep ? tr("castle:keep_cannot_be_replaced") : tr("castle:locked");
         row.appendChild(reason);
       }
 
       if (locked && mutable) {
         const note = document.createElement('small');
-        note.textContent = `${locked} locked placement${locked === 1 ? '' : 's'} will stay unchanged`;
+        note.textContent = tr("castle:value_locked_placementvalue_will_stay_unchanged", { quantityvalue2: tr("quantity:locked_placement", { count: locked }) });
         row.appendChild(note);
       }
       els.replaceRows.appendChild(row);
     }
 
-    els.replaceSummary.textContent = `${selectedRefs.size} placement${selectedRefs.size === 1 ? '' : 's'} across ${groups.size} item type${groups.size === 1 ? '' : 's'}. Choose one replacement per type.`;
+    els.replaceSummary.textContent = tr("castle:value_placementvalue_across_value_item_typevalue_choose_one_replacement_", { quantityvalue2: tr("quantity:placement", { count: selectedRefs.size }), quantityvalue4: tr("quantity:item_type", { count: groups.size }) });
     els.replaceApply.disabled = true;
-    if (mutableCount === 0) els.replaceError.textContent = 'The selection contains only locked placements or the Keep.';
+    if (mutableCount === 0) els.replaceError.textContent = tr("castle:the_selection_contains_only_locked_placements_or_the_keep");
     if (els.replaceDialog.open) els.replaceDialog.close();
     els.replaceDialog.showModal();
     els.replaceRows.querySelector('select')?.focus();
@@ -954,14 +967,14 @@
       const targetType = Number(mapping.get(sourceType));
       if (!Number.isFinite(targetType) || targetType === sourceType || refIsLocked(ref) || sourceType === geometry.KEEP_ITEM_TYPE) continue;
       if (!state.constants[String(targetType)] || targetType === geometry.KEEP_ITEM_TYPE) {
-        return replacementFailure(`Invalid replacement for ${itemName(sourceType)}.`);
+        return replacementFailure(tr("castle:invalid_replacement_for_value", { value1: itemName(sourceType) }));
       }
       if (isUnitType(sourceType) !== isUnitType(targetType)) {
-        return replacementFailure('Buildings can only replace buildings, and rallypoints can only replace rallypoints.');
+        return replacementFailure(tr("castle:buildings_can_only_replace_buildings_and_rallypoints_can_only_replace_ra"));
       }
       changes.push({ ref, sourceType, targetType, off: refOffset(ref), parsed: parseRef(ref) });
     }
-    if (!changes.length) return replacementFailure('Choose at least one different replacement.');
+    if (!changes.length) return replacementFailure(tr("castle:choose_at_least_one_different_replacement"));
 
     const changingRefs = new Set(changes.map(change => change.ref));
     const proposed = [];
@@ -970,7 +983,7 @@
     for (const [targetType, added] of totals) {
       const maximum = maxAmount(targetType);
       if (maximum != null && countType(targetType, changingRefs) + added > Number(maximum)) {
-        return replacementFailure(`Maximum amount for ${itemName(targetType)} is ${maximum}.`);
+        return replacementFailure(tr("castle:maximum_amount_for_value_is_value", { value1: itemName(targetType), maximum: maximum }));
       }
     }
     for (const change of changes) {
@@ -979,9 +992,9 @@
         extraNew: proposed,
         checkMax: false
       });
-      if (!check.ok) return replacementFailure(`No room for ${itemName(change.targetType)}: ${check.reason}`);
+      if (!check.ok) return replacementFailure(tr("castle:no_room_for_value_value", { value1: itemName(change.targetType), reason: check.reason }));
       if (check.replacements.size) {
-        return replacementFailure(`${itemName(change.targetType)} would also replace an item outside the selected area.`);
+        return replacementFailure(tr("castle:value_would_also_replace_an_item_outside_the_selected_area", { value1: itemName(change.targetType) }));
       }
       proposed.push({ type: change.targetType, off: change.off });
     }
@@ -1033,7 +1046,7 @@
       if (refs?.length) state.selected.add(refs.shift());
     }
     activateBuildStepForRefs(state.selected);
-    changed(`Replaced ${changes.length} placement${changes.length === 1 ? '' : 's'} across ${totals.size} target type${totals.size === 1 ? '' : 's'}`);
+    changed(() => tr("castle:replaced_value_placementvalue_across_value_target_typevalue", { quantityvalue2: tr("quantity:placement", { count: changes.length }), quantityvalue4: tr("quantity:target_type", { count: totals.size }) }));
     return true;
   }
 
@@ -1076,9 +1089,9 @@
     }
     renderBuildList();
     scheduleDraw();
-    setStatus(betroffen.length === 1
-      ? 'Build step ' + (fi + 1) + (wert ? ' is locked' : ' is open again')
-      : betroffen.length + ' build steps ' + (wert ? 'locked' : 'open again'));
+    setStatus(() => betroffen.length === 1
+      ? tr(wert ? 'details:step_locked' : 'details:step_unlocked', { step: fi + 1 })
+      : tr(wert ? 'details:steps_locked' : 'details:steps_unlocked', { steps: tr('quantity:build_step', { count: betroffen.length }) }));
   }
 
   function deleteRefs(refs) {
@@ -1117,13 +1130,13 @@
     const refs = new Set(Array.from(state.selected).filter(refExists));
     if (!refs.size) return;
     const gesperrt = lockedAmong(refs);
-    if (gesperrt === refs.size) return setStatus('Locked - unlock the build step first.');
+    if (gesperrt === refs.size) return setStatus(() => tr("castle:locked_unlock_the_build_step_first"));
     pushUndo();
     deleteRefs(refs);
     state.selected.clear();
     const geloescht = refs.size - gesperrt;
-    changed(`Deleted ${geloescht} placement${geloescht === 1 ? '' : 's'}` +
-            (gesperrt ? ` (${gesperrt} locked and left alone)` : ''));
+    changed(() => tr("castle:deleted_value_placementvalue", { quantityvalue2: tr("quantity:placement", { count: geloescht }) }) +
+            (gesperrt ? tr("castle:value_locked_and_left_alone", { gesperrt: gesperrt }) : ''));
   }
 
   function floodSelect(tile, event) {
@@ -1149,7 +1162,7 @@
     renderBuildList();
     if (activatedStep) scrollToActiveBuildStep();
     scheduleDraw();
-    setStatus(`Selected ${state.selected.size} placements ? Shift adds; Ctrl-click toggles a connected group. Switch to Select / Move to drag.`);
+    setStatus(() => tr("castle:selected_value_placements_shift_adds_ctrl_click_toggles_a_connected_grou", { size: state.selected.size }));
   }
 
   function floodDelete(tile) {
@@ -1158,11 +1171,11 @@
     const start = placements.find(placement => placement.ref === ref);
     const refs = geometry.floodPlacementRefs(start, placements,
       placement => footprintRects(placement.type, placement.off), refIsLocked, GRID);
-    if (!refs.size) return setStatus('Click an unlocked placement to flood delete its connected type. The Keep is protected.');
+    if (!refs.size) return setStatus(() => tr("castle:click_an_unlocked_placement_to_flood_delete_its_connected_type_the_keep_"));
     pushUndo();
     deleteRefs(refs);
     state.selected.clear();
-    changed(`Flood deleted ${refs.size} connected ${itemName(start.type)} placements`);
+    changed(() => tr("castle:flood_deleted_value_connected_value_placements", { size: refs.size, value2: itemName(start.type) }));
   }
 
   function mergeSelectedSteps() {
@@ -1185,15 +1198,15 @@
       checkbox.disabled = group.steps.size < 2;
       checkbox.checked = !checkbox.disabled;
       const text = document.createElement('span');
-      text.textContent = `${itemName(group.type)} — ${group.count} placements in ${group.steps.size} steps`;
+      text.textContent = tr("castle:value_value_placements_in_value_steps", { value1: itemName(group.type), count: group.count, size: group.steps.size });
       checkbox.addEventListener('change', updateMergeApplyState);
       row.append(checkbox, text); rows.append(row);
     }
     document.getElementById('castleMergeSummary').textContent = area
-      ? 'Merge checked placements inside the box at their earliest step, separately by type. Placements outside the box and locked steps stay untouched.'
-      : 'Merge checked types from the selected steps at their earliest step, separately by type. Locked steps stay untouched.';
+      ? tr("castle:merge_checked_placements_inside_the_box_at_their_earliest_step_separatel")
+      : tr("castle:merge_checked_types_from_the_selected_steps_at_their_earliest_step_separ");
     document.getElementById('castleMergeError').textContent = groups.some(group => group.steps.size > 1)
-      ? '' : 'No mergeable type spans two unlocked steps in this selection.';
+      ? '' : tr("castle:no_mergeable_type_spans_two_unlocked_steps_in_this_selection");
     updateMergeApplyState();
     document.getElementById('castleMergeDialog').showModal();
   }
@@ -1208,14 +1221,14 @@
     if (!pendingMerge) return;
     try {
       if (pendingMerge.document !== state.document || pendingMerge.revision !== state.documentRevision)
-        throw new Error('The castle changed. Cancel and select the placements again.');
+        throw new Error(tr("castle:the_castle_changed_cancel_and_select_the_placements_again"));
       const checked = [...document.querySelectorAll('#castleMergeRows input:checked:not(:disabled)')].map(input => Number(input.value));
-      if (state.format === 'aivjson' && [...pendingMerge.selections.keys()].some(fi => frames()[fi]?.shouldPause)) throw new Error('These DE steps contain pauses. Merge would change their timing.');
+      if (state.format === 'aivjson' && [...pendingMerge.selections.keys()].some(fi => frames()[fi]?.shouldPause)) throw new Error(tr("castle:these_de_steps_contain_pauses_merge_would_change_their_timing"));
       const proposal = geometry.mergeStepPlacements(frames(), pendingMerge.selections, checked, mergeableTypes());
       pushUndo();
       state.document.frames = proposal.frames;
       selectBuildFrames(proposal.mergedIndexes);
-      changed(`Merged ${proposal.mergedIndexes.length} item types at their earliest selected steps`);
+      changed(() => tr("castle:merged_value_item_types_at_their_earliest_selected_steps", { length: proposal.mergedIndexes.length }));
       document.getElementById('castleMergeDialog').close();
     } catch (error) { document.getElementById('castleMergeError').textContent = error.message; }
   }
@@ -1252,7 +1265,7 @@
     merge.onclick = () => { closeBuildContextMenu(); mergeSelectedSteps(); };
     const lock = document.getElementById('castleContextLock');
     const enabled = !selected.every(frameIsLocked);
-    lock.textContent = enabled ? 'Lock positions' : 'Unlock positions';
+    window.toolkitI18n.bindText(lock, () => enabled ? tr("interface:lock_positions") : tr("castle:unlock_positions"));
     lock.onclick = () => { closeBuildContextMenu(); toggleFrameLock(fi, enabled); };
     menu.hidden = false;
     menu.style.left = `${Math.max(0, Math.min(event.clientX, window.innerWidth - menu.offsetWidth))}px`;
@@ -1261,9 +1274,9 @@
   }
 
   function placeSingle(tile) {
-    if (state.currentItemType == null) return setStatus('Choose an item first.');
+    if (state.currentItemType == null) return setStatus(() => tr("castle:choose_an_item_first"));
     const type = state.currentItemType;
-    if (isLineSequence(type)) return setStatus(`${itemName(type)} can only be placed with the Line tool.`);
+    if (isLineSequence(type)) return setStatus(() => tr("castle:value_can_only_be_placed_with_the_line_tool", { value1: itemName(type) }));
     const off = xyToOffset(tile.x, tile.y);
     const result = validatePlacement(type, off);
     if (!result.ok) return setStatus(result.reason);
@@ -1273,10 +1286,10 @@
       const mi = state.document.miscItems.length;
       state.document.miscItems.push({ positionOfset: off, itemType: type, number: availableUnitNumber(type) });
       state.selected = new Set([unitRefKey(mi)]);
-      changed(`Placed ${itemName(type)} rallypoint #${unitDisplayNumber(state.document.miscItems[mi].number)} at ${off}`);
+      changed(() => tr("castle:placed_value_rallypoint_value_at_value", { value1: itemName(type), value2: unitDisplayNumber(state.document.miscItems[mi].number), off: off }));
     } else {
       insertBuildFrames([{ itemType: type, tilePositionOfsets: [off], shouldPause: false }]);
-      changed(`Placed ${itemName(type)} at ${off}`);
+      changed(() => tr("castle:placed_value_at_value", { value1: itemName(type), off: off }));
     }
   }
 
@@ -1324,7 +1337,7 @@
     if (maximum != null) {
       const current = batch ? batch.count : countType(type, state.brushReplacements);
       if (current + state.brushOffsets.length + 1 > Number(maximum)) {
-        if (!batch) setStatus(`Maximum amount for ${itemName(type)} is ${maximum}.`);
+        if (!batch) setStatus(() => tr("castle:maximum_amount_for_value_is_value", { value1: itemName(type), maximum: maximum }));
         return;
       }
     }
@@ -1351,7 +1364,7 @@
       const maximum = maxAmount(type);
       const pendingOfType = pending.filter(entry => entry.type === type).length;
       if (maximum != null && countType(type, state.brushReplacements) + pendingOfType >= Number(maximum)) {
-        state.brushError = `Maximum amount for ${itemName(type)} is ${maximum}.`;
+        state.brushError = tr("castle:maximum_amount_for_value_is_value", { value1: itemName(type), maximum: maximum });
         break;
       }
       const result = validatePlacement(type, off, {
@@ -1366,17 +1379,18 @@
       pending.push({ type, off });
       for (const ref of result.replacements) state.brushReplacements.add(ref);
     }
-    setStatus(state.brushError || `${itemName(state.currentItemType)} ready — ${tiles.length}/${types.length} steps — release to place`);
+    setStatus(() => state.brushError || tr("castle:value_ready_value_value_steps_release_to_place", { value1: itemName(state.currentItemType), length: tiles.length, length3: types.length }));
     scheduleDraw(false);
   }
 
   function commitBrush(toolName = 'Brush') {
-    if (state.currentItemType == null || !state.brushOffsets.length) return setStatus(`${toolName} placed nothing.`);
+    toolName = tr('interface:'+toolName.toLowerCase(),{defaultValue:toolName});
+    if (state.currentItemType == null || !state.brushOffsets.length) return setStatus(() => tr("castle:value_placed_nothing", { toolName: toolName }));
     if (state.brushError) return setStatus(state.brushError);
     const type = state.currentItemType;
     const sequence = lineSequence(type);
     if (sequence.length && (state.brushTypes.length !== state.brushOffsets.length || state.brushOffsets.length > sequence.length)) {
-      return setStatus(`Could not build the ${itemName(type)} sequence.`);
+      return setStatus(() => tr("castle:could_not_build_the_value_sequence", { value1: itemName(type) }));
     }
     pushUndo();
     deleteRefs(state.brushReplacements);
@@ -1387,22 +1401,22 @@
         shouldPause: false
       }));
       insertBuildFrames(newFrames);
-      changed(`${itemName(type)}: placed ${newFrames.length} consecutive stair steps`);
+      changed(() => tr("castle:value_placed_value_consecutive_stair_steps", { value1: itemName(type), length: newFrames.length }));
     } else if (isUnitType(type)) {
       const firstMi = state.document.miscItems.length;
       for (const off of state.brushOffsets) {
         state.document.miscItems.push({ positionOfset: off, itemType: type, number: availableUnitNumber(type) });
       }
       state.selected = new Set(state.brushOffsets.map((_off, i) => unitRefKey(firstMi + i)));
-      changed(`${toolName}: placed ${state.brushOffsets.length} ${itemName(type)} rallypoints`);
+      changed(() => tr("castle:value_placed_value_value_rallypoints", { toolName: toolName, length: state.brushOffsets.length, value3: itemName(type) }));
     } else {
       const newFrames = allowsMultiplePerStep(type)
         ? [{ itemType: type, tilePositionOfsets: [...state.brushOffsets], shouldPause: false }]
         : state.brushOffsets.map(off => ({ itemType: type, tilePositionOfsets: [off], shouldPause: false }));
       insertBuildFrames(newFrames);
-      changed(allowsMultiplePerStep(type)
-        ? `${toolName} step: ${state.brushOffsets.length} × ${itemName(type)}`
-        : `${toolName}: placed ${state.brushOffsets.length} ${itemName(type)} in consecutive build steps`);
+      changed(() => allowsMultiplePerStep(type)
+        ? `${toolName}: ${state.brushOffsets.length} × ${itemName(type)}`
+        : tr("castle:value_placed_value_value_in_consecutive_build_steps", { toolName: toolName, length: state.brushOffsets.length, value3: itemName(type) }));
     }
   }
 
@@ -1534,7 +1548,7 @@
   }
 
   function validateCopyAt(tile) {
-    if (!state.copyBuffer) return { ok: false, reason: 'Drag over items to copy first.', replacements: new Set(), proposal: null };
+    if (!state.copyBuffer) return { ok: false, reason: tr("castle:drag_over_items_to_copy_first"), replacements: new Set(), proposal: null };
     const proposal = copyProposalAt(tile);
     const replacements = new Set();
     const copyCounts = {};
@@ -1550,7 +1564,7 @@
       const type = Number(key);
       const maximum = maxAmount(type);
       if (maximum != null && countType(type) + amount > Number(maximum)) {
-        return { ok: false, reason: `Maximum amount for ${itemName(type)} is ${maximum}.`, replacements: new Set(), proposal };
+        return { ok: false, reason: tr("castle:maximum_amount_for_value_is_value", { value1: itemName(type), maximum: maximum }), replacements: new Set(), proposal };
       }
     }
 
@@ -1563,11 +1577,11 @@
         const mode = geometry.placementOverlap(entry.type, other.type, state.constants);
         if (mode === 'allow') continue;
         if (mode === 'replace') {
-          if (refIsLocked(other.ref)) return { ok: false, reason: 'That build step is locked.', replacements: new Set(), proposal: null };
+          if (refIsLocked(other.ref)) return { ok: false, reason: tr("castle:that_build_step_is_locked"), replacements: new Set(), proposal: null };
           replacements.add(other.ref);
           continue;
         }
-        return { ok: false, reason: `Copy blocked by ${itemName(other.type)}.`, replacements: new Set(), proposal };
+        return { ok: false, reason: tr("castle:copy_blocked_by_value", { value1: itemName(other.type) }), replacements: new Set(), proposal };
       }
     }
     return { ok: true, reason: '', replacements, proposal };
@@ -1604,10 +1618,10 @@
     const addedFrames = newFrames.length;
     const addedUnits = state.document.miscItems.length - startUnit;
     const details = [
-      addedFrames ? `${addedFrames} build step${addedFrames === 1 ? '' : 's'}` : '',
-      addedUnits ? `${addedUnits} rallypoint${addedUnits === 1 ? '' : 's'}` : ''
-    ].filter(Boolean).join(' and ');
-    changed(`Placed copy of ${state.copyBuffer.count} placement${state.copyBuffer.count === 1 ? '' : 's'} as ${details}`);
+      addedFrames ? tr("castle:value_build_stepvalue", { quantityvalue2: tr("quantity:build_step", { count: addedFrames }) }) : '',
+      addedUnits ? tr('feedback:rally_points', {count:addedUnits}) : ''
+    ].filter(Boolean).join(' · ');
+    changed(() => tr("castle:placed_copy_of_value_placementvalue_as_value", { details: details, quantityvalue2: tr("quantity:placement", { count: state.copyBuffer.count }) }));
   }
 
   // Ctrl+C and Ctrl+V - the two handles everybody already knows. They are a
@@ -1625,14 +1639,13 @@
       .filter(p => state.selected.has(p.ref) && p.kind === 'frame' && p.type !== geometry.KEEP_ITEM_TYPE)
       .map(p => p.ref));
     if (!captureCopyBuffer(refs)) {
-      setStatus('Nothing to copy yet — drag a box over the placements first');
+      setStatus(() => tr("castle:nothing_to_copy_yet_drag_a_box_over_the_placements_first"));
       return false;
     }
     state.selected = refs;
     renderBuildList();
     scheduleDraw();
-    const many = state.copyBuffer.count === 1 ? '' : 's';
-    setStatus(`Copied ${state.copyBuffer.count} placement${many} — Ctrl+V puts it where the cursor is`);
+    setStatus(() => tr("castle:copied_value_placementvalue_ctrl_v_puts_it_where_the_cursor_is", { placements: tr('quantity:placement', { count: state.copyBuffer.count }) }));
     return true;
   }
 
@@ -1644,20 +1657,20 @@
       .filter(p => state.selected.has(p.ref) && p.kind === 'frame' &&
         p.type !== geometry.KEEP_ITEM_TYPE && !refIsLocked(p.ref))
       .map(p => p.ref));
-    if (!refs.size) return setStatus('Select unlocked building placements to cut. The Keep and rally points stay in place.');
+    if (!refs.size) return setStatus(() => tr("castle:select_unlocked_building_placements_to_cut_the_keep_and_rally_points_sta"));
     if (!captureCopyBuffer(refs)) return;
     pushUndo();
     setTool('copy');
     deleteRefs(refs);
     state.selected.clear();
-    changed(`Cut ${refs.size} placement${refs.size === 1 ? '' : 's'} — Ctrl+V pastes at the cursor`);
+    changed(() => tr("castle:cut_value_placementvalue_ctrl_v_pastes_at_the_cursor", { quantityvalue2: tr("quantity:placement", { count: refs.size }) }));
   }
 
   function pasteCopy() {
     if (!state.copyBuffer && !copySelection()) return;
     setTool('copy');
     if (!state.hoverTile) {
-      setStatus('Move the cursor onto the map, then press Ctrl+V');
+      setStatus(() => tr("castle:move_the_cursor_onto_the_map_then_press_ctrl_v"));
       return;
     }
     placeCopy(state.hoverTile);
@@ -1668,14 +1681,14 @@
   // der Kartenrand ebenso. Gefuellt wird ueber denselben Weg wie ein
   // Pinselzug, also mit denselben Pruefungen und als EIN Bauschritt.
   function bucketFill(tile) {
-    if (state.currentItemType == null) return setStatus('Choose an item first.');
+    if (state.currentItemType == null) return setStatus(() => tr("castle:choose_an_item_first"));
     const type = state.currentItemType;
-    if (isLineSequence(type)) return setStatus('This item is drawn as a line, not poured.');
+    if (isLineSequence(type)) return setStatus(() => tr("castle:this_item_is_drawn_as_a_line_not_poured"));
     const placements = placementRefs();
     const rectsFor = p => footprintRects(p.type,p.off);
     const batch = {existing:geometry.footprintIndex(placements,rectsFor,GRID),
       pending:geometry.footprintIndex([],rectsFor,GRID),count:countType(type)};
-    if (batch.existing.has(tile.x,tile.y)) return setStatus('Nothing to fill here - that tile is taken.');
+    if (batch.existing.has(tile.x,tile.y)) return setStatus(() => tr("castle:nothing_to_fill_here_that_tile_is_taken"));
 
     state.brushOffsets = [];
     state.brushTypes = [];
@@ -1685,10 +1698,10 @@
     const region = geometry.floodTiles(tile,batch.existing.has,GRID);
     const ordered = geometry.orderFillTiles(region,footprintRectsAtXY(type,0,0),batch.existing.has,GRID);
     for (const field of ordered) brushAddOne(field,batch);
-    if (!state.brushOffsets.length) return setStatus('Nothing could be placed there.');
+    if (!state.brushOffsets.length) return setStatus(() => tr("castle:nothing_could_be_placed_there"));
     const gesetzt = state.brushOffsets.length;
     commitBrush();
-    setStatus('Filled ' + gesetzt + ' tile' + (gesetzt === 1 ? '' : 's') + ' with ' + itemName(type));
+    setStatus(() => tr('details:fill_result', { tiles: tr('details:tile', { count: gesetzt }), item: itemName(type) }));
   }
 
   function validateMove(proposed) {
@@ -1713,11 +1726,11 @@
         if (mode === 'allow') continue;
         if (mode === 'replace') {
           // Ueber einen gesperrten Bauschritt wird nicht gebaut.
-          if (refIsLocked(other.ref)) return { ok: false, reason: 'That build step is locked.', replacements: new Set() };
+          if (refIsLocked(other.ref)) return { ok: false, reason: tr("castle:that_build_step_is_locked"), replacements: new Set() };
           replacements.add(other.ref);
           continue;
         }
-        return { ok: false, reason: `Move blocked by ${itemName(other.type)}.`, replacements: new Set() };
+        return { ok: false, reason: tr("castle:move_blocked_by_value", { value1: itemName(other.type) }), replacements: new Set() };
       }
     }
     return { ok: true, reason: '', replacements };
@@ -1757,7 +1770,7 @@
     }
     deleteRefs(result.replacements);
     state.selected.clear();
-    changed(`Moved ${proposed.size} placement${proposed.size === 1 ? '' : 's'}`);
+    changed(() => tr("castle:moved_value_placementvalue", { quantityvalue2: tr("quantity:placement", { count: proposed.size }) }));
   }
 
   function clearSelectionAndItem() {
@@ -1776,11 +1789,11 @@
     updateSelectedItemInfo();
     renderBuildList();
     scheduleDraw();
-    setStatus('Selection cleared');
+    setStatus(() => tr("castle:selection_cleared"));
   }
 
   function toolLabel(tool) {
-    return ({ single: 'Single', brush: 'Brush', line: 'Line', select: 'Select / Move', copy: 'Copy Selection', replace: 'Replace Area', merge: 'Merge Area', delete: 'Delete Area', saveCastle: 'Save castle', openCastle: 'Open castle' })[tool] || tool;
+    return ({ single: 'Single', brush: 'Brush', line: 'Line', select: 'Select / Move', copy: tr("castle:copy_selection"), replace: tr("castle:replace_area"), merge: tr("castle:merge_area"), delete: tr("castle:delete_area"), saveCastle: tr("interface:save_castle"), openCastle: tr("interface:open_castle") })[tool] || tool;
   }
 
   function isPlacementTool(tool) {
@@ -1800,6 +1813,7 @@
       button.disabled = (lineOnly && (tool === 'single' || tool === 'brush'))
                      || (nothingChosen && isPlacementTool(tool));
     });
+    updateDrawMenu();
   }
 
   // Ein gesperrtes Werkzeug darf nicht aktiv stehen bleiben. Wer das Gebaeude
@@ -1814,13 +1828,12 @@
   }
 
   function updateBrushSizeUI() {
-    if (!els.brushSizeOut) return;
+    if (!els.brushSizeInput) return;
     const grenze = geometry.GRID_SIZE || 100;
-    els.brushSizeOut.textContent = String(state.brushSize);
+    els.brushSizeInput.value = String(state.brushSize);
+    els.brushSizeInput.max = String(grenze);
     if (els.brushMinus) els.brushMinus.disabled = state.brushSize <= 1;
     if (els.brushPlus) els.brushPlus.disabled = state.brushSize >= grenze;
-    const kasten = els.brushSizeOut.parentElement;
-    if (kasten) kasten.classList.remove('off');
   }
 
   function leavePlacementToolIfDisabled() {
@@ -1858,7 +1871,7 @@
     updateBrushSizeUI();
     updateSelectedItemInfo();
     renderPalette();
-    setStatus(`${toolLabel(tool)} tool`);
+    setStatus(() => tr('feedback:tool', {name:toolLabel(tool)}));
     scheduleDraw();
   }
 
@@ -1877,24 +1890,50 @@
       const labels = keys.filter(Boolean).map(key => key.toUpperCase());
       const badge = button.querySelector('kbd');
       if (badge) badge.textContent = labels[0] || '';
-      button.title = labels.length ? `Shortcut: ${labels[0]}` : '';
+      button.title = labels.length ? tr('feedback:shortcut', {key:labels[0]}) : '';
     });
     for (const [action, label, , id] of shortcutConfig.actions) {
       const button = id && document.getElementById(id);
-      if (button) button.title = label + (state.toolShortcuts[action]?.[0] ? ` (${state.toolShortcuts[action][0].toUpperCase()})` : '');
+      if (!button) continue;
+      const key = state.toolShortcuts[action]?.[0]?.toUpperCase() || '';
+      button.title = label + (key ? ` (${key})` : '');
+      const badge = button.closest('.toolbarMenuPanel') && button.querySelector('kbd');
+      if (badge) badge.textContent = key;
     }
+    updateDrawMenu();
+  }
+
+  // Draw shows the current drawing mode; the palette behind it holds all four.
+  // Brush size only matters to Brush, so its stepper appears only there.
+  function updateDrawMenu() {
+    if (isPlacementTool(state.tool)) state.drawTool = state.tool;
+    const tool = state.drawTool || 'single';
+    const choice = document.querySelector(`.castleDrawPalette .castleTool[data-tool="${tool}"]`);
+    const menu = document.getElementById('castleDrawMenu');
+    if (!choice || !menu) return;
+    document.getElementById('castleDrawIcon').setAttribute('href', `#tool-${tool}`);
+    document.getElementById('castleDrawLabel').textContent = choice.querySelector('span').textContent;
+    document.getElementById('castleDrawKey').textContent = choice.querySelector('kbd').textContent;
+    const unavailable = [...menu.querySelectorAll('.castleTool')].every(button => button.disabled);
+    menu.querySelector('summary').classList.toggle('active', isPlacementTool(state.tool) && !unavailable);
+    menu.classList.toggle('disabled', unavailable);
+    if (unavailable) menu.open = false;
+    document.getElementById('castleBrushStepper').hidden = tool !== 'brush';
   }
 
   function loadToolShortcuts() {
     try {
-      const saved = JSON.parse(localStorage.getItem(SHORTCUT_STORAGE_KEY) || 'null');
+      const stored = JSON.parse(localStorage.getItem(SHORTCUT_STORAGE_KEY) || 'null');
+      const saved = stored && shortcutConfig.refreshDefaults(stored);
       const previous = JSON.parse(localStorage.getItem('aiv.castleToolShortcuts.v2') || 'null');
+      const first = JSON.parse(localStorage.getItem('aiv.castleToolShortcuts.v1') || 'null');
       const savedCamera = JSON.parse(localStorage.getItem(CAMERA_STORAGE_KEY) || 'null');
       const cameraKeys = camera.directions.flatMap(direction => savedCamera?.[direction] ? [savedCamera[direction], `shift+${savedCamera[direction]}`] : []);
       state.toolShortcuts = saved ? validateToolShortcuts(saved)
         : previous ? shortcutConfig.upgrade(previous, cameraKeys)
-        : shortcutConfig.migrate(JSON.parse(localStorage.getItem('aiv.castleToolShortcuts.v1') || 'null'));
-      if (!saved) localStorage.setItem(SHORTCUT_STORAGE_KEY, JSON.stringify(state.toolShortcuts));
+        : shortcutConfig.migrate(first);
+      // Untouched defaults stay unsaved, so a later change of defaults reaches them.
+      if (saved !== stored || (!stored && (previous || first))) localStorage.setItem(SHORTCUT_STORAGE_KEY, JSON.stringify(state.toolShortcuts));
     } catch (error) {
       console.warn('Ignoring invalid saved Castle shortcuts:', error);
       state.toolShortcuts = deepClone(DEFAULT_TOOL_SHORTCUTS);
@@ -2012,7 +2051,7 @@
       state.camera = preferences;
       updateToolShortcutHints();
       els.shortcutDialog.close();
-      setStatus('Castle shortcuts saved');
+      setStatus(() => tr("castle:castle_shortcuts_saved"));
     } catch (error) {
       els.shortcutError.textContent = error.message;
     }
@@ -2047,12 +2086,12 @@
     renderPalette();
     renderBuildList();
     updateSelectedItemInfo();
-    setStatus(`Selected ${itemName(type)} — click the map to place`);
+    setStatus(() => tr("castle:selected_value_click_the_map_to_place", { value1: itemName(type) }));
   }
 
   function updateSelectedItemInfo() {
     if (state.currentItemType == null) {
-      els.itemInfo.textContent = 'Select an item';
+      els.itemInfo.textContent = tr("interface:select_an_item");
       return;
     }
     const type = state.currentItemType;
@@ -2062,12 +2101,12 @@
     const max = maximum == null ? '∞' : maximum;
     const sequence = lineSequence(type);
     const kind = sequence.length
-      ? `line only · up to ${sequence.length} consecutive steps · `
+      ? tr("castle:line_only_up_to_value_consecutive_steps", { length: sequence.length })
       : isUnitType(type)
-      ? 'rallypoint · '
-      : `${allowsMultiplePerStep(type) ? 'multiple per step' : 'single per step'} · `;
-    const sizeLabel = type === geometry.KEEP_ITEM_TYPE ? `${w}×${h} + forced 5×5 Stockpile` : `${w}×${h}`;
-    els.itemInfo.textContent = `${itemName(type)} [${type}] · ${kind}${sizeLabel} · overlap: ${overlapMode(type)} · max: ${max}`;
+      ? tr('feedback:rally_point')
+      : allowsMultiplePerStep(type) ? tr("castle:multiple_per_step") : tr("castle:single_per_step");
+    const sizeLabel = type === geometry.KEEP_ITEM_TYPE ? tr('feedback:keep_footprint', {width:w,height:h}) : `${w}×${h}`;
+    els.itemInfo.textContent = tr('feedback:placement_info', {name:itemName(type),id:type,kind,size:sizeLabel,overlap:tr('feedback:overlap_'+overlapMode(type),{defaultValue:overlapMode(type)}),maximum:max});
   }
 
   function getPaletteGroups() {
@@ -2086,7 +2125,7 @@
   function renderPalette() {
     const groups = getPaletteGroups();
     if (!groups.length) {
-      els.palette.innerHTML = '<div class="paletteEmpty">No item categories configured.</div>';
+      els.palette.innerHTML = `<div class="paletteEmpty">${globalThis.toolkitI18n.html("castle:no_item_categories_configured")}</div>`;
       return;
     }
     if (!state.activeCategory || !groups.some(([name]) => name === state.activeCategory)) {
@@ -2105,8 +2144,9 @@
       button.style.setProperty('--category-text', colors.foreground);
       button.setAttribute('aria-pressed', String(category === state.activeCategory));
       if (category === state.activeCategory) button.classList.add('active');
-      button.textContent = category;
-      button.title = `${category} (${ids.length})`;
+      const categoryLabel = tr(`categories:${category}`, { defaultValue: category });
+      button.textContent = categoryLabel;
+      button.title = `${categoryLabel} (${ids.length})`;
       button.addEventListener('click', () => {
         state.activeCategory = category;
         renderPalette();
@@ -2123,7 +2163,7 @@
     if (!visible.length) {
       const empty = document.createElement('div');
       empty.className = 'paletteEmpty';
-      empty.textContent = `No items in ${active[0]}.`;
+      empty.textContent = tr("castle:no_items_in_value", { value1: active[0] });
       items.appendChild(empty);
     }
 
@@ -2137,7 +2177,7 @@
       row.setAttribute('aria-label', row.title);
 
       const thumb = document.createElement('span');
-      thumb.className = 'paletteThumb';
+      thumb.className = isUnitType(Number(id)) ? 'paletteThumb paletteThumbUnit' : 'paletteThumb';
       const sequence = lineSequence(Number(id));
       const thumbnailType = String(sequence[0] ?? id);
       if (state.skins[thumbnailType]) {
@@ -2145,6 +2185,14 @@
         img.src = state.skins[thumbnailType];
         img.alt = '';
         thumb.appendChild(img);
+      } else if (isUnitType(Number(id)) && window.castlePalette.unitBadge(id)) {
+        const badge = window.castlePalette.unitBadge(id);
+        const disc = document.createElement('span');
+        disc.className = 'paletteUnitBadge';
+        disc.textContent = badge.text;
+        disc.style.background = badge.fill;
+        disc.style.color = badge.ink;
+        thumb.appendChild(disc);
       } else {
         thumb.textContent = id;
         thumb.style.background = stableColor(Number(id));
@@ -2158,7 +2206,7 @@
       meta.className = 'paletteItemMeta';
       const size = itemSize(Number(id));
       meta.textContent = sequence.length
-        ? `Line · up to ${sequence.length} steps`
+        ? tr("castle:line_up_to_value_steps", { length: sequence.length })
         : Number(id) === geometry.KEEP_ITEM_TYPE
         ? `${size[0]}×${size[1]} + SP`
         : `${size[0]}×${size[1]}`;
@@ -2167,6 +2215,7 @@
       items.appendChild(row);
     }
     els.palette.appendChild(items);
+    window.toolkitI18n.applyTextDirection(els.palette);
   }
 
   // Die Berechnung und die Detaildarstellung der beiden Uebersichten liegen
@@ -2213,9 +2262,9 @@
     els.buildSlider.max = String(Math.max(1, frames().length));
     if (!state.scrubPending) els.buildSlider.value = String(activeStep == null ? 1 : activeStep + 1);
     els.buildSlider.disabled = frames().length === 0;
-    els.buildSliderValue.textContent = activeStep == null ? 'No step selected' : `Step ${activeStep + 1}`;
+    els.buildSliderValue.textContent = activeStep == null ? tr("interface:no_step_selected") : tr("castle:step_value", { value1: activeStep + 1 });
     const rallypointCount = state.document.miscItems.filter(item => isUnitType(item.itemType)).length;
-    els.buildCount.textContent = `${frames().length} step${frames().length === 1 ? '' : 's'}`;
+    els.buildCount.textContent = tr('quantity:build_step',{count:frames().length});
     // Scrubbing changes row state, not row content. Preserve the DOM, listeners,
     // scroll position and drag target until the actual document changes.
     if (state.buildListRevision === (state.documentRevision || 0)) {
@@ -2269,7 +2318,7 @@
       index.textContent = String(fi + 1);
       const name = document.createElement('span');
       name.className = 'buildName';
-      name.textContent = count ? itemName(type) : 'Empty step';
+      name.textContent = count ? itemName(type) : tr("castle:empty_step");
       name.title = `${itemName(type)} [${type}]`;
       const right = document.createElement('div');
       right.className = 'buildStepControls';
@@ -2277,9 +2326,9 @@
       meta.className = 'buildMeta';
       meta.textContent = count > 1 ? `×${count}` : '';
       const up = document.createElement('button');
-      up.type = 'button'; up.textContent = '↑'; up.title = 'Move selected step(s) up';
+      up.type = 'button'; up.textContent = '↑'; up.title = tr("castle:move_selected_step_s_up");
       const down = document.createElement('button');
-      down.type = 'button'; down.textContent = '↓'; down.title = 'Move selected step(s) down';
+      down.type = 'button'; down.textContent = '↓'; down.title = tr("castle:move_selected_step_s_down");
       up.addEventListener('click', e => { e.stopPropagation(); moveBuildSelection(fi, -1); });
       down.addEventListener('click', e => { e.stopPropagation(); moveBuildSelection(fi, 1); });
       if (frame.locked) row.classList.add('locked');
@@ -2292,9 +2341,9 @@
         const selectedFrames = updateBuildSelection(fi, event);
         renderBuildList();
         scheduleDraw();
-        setStatus(selectedFrames.length > 1
-          ? `Selected ${selectedFrames.length} build steps — drag or use the arrows to move them together`
-          : `Selected build step ${fi + 1} — new buildings will be inserted after it`);
+        setStatus(() => selectedFrames.length > 1
+          ? tr("castle:selected_value_build_steps_drag_or_use_the_arrows_to_move_them_together", { length: selectedFrames.length })
+          : tr("castle:selected_build_step_value_new_buildings_will_be_inserted_after_it", { value1: fi + 1 }));
       });
       row.addEventListener('dragstart', e => {
         let selectedFrames = selectedBuildFrameIndexes();
@@ -2324,6 +2373,7 @@
       });
       els.buildList.appendChild(row);
     });
+    window.toolkitI18n.applyTextDirection(els.buildList);
   }
 
   function scrollToActiveBuildStep(viewport) {
@@ -2378,7 +2428,7 @@
       renderBuildList(true);
       clearTimeout(state.scrubSummaryTimer);
       state.scrubSummaryTimer = setTimeout(() => { updatePopulationPanel(); updateCostPanel(); }, 150);
-      setStatus(`Selected build step ${frameIndex + 1} — new buildings will be inserted after it`);
+      setStatus(() => tr("castle:selected_build_step_value_new_buildings_will_be_inserted_after_it", { value1: frameIndex + 1 }));
     });
   }
 
@@ -2393,7 +2443,7 @@
     if (!indexes.length) return false;
     const beweglich = unlockedFrameIndexes(indexes);
     if (!beweglich.length) {
-      setStatus('Locked - unlock the build step first.');
+      setStatus(() => tr("castle:locked_unlock_the_build_step_first"));
       return false;
     }
     const festgehalten = indexes.length - beweglich.length;
@@ -2408,8 +2458,8 @@
       (_unused, index) => result.startIndex + index
     );
     selectBuildFrames(movedIndexes, result.endIndex);
-    changed(`${movedIndexes.length} build step${movedIndexes.length === 1 ? '' : 's'} moved together`
-      + (festgehalten ? ` (${festgehalten} locked and left alone)` : ''));
+    changed(() => tr("castle:value_build_stepvalue_moved_together", { quantityvalue2: tr("quantity:build_step", { count: movedIndexes.length }) })
+      + (festgehalten ? tr("castle:value_locked_and_left_alone_2", { festgehalten: festgehalten }) : ''));
     return true;
   }
 
@@ -2424,7 +2474,7 @@
     // huepft die Auswahl ueber ihn hinweg statt hinter ihn.
     const beweglich = unlockedFrameIndexes(selectedFrames);
     if (!beweglich.length) {
-      setStatus('Locked - unlock the build step first.');
+      setStatus(() => tr("castle:locked_unlock_the_build_step_first"));
       return false;
     }
     const selected = new Set(beweglich);
@@ -2438,6 +2488,7 @@
     state.skinImages = {};
     for (const [id, url] of Object.entries(state.skins)) {
       const img = new Image();
+      img.crossOrigin = 'anonymous';
       img.onload = canvasAssetLoaded;
       img.src = url;
       state.skinImages[id] = img;
@@ -2445,9 +2496,25 @@
   }
 
   function applyLoadedSkins(loaded) {
-    state.skins = loaded?.skins || loaded || {};
+    const skins = loaded?.skins || loaded || {};
+    const unchanged = Object.keys(skins).length === Object.keys(state.skins || {}).length
+      && Object.entries(skins).every(([id, url]) => state.skins?.[id] === url);
+    state.skins = skins;
     state.customSkinTypes = new Set((loaded?.customSkinTypes || []).map(String));
-    loadSkinImages();
+    if (!unchanged) loadSkinImages();
+  }
+
+  let gameAssetRequest = 0;
+  async function reloadGameAssets() {
+    const request = ++gameAssetRequest;
+    const [skins] = await Promise.all([
+      window.electronAPI.loadAivSkins(), window.isoView?.reloadGameAssets?.()
+    ]);
+    if (request !== gameAssetRequest) return;
+    applyLoadedSkins(skins);
+    renderPalette();
+    updateSelectedItemInfo();
+    scheduleDraw();
   }
 
   async function setSkin() {
@@ -2460,7 +2527,7 @@
     loadSkinImages();
     renderPalette();
     updateSelectedItemInfo();
-    setStatus(`Set PNG skin for ${itemName(state.currentItemType)}`);
+    setStatus(() => tr("castle:set_png_skin_for_value", { value1: itemName(state.currentItemType) }));
   }
 
   async function removeSkin() {
@@ -2470,7 +2537,7 @@
     renderPalette();
     updateSelectedItemInfo();
     scheduleDraw();
-    setStatus(`Removed skin for ${itemName(state.currentItemType)}`);
+    setStatus(() => tr("castle:removed_skin_for_value", { value1: itemName(state.currentItemType) }));
   }
 
   function resizeCanvas() {
@@ -2579,7 +2646,7 @@
       loadBlueprintSelection(selection);
       return true;
     } catch (error) {
-      setStatus(`Could not load background: ${error.message}`);
+      setStatus(() => tr("castle:could_not_load_background_value", { message: error.message }));
       return false;
     } finally {
       blueprintDialogOpen = false;
@@ -2592,25 +2659,26 @@
     state.blueprintFileName = '';
     updateBlueprintControls();
     scheduleDraw();
-    if (announce) setStatus('Temporary blueprint cleared');
+    if (announce) setStatus(() => tr("castle:temporary_blueprint_cleared"));
   }
 
   function loadBlueprintSelection(selection) {
     if (!selection?.dataUrl) return;
     const token = ++state.blueprintLoadToken;
     const image = new Image();
+    image.crossOrigin = 'anonymous';
     image.onload = () => {
       if (token !== state.blueprintLoadToken) return;
       state.blueprintImage = image;
-      state.blueprintFileName = selection.fileName || 'background image';
+      state.blueprintFileName = selection.fileName || tr("castle:background_image");
       state.blueprintVisible = true;
       updateBlueprintControls();
       scheduleDraw();
-      setStatus(`Temporary blueprint loaded: ${state.blueprintFileName}`);
+      setStatus(() => tr("castle:temporary_blueprint_loaded_value", { blueprintFileName: state.blueprintFileName }));
     };
     image.onerror = () => {
       if (token !== state.blueprintLoadToken) return;
-      setStatus('Could not open the selected blueprint image');
+      setStatus(() => tr("castle:could_not_open_the_selected_blueprint_image"));
     };
     image.src = selection.dataUrl;
   }
@@ -2636,6 +2704,8 @@
     clearCacheContext(staticCacheCtx, target);
 
     ctx = staticCacheCtx;
+    // A floor plan keeps only the castle; the ground stays transparent.
+    if (state.floorPlan) return;
     ctx.fillStyle = '#101216';
     ctx.fillRect(0, 0, state.canvasWidth, state.canvasHeight);
     const mapSize = GRID * state.cell;
@@ -2661,13 +2731,13 @@
     const futureCacheCtx = future.getContext('2d');
     paintCanvasBackground(target);
     const movingRefs = state.gesture === 'move' ? state.moveStartOffsets : null;
-    const activeStep = Number.isInteger(state.insertionFrameIndex) ? state.insertionFrameIndex : null;
+    const activeStep = Number.isInteger(state.insertionFrameIndex) && !state.floorPlan ? state.insertionFrameIndex : null;
     const futurePlacements = [];
     const unitPlacements = [];
     for (const placement of placementRefs()) {
       if (movingRefs?.has(placement.ref)) continue;
       if (placement.kind === 'unit') {
-        unitPlacements.push(placement);
+        if (!state.floorPlan) unitPlacements.push(placement);
       } else if (activeStep != null && placement.fi > activeStep) {
         futurePlacements.push(placement);
       } else {
@@ -2701,7 +2771,7 @@
     }
 
     ctx = staticCacheCtx;
-    drawAnalysisOverlay();
+    if (!state.floorPlan) drawAnalysisOverlay();
     for (const placement of unitPlacements) {
       drawPlacement(placement.type, placement.off, state.selected.has(placement.ref));
     }
@@ -2759,7 +2829,7 @@
           };
           analysisWorker.onerror = () => {
             analysisWorker.terminate(); analysisWorker = null;
-            analysisCache = { key: analysisCache.key, routes: [], pending: false, error: 'Could not calculate overlays.' };
+            analysisCache = { key: analysisCache.key, routes: [], pending: false, error: tr("castle:could_not_calculate_overlays") };
             scheduleDraw();
           };
         }
@@ -2775,9 +2845,9 @@
     const paths = !!document.getElementById('castleShowRoutes')?.checked;
     if (info) {
       info.hidden = !fire && !paths;
-      info.textContent = overlay.error || (overlay.pending ? 'Calculating overlays...' : [
-        fire ? 'Fire estimate: two inner red rings; HP-scaled yellow-to-blue halo, up to 8 tiles.' : '',
-        paths ? `Paths: ${overlay.routes.filter(r=>r.path.length).length}/${overlay.routes.length} reachable. Open gates; ${window.isoView?.analysisTerrain?.() ? 'map terrain included' : 'flat terrain (no map data)'}. Cyan dots: reachable entrances; red dots: blocked. Static estimate.` : ''
+      info.textContent = overlay.error || (overlay.pending ? tr("castle:calculating_overlays") : [
+        fire ? tr('details:fire_estimate') : '',
+        paths ? tr("castle:paths_value_value_reachable_open_gates_value_cyan_dots_reachable_entranc", { length: overlay.routes.filter(r=>r.path.length).length, length2: overlay.routes.length, value3: window.isoView?.analysisTerrain?.() ? tr('details:map_terrain') : tr('details:flat_terrain') }) : ''
       ].filter(Boolean).join(' '));
     }
     ctx.save();
@@ -2924,13 +2994,13 @@
   function itemLabelAtTile(tile) {
     if(tile && document.getElementById('castleShowRoutes')?.checked) {
       const routes=analysisCache.routes.filter(r=>r.entry?.x===tile.x && r.entry?.y===tile.y);
-      if(routes.length)return routes.map(r=>`${r.name || itemName(r.type)}: ${r.workers} worker(s) - ${r.reason || 'entrance, '+Math.round(r.distance)+' tiles to delivery point'}`).join('; ');
+      if(routes.length)return routes.map(r=>`${r.name || itemName(r.type)}: ${r.workers} worker(s) - ${r.reason || 'entrance, '+Math.round(r.distance)+tr("castle:tiles_to_delivery_point")}`).join('; ');
     }
     const ref = tile && topmostRefAtTile(tile);
     const label=ref ? `${itemName(refType(ref))} [${refType(ref)}]` : '';
     if(tile && document.getElementById('castleShowRoutes')?.checked && analysisCache.walkability) {
       const flags=analysisCache.walkability[tile.y*GRID+tile.x];
-      const access=flags===3?'Ground passage and raised walkway':flags===2?'Raised walkway':flags===1?'Walkable ground':'Blocked tile';
+      const access=flags===3?tr("castle:ground_passage_and_raised_walkway"):flags===2?tr("castle:raised_walkway"):flags===1?tr("castle:walkable_ground"):tr("castle:blocked_tile");
       return label ? `${label} - ${access}` : access;
     }
     return label;
@@ -3203,13 +3273,20 @@
     ctx.save();
     ctx.globalAlpha = alpha;
     if (img?.complete && img.naturalWidth) {
-      ctx.drawImage(img, r.x, r.y, r.w, r.h);
+      // Extracted unit sprites have tightly cropped, unequal dimensions. Fit
+      // their whole silhouette inside the marker box instead of stretching it.
+      const scale = isUnitType(type) ? Math.min(r.w / img.naturalWidth, r.h / img.naturalHeight) : null;
+      const width = scale == null ? r.w : img.naturalWidth * scale;
+      const height = scale == null ? r.h : img.naturalHeight * scale;
+      ctx.drawImage(img, r.x + (r.w - width) / 2, r.y + r.h - height, width, height);
       if (preview) {
         ctx.fillStyle = outlineOverride || css('--valid', '#55c271');
         ctx.globalAlpha = alpha * 0.24;
         ctx.fillRect(r.x, r.y, r.w, r.h);
         ctx.globalAlpha = alpha;
       }
+    } else if (isUnitType(type) && window.castlePalette.unitBadge(type)) {
+      drawUnitBadge(window.castlePalette.unitBadge(type), r);
     } else {
       ctx.fillStyle = stableColor(type);
       ctx.fillRect(r.x, r.y, r.w, r.h);
@@ -3224,6 +3301,26 @@
     drawItemName(type, r);
 
     ctx.restore();
+  }
+
+  // A disc filling the tile with the unit's short name; see castlePalette.unitBadge.
+  // Only writes to ctx: the worker's recording context cannot be read back.
+  function drawUnitBadge(badge, r) {
+    const radius = Math.max(1, Math.min(r.w, r.h) / 2 - 0.5);
+    ctx.beginPath();
+    ctx.arc(r.x + r.w / 2, r.y + r.h / 2, radius, 0, Math.PI * 2);
+    ctx.fillStyle = badge.fill;
+    ctx.fill();
+    ctx.lineWidth = Math.max(1, radius / 8);
+    ctx.strokeStyle = badge.edge;
+    ctx.stroke();
+    const fontSize = Math.floor(radius * (badge.text.length > 2 ? 0.8 : 0.95));
+    if (fontSize < 5) return;
+    ctx.font = `bold ${fontSize}px sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillStyle = badge.ink;
+    ctx.fillText(badge.text, r.x + r.w / 2, r.y + r.h / 2 + 0.5, radius * 1.7);
   }
 
   let drawStyleCache = null;
@@ -3316,7 +3413,7 @@
       return;
     }
     if (state.tool === 'brush') {
-      if (state.currentItemType == null) return setStatus('Choose an item first.');
+      if (state.currentItemType == null) return setStatus(() => tr("castle:choose_an_item_first"));
       state.gesture = 'brush';
       state.brushOffsets = [];
       state.brushTypes = [];
@@ -3328,7 +3425,7 @@
       return;
     }
     if (state.tool === 'line') {
-      if (state.currentItemType == null) return setStatus('Choose an item first.');
+      if (state.currentItemType == null) return setStatus(() => tr("castle:choose_an_item_first"));
       state.gesture = 'line';
       state.brushOffsets = [];
       state.brushTypes = [];
@@ -3402,7 +3499,7 @@
         renderBuildList();
         if (activatedStep) scrollToActiveBuildStep();
         scheduleDraw();
-        setStatus(`Selected ${state.selected.size} placement${state.selected.size === 1 ? '' : 's'}`);
+        setStatus(() => tr("castle:selected_value_placementvalue", { quantityvalue2: tr("quantity:placement", { count: state.selected.size }) }));
         return;
       }
       if (!state.selected.has(hit)) {
@@ -3419,14 +3516,14 @@
       const beweglich = Array.from(state.selected).filter(ref => refExists(ref) && !refIsLocked(ref));
       const festgehalten = state.selected.size - beweglich.length;
       if (!beweglich.length) {
-        setStatus('Locked - unlock the build step first.');
+        setStatus(() => tr("castle:locked_unlock_the_build_step_first"));
         state.gesture = null;
         renderBuildList();
         if (activatedStep) scrollToActiveBuildStep();
         scheduleDraw();
         return;
       }
-      if (festgehalten) setStatus(festgehalten + ' locked placement' + (festgehalten === 1 ? '' : 's') + ' stay where they are');
+      if (festgehalten) setStatus(() => tr('details:locked_stay', { placements: tr('quantity:locked_placement', { count: festgehalten }) }));
       state.gesture = 'move';
       state.moveStartOffsets = new Map();
       for (const ref of beweglich) state.moveStartOffsets.set(ref, refOffset(ref));
@@ -3469,8 +3566,8 @@
         const sequence = lineSequence(state.currentItemType);
         if (sequence.length) {
           const result = validatePlacement(sequence[0], off);
-          setStatus(result.ok
-            ? `Drag from x=${tile.x}, y=${tile.y} to choose the ${itemName(state.currentItemType)} direction.`
+          setStatus(() => result.ok
+            ? tr("castle:drag_from_x_value_y_value_to_choose_the_value_direction", { x: tile.x, y: tile.y, value3: itemName(state.currentItemType) })
             : result.reason);
         } else {
           const result = validatePlacement(state.currentItemType, off);
@@ -3478,11 +3575,11 @@
         }
       } else if (state.tool === 'copy' && state.copyBuffer) {
         const result = validateCopyAt(tile);
-        setStatus(result.ok ? `Copy ready at x=${tile.x}, y=${tile.y} — click to place` : result.reason);
+        setStatus(() => result.ok ? tr("castle:copy_ready_at_x_value_y_value_click_to_place", { x: tile.x, y: tile.y }) : result.reason);
       } else {
         setStatus(`x=${tile.x}, y=${tile.y}, offset=${off}`);
       }
-    } else if (tileChanged) setStatus('Outside map');
+    } else if (tileChanged) setStatus(() => tr("castle:outside_map"));
 
     if (state.gesture === 'brush' && tile && tileChanged) {
       const from = state.brushLastTile || tile;
@@ -3498,7 +3595,7 @@
         state.brushSeen = new Set();
         state.brushReplacements = new Set();
         const route = routedLineTiles(state.dragStartTile, tile);
-        if (!route.length) setStatus('No unobstructed route to that tile.');
+        if (!route.length) setStatus(() => tr("castle:no_unobstructed_route_to_that_tile"));
         for (const p of route) brushAdd(p);
       }
     } else if (state.gesture === 'select-marquee' || state.gesture === 'copy-marquee' || state.gesture === 'replace-marquee' || state.gesture === 'merge-marquee' || state.gesture === 'delete-marquee') {
@@ -3543,7 +3640,7 @@
       renderBuildList();
       if (activatedStep) scrollToActiveBuildStep();
       scheduleDraw();
-      setStatus(`Selected ${state.selected.size} placement${state.selected.size === 1 ? '' : 's'}`);
+      setStatus(() => tr("castle:selected_value_placementvalue", { size: state.selected.size, value2: state.selected.size === 1 ? '' : 's' }));
     } else if (state.gesture === 'copy-marquee') {
       const candidates = refsInMarquee();
       const refs = new Set(placementRefs()
@@ -3554,11 +3651,11 @@
       if (captureCopyBuffer(refs)) {
         renderBuildList();
         scheduleDraw();
-        const ignoredNote = ignored ? ` (${ignored} unit/Keep placement${ignored === 1 ? '' : 's'} ignored)` : '';
-        setStatus(`Copied selection prepared: ${refs.size} placement${refs.size === 1 ? '' : 's'}${ignoredNote} — move the cursor and click to place`);
+        const ignoredNote = ignored ? tr("castle:value_unit_keep_placementvalue_ignored", { quantityvalue2: tr("quantity:unit_keep_placement", { count: ignored }) }) : '';
+        setStatus(() => tr("castle:copied_selection_prepared_value_placementvaluevalue_move_the_cursor_and_", { ignoredNote: ignoredNote, quantityvalue2: tr("quantity:placement", { count: refs.size }) }));
       } else {
         state.selected.clear();
-        setStatus(ignored ? 'Nothing copyable selected. Units and the Keep are ignored.' : 'Nothing selected to copy.');
+        setStatus(() => ignored ? tr("castle:nothing_copyable_selected_units_and_the_keep_are_ignored") : tr("castle:nothing_selected_to_copy"));
       }
     } else if (state.gesture === 'replace-marquee') {
       const refs = refsInMarquee();
@@ -3575,7 +3672,7 @@
         pushUndo();
         deleteRefs(refs);
         state.selected.clear();
-        changed(`Deleted ${refs.size} placement${refs.size === 1 ? '' : 's'}`);
+        changed(() => tr("castle:deleted_value_placementvalue_2", { quantityvalue2: tr("quantity:placement", { count: refs.size }) }));
       }
     } else if (state.gesture === 'move') {
       commitMove();
@@ -3655,7 +3752,7 @@
       resizeCanvas();
     } catch (err) {
       console.error('Castle editor initialization failed:', err);
-      setStatus('Castle editor configuration failed to load');
+      setStatus(() => tr("castle:castle_editor_configuration_failed_to_load"));
     }
   }
 
@@ -3689,8 +3786,8 @@
     karteBergfried.replaceChildren(...info.keeps.map((keep, index) => {
       const option = document.createElement('option');
       option.value = String(index);
-      const name = keep.player ? `Start ${keep.player}` : `Start place ${index + 1}`;
-      const dreh = keep.orientation ? `, turned ${keep.orientation / 2}/4` : '';
+      const name = tr('castle:start_place_value',{value1:keep.player || index+1});
+      const dreh = keep.orientation ? ' · '+tr('quantity:quarter_turn',{count:keep.orientation/2}) : '';
       option.textContent = `${name} (${keep.x}, ${keep.y})${dreh}`;
       return option;
     }));
@@ -3707,7 +3804,7 @@
     if (kachelnLaufen?.path === info.path) return;
     const request = { path: info.path };
     kachelnLaufen = request;
-    setStatus('Loading map views…');
+    setStatus(() => tr("castle:loading_map_views"));
     try {
       const vorrat = await window.electronAPI.loadMapTiles(info.path);
       if (kachelnLaufen !== request) return;      // inzwischen andere Karte oder neuer Ladevorgang
@@ -3715,16 +3812,16 @@
       if (kachelnLaufen !== request) return;
       if (vorrat.nativeError) {
         kachelnLaufen = null;
-        setStatus(`Map loaded; rotation unavailable: ${vorrat.nativeError}`);
+        setStatus(() => tr("castle:map_loaded_rotation_unavailable_value", { nativeError: vorrat.nativeError }));
         return;
       }
-      setStatus(`Whole map "${vorrat.name}" ready · ${vorrat.kacheln} different tiles`
-                + (vorrat.fehlend ? `, ${vorrat.fehlend} without a picture` : ''));
+      setStatus(() => tr("castle:whole_map_value_ready_value_different_tiles", { name: vorrat.name, kacheln: vorrat.kacheln })
+                + (vorrat.fehlend ? ' · ' + tr('feedback:missing_sprites', {count:vorrat.fehlend}) : ''));
     } catch (error) {
       if (kachelnLaufen !== request) return;
       kachelnLaufen = null;
-      window.isoView.setMapLoadError?.(`Could not load map: ${error.message}. Select Game map to retry.`);
-      setStatus(`Could not read the map tiles: ${error.message}`);
+      window.isoView.setMapLoadError?.(tr("castle:could_not_load_map_value_select_game_map_to_retry", { message: error.message }));
+      setStatus(() => tr("castle:could_not_read_the_map_tiles_value", { message: error.message }));
     }
   }
 
@@ -3743,8 +3840,8 @@
       const empty = document.createElement('div');
       empty.className = 'castleMapEmpty';
       empty.textContent = karteVorrat && karteVorrat.length
-        ? 'No map of that name.'
-        : 'No maps found. Choose the game folder under UCP first.';
+        ? tr("castle:no_map_of_that_name")
+        : tr("castle:no_maps_found_choose_the_game_folder_under_ucp_first");
       karteListe.replaceChildren(empty);
       return;
     }
@@ -3766,13 +3863,13 @@
   async function chooseMap(entry) {
     const selection = ++mapSelectionRequest;
     if (!window.isoView || !karteFehler) return;
-    karteFehler.textContent = 'Reading the map…';
+    karteFehler.textContent = tr("castle:reading_the_map");
     try {
       const map = await window.electronAPI.loadGameMap(entry.path);
       if (selection !== mapSelectionRequest) return;
       kachelnLaufen = null;
       window.isoView.setGameMap(map);
-      await window.isoView.reloadGameAssets?.();
+      await reloadGameAssets();
       if (selection !== mapSelectionRequest) return;
       updateMapControls();
         if (karteDialog && karteDialog.open) karteDialog.close();
@@ -3783,8 +3880,8 @@
       await ensureMapTiles();
     } catch (error) {
       if (selection !== mapSelectionRequest) return;
-      window.isoView.setMapLoadError?.(`Could not load map: ${error.message}. Select Game map to retry.`);
-      karteFehler.textContent = `Could not read that map: ${error.message}`;
+      window.isoView.setMapLoadError?.(tr("castle:could_not_load_map_value_select_game_map_to_retry", { message: error.message }));
+      karteFehler.textContent = tr("castle:could_not_read_that_map_value", { message: error.message });
     }
   }
 
@@ -3801,7 +3898,7 @@
       karteVorrat = (answer && answer.maps) || [];
     } catch (error) {
       karteVorrat = karteVorrat || [];
-      karteFehler.textContent = `Could not list the maps: ${error.message}`;
+      karteFehler.textContent = tr("castle:could_not_list_the_maps_value", { message: error.message });
     }
     renderMapList('');
     if (!karteDialog.open) karteDialog.showModal();
@@ -3814,10 +3911,10 @@
     window.isoView.setGameMapKeep(Number(karteBergfried.value));
     const info = window.isoView.gameMapInfo();
     const keep = info && info.keeps[info.keepIndex];
-    setStatus(keep
-      ? `Castle built on ${keep.player ? `start ${keep.player}` : 'the starting place'} at (${keep.x}, ${keep.y})` +
-        (keep.orientation ? ` · the game turns it by ${keep.orientation / 2} quarter turn${keep.orientation === 2 ? '' : 's'}` : ' · not turned')
-      : 'Starting place changed');
+    setStatus(() => keep
+      ? tr("castle:castle_built_on_value_at_value_value", { value1: keep.player ? tr('details:start', { number: keep.player }) : tr('details:starting_place'), x: keep.x, y: keep.y }) +
+        (keep.orientation ? tr("castle:the_game_turns_it_by_value_quarter_turnvalue", { turns: tr('quantity:quarter_turn', { count: keep.orientation / 2 }) }) : tr("castle:not_turned"))
+      : tr("castle:starting_place_changed"));
   });
   if (karteZurueck) karteZurueck.addEventListener('click', () => {
     if (!window.isoView) return;
@@ -3826,7 +3923,7 @@
     kachelnLaufen = null;
     window.isoView.setMapTiles(null);
     updateMapControls();
-    setStatus('Map of the game taken away');
+    setStatus(() => tr("castle:map_of_the_game_taken_away"));
   });
 
   updateMapControls();
@@ -3842,23 +3939,60 @@
   });
 
   document.querySelectorAll('.castleTool').forEach(btn => btn.addEventListener('click', () => setTool(btn.dataset.tool)));
+  // Nothing is chosen at startup either, so Draw starts greyed out.
+  updateToolAvailability();
   document.getElementById('castleNewBtn').addEventListener('click', newFile);
   document.getElementById('castleOpenBtn').addEventListener('click', openFile);
   document.getElementById('castleSaveBtn').addEventListener('click', saveFile);
   document.getElementById('castleExportDeBtn').addEventListener('click', () => saveAs('aivjson'));
   for (const id of ['castleShowFire','castleShowRoutes']) document.getElementById(id)?.addEventListener('change', scheduleDraw);
   const overlayMenu = document.getElementById('castleOverlayMenu');
+  const toolbarMenus = [...document.querySelectorAll('.castleToolbar .toolbarMenu')];
   document.addEventListener('pointerdown', event => {
-    if (!overlayMenu.contains(event.target)) overlayMenu.open = false;
+    for (const menu of toolbarMenus) if (!menu.contains(event.target)) menu.open = false;
   });
   document.addEventListener('keydown', event => {
-    if (event.key === 'Escape' && overlayMenu.open) {
+    const menu = toolbarMenus.find(candidate => candidate.open);
+    if (event.key === 'Escape' && menu) {
       event.preventDefault();
-      overlayMenu.open = false;
-      overlayMenu.querySelector('summary').focus();
+      menu.open = false;
+      menu.querySelector('summary').focus();
     }
   });
-  window.addEventListener('blur', () => { overlayMenu.open = false; });
+  window.addEventListener('blur', () => { for (const menu of toolbarMenus) menu.open = false; });
+  for (const menu of toolbarMenus) {
+    // A command closes its menu; the overlay checkboxes keep theirs open.
+    menu.querySelector('.toolbarMenuPanel').addEventListener('click', event => {
+      if (event.target.closest('button')) menu.open = false;
+    });
+    menu.querySelector('summary').addEventListener('click', event => {
+      if (menu.classList.contains('disabled')) event.preventDefault();
+    });
+  }
+  // A menu button is exactly as wide as its panel, so the panel drops straight
+  // below it and stays on screen wherever the toolbar wraps the button.
+  function matchMenuWidth(menu) {
+    if (!menu.getClientRects().length) return;
+    const panel = menu.querySelector('.toolbarMenuPanel');
+    const open = menu.open;
+    menu.open = true;
+    panel.style.width = 'max-content';
+    const width = Math.ceil(panel.getBoundingClientRect().width);
+    panel.style.width = '';
+    menu.open = open;
+    menu.style.minWidth = `${width}px`;
+  }
+  const matchMenuWidths = () => toolbarMenus.forEach(matchMenuWidth);
+  // Resizing the observed button inside its own callback would trip the
+  // browser's ResizeObserver loop guard, so the width follows a frame later.
+  let menuWidthFrame = 0;
+  const menuSizes = new ResizeObserver(() => {
+    cancelAnimationFrame(menuWidthFrame);
+    menuWidthFrame = requestAnimationFrame(matchMenuWidths);
+  });
+  for (const menu of toolbarMenus) menuSizes.observe(menu);
+  window.addEventListener('toolkit-language-changed', matchMenuWidths);
+  window.addEventListener('toolkit-theme-changed', matchMenuWidths);
   els.showNames.addEventListener('change', scheduleDraw);
   els.showUnitNumbers.addEventListener('change', scheduleDraw);
   els.showCompatibility.addEventListener('change', scheduleDraw);
@@ -3871,20 +4005,47 @@
     const button = document.getElementById('castleSnapshotSave');
     button.disabled = true;
     try {
-      const png = renderCastlePicture();
+      const png = renderCastlePicture({ floorPlan: document.getElementById('castleSnapshotSize').value === 'plan' });
       const saved = await window.electronAPI.saveCastlePicture(png);
       if (!saved) return;
       if (document.getElementById('castleSnapshotBackground').checked) {
         loadBlueprintSelection({dataUrl: png, fileName: saved.split(/[\\/]/).pop()});
       }
       snapshotDialog.close();
-      setStatus(`Castle picture saved: ${saved}`);
+      setStatus(() => tr("castle:castle_picture_saved_value", { saved: saved }));
     } catch (error) {
-      setStatus(`Could not save castle picture: ${error.message}`);
+      setStatus(() => tr("castle:could_not_save_castle_picture_value", { message: error.message }));
     } finally { button.disabled = false; }
   });
 
-  function renderCastlePicture() {
+  // A floor plan has one pixel per tile: the average of exactly that tile's
+  // cell-by-cell block of the full picture, never reaching into a neighbour.
+  // Colours are weighted by coverage, so a half-covered tile keeps the
+  // building's colour at half opacity instead of fading towards black.
+  function floorPlanPixels(picture, cell) {
+    const source = picture.getContext('2d'), plan = document.createElement('canvas');
+    plan.width = plan.height = GRID;
+    const planCtx = plan.getContext('2d'), pixels = planCtx.createImageData(GRID, GRID), width = GRID * cell;
+    const sums = new Float64Array(GRID * 4);
+    for (let y = 0; y < GRID; y++) {
+      const block = source.getImageData(0, y * cell, width, cell).data;
+      sums.fill(0);
+      for (let i = 0; i < block.length; i += 4) {
+        const tile = Math.floor((i / 4 % width) / cell) * 4, alpha = block[i + 3];
+        sums[tile] += block[i] * alpha; sums[tile + 1] += block[i + 1] * alpha; sums[tile + 2] += block[i + 2] * alpha; sums[tile + 3] += alpha;
+      }
+      for (let x = 0; x < GRID; x++) {
+        const alpha = sums[x * 4 + 3], out = (y * GRID + x) * 4;
+        if (!alpha) continue;
+        for (let c = 0; c < 3; c++) pixels.data[out + c] = Math.round(sums[x * 4 + c] / alpha);
+        pixels.data[out + 3] = Math.round(alpha / (cell * cell));
+      }
+    }
+    planCtx.putImageData(pixels, 0, 0);
+    return plan;
+  }
+
+  function renderCastlePicture({ floorPlan = false } = {}) {
     // Render at native sprite resolution (at least 32 px/tile), not viewport zoom.
     let cell = 32;
     for (const placement of placementRefs()) {
@@ -3896,17 +4057,22 @@
     const picture = document.createElement('canvas');
     const future = document.createElement('canvas');
     picture.width = picture.height = future.width = future.height = GRID * cell;
-    const saved = Object.fromEntries(['cell', 'panX', 'panY', 'canvasWidth', 'canvasHeight', 'gesture', 'staticCacheDirty', 'snapshotLabels'].map(key => [key, state[key]]));
-    const savedContext = ctx;
+    const saved = Object.fromEntries(['cell', 'panX', 'panY', 'canvasWidth', 'canvasHeight', 'gesture', 'staticCacheDirty', 'snapshotLabels', 'floorPlan', 'selected'].map(key => [key, state[key]]));
+    const savedContext = ctx, showNames = els.showNames.checked;
     try {
-      Object.assign(state, {cell, panX: 0, panY: 0, canvasWidth: picture.width, canvasHeight: picture.height, gesture: null, snapshotLabels: true});
+      Object.assign(state, {cell, panX: 0, panY: 0, canvasWidth: picture.width, canvasHeight: picture.height, gesture: null, snapshotLabels: !floorPlan, floorPlan});
+      // The floor plan shows buildings only: no ground, names, selection,
+      // troops or overlays, and the whole castle regardless of the build step.
+      if (floorPlan) { state.selected = new Set(); els.showNames.checked = false; }
       rebuildStaticCache(picture, future);
+      if (floorPlan) return floorPlanPixels(picture, cell).toDataURL('image/png');
       ctx = picture.getContext('2d');
       drawUnitMarkers();
       if (els.showCompatibility.checked) drawCompatibilityOriginMarker();
       return picture.toDataURL('image/png');
     } finally {
       Object.assign(state, saved);
+      els.showNames.checked = showNames;
       ctx = savedContext;
     }
   }
@@ -3914,7 +4080,7 @@
   els.showBlueprint.addEventListener('change', () => {
     state.blueprintVisible = els.showBlueprint.checked;
     scheduleDraw();
-    setStatus(state.blueprintVisible ? 'Temporary blueprint shown' : 'Temporary blueprint hidden');
+    setStatus(() => state.blueprintVisible ? tr("castle:temporary_blueprint_shown") : tr("castle:temporary_blueprint_hidden"));
   });
   els.blueprintOpacity.addEventListener('input', () => {
     state.blueprintOpacity = Number(els.blueprintOpacity.value) / 100;
@@ -3929,7 +4095,7 @@
     const caption = document.createElement('label'); caption.textContent = label; caption.htmlFor = `shortcut-${action}`;
     const input = document.createElement('input'); input.id = caption.htmlFor;
     input.className = 'castleShortcutKey'; input.dataset.tool = action; input.dataset.slot = '0';
-    input.setAttribute('readonly', ''); input.placeholder = 'Unassigned'; shortcutGrid.append(caption, input);
+    input.setAttribute('readonly', ''); input.placeholder = tr("castle:unassigned"); shortcutGrid.append(caption, input);
   }
   els.shortcutDialog.addEventListener('close', () => window.electronAPI?.setCastleShortcutCapture?.(false));
   for (const input of els.shortcutForm.querySelectorAll('.castleShortcutKey')) {
@@ -3945,7 +4111,7 @@
       if (['Control', 'Alt', 'Shift', 'Meta'].includes(event.key)) return;
       const key = shortcutConfig.fromEvent(event);
       if (!key) {
-        els.shortcutError.textContent = 'Use a key, optionally combined with Ctrl, Alt or Shift.';
+        els.shortcutError.textContent = tr("castle:use_a_key_optionally_combined_with_ctrl_alt_or_shift");
         return;
       }
       input.value = key.toUpperCase();
@@ -3989,7 +4155,7 @@
       if (['Control', 'Alt', 'Shift', 'Meta'].includes(event.key)) return;
       const key = shortcutConfig.fromEvent(event);
       if (!key) {
-        els.shortcutError.textContent = 'Use a key, optionally combined with Ctrl, Alt or Shift.';
+        els.shortcutError.textContent = tr("castle:use_a_key_optionally_combined_with_ctrl_alt_or_shift");
         return;
       }
       input.value = key.toUpperCase();
@@ -4002,6 +4168,13 @@
   els.replaceForm.addEventListener('submit', submitReplacementDialog);
   if (els.brushMinus) els.brushMinus.addEventListener('click', () => setBrushSize(state.brushSize - 1));
   if (els.brushPlus) els.brushPlus.addEventListener('click', () => setBrushSize(state.brushSize + 1));
+  if (els.brushSizeInput) {
+    els.brushSizeInput.addEventListener('input', () => {
+      // Allow an empty field while replacing its digits; commit restores a valid size.
+      if (els.brushSizeInput.value !== '') setBrushSize(els.brushSizeInput.valueAsNumber);
+    });
+    els.brushSizeInput.addEventListener('change', () => setBrushSize(els.brushSizeInput.valueAsNumber));
+  }
   els.buildSlider.addEventListener('input', selectBuildStepFromSlider);
   let scrubKey = null;
   els.buildSlider.addEventListener('keydown', event => {
@@ -4068,7 +4241,7 @@
     if (action === 'overlays') { overlayMenu.open = !overlayMenu.open; return; }
     if (action === 'rotateLeft' || action === 'rotateRight') {
       const result = window.isoView?.turnView?.(action === 'rotateLeft' ? -1 : 1);
-      if (result === null) setStatus('Map rotation needs the game-generated camera layers. Wait for loading to finish, or reload the map.');
+      if (result === null) setStatus(() => tr("castle:map_rotation_needs_the_game_generated_camera_layers_wait_for_loading_to_"));
       return;
     }
     const id = shortcutConfig.actions.find(([key]) => key === action)?.[3];
@@ -4145,7 +4318,7 @@
       if (action === 'cut') { cutSelection(); window.dispatchEvent(new Event('castle-clipboard-changed')); return; }
       if (action === 'replace' || action === 'merge') {
         setTool('select');
-        if (!state.selected.size) return setStatus(`Select items first to ${action}.`);
+        if (!state.selected.size) return setStatus(() => tr("castle:select_items_first_to_value", { action: action }));
         return action === 'replace' ? openReplacementDialog(state.selected) : mergeArea(state.selected);
       }
     },
@@ -4163,6 +4336,7 @@
     // Die Ansicht kann den Startplatz wechseln (Klick auf einen Pfeil) - dann
     // gehoert der Waehler nachgezogen.
     updateMapControls,
+    reloadGameAssets,
     getAnalysisOverlay,
     isScrubbing: () => !!state.scrubbing,
     chooseBlueprint,
@@ -4251,5 +4425,13 @@
   ladeKostenanzeige();
   try { document.head.appendChild(Object.assign(document.createElement('script'), { src: 'js/editor-extras.js' })); } catch (error) { console.warn('Castle extras not loaded:', error); } // Gruppen, Kopierspeicher, Tastenkuerzel
 
+  window.toolkitI18n?.onChange(() => {
+    const scrollTop=els.buildList.scrollTop;
+    state.buildListRevision=-1;
+    renderPalette(); renderBuildList(); els.buildList.scrollTop=scrollTop; updateSelectedItemInfo(); updateToolShortcutHints();
+    updatePopulationPanel(false); updateCostPanel(); updateMapControls();
+    state.staticCacheDirty = true;
+    scheduleDraw();
+  });
   init();
 })();

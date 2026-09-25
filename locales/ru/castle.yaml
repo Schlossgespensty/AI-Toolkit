@@ -1,0 +1,190 @@
+the_aiv_castle_document_is_invalid: Недопустимый документ замка AIV.
+the_aiv_file_must_contain_a_frames_array: Файл AIV должен содержать массив 'frames'.
+that_build_step_is_locked: Этот шаг строительства заблокирован.
+overlaps_another_item_in_this_brush_stroke: Пересекается с другим объектом этого мазка.
+nothing_to_undo: Нечего отменять
+nothing_to_redo: Нечего повторять
+creating_a_new_castle: создать новый замок
+new_castle: Новый замок
+opening_another_castle: открыть другой замок
+definitive_edition_json: JSON Definitive Edition
+castle_document: документ замка
+castle_was_not_saved: Замок не сохранен
+nothing_selected_to_replace: Ничего не выбрано для замены.
+keep_cannot_be_replaced: Цитадель нельзя заменить
+locked: Заблокировано
+the_selection_contains_only_locked_placements_or_the_keep: Выделены только заблокированные объекты или цитадель.
+buildings_can_only_replace_buildings_and_rallypoints_can_only_replace_ra: Здания заменяются только зданиями, а точки сбора — только точками сбора.
+choose_at_least_one_different_replacement: Выберите хотя бы одну отличающуюся замену.
+build_step: 'Шаг строительства '
+locked_2: заблокировано
+open_again: открыть снова
+locked_unlock_the_build_step_first: 'Заблокировано: сначала разблокируйте шаг.'
+click_an_unlocked_placement_to_flood_delete_its_connected_type_the_keep_: Нажмите незаблокированный объект, чтобы удалить связанную область этого типа. Цитадель защищена.
+merge_checked_placements_inside_the_box_at_their_earliest_step_separatel: Объединить отмеченные объекты внутри области на самом раннем шаге, отдельно по типу. Объекты вне области и заблокированные шаги не изменятся.
+merge_checked_types_from_the_selected_steps_at_their_earliest_step_separ: Объединить отмеченные типы из выбранных шагов на их самом раннем шаге, отдельно по типу. Заблокированные шаги не изменятся.
+no_mergeable_type_spans_two_unlocked_steps_in_this_selection: В выделении нет объединяемого типа, встречающегося в двух незаблокированных шагах.
+the_castle_changed_cancel_and_select_the_placements_again: Замок изменился. Отмените действие и выделите объекты заново.
+these_de_steps_contain_pauses_merge_would_change_their_timing: Эти шаги DE содержат паузы. Объединение изменит время выполнения.
+unlock_positions: Разблокировать позиции
+choose_an_item_first: Сначала выберите объект.
+drag_over_items_to_copy_first: Сначала выделите объекты для копирования.
+nothing_to_copy_yet_drag_a_box_over_the_placements_first: Пока нечего копировать — сначала выделите объекты рамкой
+select_unlocked_building_placements_to_cut_the_keep_and_rally_points_sta: Выделите незаблокированные здания для вырезания. Цитадель и точки сбора останутся на месте.
+move_the_cursor_onto_the_map_then_press_ctrl_v: Наведите курсор на карту и нажмите Ctrl+V
+this_item_is_drawn_as_a_line_not_poured: Этот объект размещается линией, а не заливкой.
+nothing_to_fill_here_that_tile_is_taken: 'Заливка невозможна: клетка занята.'
+nothing_could_be_placed_there: Там ничего не удалось разместить.
+filled: 'Заполнено '
+selection_cleared: Выделение снято
+copy_selection: Копировать выделение
+replace_area: Заменить область
+merge_area: Объединить область
+delete_area: Удалить область
+castle_shortcuts_saved: Клавиши редактора замков сохранены
+multiple_per_step: несколько на шаг
+single_per_step: один на шаг
+empty_step: Пустой шаг
+move_selected_step_s_up: Переместить выбранные шаги вверх
+move_selected_step_s_down: Переместить выбранные шаги вниз
+temporary_blueprint_cleared: Временный чертеж убран
+background_image: фоновое изображение
+could_not_open_the_selected_blueprint_image: Не удалось открыть выбранное изображение чертежа
+could_not_calculate_overlays: Не удалось рассчитать наложения.
+calculating_overlays: Расчет наложений…
+map_terrain_included: рельеф карты учтен
+flat_terrain_no_map_data: ровная земля (нет данных карты)
+tiles_to_delivery_point: ' клеток до места доставки'
+ground_passage_and_raised_walkway: Проход по земле и верхний настил
+raised_walkway: Верхний настил
+walkable_ground: Проходимая земля
+blocked_tile: Непроходимая клетка
+outside_map: Вне карты
+no_unobstructed_route_to_that_tile: Нет свободного пути к этой клетке.
+nothing_copyable_selected_units_and_the_keep_are_ignored: Нет объектов для копирования. Войска и цитадель пропускаются.
+nothing_selected_to_copy: Ничего не выбрано для копирования.
+castle_editor_configuration_failed_to_load: Не удалось загрузить настройки редактора замков
+loading_map_views: Загрузка видов карты…
+no_map_of_that_name: Карты с таким именем нет.
+no_maps_found_choose_the_game_folder_under_ucp_first: Карты не найдены. Сначала выберите папку игры в UCP.
+reading_the_map: Чтение карты…
+the_starting_place: стартовую позицию
+not_turned: ' · без поворота'
+starting_place_changed: Стартовая позиция изменена
+map_of_the_game_taken_away: Игровая карта убрана
+temporary_blueprint_shown: Временный чертеж показан
+temporary_blueprint_hidden: Временный чертеж скрыт
+unassigned: Не назначено
+use_a_key_optionally_combined_with_ctrl_alt_or_shift: Используйте клавишу, при необходимости с Ctrl, Alt или Shift.
+map_rotation_needs_the_game_generated_camera_layers_wait_for_loading_to_: Для поворота карты нужны созданные игрой слои камеры. Дождитесь загрузки или перезагрузите карту.
+frame_value_is_not_an_object: Шаг {{value1}} не является объектом.
+frame_value_has_no_valid_itemtype: У шага {{value1}} нет допустимого itemType.
+frame_value_tilepositionofsets_must_be_an_array: 'Шаг {{value1}}: tilePositionOfsets должен быть массивом.'
+frame_value_invalid_tile_offset_value: 'Шаг {{value1}}: недопустимое смещение клетки {{off}}.'
+misc_item_value_is_not_an_object: Дополнительный объект {{value1}} не является объектом.
+misc_item_value_has_no_valid_itemtype: У дополнительного объекта {{value1}} нет допустимого itemType.
+misc_item_value_invalid_positionofset_value: 'Дополнительный объект {{value1}}: недопустимое positionOfset {{positionOfset}}.'
+value_would_extend_outside_the_100_100_field: '{{value1}} выходит за пределы поля 100×100.'
+maximum_amount_for_value_is_value: 'Максимальное число {{value1}}: {{maximum}}.'
+blocked_by_value: Мешает {{value1}}.
+new_castle_added_to_the_loaded_ai_as_value: Новый замок добавлен в открытый ИИ как {{fileName}}
+value_added_to_the_loaded_ai: '{{fileName}} добавлен в открытый ИИ'
+removed_value_empty_legacy_stepvalue: ' — удалено: {{quantityvalue2}}'
+disabled_value_build_step_pause_s: ' — отключено пауз шагов: {{removedPauses}}'
+opened_value_value_build_steps_valuevaluevalue: 'Открыт {{value1}} — шагов строительства: {{length}} · {{formatNote}}{{legacyNote}}{{pauseNote}}'
+could_not_open_aiv_castle_value: |-
+  Не удалось открыть замок AIV:
+
+  {{message}}
+could_not_import_aivjson_castle_value: |-
+  Не удалось импортировать замок AIVJSON:
+
+  {{message}}
+saved_value: '{{name}} сохранен'
+could_not_save_aiv_castle_value: |-
+  Не удалось сохранить замок AIV:
+
+  {{message}}
+replace_value_with: Заменить {{value1}} на
+value_locked_placementvalue_will_stay_unchanged: 'Без изменений: {{quantityvalue2}}'
+value_placementvalue_across_value_item_typevalue_choose_one_replacement_: '{{quantityvalue2}}, типов: {{quantityvalue4}}. Выберите замену для каждого типа.'
+invalid_replacement_for_value: Недопустимая замена для {{value1}}.
+no_room_for_value_value: 'Нет места для {{value1}}: {{reason}}'
+value_would_also_replace_an_item_outside_the_selected_area: '{{value1}} заменит также объект вне выделенной области.'
+replaced_value_placementvalue_across_value_target_typevalue: 'Заменено: {{quantityvalue2}}, типов замены: {{quantityvalue4}}'
+deleted_value_placementvalue: 'Удалено: {{quantityvalue2}}'
+value_locked_and_left_alone: ' (заблокировано и оставлено: {{gesperrt}})'
+selected_value_placements_shift_adds_ctrl_click_toggles_a_connected_grou: 'Выделено объектов: {{size}}. Shift добавляет; Ctrl+щелчок переключает связанную группу. Для перемещения включите «Выделить / переместить».'
+flood_deleted_value_connected_value_placements: 'Удалена связанная область: {{size}} объектов {{value2}}'
+value_value_placements_in_value_steps: '{{value1}} — объектов: {{count}}, шагов: {{size}}'
+merged_value_item_types_at_their_earliest_selected_steps: 'Объединено типов объектов на самых ранних выбранных шагах: {{length}}'
+value_can_only_be_placed_with_the_line_tool: '{{value1}} размещается только инструментом «Линия».'
+placed_value_rallypoint_value_at_value: Размещена точка сбора {{value1}} №{{value2}} на {{off}}
+placed_value_at_value: '{{value1}} размещен на {{off}}'
+value_ready_value_value_steps_release_to_place: '{{value1}} готово — шаги {{length}}/{{length3}} — отпустите для размещения'
+value_placed_nothing: '{{toolName}} ничего не разместил.'
+could_not_build_the_value_sequence: Не удалось построить последовательность {{value1}}.
+value_placed_value_consecutive_stair_steps: '{{value1}}: размещено последовательных ступеней: {{length}}'
+value_placed_value_value_rallypoints: '{{toolName}}: размещено {{length}} точек сбора {{value3}}'
+value_placed_value_value_in_consecutive_build_steps: '{{toolName}}: размещено {{length}} {{value3}} последовательными шагами'
+copy_blocked_by_value: Копированию мешает {{value1}}.
+value_build_stepvalue: '{{quantityvalue2}}'
+placed_copy_of_value_placementvalue_as_value: 'Размещена копия {{quantityvalue2}}: {{details}}'
+copied_value_placementvalue_ctrl_v_puts_it_where_the_cursor_is: 'Скопировано: {{placements}} — Ctrl+V вставляет под указателем'
+cut_value_placementvalue_ctrl_v_pastes_at_the_cursor: 'Вырезано: {{quantityvalue2}} — Ctrl+V вставляет под курсором'
+move_blocked_by_value: Перемещению мешает {{value1}}.
+moved_value_placementvalue: 'Перемещено: {{quantityvalue2}}'
+selected_value_click_the_map_to_place: Выбран {{value1}} — нажмите на карту для размещения
+line_only_up_to_value_consecutive_steps: только линия · до {{length}} последовательных шагов
+no_items_in_value: В {{value1}} нет объектов.
+line_up_to_value_steps: Линия · до {{length}} шагов
+step_value: Шаг {{value1}}
+selected_value_build_steps_drag_or_use_the_arrows_to_move_them_together: 'Выбрано шагов: {{length}} — перетащите или используйте стрелки для совместного перемещения'
+selected_build_step_value_new_buildings_will_be_inserted_after_it: Выбран шаг {{value1}} — новые здания будут вставлены после него
+value_build_stepvalue_moved_together: 'Перемещено вместе: {{quantityvalue2}}'
+value_locked_and_left_alone_2: ' (заблокировано и оставлено: {{festgehalten}})'
+set_png_skin_for_value: Назначено изображение PNG для {{value1}}
+removed_skin_for_value: Изображение для {{value1}} удалено
+could_not_load_background_value: 'Не удалось загрузить фон: {{message}}'
+temporary_blueprint_loaded_value: 'Временный чертеж загружен: {{blueprintFileName}}'
+paths_value_value_reachable_open_gates_value_cyan_dots_reachable_entranc: 'Пути: доступно {{length}}/{{length2}}. Ворота открыты; {{value3}}. Голубые точки — доступные входы, красные — заблокированные. Статическая оценка.'
+selected_value_placementvalue: 'Выделено: {{quantityvalue2}}'
+drag_from_x_value_y_value_to_choose_the_value_direction: Тяните от x={{x}}, y={{y}}, чтобы выбрать направление {{value3}}.
+copy_ready_at_x_value_y_value_click_to_place: Копия готова на x={{x}}, y={{y}} — нажмите для размещения
+value_unit_keep_placementvalue_ignored: ' (пропущено: {{quantityvalue2}})'
+copied_selection_prepared_value_placementvaluevalue_move_the_cursor_and_: 'Копия выделения готова: {{quantityvalue2}}{{ignoredNote}} — переместите курсор и нажмите для размещения'
+deleted_value_placementvalue_2: 'Удалено: {{quantityvalue2}}'
+start_place_value: Стартовая позиция {{value1}}
+map_loaded_rotation_unavailable_value: 'Карта загружена; поворот недоступен: {{nativeError}}'
+whole_map_value_ready_value_different_tiles: 'Вся карта «{{name}}» готова · различных клеток: {{kacheln}}'
+could_not_load_map_value_select_game_map_to_retry: 'Не удалось загрузить карту: {{message}}. Нажмите «Игровая карта» для повтора.'
+could_not_read_the_map_tiles_value: 'Не удалось прочитать клетки карты: {{message}}'
+could_not_read_that_map_value: 'Не удалось прочитать карту: {{message}}'
+could_not_list_the_maps_value: 'Не удалось получить список карт: {{message}}'
+castle_built_on_value_at_value_value: Замок размещен на {{value1}} в ({{x}}, {{y}})
+the_game_turns_it_by_value_quarter_turnvalue: ' · поворот в игре: {{turns}}'
+castle_picture_saved_value: 'Изображение замка сохранено: {{saved}}'
+could_not_save_castle_picture_value: 'Не удалось сохранить изображение замка: {{message}}'
+select_items_first_to_value: Сначала выделите объекты для действия «{{action}}».
+unsaved_castle: (несохраненный замок)
+select_something_on_the_map_first: Сначала выделите что-нибудь на карте.
+no_groups_in_this_castle_yet_select_placements_on_the_map_give_them_a_na: В этом замке пока нет групп. Выделите объекты на карте, введите имя и сохраните.
+copy_this_group_for_placement: Копировать группу для размещения
+this_group_has_no_copyable_items: В группе нет объектов для копирования.
+clipboard_emptied: Буфер очищен
+nothing_copied_yet_copy_something_with_ctrl_c_or_the_copy_tool: Пока ничего не скопировано. Используйте Ctrl+C или инструмент копирования.
+paste_at_the_cursor: Вставить под курсором
+empty_the_clipboard: Очистить буфер
+group_name: Имя группы
+save_group: Сохранить группу
+enter_a_group_name: Введите имя группы.
+a_group_called_value_is_already_there: Группа «{{name}}» уже существует.
+group_value_saved_with_value_placementvalue: 'Группа «{{name}}» сохранена: {{quantityvalue3}}'
+delete_group_value: Удалить группу «{{name}}»
+value_placementvalue_copied_works_in_every_castle_click_then_click_on_th: 'Скопировано: {{quantityvalue2}} — работает в любом замке. Нажмите здесь, затем на карту, или Ctrl+V.'
+castle_actions: Действия с замком
+no_item_categories_configured: Категории объектов не настроены.
+dock: Прикрепить
+groups: Группы
+cut_and_copy: Вырезать и скопировать
+deselect: Снять выделение

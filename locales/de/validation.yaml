@@ -1,0 +1,24 @@
+balance_profile: Ein Rebalancer-Profil mit einem Abschnitt buildings, resources, units, population oder castle wird erwartet.
+balance_section: Ungültiger Abschnitt {{section}}.
+balance_building: 'Ungültiges Gebäude: {{name}}'
+balance_health: '{{name}}: health muss eine ganze Zahl ab 0 sein.'
+balance_housing: '{{name}}: housing muss eine ganze Zahl ab 0 sein.'
+balance_cost: '{{name}}: cost muss fünf ganze Zahlen ab 0 enthalten (Holz, Stein, Eisen, Pech, Gold).'
+balance_resource: 'Ungültiger Rohstoff: {{name}}'
+balance_delivery: '{{name}}: delivery muss in ein Byte passen (0–255).'
+balance_bonus: '{{name}}: skirmishBonus muss true oder false sein.'
+balance_ditch: castle.ditch_per_pitch muss 1, 2, 3 oder 4 sein.
+frames_array: Die Bauschritte müssen als Array vorliegen.
+tile_offset: '{{label}}: ungültiger Kachelversatz.'
+step_object: 'Schritt {{step}}: Ein Objekt wird erwartet.'
+step_positions: 'Schritt {{step}}: ungültiges Element oder ungültige Positionen.'
+step_pause: 'Schritt {{step}}: ungültiger Pausenwert.'
+step: Schritt {{step}}
+markers_array: Die Burgmarkierungen müssen als Array vorliegen.
+marker_invalid: Ungültige Burgmarkierung.
+marker: Burgmarkierung
+pause_delay: Ungültige Pausendauer.
+classic_empty_steps: Leere Bauschritte können im klassischen AIV-Format nicht erhalten bleiben.
+classic_item: '{{name}} wird vom klassischen AIV-Format nicht unterstützt.'
+classic_pauses: Bauschrittpausen sind im klassischen Editor deaktiviert.
+classic_marker: '{{name}} kann im klassischen AIV-Format nicht erhalten bleiben.'

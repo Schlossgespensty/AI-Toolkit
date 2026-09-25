@@ -1,0 +1,60 @@
+classic_export_failed: |-
+  Impossible d'exporter ce château en AIV classique :
+  {{issues}}
+  Enregistrez-le en Definitive Edition pour le conserver.
+castle_files: Fichiers de château
+images: Images
+choose_game: Choisir l'installation de Stronghold Crusader
+unsaved_title: Modifications non enregistrées
+unsaved_message: |-
+  {{name}} contient des modifications non enregistrées.
+  Les enregistrer avant de continuer ?
+  Action suivante : {{action}}.
+document: document
+continue: Continuer
+discard: Abandonner
+add_to_ai: Ajouter à l'IA
+edit_separately: Modifier séparément
+add_document_message: Ajouter ce document à {{name}} ? Ajouter un personnage remplace le fichier de personnage existant.
+new_window: Ajouter une fenêtre
+new: Nouveau
+open_new_window: Ouvrir dans une nouvelle fenêtre
+save_as: Enregistrer sous
+clear_background: Effacer le fond
+castle_mapping: Modifier les châteaux associés…
+shortcuts: Personnaliser les raccourcis du château…
+toggle_ox: Activer/désactiver les attaches à bœufs de l'IA
+toggle_running: Activer/désactiver les unités en course
+standard_order: Appliquer l'ordre standard
+ordered_order: Appliquer l'ordre organisé
+toggle_sections: Tout développer/réduire
+replace_castle: '{{name}} existe déjà. Remplacer le fichier de château ?'
+overviews: Vue d’ensemble du château
+show_population: Afficher la population
+show_costs: Afficher le coût du château
+population_side: Position du panneau de population
+costs_side: Position du panneau des coûts
+reload: Recharger
+fullscreen: Plein écran
+developer_tools: Outils de développement
+zoom_in: Agrandir
+zoom_out: Réduire
+reset_zoom: Taille réelle
+classic_castle: Château AIV classique
+choose_castle_format: Choisissez le format de château pour ce fichier.
+add_castle_message: |-
+  Ajouter ce château à {{name}} ?
+  « Ajouter à l’IA » le copie dans le dossier aiv de l’IA et garde le projet ouvert.
+  « Modifier séparément » quitte le projet d’IA et permet d’enregistrer le château ailleurs.
+new_castle_message: |-
+  Créer un château dans {{name}} ?
+  « Ajouter à l’IA » l’enregistre dans le dossier aiv de l’IA et garde le projet ouvert.
+  « Modifier séparément » quitte le projet d’IA et permet d’enregistrer le château ailleurs.
+replace_character_message: |-
+  Utiliser ce personnage pour {{name}} ?
+  « Ajouter à l’IA » remplace définitivement le fichier character.json actuel de l’IA.
+  « Modifier séparément » quitte le projet d’IA et conserve son fichier de personnage actuel.
+new_character_message: |-
+  Créer un personnage pour {{name}} ?
+  « Ajouter à l’IA » remplace définitivement le fichier character.json actuel de l’IA.
+  « Modifier séparément » quitte le projet d’IA et conserve son fichier de personnage actuel.

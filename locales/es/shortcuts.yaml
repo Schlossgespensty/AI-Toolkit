@@ -1,0 +1,44 @@
+replace: Reemplazar
+merge: Combinar
+delete: Eliminar
+undo: Deshacer
+redo: Rehacer
+openCastle: Abrir castillo
+saveCastle: Guardar castillo
+map: Mapa
+iso: Vista 2.5D
+single: Individual
+line: Línea
+brush: Pincel
+brushSmaller: Pincel más pequeño
+bucket: Rellenar
+select: Seleccionar / Mover
+names: Nombres de elementos
+units: Orden de unidades
+guides: Guías
+paths: Mapa de rutas
+fire: Propagación del fuego
+exportDe: Exportar DE
+newCastle: Nuevo castillo
+brushLarger: Pincel más grande
+overlays: Menú de capas
+groups: Grupos
+paste: Portapapeles / Pegar
+clearClipboard: Vaciar portapapeles
+gameMap: '2.5D: mapa del juego'
+resetMap: '2.5D: quitar mapa del juego'
+rotateLeft: '2.5D: girar a la izquierda'
+rotateRight: '2.5D: girar a la derecha'
+saveAs: Guardar como
+copy: Copiar selección
+cut: Cortar selección
+pause: Paso de pausa
+deleteSelected: Eliminar selección
+deselect: Deseleccionar
+invalid: Atajo no válido para {{label}}.
+reserved: '{{key}} está reservado para los menús de la aplicación.'
+duplicate: '{{key}} está asignado más de una vez.'
+wheelMode: Elige un modo para la rueda.
+cameraSpeed: La velocidad de la cámara debe estar entre 1 y 200 píxeles.
+invalidCamera: Atajo de cámara no válido.
+assigned: La tecla {{key}} ya está asignada o reservada.

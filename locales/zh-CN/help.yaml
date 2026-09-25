@@ -1,0 +1,666 @@
+StrengthMultiplier: |-
+  领主生命值的倍率。
+  老鼠 = 0.5
+  默认 = 1
+  野狼 = 1.5
+DotColour: |-
+  表示领主强度的圆点颜色。
+  原版用黄色表示较弱的 AI，蓝色表示较强的 AI。
+DotCount: |-
+  表示领主强度的圆点数量。
+  原版每 0.1 倍率对应一个圆点。
+Type: 在主堡出现的领主类型。
+ArabArcher: 游戏开始时在主堡旁生成的阿拉伯弓箭手数量。
+Slave: 游戏开始时在主堡旁生成的奴隶数量。
+Slinger: 游戏开始时在主堡旁生成的投石兵数量。
+Assassin: 游戏开始时在主堡旁生成的刺客数量。
+HorseArcher: 游戏开始时在主堡旁生成的骑射手数量。
+ArabSwordsman: 游戏开始时在主堡旁生成的阿拉伯剑士数量。
+FireThrower: 游戏开始时在主堡旁生成的火焰投掷兵数量。
+EuropArcher: 游戏开始时在主堡旁生成的欧洲弓箭手数量。
+Spearman: 游戏开始时在主堡旁生成的长矛兵数量。
+Maceman: 游戏开始时在主堡旁生成的链锤兵数量。
+Crossbowman: 游戏开始时在主堡旁生成的弩手数量。
+Pikeman: 游戏开始时在主堡旁生成的长戟兵数量。
+Swordsman: 游戏开始时在主堡旁生成的剑士数量。
+Knight: 游戏开始时在主堡旁生成的骑士数量。
+Monk: 游戏开始时在主堡旁生成的僧侣数量。
+WallDecoration: |-
+  在 AIV 编辑器中放置 flg 时使用的装饰类型。
+
+  8 = 倾倒燃烧的油
+  9 = 火焰
+  10 = 小旗
+  11 = 大旗
+  12 = 中旗
+  13 = 十字军旗
+  14 = 火盆
+  15 = 装饰骷髅
+  21 = 蒸汽云
+  22 = 疾病云
+  26 = 火焰爆炸
+  28 = 俯冲乌鸦
+  29 = 中型石块落水
+  30 = 小石块击中建筑
+  31 = 小石块落水
+  40 = 零黄金浮动提示
+  41 = 零民心浮动提示
+  42 = 空白浮动提示
+  43 = 空白浮动提示
+Unknown001: 未使用的值。
+Unknown002: 未使用的值。
+Unknown003: 未使用的值。
+Unknown004: 未使用的值。
+Unknown005: 未使用的值。
+CriticalPopularity: |-
+  民心低于此值时，AI 会大量出售物资以获取黄金。
+
+  10000 = 100 民心。
+  5000 = 50 民心。
+LowestPopularity: |-
+  民心低于此值时，AI 会逐步将税率调向 TaxesMin，并提供额外口粮，直到达到 HighestPopularity。
+
+  10000 = 100 民心。
+  5000 = 50 民心。
+HighestPopularity: |-
+  民心高于此值时，AI 会提高税率，直到民心变化稳定在最低约 −3。
+
+  10000 = 100 民心。
+  5000 = 50 民心。
+TaxesMin: |-
+  允许的最低税率档位。
+  0 = 最高补贴
+  11 = 最高税率
+TaxesMax: |-
+  允许的最高税率档位。
+  0 = 最高补贴
+  11 = 最高税率
+Unknown011: 未使用的值。
+Farm1: |-
+  AI 建造的第 1 座农场。
+
+  被摧毁的农场不会用同类型重建，而是采用队列中的下一项。
+Farm2: |-
+  AI 建造的第 2 座农场。
+
+  被摧毁的农场不会用同类型重建，而是采用队列中的下一项。
+Farm3: |-
+  AI 建造的第 3 座农场。
+
+  被摧毁的农场不会用同类型重建，而是采用队列中的下一项。
+Farm4: |-
+  AI 建造的第 4 座农场。
+
+  被摧毁的农场不会用同类型重建，而是采用队列中的下一项。
+Farm5: |-
+  AI 建造的第 5 座农场。
+
+  被摧毁的农场不会用同类型重建，而是采用队列中的下一项。
+Farm6: |-
+  AI 建造的第 6 座农场。
+
+  被摧毁的农场不会用同类型重建，而是采用队列中的下一项。
+Farm7: |-
+  AI 建造的第 7 座农场。
+
+  被摧毁的农场不会用同类型重建，而是采用队列中的下一项。
+Farm8: |-
+  AI 建造的第 8 座农场。Farm8 之后重新从列表开头开始。
+
+  被摧毁的农场不会用同类型重建，而是采用队列中的下一项。
+PopulationPerFarm: |-
+  每有这么多可容纳人口，AI 就建造一座农场。第一座农场始终在 0 人口时建造。
+
+  啤酒花农场不计入此值，轮到它时就会建造。
+PopulationPerWoodcutter: 每有这么多可容纳人口，AI 就建造一座伐木场。第一次达到该人口时会建造两座。
+PopulationPerQuarry: 每有这么多可容纳人口，AI 就建造一座采石场。第一次达到该人口时会建造两座。
+PopulationPerIronmine: 每有这么多可容纳人口，AI 就建造一座铁矿场。第一次达到该人口时会建造两座。
+PopulationPerPitchrig: 每有这么多可容纳人口，AI 就建造一座沥青矿场。
+MaxQuarries: AI 建造的采石场最大数量。
+MaxIronmines: AI 建造的铁矿场最大数量。
+MaxWoodcutters: AI 建造的伐木场最大数量。
+MaxPitchrigs: AI 建造的沥青矿场最大数量。
+MaxFarms: |-
+  AI 建造的农场最大数量。
+
+  啤酒花农场不计入此值。
+BuildInterval: |-
+  AI 的建造速度。适用于 AIV 建筑、非 AIV 建筑以及所有维修。
+
+  1 为最快。
+ResourceRebuildDelay: AI 尝试重建非 AIV 资源建筑之前的等待时间。
+MaxFood: |-
+  苹果、奶酪、肉、面包和小麦各自的库存上限，另加 ResourceVariance。
+
+  此值分别适用于每种物资，不是合计值。
+MinimumApples: |-
+  苹果库存低于此值时，AI 每次购买 [TradeAmountFood] 个苹果，直到恢复至该值。
+
+  设为 0 时永不购买苹果。
+MinimumCheese: |-
+  奶酪库存低于此值时，AI 每次购买 [TradeAmountFood] 份奶酪，直到恢复至该值。
+
+  设为 0 时永不购买奶酪。
+MinimumBread: |-
+  面包库存低于此值时，AI 每次购买 [TradeAmountFood] 个面包，直到恢复至该值。
+
+  设为 0 时永不购买面包。
+
+  有面包生产链时，设为 0 并改买小麦可能更合适。
+MinimumWheat: |-
+  小麦库存低于此值时，AI 每次购买 [TradeAmountFood] 份小麦，直到恢复至该值。
+
+  设为 0 时永不购买小麦。
+MinimumHop: 啤酒花库存低于此值时，AI 每次购买 [TradeAmountFood] 份啤酒花，直到恢复至该值。设为 0 时永不购买。
+TradeAmountFood: |-
+  AI 每次购买的食物数量，每次只购买一种食物。
+
+  数值较小时，单次采购更便宜，也更容易完成，但可能需要更多次采购，补货更慢且可能出现短暂短缺。
+TradeAmountEquipment: |-
+  AI 每次购买的武器数量，每次只购买一种装备。
+
+  数值较小时，单次采购更便宜，也更容易完成，但可能需要更多次采购，补货更慢且可能出现短暂短缺。
+AIRequestDelay: AI 向玩家请求资源的频率。数值越低，请求越频繁。
+MinimumGoodsRequiredAfterTrade: 与玩家交易后，AI 必须保留的该资源最低数量。否则会拒绝交易。
+DoubleRationsFoodThreshold: 苹果、奶酪、肉和面包的总量超过此值时，AI 提供双倍口粮。
+MaxWood: 木材库存上限，另加 ResourceVariance。
+MaxStone: 石料库存上限，另加 ResourceVariance。
+MaxResourceOther: |-
+  铁、沥青、啤酒花和面粉各自的库存上限，另加 ResourceVariance。
+
+  分别适用于每种物资，不是合计值。
+MaxEquipment: 武器与铠甲各自的库存上限，另加 ResourceVariance。分别适用于每种类型，不是合计值。
+MaxBeer: 啤酒库存上限，另加 ResourceVariance。
+MaxResourceVariance: 允许超出各项 Max[Resource] 上限的浮动量。
+RecruitGoldThreshold: AI 开始招募单位前所需的最低黄金数量。
+BlacksmithSetting: 设置铁匠铺的生产类型。选择“两者”时，第一座生产剑，第二座生产链锤，第三座生产剑，以此类推。
+FletcherSetting: 设置弓弩作坊的生产类型。选择“两者”时，第一座生产弓，第二座生产弩，第三座生产弓，以此类推。
+PoleturnerSetting: 设置长柄武器作坊的生产类型。选择“两者”时，第一座生产长矛，第二座生产长戟，第三座生产长矛，以此类推。
+SellResource01: AI 获得此资源后总会立即出售。
+SellResource02: AI 获得此资源后总会立即出售。
+SellResource03: AI 获得此资源后总会立即出售。
+SellResource04: AI 获得此资源后总会立即出售。
+SellResource05: AI 获得此资源后总会立即出售。
+SellResource06: AI 获得此资源后总会立即出售。
+SellResource07: AI 获得此资源后总会立即出售。
+SellResource08: AI 获得此资源后总会立即出售。
+SellResource09: AI 获得此资源后总会立即出售。
+SellResource10: AI 获得此资源后总会立即出售。
+SellResource11: AI 获得此资源后总会立即出售。
+SellResource12: AI 获得此资源后总会立即出售。
+SellResource13: AI 获得此资源后总会立即出售。
+SellResource14: AI 获得此资源后总会立即出售。
+SellResource15: AI 获得此资源后总会立即出售。
+DefWallPatrolRallyTime: 城墙守军前往下一个 AIV 单位位置前的等待时间。并非所有城墙守军都能巡逻。
+DefWallPatrolGroups: 在 AIV 位置之间巡逻的城墙守军组数。
+DefSiegeEngineGoldThreshold: AI 建造 AIV 攻城器械前所需的黄金数量。
+DefSiegeEngineBuildDelay: 重建已摧毁 AIV 攻城器械前的等待时间。数值越低，等待越短。
+Unknown072: 未使用的值。
+Unknown073: 未使用的值。
+RecruitProbDefDefault: |-
+  AI 在普通状态下招募防守部队的概率。
+
+  弱势：几乎不启用，通常仅在濒临失败时。普通：通常为开局前几年。强势：最常见，人口和单位数量超过 40 时往往已达到。
+RecruitProbDefWeak: |-
+  AI 在弱势状态下招募防守部队的概率。
+
+  弱势：几乎不启用，通常仅在濒临失败时。普通：通常为开局前几年。强势：最常见，人口和单位数量超过 40 时往往已达到。
+RecruitProbDefStrong: |-
+  AI 在强势状态下招募防守部队的概率。
+
+  弱势：几乎不启用，通常仅在濒临失败时。普通：通常为开局前几年。强势：最常见，人口和单位数量超过 40 时往往已达到。
+RecruitProbRaidDefault: |-
+  AI 在普通状态下招募袭扰部队的概率。
+
+  弱势：几乎不启用，通常仅在濒临失败时。普通：通常为开局前几年。强势：最常见，人口和单位数量超过 40 时往往已达到。
+RecruitProbRaidWeak: |-
+  AI 在弱势状态下招募袭扰部队的概率。
+
+  弱势：几乎不启用，通常仅在濒临失败时。普通：通常为开局前几年。强势：最常见，人口和单位数量超过 40 时往往已达到。
+RecruitProbRaidStrong: |-
+  AI 在强势状态下招募袭扰部队的概率。
+
+  弱势：几乎不启用，通常仅在濒临失败时。普通：通常为开局前几年。强势：最常见，人口和单位数量超过 40 时往往已达到。
+RecruitProbAttackDefault: |-
+  AI 在普通状态下招募进攻部队的概率。
+
+  弱势：几乎不启用，通常仅在濒临失败时。普通：通常为开局前几年。强势：最常见，人口和单位数量超过 40 时往往已达到。
+RecruitProbAttackWeak: |-
+  AI 在弱势状态下招募进攻部队的概率。
+
+  弱势：几乎不启用，通常仅在濒临失败时。普通：通常为开局前几年。强势：最常见，人口和单位数量超过 40 时往往已达到。
+RecruitProbAttackStrong: |-
+  AI 在强势状态下招募进攻部队的概率。
+
+  弱势：几乎不启用，通常仅在濒临失败时。普通：通常为开局前几年。强势：最常见，人口和单位数量超过 40 时往往已达到。
+SortieUnitRangedMin: |-
+  远程出击部队的最低数量。
+
+  弱势：几乎不启用，通常仅在濒临失败时。
+  普通：通常为开局前几年。
+  强势：最常见，人口和单位数量超过 40 时往往已达到。
+SortieUnitRanged: |-
+  远程出击部队的类型。它们会在城外工人死亡的位置驻守。被消灭的次数越多，规模越大；后期通常比设定值多招募约 25 个单位。
+
+  即使设为 0 仍会招募。要禁用，请选择无法招募的单位。
+
+  出击部队的招募优先级始终高于其他单位。
+SortieUnitMeleeMin: 近战出击部队的确切数量。
+SortieUnitMelee: |-
+  拦截破坏建筑的敌军所用的出击兵种。目标死亡后会返回主堡顶部。
+
+  出击部队的招募优先级始终高于其他单位。
+DefDiggingUnitMax: 挖掘单位的招募上限。只要 AI 或盟友计划挖掘护城河，就会优先于防守、袭扰和进攻部队招募它们。
+DefDiggingUnit: 挖掘己方或盟友护城河所用的兵种。
+RecruitInterval: |-
+  AI 在普通状态下招募下一个单位前的等待时间。1 为最快。
+
+  弱势：几乎不启用，通常仅在濒临失败时。普通：通常为开局前几年。强势：最常见，人口和单位数量超过 40 时往往已达到。
+RecruitIntervalWeak: |-
+  AI 在弱势状态下招募下一个单位前的等待时间。1 为最快。
+
+  弱势：几乎不启用，通常仅在濒临失败时。普通：通常为开局前几年。强势：最常见，人口和单位数量超过 40 时往往已达到。
+RecruitIntervalStrong: |-
+  AI 在强势状态下招募下一个单位前的等待时间。1 为最快。
+
+  弱势：几乎不启用，通常仅在濒临失败时。普通：通常为开局前几年。强势：最常见，人口和单位数量超过 40 时往往已达到。
+DefTotal: AI 招募的防守部队总数。
+OuterPatrolGroupsCount: 在经济建筑周围巡逻的防守部队组数。
+OuterPatrolGroupsMove: 城墙守军以外的防守部队是否在经济建筑周围巡逻，或停留原地（通常靠近采石场）。
+OuterPatrolRallyDelay: 城墙守军以外的防守部队前往下一位置前的等待时间。
+DefWalls: 防守总兵力中用作城墙守军的数量。它们前往城内 AIV 位置，其余部队巡逻经济建筑。
+DefUnit1: |-
+  AI 尝试招募的第 1 种防守单位。
+
+  无力支付当前栏位时会尝试下一个。
+DefUnit2: |-
+  AI 尝试招募的第 2 种防守单位。
+
+  无力支付当前栏位时会尝试下一个。
+DefUnit3: |-
+  AI 尝试招募的第 3 种防守单位。
+
+  无力支付当前栏位时会尝试下一个。
+DefUnit4: |-
+  AI 尝试招募的第 4 种防守单位。
+
+  无力支付当前栏位时会尝试下一个。
+DefUnit5: |-
+  AI 尝试招募的第 5 种防守单位。
+
+  无力支付当前栏位时会尝试下一个。
+DefUnit6: |-
+  AI 尝试招募的第 6 种防守单位。
+
+  无力支付当前栏位时会尝试下一个。
+DefUnit7: |-
+  AI 尝试招募的第 7 种防守单位。
+
+  无力支付当前栏位时会尝试下一个。
+DefUnit8: |-
+  AI 尝试招募的第 8 种防守单位。
+
+  无力支付当前栏位时会尝试下一个。
+
+  DefUnit8 之后重新从列表开头开始。
+RaidUnitsBase: 用于袭扰敌方建筑的单位数量。
+RaidUnitsRandom: AI 处于强势且黄金充足时，可能在 RaidUnitsBase 基础上额外增加的单位数量。
+RaidUnit1: |-
+  AI 尝试招募的第 1 种袭扰单位。
+
+  无力支付当前栏位时会尝试下一个。
+RaidUnit2: |-
+  AI 尝试招募的第 2 种袭扰单位。
+
+  无力支付当前栏位时会尝试下一个。
+RaidUnit3: |-
+  AI 尝试招募的第 3 种袭扰单位。
+
+  无力支付当前栏位时会尝试下一个。
+RaidUnit4: |-
+  AI 尝试招募的第 4 种袭扰单位。
+
+  无力支付当前栏位时会尝试下一个。
+RaidUnit5: |-
+  AI 尝试招募的第 5 种袭扰单位。
+
+  无力支付当前栏位时会尝试下一个。
+RaidUnit6: |-
+  AI 尝试招募的第 6 种袭扰单位。
+
+  无力支付当前栏位时会尝试下一个。
+RaidUnit7: |-
+  AI 尝试招募的第 7 种袭扰单位。
+
+  无力支付当前栏位时会尝试下一个。
+RaidUnit8: |-
+  AI 尝试招募的第 8 种袭扰单位。
+
+  无力支付当前栏位时会尝试下一个。
+
+  RaidUnit8 之后重新从列表开头开始。
+HarassingSiegeEngine1: |-
+  AI 招募的第 1 台袭扰攻城器械。
+
+  从工程师公会出发前往敌方城堡，沿路攻击建筑；火弩炮也攻击单位。
+HarassingSiegeEngine2: |-
+  AI 招募的第 2 台袭扰攻城器械。
+
+  从工程师公会出发前往敌方城堡，沿路攻击建筑；火弩炮也攻击单位。
+HarassingSiegeEngine3: |-
+  AI 招募的第 3 台袭扰攻城器械。
+
+  从工程师公会出发前往敌方城堡，沿路攻击建筑；火弩炮也攻击单位。
+HarassingSiegeEngine4: |-
+  AI 招募的第 4 台袭扰攻城器械。
+
+  从工程师公会出发前往敌方城堡，沿路攻击建筑；火弩炮也攻击单位。
+HarassingSiegeEngine5: |-
+  AI 招募的第 5 台袭扰攻城器械。
+
+  从工程师公会出发前往敌方城堡，沿路攻击建筑；火弩炮也攻击单位。
+HarassingSiegeEngine6: |-
+  AI 招募的第 6 台袭扰攻城器械。
+
+  从工程师公会出发前往敌方城堡，沿路攻击建筑；火弩炮也攻击单位。
+HarassingSiegeEngine7: |-
+  AI 招募的第 7 台袭扰攻城器械。
+
+  从工程师公会出发前往敌方城堡，沿路攻击建筑；火弩炮也攻击单位。
+HarassingSiegeEngine8: |-
+  AI 招募的第 8 台袭扰攻城器械。
+
+  从工程师公会出发前往敌方城堡，沿路攻击建筑；火弩炮也攻击单位。
+
+  HarassingSiegeEngine8 之后重新从列表开头开始。
+HarassingSiegeEnginesMax: 场上同时存在的袭扰攻城器械最大数量。
+RaidRetargetDelay: 袭扰部队选择下一个建筑目标前的等待时间。
+AttForceBase: AI 发起进攻前招募的进攻单位数量。每次进攻后按 UCP 设置增加；原版每次增加 5。
+AttForceRandom: AI 处于强势且黄金充足时，可能在 AttForceBase 基础上额外增加的单位数量。
+AttForceSupportAllyThreshold: AI 执行玩家的进攻或援助命令前，必须招募的进攻单位数量。
+AttForceRallyPercentage: 发起进攻前，必须到达集结点的单位比例（%）。
+Unknown129: |-
+  影响接近于零。当进攻被判定为弱到无法造成伤害时，必须到达集结点才开始撤退的单位比例（%）。
+
+  也表示这些撤退单位中必须返回主堡后，才会开始招募下一波进攻部队的比例。
+AttAssaultDelay: 进攻开始后，进攻单位和攻城器械在集结点等待多久才真正出击。
+AttUnitPatrolRecommandDelay: |-
+  进攻成功后撤退前的等待时间。
+
+  通常应设为 0，因为 AI 没有必要在敌方墓地等待。
+Unknown132: 等待盟友一起进攻的概率（%）。在后期，盟友开始进攻时，也可能让 AI 在尚未完成全部招募前就出兵配合。
+SiegeEngine1: AI 为进攻招募的第 1 台攻城器械。
+SiegeEngine2: AI 为进攻招募的第 2 台攻城器械。
+SiegeEngine3: AI 为进攻招募的第 3 台攻城器械。
+SiegeEngine4: AI 为进攻招募的第 4 台攻城器械。
+SiegeEngine5: AI 为进攻招募的第 5 台攻城器械。
+SiegeEngine6: AI 为进攻招募的第 6 台攻城器械。
+SiegeEngine7: AI 为进攻招募的第 7 台攻城器械。
+SiegeEngine8: |-
+  AI 为进攻招募的第 8 台攻城器械。
+
+  最多只能有八台进攻攻城器械。
+CowThrowInterval: 投石车投掷一头死牛前需要先投掷的石块数量。
+Unknown142: 未使用的值。
+AttMaxEngineers: 操控 SiegeEngine 栏位器械的工程师最大数量。应至少满足所有这些器械的总操作人数需求。
+AttDiggingUnit: 进攻时填平敌方护城河所用的兵种。
+AttDiggingUnitMax: 每次进攻招募的挖掘单位上限。
+AttUnitVanguard: 先于其他所有单位冲向敌方城堡的兵种。
+AttUnitVanguardMax: 每次进攻招募的先锋单位上限。
+AttMaxAssassins: 围攻时尝试攀爬敌方城门的刺客上限。
+AttMaxLaddermen: 围攻时尝试将梯子架到城墙上的云梯兵上限。
+AttMaxTunnelers: 尝试朝敌方主堡挖掘隧道的掘地兵上限。
+AttUnitPatrol: 在敌方城堡周围巡逻并射击敌军的单位。
+AttUnitPatrolMax: 每次进攻招募的巡逻单位上限。
+AttUnitPatrolGroupsCount: 进攻开始时巡逻单位分成的组数。
+AttUnitBackup: 留在集结点，只有存在通往敌方主堡的路径时才进攻的单位。其他进攻单位全部阵亡后会撤退。
+AttUnitBackupMax: 每次进攻招募的后备单位上限。
+AttUnitBackupGroupsCount: 攻击敌方主堡时后备单位分成的组数。
+AttUnitEngage: 优先攻击敌方单位和农民而不是城墙的兵种。
+AttUnitEngageMax: 每次进攻招募的交战单位上限。
+AttUnitSiegeDef: 进攻时留在攻城器械旁的护卫单位。它们也可能护卫袭扰器械和防御器械，而不仅是进攻器械。
+AttUnitSiegeDefMax: 每次进攻招募的攻城器械护卫上限。
+AttUnitSiegeDefGroupsCount: 进攻时攻城器械护卫分成的组数。
+AttUnitMain1: |-
+  主力进攻部队招募的第 1 种单位。只有这些单位的规模会无限增长。
+
+  无力支付当前栏位时会尝试下一个。
+AttUnitMain2: |-
+  主力进攻部队招募的第 2 种单位。只有这些单位的规模会无限增长。
+
+  无力支付当前栏位时会尝试下一个。
+AttUnitMain3: |-
+  主力进攻部队招募的第 3 种单位。只有这些单位的规模会无限增长。
+
+  无力支付当前栏位时会尝试下一个。
+AttUnitMain4: |-
+  主力进攻部队招募的第 4 种单位。只有这些单位的规模会无限增长。
+
+  无力支付当前栏位时会尝试下一个。
+
+  AttUnitMain4 之后重新从列表开头开始。
+AttMaxDefault: |-
+  在所有特殊职责（AttLaddermen、AttAssassins、AttUnitPatrol 等）招满之前，允许先招募的主力单位数量。
+  设为 0 时，必须先招满所有特殊职责单位，才能招募 AttUnitMain。
+AttMainGroupsCount: 进攻时 AttUnitMain 主力单位分成的组数。
+TargetChoice: |-
+  设置 AI 选择进攻目标的方式。
+
+  黄金：总是攻击黄金最多的敌方玩家。
+
+  均衡：根据计算得出的弱点评分选择，最复杂、最细致。
+
+  最近：总是攻击最近的敌人，按主堡之间的距离计算。
+
+  任意：攻击内部玩家列表中的下一个敌人，看似随机但顺序固定。
+
+  玩家：优先攻击人类玩家；没有敌对人类玩家时改用“最近”。
+AIOxTethers_DisableInitialOxTether: “否”保持原版行为；“是”表示不再每次建造或重建采石场时自动建造牛车站。
+AIOxTethers_Logic: |-
+  设置采用的逻辑。
+  否 = 原版，是 = 动态。
+AIOxTethers_MaxOxTethers: 此 AI 的牛车站总数永不超过此值。
+AIOxTethers_DynamicMaxOxTethers: 此 AI 的牛车站总数永不超过此值乘以采石场数量。
+AIOxTethers_MinimumOxTethersPerQuarry: 从某座采石场运输石料的关联牛车站少于此值时，为该采石场增建一座牛车站。
+AIOxTethers_MaximumOxTethersPerQuarry: 某座采石场关联的牛车站数量高于此值时，不再为它增建牛车站。
+AIOxTethers_ThresholdStoneLoad: 某座采石场的“石料 / 关联牛车站”超过此值时，为它增建一座牛车站。
+RunningUnits_Macemen: |-
+  设为“是”时，链锤兵始终奔跑，即使与较慢单位编组。
+  设为“否”时，速度与组内最慢单位一致，与原版相同。
+RunningUnits_Spearmen: |-
+  设为“是”时，长矛兵始终奔跑，即使与较慢单位编组。
+  设为“否”时，速度与组内最慢单位一致，与原版相同。
+RunningUnits_Slingers: |-
+  设为“是”时，投石兵始终奔跑，即使与较慢单位编组。
+  设为“否”时，速度与组内最慢单位一致，与原版相同。
+RunningUnits_Slaves: |-
+  设为“是”时，奴隶始终奔跑，即使与较慢单位编组。
+  设为“否”时，速度与组内最慢单位一致，与原版相同。
+AIVTroops_InitialRole: |-
+  分配尚未分配职责的开局或场景部队。挖掘要求单位实际具备挖掘能力且存在护城河格，否则改为防守。
+
+  所有支持兵种的通用默认值。选择原版时，保存的角色不包含此字段，改用下一个适用的通用或菜单默认值。需要 aiv-troops-behaviour，并启用部队设置和 AIC 覆盖。修改后须重启 UCP 并开始新游戏。
+AIVTroops_Movement: |-
+  防守单位在 AIV 位置间的移动方式。巡逻使用 DefWallPatrolGroups 和 DefWallPatrolRallyTime；组数为零时原地驻守。
+
+  所有支持兵种的通用默认值。选择原版时，保存的角色不包含此字段，改用下一个适用的通用或菜单默认值。需要 aiv-troops-behaviour，并启用部队设置和 AIC 覆盖。修改后须重启 UCP 并开始新游戏。
+AIVTroops_InitialRole_Engineer: >-
+  分配尚未分配职责的开局或场景部队。挖掘要求单位实际具备挖掘能力且存在护城河格，否则改为防守。
+
+
+  兵种专用设置优先于通用 AIC 字段。选择原版时，保存的角色不包含此字段，改用下一个适用的通用或菜单默认值。需要 aiv-troops-behaviour，并启用部队设置和 AIC 覆盖。修改后须重启 UCP
+  并开始新游戏。
+AIVTroops_Movement_Engineer: >-
+  防守单位在 AIV 位置间的移动方式。巡逻使用 DefWallPatrolGroups 和 DefWallPatrolRallyTime；组数为零时原地驻守。
+
+
+  兵种专用设置优先于通用 AIC 字段。选择原版时，保存的角色不包含此字段，改用下一个适用的通用或菜单默认值。需要 aiv-troops-behaviour，并启用部队设置和 AIC 覆盖。修改后须重启 UCP
+  并开始新游戏。
+AIVTroops_InitialRole_Archer: >-
+  分配尚未分配职责的开局或场景部队。挖掘要求单位实际具备挖掘能力且存在护城河格，否则改为防守。
+
+
+  兵种专用设置优先于通用 AIC 字段。选择原版时，保存的角色不包含此字段，改用下一个适用的通用或菜单默认值。需要 aiv-troops-behaviour，并启用部队设置和 AIC 覆盖。修改后须重启 UCP
+  并开始新游戏。
+AIVTroops_Movement_Archer: >-
+  防守单位在 AIV 位置间的移动方式。巡逻使用 DefWallPatrolGroups 和 DefWallPatrolRallyTime；组数为零时原地驻守。
+
+
+  兵种专用设置优先于通用 AIC 字段。选择原版时，保存的角色不包含此字段，改用下一个适用的通用或菜单默认值。需要 aiv-troops-behaviour，并启用部队设置和 AIC 覆盖。修改后须重启 UCP
+  并开始新游戏。
+AIVTroops_InitialRole_Crossbowman: >-
+  分配尚未分配职责的开局或场景部队。挖掘要求单位实际具备挖掘能力且存在护城河格，否则改为防守。
+
+
+  兵种专用设置优先于通用 AIC 字段。选择原版时，保存的角色不包含此字段，改用下一个适用的通用或菜单默认值。需要 aiv-troops-behaviour，并启用部队设置和 AIC 覆盖。修改后须重启 UCP
+  并开始新游戏。
+AIVTroops_Movement_Crossbowman: >-
+  防守单位在 AIV 位置间的移动方式。巡逻使用 DefWallPatrolGroups 和 DefWallPatrolRallyTime；组数为零时原地驻守。
+
+
+  兵种专用设置优先于通用 AIC 字段。选择原版时，保存的角色不包含此字段，改用下一个适用的通用或菜单默认值。需要 aiv-troops-behaviour，并启用部队设置和 AIC 覆盖。修改后须重启 UCP
+  并开始新游戏。
+AIVTroops_InitialRole_Spearman: >-
+  分配尚未分配职责的开局或场景部队。挖掘要求单位实际具备挖掘能力且存在护城河格，否则改为防守。
+
+
+  兵种专用设置优先于通用 AIC 字段。选择原版时，保存的角色不包含此字段，改用下一个适用的通用或菜单默认值。需要 aiv-troops-behaviour，并启用部队设置和 AIC 覆盖。修改后须重启 UCP
+  并开始新游戏。
+AIVTroops_Movement_Spearman: >-
+  防守单位在 AIV 位置间的移动方式。巡逻使用 DefWallPatrolGroups 和 DefWallPatrolRallyTime；组数为零时原地驻守。
+
+
+  兵种专用设置优先于通用 AIC 字段。选择原版时，保存的角色不包含此字段，改用下一个适用的通用或菜单默认值。需要 aiv-troops-behaviour，并启用部队设置和 AIC 覆盖。修改后须重启 UCP
+  并开始新游戏。
+AIVTroops_InitialRole_Pikeman: >-
+  分配尚未分配职责的开局或场景部队。挖掘要求单位实际具备挖掘能力且存在护城河格，否则改为防守。
+
+
+  兵种专用设置优先于通用 AIC 字段。选择原版时，保存的角色不包含此字段，改用下一个适用的通用或菜单默认值。需要 aiv-troops-behaviour，并启用部队设置和 AIC 覆盖。修改后须重启 UCP
+  并开始新游戏。
+AIVTroops_Movement_Pikeman: >-
+  防守单位在 AIV 位置间的移动方式。巡逻使用 DefWallPatrolGroups 和 DefWallPatrolRallyTime；组数为零时原地驻守。
+
+
+  兵种专用设置优先于通用 AIC 字段。选择原版时，保存的角色不包含此字段，改用下一个适用的通用或菜单默认值。需要 aiv-troops-behaviour，并启用部队设置和 AIC 覆盖。修改后须重启 UCP
+  并开始新游戏。
+AIVTroops_InitialRole_Maceman: >-
+  分配尚未分配职责的开局或场景部队。挖掘要求单位实际具备挖掘能力且存在护城河格，否则改为防守。
+
+
+  兵种专用设置优先于通用 AIC 字段。选择原版时，保存的角色不包含此字段，改用下一个适用的通用或菜单默认值。需要 aiv-troops-behaviour，并启用部队设置和 AIC 覆盖。修改后须重启 UCP
+  并开始新游戏。
+AIVTroops_Movement_Maceman: >-
+  防守单位在 AIV 位置间的移动方式。巡逻使用 DefWallPatrolGroups 和 DefWallPatrolRallyTime；组数为零时原地驻守。
+
+
+  兵种专用设置优先于通用 AIC 字段。选择原版时，保存的角色不包含此字段，改用下一个适用的通用或菜单默认值。需要 aiv-troops-behaviour，并启用部队设置和 AIC 覆盖。修改后须重启 UCP
+  并开始新游戏。
+AIVTroops_InitialRole_Swordsman: >-
+  分配尚未分配职责的开局或场景部队。挖掘要求单位实际具备挖掘能力且存在护城河格，否则改为防守。
+
+
+  兵种专用设置优先于通用 AIC 字段。选择原版时，保存的角色不包含此字段，改用下一个适用的通用或菜单默认值。需要 aiv-troops-behaviour，并启用部队设置和 AIC 覆盖。修改后须重启 UCP
+  并开始新游戏。
+AIVTroops_Movement_Swordsman: >-
+  防守单位在 AIV 位置间的移动方式。巡逻使用 DefWallPatrolGroups 和 DefWallPatrolRallyTime；组数为零时原地驻守。
+
+
+  兵种专用设置优先于通用 AIC 字段。选择原版时，保存的角色不包含此字段，改用下一个适用的通用或菜单默认值。需要 aiv-troops-behaviour，并启用部队设置和 AIC 覆盖。修改后须重启 UCP
+  并开始新游戏。
+AIVTroops_InitialRole_Knight: >-
+  分配尚未分配职责的开局或场景部队。挖掘要求单位实际具备挖掘能力且存在护城河格，否则改为防守。
+
+
+  兵种专用设置优先于通用 AIC 字段。选择原版时，保存的角色不包含此字段，改用下一个适用的通用或菜单默认值。需要 aiv-troops-behaviour，并启用部队设置和 AIC 覆盖。修改后须重启 UCP
+  并开始新游戏。
+AIVTroops_Movement_Knight: >-
+  防守单位在 AIV 位置间的移动方式。巡逻使用 DefWallPatrolGroups 和 DefWallPatrolRallyTime；组数为零时原地驻守。
+
+
+  兵种专用设置优先于通用 AIC 字段。选择原版时，保存的角色不包含此字段，改用下一个适用的通用或菜单默认值。需要 aiv-troops-behaviour，并启用部队设置和 AIC 覆盖。修改后须重启 UCP
+  并开始新游戏。
+AIVTroops_InitialRole_Slave: >-
+  分配尚未分配职责的开局或场景部队。挖掘要求单位实际具备挖掘能力且存在护城河格，否则改为防守。
+
+
+  兵种专用设置优先于通用 AIC 字段。选择原版时，保存的角色不包含此字段，改用下一个适用的通用或菜单默认值。需要 aiv-troops-behaviour，并启用部队设置和 AIC 覆盖。修改后须重启 UCP
+  并开始新游戏。
+AIVTroops_Movement_Slave: >-
+  防守单位在 AIV 位置间的移动方式。巡逻使用 DefWallPatrolGroups 和 DefWallPatrolRallyTime；组数为零时原地驻守。
+
+
+  兵种专用设置优先于通用 AIC 字段。选择原版时，保存的角色不包含此字段，改用下一个适用的通用或菜单默认值。需要 aiv-troops-behaviour，并启用部队设置和 AIC 覆盖。修改后须重启 UCP
+  并开始新游戏。
+AIVTroops_InitialRole_Slinger: >-
+  分配尚未分配职责的开局或场景部队。挖掘要求单位实际具备挖掘能力且存在护城河格，否则改为防守。
+
+
+  兵种专用设置优先于通用 AIC 字段。选择原版时，保存的角色不包含此字段，改用下一个适用的通用或菜单默认值。需要 aiv-troops-behaviour，并启用部队设置和 AIC 覆盖。修改后须重启 UCP
+  并开始新游戏。
+AIVTroops_Movement_Slinger: >-
+  防守单位在 AIV 位置间的移动方式。巡逻使用 DefWallPatrolGroups 和 DefWallPatrolRallyTime；组数为零时原地驻守。
+
+
+  兵种专用设置优先于通用 AIC 字段。选择原版时，保存的角色不包含此字段，改用下一个适用的通用或菜单默认值。需要 aiv-troops-behaviour，并启用部队设置和 AIC 覆盖。修改后须重启 UCP
+  并开始新游戏。
+AIVTroops_InitialRole_Assassin: >-
+  分配尚未分配职责的开局或场景部队。挖掘要求单位实际具备挖掘能力且存在护城河格，否则改为防守。
+
+
+  兵种专用设置优先于通用 AIC 字段。选择原版时，保存的角色不包含此字段，改用下一个适用的通用或菜单默认值。需要 aiv-troops-behaviour，并启用部队设置和 AIC 覆盖。修改后须重启 UCP
+  并开始新游戏。
+AIVTroops_Movement_Assassin: >-
+  防守单位在 AIV 位置间的移动方式。巡逻使用 DefWallPatrolGroups 和 DefWallPatrolRallyTime；组数为零时原地驻守。
+
+
+  兵种专用设置优先于通用 AIC 字段。选择原版时，保存的角色不包含此字段，改用下一个适用的通用或菜单默认值。需要 aiv-troops-behaviour，并启用部队设置和 AIC 覆盖。修改后须重启 UCP
+  并开始新游戏。
+AIVTroops_InitialRole_ArabianArcher: >-
+  分配尚未分配职责的开局或场景部队。挖掘要求单位实际具备挖掘能力且存在护城河格，否则改为防守。
+
+
+  兵种专用设置优先于通用 AIC 字段。选择原版时，保存的角色不包含此字段，改用下一个适用的通用或菜单默认值。需要 aiv-troops-behaviour，并启用部队设置和 AIC 覆盖。修改后须重启 UCP
+  并开始新游戏。
+AIVTroops_Movement_ArabianArcher: >-
+  防守单位在 AIV 位置间的移动方式。巡逻使用 DefWallPatrolGroups 和 DefWallPatrolRallyTime；组数为零时原地驻守。
+
+
+  兵种专用设置优先于通用 AIC 字段。选择原版时，保存的角色不包含此字段，改用下一个适用的通用或菜单默认值。需要 aiv-troops-behaviour，并启用部队设置和 AIC 覆盖。修改后须重启 UCP
+  并开始新游戏。
+AIVTroops_InitialRole_HorseArcher: >-
+  分配尚未分配职责的开局或场景部队。挖掘要求单位实际具备挖掘能力且存在护城河格，否则改为防守。
+
+
+  兵种专用设置优先于通用 AIC 字段。选择原版时，保存的角色不包含此字段，改用下一个适用的通用或菜单默认值。需要 aiv-troops-behaviour，并启用部队设置和 AIC 覆盖。修改后须重启 UCP
+  并开始新游戏。
+AIVTroops_Movement_HorseArcher: >-
+  防守单位在 AIV 位置间的移动方式。巡逻使用 DefWallPatrolGroups 和 DefWallPatrolRallyTime；组数为零时原地驻守。
+
+
+  兵种专用设置优先于通用 AIC 字段。选择原版时，保存的角色不包含此字段，改用下一个适用的通用或菜单默认值。需要 aiv-troops-behaviour，并启用部队设置和 AIC 覆盖。修改后须重启 UCP
+  并开始新游戏。
+AIVTroops_InitialRole_ArabianSwordsman: >-
+  分配尚未分配职责的开局或场景部队。挖掘要求单位实际具备挖掘能力且存在护城河格，否则改为防守。
+
+
+  兵种专用设置优先于通用 AIC 字段。选择原版时，保存的角色不包含此字段，改用下一个适用的通用或菜单默认值。需要 aiv-troops-behaviour，并启用部队设置和 AIC 覆盖。修改后须重启 UCP
+  并开始新游戏。
+AIVTroops_Movement_ArabianSwordsman: >-
+  防守单位在 AIV 位置间的移动方式。巡逻使用 DefWallPatrolGroups 和 DefWallPatrolRallyTime；组数为零时原地驻守。
+
+
+  兵种专用设置优先于通用 AIC 字段。选择原版时，保存的角色不包含此字段，改用下一个适用的通用或菜单默认值。需要 aiv-troops-behaviour，并启用部队设置和 AIC 覆盖。修改后须重启 UCP
+  并开始新游戏。
+AIVTroops_InitialRole_FireThrower: >-
+  分配尚未分配职责的开局或场景部队。挖掘要求单位实际具备挖掘能力且存在护城河格，否则改为防守。
+
+
+  兵种专用设置优先于通用 AIC 字段。选择原版时，保存的角色不包含此字段，改用下一个适用的通用或菜单默认值。需要 aiv-troops-behaviour，并启用部队设置和 AIC 覆盖。修改后须重启 UCP
+  并开始新游戏。
+AIVTroops_Movement_FireThrower: >-
+  防守单位在 AIV 位置间的移动方式。巡逻使用 DefWallPatrolGroups 和 DefWallPatrolRallyTime；组数为零时原地驻守。
+
+
+  兵种专用设置优先于通用 AIC 字段。选择原版时，保存的角色不包含此字段，改用下一个适用的通用或菜单默认值。需要 aiv-troops-behaviour，并启用部队设置和 AIC 覆盖。修改后须重启 UCP
+  并开始新游戏。

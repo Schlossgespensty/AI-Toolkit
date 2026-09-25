@@ -1,0 +1,84 @@
+wood: 木材
+stone: 石料
+iron: 铁
+pitch: 沥青
+gold: 黄金
+travel_ticks_tile_override_blank_reference: 每格移动 tick 覆盖值（留空使用参考值）
+delivery_store: 交货仓库
+dairy_farm: 奶牛场
+work_duration_unknown: 工作时长未知
+ticks_per_reference_cycle: ' tick / 参考周期'
+unknown: 未知
+hide_cost_per_building: 隐藏每座建筑成本
+show_cost_per_building: 显示每座建筑成本
+the_build_cost_table: 建造成本表
+cost_table_not_loaded: 未加载成本表。
+castle_costs: 城堡成本 ▸
+castle_costs_2: 城堡成本 ▾
+bundled_base_ucp: 内置基础值 + UCP
+bundled_vanilla: 内置原版数据
+the_saved_snapshot_of: 已保存的数据快照：
+partial: （部分）
+open_a_character_for_production_estimates: 打开角色以估算产量。
+reading_selected_installation: 正在读取所选安装…
+using_bundled_vanilla_prices: 正在使用内置原版价格
+no_steps: 无步骤
+cumulative_total_no_steps: 累计总计 · 无步骤
+partial_unknown_prices: （部分：价格未知）
+no_character_file: 无角色文件
+iron_mine: 铁矿场
+iron_mines: 铁矿场
+pitch_rig: 沥青矿场
+pitch_rigs: 沥青矿场
+ox_tether: 牛车站
+ox_tethers: 牛车站
+1_of_those_farms_grows_hops: 其中 1 座农场种植啤酒花
+open_a_character_file_to_see_how_many_resource_buildings_the_aic_would_a: 打开角色文件，查看 AIC 将在此添加多少资源建筑。
+nothing_with_a_known_price_up_to_this_step: 截至此步骤没有已知价格的项目。
+no_cost: 无成本
+price_from_the_selected_balance_file: 价格来自所选平衡文件
+price_from_the_game_exe_vanilla: 价格来自游戏可执行文件（原版）
+value_value_value_tiles_value_walking_ticks_value: '{{value1}}。{{note}}。{{value3}} 格；{{value4}} 移动 tick；{{value5}}。'
+value_reference_ticks_batch: '{{good}} 参考 tick / 批次'
+bundled_vanilla_prices_were_extracted_from_the_game_exe_at_value_load_a_: >-
+  内置原版价格取自 {{value1}} 处的游戏可执行文件。加载插件平衡 JSON 可覆盖建筑价格；未覆盖的项目保留原版价格。不会读取正在运行的游戏。一个建造步骤 = 50 tick = 一个游戏日（已测量
+  445/445 个步骤）。
+ucp_balance_could_not_be_loaded_still_using_value_value: 无法加载 UCP 平衡设置，仍使用 {{value1}}。{{value2}}
+using_saved_snapshot_value: 使用已保存快照：{{choice}}
+cumulative_total_steps_1_value: 累计总计 · 步骤 1–{{steps}}
+total_through_step_value: 截至步骤 {{steps}} 的总计
+through_step_value_value: 截至步骤 {{steps}}：{{value2}}
+price_unknown_not_counted_value_the_build_cost_table_has_no_entry_for_th: 价格未知，未计入：{{namen}}。建造成本表中没有这些项目。
+value_ticks_one_step_is_one_game_day_and_a_step_that_cannot_be_built_sti: '{{value1}} tick。一个步骤为一个游戏日；即使该步骤无法建造，也会消耗这一天。AI 缺钱时会等待，因此这是最早可能时间，并非保证。'
+at_value_population_the_aic_opens_value: 人口为 {{value1}} 时，AIC 计划 {{value2}}。
+1_pitch_per_value_tiles_grouped_across_steps_assumes_a_fresh_placement_c: ；每 {{pitchGroup}} 格消耗 1 沥青，跨步骤累计；假设放置计数器从零开始
+cumulative_total_through_step_value: 截至步骤 {{steps}} 的累计总计
+about_the_castle_cost_overview: 关于城堡成本总览
+balance: 平衡设置
+load_a_balance_json_ascension_team_league: 加载平衡 JSON（Ascension、Team League 等）
+load: 加载…
+use_ucp_balance: 使用 UCP 平衡设置
+cumulative_through_selected_step: 累计至所选步骤
+total_through_current_step: 截至当前步骤的总计
+resources_through_this_step: 截至此步骤的资源
+production_assumptions: 生产假设
+reference_estimate_from_stronghold_heaven_original_stronghold_assuming_f: >-
+  参考 Stronghold Heaven 的初代 Stronghold 估算，假设住房到位后工人全部配齐。这些近似速率不是经过验证的 Crusader
+  模拟时间。不包含建造延迟、暂停、原料短缺、消耗、贸易、运输瓶颈及恐惧/休息效果。这些物资并非储料场的实际余额。
+resource_distance: 资源距离
+per_extra_building: 每座额外建筑
+stockpile_distance: 储料场距离
+delivery_store_distance: 交货仓库距离
+between_stores: 仓库间距离
+walking_speed_multiplier: 步行速度倍率
+delivery_productivity: 交货效率 %
+skirmish_delivery_bonus_where_enabled_by_balance: 平衡设置启用时的遭遇战交货加成
+workshop_itinerary: 作坊运输路线
+work_ticks_exclude_the_return_journey_cycle_work_ticks_2_distance_walkin: >-
+  工作 tick 不含返程：周期 = 工作 tick + 2 × 距离 × 移动
+  tick。每个生产者保留独立进度和小数交货加成。石料指采石场产出，未模拟牛车运输。路径叠加层的距离是单独的布局诊断，不是实测外部资源距离。
+elapsed_game_time: 已过游戏时间
+good: 物资
+cost: 成本
+estimated_gross_production_not_stockpile_inventory: 估算总产量，并非储料场库存
+produced: 产出*

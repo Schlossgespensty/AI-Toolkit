@@ -1,0 +1,18 @@
+checking_updates: Проверка обновлений…
+up_to_date: Последняя версия
+no_published_builds: Нет опубликованных сборок
+no_compatible_build: Нет совместимой сборки
+retry_updates: Повторить проверку
+experimental_snapshot: Экспериментальная сборка
+official_release: Официальный выпуск
+downloading_update: Загрузка обновления…
+installing_the_selected_build_and_restarting_toolkit: установить выбранную сборку и перезапустить Toolkit
+restarting: Перезапуск…
+retry_update: Повторить обновление
+other_fork: Другой форк…
+update_source_value: "Источник обновлений: {{repo}}"
+install_value: Установить {{latest}}
+value_from_value_value_download_install_and_restart_installed_value: "{{value1}} из {{repo}}: {{latest}}. Загрузить, установить и перезапустить. Установлено: {{installed}}."
+installed_value_value_checked_on_startup_and_hourly: "Установлено: {{repo}} {{latest}}. Проверка при запуске и каждый час."
+no_installable_windows_zip_with_a_checksum_found_in_value: В {{repo}} не найден устанавливаемый ZIP для Windows с контрольной суммой.
+install_value_2: Установить {{version}}

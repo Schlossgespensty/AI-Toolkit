@@ -1,0 +1,8 @@
+steps: 步骤
+categories: 分类
+overview: 概览
+resize: 调整 {{panel}} 和概览的大小
+resize_help: 拖动调整大小；拖到任一端可折叠。方向键调整大小，Home/End 折叠，Enter 恢复。
+show: 显示 {{panel}}
+hide: 隐藏 {{panel}}
+move_copy: 移动副本到所需位置；单击粘贴，按 Esc 取消。

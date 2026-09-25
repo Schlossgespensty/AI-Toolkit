@@ -1,0 +1,12 @@
+# Mirrors UCP3-GUI/resources/lang/languages.yaml; UCP's legacy ch code maps to zh-CN.
+default: en
+languages:
+  - { id: en, name: English, dir: ltr }
+  - { id: de, name: Deutsch, dir: ltr }
+  - { id: fr, name: Français, dir: ltr }
+  - { id: ru, name: Русский, dir: ltr }
+  - { id: hu, name: Magyar, dir: ltr }
+  - { id: tr, name: Türkçe, dir: ltr }
+  - { id: zh-CN, name: 简体中文, dir: ltr, aliases: [ch, zh] }
+  - { id: es, name: Español, dir: ltr }
+  - { id: fa, name: فارسی, dir: rtl }

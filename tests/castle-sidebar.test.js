@@ -3,7 +3,7 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
-const vm = require('node:vm');
+const vm = require('./helpers/localized-vm');
 const split = require('../src/js/castle-sidebar-layout');
 
 test('divider collapses either end while preserving the prior split for restoration', () => {

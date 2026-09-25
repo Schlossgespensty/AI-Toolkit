@@ -1,0 +1,25 @@
+rotation_unavailable: 'Rotation indisponible : '
+loading_camera_views: Chargement des vues de caméra…
+loading_map: Chargement de la carte…
+items: ' éléments'
+without_a_sprite: ' sans sprite'
+tool: ' · outil : '
+middle_drag_pans_right_click_clears_camera_controls_match_map: ' · Glisser avec le bouton du milieu pour déplacer · clic droit pour désélectionner · mêmes commandes que la carte'
+start_place: ' · emplacement de départ '
+no_starting_place_village_in_the_middle_of_the_map: ' · aucun départ, village au centre de la carte'
+quarter_turn: ' quart de tour'
+game_value: ' (valeur du jeu '
+not_turned_game_value_0: ' · sans rotation (valeur du jeu 0)'
+flat_ground_height: ' · terrain plat (hauteur '
+ground_rises: ' · élévation du terrain '
+2_5d_view_ai_toolkit: Vue 2,5D — AI Toolkit
+castle_moved_to_start_value_at_value_value: Château déplacé au départ {{nummer}} à ({{x}}, {{y}})
+start_value_at_value_value_click_to_build_here: Départ {{value1}} à ({{x}}, {{y}}) – cliquez pour construire ici
+fit_the_castle_into_the_view: Ajuster la vue au château
+show_in_a_window_of_its_own: Afficher dans une fenêtre séparée
+click_to_show_drag_to_move_it_somewhere_else: Cliquez pour afficher, faites glisser pour déplacer
+close_the_window_shown_here: Fermer cette fenêtre
+no_window_open_one_from_the_toolbar: Aucune fenêtre — ouvrez-en une dans la barre d'outils
+add_as_a_tab_here: Ajouter ici comme onglet
+esc_cancels: ' · Échap pour annuler'
+is_missing: ' est absent'

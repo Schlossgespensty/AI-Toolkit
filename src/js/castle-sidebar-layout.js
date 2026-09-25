@@ -20,6 +20,7 @@
   const api = {normalize,drag,toggle};
   if (typeof module !== 'undefined') module.exports = api;
   if (typeof window === 'undefined') return;
+  const tr = (key,options) => window.toolkitI18n.t(key,options);
   const panels = new Map();
   let saved = {};
   try { saved = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch { /* defaults */ }
@@ -33,10 +34,8 @@
     const bottomButton = document.createElement('button'); bottomButton.type = 'button'; bottomButton.setAttribute('aria-controls',bottom.id);
     const grip = document.createElement('div'); grip.className = 'castleSidebarGrip'; grip.tabIndex = 0;
     grip.setAttribute('role','separator'); grip.setAttribute('aria-orientation','horizontal');
-    grip.setAttribute('aria-label',`Resize ${title.toLowerCase()} and overview`);
     grip.setAttribute('aria-controls',`${top.id} ${bottom.id}`);
     grip.setAttribute('aria-valuemin','0'); grip.setAttribute('aria-valuemax','100');
-    grip.title = 'Drag to resize; drag to either end to collapse. Arrow keys resize; Home/End collapse; Enter restores.';
     bar.append(topButton,grip,bottomButton); panel.append(top,bar,bottom);
     panel.classList.add('castleSidebarSplit');
     let state = normalize(saved[key]), gesture = null;
@@ -47,10 +46,13 @@
       top.hidden = collapsed === 'top'; bottom.hidden = collapsed === 'bottom';
       const ratio = collapsed === 'top' ? 0 : collapsed === 'bottom' ? 1 : state.ratio;
       panel.style.gridTemplateRows = `minmax(0, ${ratio}fr) ${hasOverview?'auto':'0px'} minmax(0, ${1-ratio}fr)`;
-      topButton.textContent = `${title} ${collapsed==='top'?'\u25bc':'\u25b2'}`;
-      bottomButton.textContent = `Overview ${collapsed==='bottom'?'\u25b2':'\u25bc'}`;
-      for (const [button,part,label] of [[topButton,'top',title],[bottomButton,'bottom','overview']]) {
-        button.title = `${collapsed===part?'Show':'Hide'} ${label.toLowerCase()}`;
+      const label=tr(title),overview=tr('layout:overview');
+      grip.setAttribute('aria-label',tr('layout:resize',{panel:label}));
+      grip.title=tr('layout:resize_help');
+      topButton.textContent = `${label} ${collapsed==='top'?'\u25bc':'\u25b2'}`;
+      bottomButton.textContent = `${overview} ${collapsed==='bottom'?'\u25b2':'\u25bc'}`;
+      for (const [button,part,label] of [[topButton,'top',tr(title)],[bottomButton,'bottom',overview]]) {
+        button.title = tr(collapsed===part?'layout:show':'layout:hide',{panel:label});
         button.setAttribute('aria-label',button.title);
         button.setAttribute('aria-expanded',String(collapsed!==part));
       }
@@ -93,8 +95,9 @@
     });
     panels.set(panel,{bottom,refresh});refresh();
   }
-  attach(document.querySelector('.castleBuildPanel'),'left','Steps');
-  attach(document.querySelector('.castlePalettePanel'),'right','Categories');
+  attach(document.querySelector('.castleBuildPanel'),'left','layout:steps');
+  attach(document.querySelector('.castlePalettePanel'),'right','layout:categories');
+  window.toolkitI18n?.onChange(()=>{for(const panel of panels.values())panel.refresh();});
   window.castleSidebarLayout = {...api,
     containerFor: panel => panels.get(panel)?.bottom || panel,
     refresh: () => { for(const panel of panels.values())panel.refresh(); }

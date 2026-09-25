@@ -1,0 +1,60 @@
+classic_export_failed: |-
+  Diese Burg kann nicht als klassische AIV exportiert werden:
+  {{issues}}
+  Speichere sie als Definitive Edition, um sie zu erhalten.
+castle_files: Burgdateien
+images: Bilder
+choose_game: Stronghold-Crusader-Installation wählen
+unsaved_title: Ungespeicherte Änderungen
+unsaved_message: |-
+  {{name}} enthält ungespeicherte Änderungen.
+  Vor dem Fortfahren speichern?
+  Nächster Schritt: {{action}}.
+document: Dokument
+continue: Fortfahren
+discard: Verwerfen
+add_to_ai: Zur KI hinzufügen
+edit_separately: Separat bearbeiten
+add_document_message: Dieses Dokument zu {{name}} hinzufügen? Ein hinzugefügter Charakter ersetzt die vorhandene Charakterdatei.
+new_window: Neues Fenster
+new: Neu
+open_new_window: In neuem Fenster öffnen
+save_as: Speichern unter
+clear_background: Hintergrund entfernen
+castle_mapping: Burgzuordnung bearbeiten…
+shortcuts: Burg-Tastenkürzel anpassen…
+toggle_ox: KI-Ochsenjoche umschalten
+toggle_running: Rennende Einheiten umschalten
+standard_order: Standardreihenfolge anwenden
+ordered_order: Thematische Reihenfolge anwenden
+toggle_sections: Alle auf-/einklappen
+replace_castle: '{{name}} existiert bereits. Burgdatei ersetzen?'
+overviews: Burgübersichten
+show_population: Bevölkerung anzeigen
+show_costs: Burgkosten anzeigen
+population_side: Position der Bevölkerungsübersicht
+costs_side: Position der Kostenübersicht
+reload: Neu laden
+fullscreen: Vollbild
+developer_tools: Entwicklerwerkzeuge
+zoom_in: Vergrößern
+zoom_out: Verkleinern
+reset_zoom: Originalgröße
+classic_castle: Klassische AIV-Burg
+choose_castle_format: Wähle das Burgformat für diese Datei.
+add_castle_message: |-
+  Diese Burg zu {{name}} hinzufügen?
+  „Zur KI hinzufügen“ kopiert sie in den aiv-Ordner der KI und hält das Projekt geöffnet.
+  „Separat bearbeiten“ verlässt das KI-Projekt. Du kannst die Burg dann an einem anderen Ort speichern.
+new_castle_message: |-
+  Eine neue Burg in {{name}} erstellen?
+  „Zur KI hinzufügen“ speichert sie im aiv-Ordner der KI und hält das Projekt geöffnet.
+  „Separat bearbeiten“ verlässt das KI-Projekt. Du kannst die Burg dann an einem anderen Ort speichern.
+replace_character_message: |-
+  Diesen Charakter für {{name}} verwenden?
+  „Zur KI hinzufügen“ ersetzt die bisherige character.json der KI dauerhaft.
+  „Separat bearbeiten“ verlässt das KI-Projekt und behält dessen bisherige Charakterdatei bei.
+new_character_message: |-
+  Einen neuen Charakter für {{name}} erstellen?
+  „Zur KI hinzufügen“ ersetzt die bisherige character.json der KI dauerhaft.
+  „Separat bearbeiten“ verlässt das KI-Projekt und behält dessen bisherige Charakterdatei bei.

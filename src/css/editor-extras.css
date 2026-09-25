@@ -1,7 +1,6 @@
-/* Zusatzwerkzeuge: Gruppen, Kopierspeicher, Tastenkuerzel-Knopf.
-   Eine eigene Datei, damit combined.css unberuehrt bleibt. Eingehaengt wird
-   sie von editor-extras.js. Farben und Masse kommen aus denselben Variablen
-   wie der Rest der Oberflaeche - dieses Blatt bringt keine eigenen mit. */
+@layer components {
+/* Group/clipboard component geometry and Default paint. Theme roles override
+   surfaces independently of when editor-extras.js loads this stylesheet. */
 
 .castleExtrasGroup { gap: 6px; }
 
@@ -28,3 +27,5 @@
 .castleGroupsList .castleGroupRemove { padding: 4px; text-align: center; }
 .castleGroupRemove svg { display: block; width: 16px; height: 18px; margin: auto; }
 .castleGroupsList .castleGroupRemove:hover { color: #ff9c95; }
+
+}

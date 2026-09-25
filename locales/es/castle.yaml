@@ -1,0 +1,190 @@
+new_castle: Nuevo castillo
+groups: Grupos
+deselect: Deseleccionar
+the_aiv_castle_document_is_invalid: El documento de castillo AIV no es válido.
+the_aiv_file_must_contain_a_frames_array: El archivo AIV debe contener una matriz «frames».
+that_build_step_is_locked: Ese paso de construcción está bloqueado.
+overlaps_another_item_in_this_brush_stroke: Se solapa con otro elemento de esta pincelada.
+nothing_to_undo: Nada que deshacer
+nothing_to_redo: Nada que rehacer
+creating_a_new_castle: crear un castillo nuevo
+opening_another_castle: abrir otro castillo
+definitive_edition_json: JSON de Definitive Edition
+castle_document: documento de castillo
+castle_was_not_saved: El castillo no se guardó
+nothing_selected_to_replace: No hay nada seleccionado para reemplazar.
+keep_cannot_be_replaced: La torre del homenaje no puede reemplazarse
+locked: Bloqueado
+the_selection_contains_only_locked_placements_or_the_keep: La selección solo contiene colocaciones bloqueadas o la torre del homenaje.
+buildings_can_only_replace_buildings_and_rallypoints_can_only_replace_ra: Los edificios solo pueden reemplazar edificios y los puntos de reunión solo otros puntos de reunión.
+choose_at_least_one_different_replacement: Elige al menos un reemplazo diferente.
+build_step: 'Paso de construcción '
+locked_2: bloqueado
+open_again: desbloqueado
+locked_unlock_the_build_step_first: 'Bloqueado: desbloquea primero el paso de construcción.'
+click_an_unlocked_placement_to_flood_delete_its_connected_type_the_keep_: Haz clic en una colocación desbloqueada para borrar todos los elementos conectados del mismo tipo. La torre del homenaje está protegida.
+merge_checked_placements_inside_the_box_at_their_earliest_step_separatel: Combina las colocaciones marcadas dentro del recuadro en su primer paso, separadas por tipo. Las que están fuera y los pasos bloqueados no cambian.
+merge_checked_types_from_the_selected_steps_at_their_earliest_step_separ: Combina los tipos marcados de los pasos seleccionados en su primer paso, separados por tipo. Los pasos bloqueados no cambian.
+no_mergeable_type_spans_two_unlocked_steps_in_this_selection: Ningún tipo combinable aparece en dos pasos desbloqueados de esta selección.
+the_castle_changed_cancel_and_select_the_placements_again: El castillo cambió. Cancela y selecciona de nuevo las colocaciones.
+these_de_steps_contain_pauses_merge_would_change_their_timing: Estos pasos de DE contienen pausas. Combinarlos cambiaría sus tiempos.
+unlock_positions: Desbloquear posiciones
+choose_an_item_first: Elige primero un elemento.
+drag_over_items_to_copy_first: Arrastra primero sobre los elementos que quieras copiar.
+nothing_to_copy_yet_drag_a_box_over_the_placements_first: 'Aún no hay nada que copiar: arrastra primero un recuadro sobre las colocaciones'
+select_unlocked_building_placements_to_cut_the_keep_and_rally_points_sta: Selecciona edificios desbloqueados para cortar. La torre del homenaje y los puntos de reunión permanecen en su sitio.
+move_the_cursor_onto_the_map_then_press_ctrl_v: Coloca el cursor sobre el mapa y pulsa Ctrl+V
+this_item_is_drawn_as_a_line_not_poured: Este elemento se dibuja como una línea, no se rellena.
+nothing_to_fill_here_that_tile_is_taken: 'No hay nada que rellenar aquí: la casilla está ocupada.'
+nothing_could_be_placed_there: No se pudo colocar nada ahí.
+filled: 'Rellenado '
+selection_cleared: Selección borrada
+copy_selection: Copiar selección
+replace_area: Reemplazar área
+merge_area: Combinar área
+delete_area: Borrar área
+castle_shortcuts_saved: Atajos del castillo guardados
+multiple_per_step: varios por paso
+single_per_step: uno por paso
+empty_step: Paso vacío
+move_selected_step_s_up: Subir los pasos seleccionados
+move_selected_step_s_down: Bajar los pasos seleccionados
+temporary_blueprint_cleared: Plano temporal borrado
+background_image: imagen de fondo
+could_not_open_the_selected_blueprint_image: No se pudo abrir la imagen de plano seleccionada
+could_not_calculate_overlays: No se pudieron calcular las capas.
+calculating_overlays: Calculando capas…
+map_terrain_included: terreno del mapa incluido
+flat_terrain_no_map_data: terreno plano (sin datos de mapa)
+tiles_to_delivery_point: ' casillas hasta el punto de entrega'
+ground_passage_and_raised_walkway: Paso a nivel del suelo y pasarela elevada
+raised_walkway: Pasarela elevada
+walkable_ground: Terreno transitable
+blocked_tile: Casilla bloqueada
+outside_map: Fuera del mapa
+no_unobstructed_route_to_that_tile: No hay una ruta libre hasta esa casilla.
+nothing_copyable_selected_units_and_the_keep_are_ignored: No hay elementos copiables seleccionados. Se omiten las unidades y la torre del homenaje.
+nothing_selected_to_copy: No hay nada seleccionado para copiar.
+castle_editor_configuration_failed_to_load: No se pudo cargar la configuración del editor de castillos
+loading_map_views: Cargando vistas del mapa…
+no_map_of_that_name: No hay un mapa con ese nombre.
+no_maps_found_choose_the_game_folder_under_ucp_first: No se encontraron mapas. Elige primero la carpeta del juego en UCP.
+reading_the_map: Leyendo el mapa…
+the_starting_place: el punto de inicio
+not_turned: ' · sin giro'
+starting_place_changed: Punto de inicio cambiado
+map_of_the_game_taken_away: Mapa del juego retirado
+temporary_blueprint_shown: Plano temporal mostrado
+temporary_blueprint_hidden: Plano temporal oculto
+unassigned: Sin asignar
+use_a_key_optionally_combined_with_ctrl_alt_or_shift: Usa una tecla, opcionalmente combinada con Ctrl, Alt o Mayús.
+map_rotation_needs_the_game_generated_camera_layers_wait_for_loading_to_: La rotación necesita las capas de cámara generadas por el juego. Espera a que termine la carga o vuelve a cargar el mapa.
+frame_value_is_not_an_object: El paso {{value1}} no es un objeto.
+frame_value_has_no_valid_itemtype: El paso {{value1}} no tiene un itemType válido.
+frame_value_tilepositionofsets_must_be_an_array: 'Paso {{value1}}: tilePositionOfsets debe ser una matriz.'
+frame_value_invalid_tile_offset_value: 'Paso {{value1}}: desplazamiento de casilla {{off}} no válido.'
+misc_item_value_is_not_an_object: El elemento adicional {{value1}} no es un objeto.
+misc_item_value_has_no_valid_itemtype: El elemento adicional {{value1}} no tiene un itemType válido.
+misc_item_value_invalid_positionofset_value: 'Elemento adicional {{value1}}: positionOfset {{positionOfset}} no válido.'
+value_would_extend_outside_the_100_100_field: '{{value1}} se saldría del campo de 100×100.'
+maximum_amount_for_value_is_value: La cantidad máxima de {{value1}} es {{maximum}}.
+blocked_by_value: Bloqueado por {{value1}}.
+new_castle_added_to_the_loaded_ai_as_value: Nuevo castillo añadido a la IA cargada como {{fileName}}
+value_added_to_the_loaded_ai: '{{fileName}} añadido a la IA cargada'
+removed_value_empty_legacy_stepvalue: ' — se eliminó {{quantityvalue2}}'
+disabled_value_build_step_pause_s: ' — se desactivaron {{removedPauses}} pausas de construcción'
+opened_value_value_build_steps_valuevaluevalue: Abierto {{value1}} — {{length}} pasos de construcción · {{formatNote}}{{legacyNote}}{{pauseNote}}
+could_not_open_aiv_castle_value: |-
+  No se pudo abrir el castillo AIV:
+
+  {{message}}
+could_not_import_aivjson_castle_value: |-
+  No se pudo importar el castillo AIVJSON:
+
+  {{message}}
+saved_value: Guardado {{name}}
+could_not_save_aiv_castle_value: |-
+  No se pudo guardar el castillo AIV:
+
+  {{message}}
+replace_value_with: Reemplazar {{value1}} por
+value_locked_placementvalue_will_stay_unchanged: 'Sin cambios: {{quantityvalue2}}'
+value_placementvalue_across_value_item_typevalue_choose_one_replacement_: '{{quantityvalue2}} en {{quantityvalue4}}. Elige un reemplazo por tipo.'
+invalid_replacement_for_value: Reemplazo no válido para {{value1}}.
+no_room_for_value_value: 'No hay espacio para {{value1}}: {{reason}}'
+value_would_also_replace_an_item_outside_the_selected_area: '{{value1}} también reemplazaría un elemento fuera del área seleccionada.'
+replaced_value_placementvalue_across_value_target_typevalue: 'Reemplazado: {{quantityvalue2}} en {{quantityvalue4}}'
+deleted_value_placementvalue: 'Eliminado: {{quantityvalue2}}'
+value_locked_and_left_alone: ' ({{gesperrt}} bloqueados y sin cambios)'
+selected_value_placements_shift_adds_ctrl_click_toggles_a_connected_grou: '{{size}} colocaciones seleccionadas. Mayús añade; Ctrl+clic alterna un grupo conectado. Cambia a Seleccionar / Mover para arrastrar.'
+flood_deleted_value_connected_value_placements: Se borraron {{size}} colocaciones conectadas de {{value2}}
+value_value_placements_in_value_steps: '{{value1}} — {{count}} colocaciones en {{size}} pasos'
+merged_value_item_types_at_their_earliest_selected_steps: Se combinaron {{length}} tipos en sus primeros pasos seleccionados
+value_can_only_be_placed_with_the_line_tool: '{{value1}} solo puede colocarse con la herramienta Línea.'
+placed_value_rallypoint_value_at_value: Punto de reunión de {{value1}} n.º {{value2}} colocado en {{off}}
+placed_value_at_value: '{{value1}} colocado en {{off}}'
+value_ready_value_value_steps_release_to_place: '{{value1}} listo — {{length}}/{{length3}} pasos — suelta para colocar'
+value_placed_nothing: '{{toolName}} no colocó nada.'
+could_not_build_the_value_sequence: No se pudo construir la secuencia de {{value1}}.
+value_placed_value_consecutive_stair_steps: '{{value1}}: colocados {{length}} tramos consecutivos de escalera'
+value_placed_value_value_rallypoints: '{{toolName}}: colocados {{length}} puntos de reunión de {{value3}}'
+value_placed_value_value_in_consecutive_build_steps: '{{toolName}}: colocados {{length}} de {{value3}} en pasos consecutivos'
+copy_blocked_by_value: Copia bloqueada por {{value1}}.
+value_build_stepvalue: '{{quantityvalue2}}'
+placed_copy_of_value_placementvalue_as_value: Copia de {{quantityvalue2}} colocada como {{details}}
+copied_value_placementvalue_ctrl_v_puts_it_where_the_cursor_is: Se copiaron {{placements}} — Ctrl+V pega en la posición del cursor
+cut_value_placementvalue_ctrl_v_pastes_at_the_cursor: 'Cortado: {{quantityvalue2}} — Ctrl+V pega en la posición del cursor'
+move_blocked_by_value: Movimiento bloqueado por {{value1}}.
+moved_value_placementvalue: 'Movido: {{quantityvalue2}}'
+selected_value_click_the_map_to_place: '{{value1}} seleccionado — haz clic en el mapa para colocar'
+line_only_up_to_value_consecutive_steps: solo línea · hasta {{length}} pasos consecutivos
+no_items_in_value: No hay elementos en {{value1}}.
+line_up_to_value_steps: Línea · hasta {{length}} pasos
+step_value: Paso {{value1}}
+selected_value_build_steps_drag_or_use_the_arrows_to_move_them_together: '{{length}} pasos seleccionados — arrastra o usa las flechas para moverlos juntos'
+selected_build_step_value_new_buildings_will_be_inserted_after_it: Paso {{value1}} seleccionado — los edificios nuevos se insertarán después
+value_build_stepvalue_moved_together: 'Movido junto: {{quantityvalue2}}'
+value_locked_and_left_alone_2: ' ({{festgehalten}} bloqueados y sin cambios)'
+set_png_skin_for_value: Aspecto PNG establecido para {{value1}}
+removed_skin_for_value: Aspecto eliminado de {{value1}}
+could_not_load_background_value: 'No se pudo cargar el fondo: {{message}}'
+temporary_blueprint_loaded_value: 'Plano temporal cargado: {{blueprintFileName}}'
+paths_value_value_reachable_open_gates_value_cyan_dots_reachable_entranc: 'Rutas: {{length}}/{{length2}} accesibles. Puertas abiertas; {{value3}}. Puntos cian: entradas accesibles; rojos: bloqueadas. Estimación estática.'
+selected_value_placementvalue: 'Seleccionado: {{quantityvalue2}}'
+drag_from_x_value_y_value_to_choose_the_value_direction: Arrastra desde x={{x}}, y={{y}} para elegir la dirección de {{value3}}.
+copy_ready_at_x_value_y_value_click_to_place: Copia lista en x={{x}}, y={{y}} — clic para colocar
+value_unit_keep_placementvalue_ignored: ' (omitido: {{quantityvalue2}})'
+copied_selection_prepared_value_placementvaluevalue_move_the_cursor_and_: 'Selección copiada preparada: {{quantityvalue2}}{{ignoredNote}} — mueve el cursor y haz clic para colocar'
+deleted_value_placementvalue_2: 'Eliminado: {{quantityvalue2}}'
+start_place_value: Punto de inicio {{value1}}
+map_loaded_rotation_unavailable_value: 'Mapa cargado; rotación no disponible: {{nativeError}}'
+whole_map_value_ready_value_different_tiles: Mapa completo «{{name}}» listo · {{kacheln}} casillas diferentes
+could_not_load_map_value_select_game_map_to_retry: 'No se pudo cargar el mapa: {{message}}. Selecciona Mapa del juego para reintentar.'
+could_not_read_the_map_tiles_value: 'No se pudieron leer las casillas del mapa: {{message}}'
+could_not_read_that_map_value: 'No se pudo leer ese mapa: {{message}}'
+could_not_list_the_maps_value: 'No se pudo obtener la lista de mapas: {{message}}'
+castle_built_on_value_at_value_value: Castillo construido en {{value1}} en ({{x}}, {{y}})
+the_game_turns_it_by_value_quarter_turnvalue: ' · el juego lo gira {{turns}}'
+castle_picture_saved_value: 'Imagen del castillo guardada: {{saved}}'
+could_not_save_castle_picture_value: 'No se pudo guardar la imagen del castillo: {{message}}'
+select_items_first_to_value: Selecciona primero los elementos para {{action}}.
+unsaved_castle: (castillo sin guardar)
+select_something_on_the_map_first: Selecciona primero algo en el mapa.
+no_groups_in_this_castle_yet_select_placements_on_the_map_give_them_a_na: Este castillo aún no tiene grupos. Selecciona colocaciones en el mapa, dales un nombre y guarda.
+copy_this_group_for_placement: Copiar este grupo para colocarlo
+this_group_has_no_copyable_items: Este grupo no contiene elementos copiables.
+clipboard_emptied: Portapapeles vaciado
+nothing_copied_yet_copy_something_with_ctrl_c_or_the_copy_tool: Aún no hay nada copiado. Copia algo con Ctrl+C o la herramienta Copiar.
+paste_at_the_cursor: Pegar en el cursor
+empty_the_clipboard: Vaciar el portapapeles
+group_name: Nombre del grupo
+save_group: Guardar grupo
+enter_a_group_name: Introduce un nombre de grupo.
+a_group_called_value_is_already_there: Ya existe un grupo llamado «{{name}}».
+group_value_saved_with_value_placementvalue: Grupo «{{name}}» guardado con {{quantityvalue3}}
+delete_group_value: Eliminar grupo «{{name}}»
+value_placementvalue_copied_works_in_every_castle_click_then_click_on_th: 'Copiado: {{quantityvalue2}} — funciona en todos los castillos. Haz clic aquí y luego en el mapa, o pulsa Ctrl+V.'
+castle_actions: Acciones del castillo
+no_item_categories_configured: No hay categorías de elementos configuradas.
+dock: Acoplar
+cut_and_copy: Cortar y copiar

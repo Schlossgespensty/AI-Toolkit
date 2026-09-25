@@ -1,0 +1,28 @@
+actions:
+  cancel: Отмена
+  save: Сохранить
+  close: Закрыть
+  open: Открыть
+  delete: Удалить
+  remove: Убрать
+  apply: Применить
+  reset: Сбросить
+  replace: Заменить
+  merge: Объединить
+  copy: Копировать
+  cut: Вырезать
+  paste: Вставить
+  undo: Отменить
+  redo: Повторить
+preferences:
+  theme: Тема
+  language: Язык
+  system: Системный
+  defaultTheme: По умолчанию
+state:
+  loading: Загрузка…
+  saved: Сохранено
+  unsaved: Не сохранено
+  error: Ошибка
+  none: Нет
+  vanilla: Стандартное

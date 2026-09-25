@@ -4,6 +4,7 @@
   if (typeof module === 'object' && module.exports) module.exports = api;
   else root.castlePieMenu = api;
 })(typeof window === 'undefined' ? globalThis : window, function () {
+  const tr = (key, options) => (globalThis.toolkitI18n || require('./i18n')).t(key, options);
   function direction(dx, dy) {
     if (Math.hypot(dx, dy) < 24) return 'deselect';
     return Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 'replace' : 'groups') : (dy > 0 ? 'cut' : 'merge');
@@ -13,8 +14,8 @@
     if (bound.has(canvas)) return;
     bound.add(canvas);
     const doc = canvas.ownerDocument, win = doc.defaultView;
-    let menu = null, gesture = null;
-    const labels = {merge:'Merge', groups:'Groups', replace:'Replace', cut:'Cut & copy', deselect:'Deselect'};
+    let menu = null, gesture = null, swallowMenuUntil = 0;
+    const labels = {merge:'common:actions.merge', groups:'castle:groups', replace:'common:actions.replace', cut:'castle:cut_and_copy', deselect:'castle:deselect'};
     function close() {
       const pointer = gesture?.id;
       gesture = null; menu?.remove(); menu = null;
@@ -23,21 +24,19 @@
     function open(x, y, id) {
       if (!gesture || gesture.id !== id) close();
       menu = doc.createElement('div');
-      menu.setAttribute('role', 'menu'); menu.setAttribute('aria-label', 'Castle actions');
-      menu.style.cssText = 'position:fixed;z-index:10000;width:224px;height:224px;border-radius:50%;background:#202c30;box-shadow:0 3px 18px #0009;border:1px solid #b88645;color:#e8eded;font:600 13px Arial,sans-serif;';
+      menu.setAttribute('role', 'menu'); menu.setAttribute('aria-label', tr("castle:castle_actions"));
+      menu.className = 'castlePieMenu';
       const cx = Math.max(114, Math.min(x, win.innerWidth-114)), cy = Math.max(114, Math.min(y, win.innerHeight-114));
       menu.style.left = (cx-112)+'px'; menu.style.top = (cy-112)+'px';
       const positions = {merge:[70,20], groups:[3,92], replace:[153,92], cut:[70,165], deselect:[80,92]};
       for (const [action,label] of Object.entries(labels)) {
-        const button = doc.createElement('button'); button.type = 'button'; button.textContent = label;
+        const button = doc.createElement('button'); button.type = 'button'; button.textContent = tr(label);
         const shortcut = getShortcut(action);
         if (shortcut) {
           const key = doc.createElement('small'); key.textContent = shortcut.toUpperCase();
-          key.style.cssText = 'display:block;font-size:10px;font-weight:400;opacity:.8';
           button.appendChild(key);
         }
         button.dataset.action = action; button.setAttribute('role', 'menuitem');
-        button.style.cssText = 'position:absolute;width:84px;height:40px;border:0;border-radius:20px;background:transparent;color:inherit;font:inherit;cursor:pointer;';
         if (action === 'groups' || action === 'replace' || action === 'deselect') button.style.width = '68px';
         button.style.left = positions[action][0]+'px'; button.style.top = positions[action][1]+'px';
         button.addEventListener('click', () => { close(); run(action, {x, y, document:doc}); }); menu.appendChild(button);
@@ -50,8 +49,8 @@
     }
     function highlight(action) {
       const sectors = ['replace', 'cut', 'groups', 'merge'];
-      menu.style.background = 'conic-gradient(from 45deg,' + sectors.map((name, i) => '#536367 '+(i*90)+'deg '+(i*90+1)+'deg,'+(name === action ? '#70532e' : '#202c30')+' '+(i*90+1)+'deg '+((i+1)*90)+'deg').join(',') + ')';
-      for (const button of menu.children) button.style.background = button.dataset.action === 'deselect' ? (action === 'deselect' ? '#936c35' : '#202c30') : 'transparent';
+      menu.style.background = 'conic-gradient(from 45deg,' + sectors.map((name, i) => 'var(--line-strong) '+(i*90)+'deg '+(i*90+1)+'deg,'+(name === action ? 'var(--accent-soft)' : 'var(--component-menu-surface)')+' '+(i*90+1)+'deg '+((i+1)*90)+'deg').join(',') + ')';
+      for (const button of menu.children) button.style.background = button.dataset.action === 'deselect' ? (action === 'deselect' ? 'var(--accent-soft)' : 'var(--component-menu-surface)') : 'transparent';
     }
     canvas.addEventListener('pointerdown', event => {
       if (event.button !== 2) return;
@@ -74,9 +73,16 @@
       event.preventDefault(); event.stopImmediatePropagation();
       const action = gesture.center === 'groups' ? 'groups' : direction(event.clientX-gesture.x, event.clientY-gesture.y);
       const position = {x:gesture.x, y:gesture.y, document:doc};
+      // Windows sends contextmenu after the release, to whatever now lies
+      // under the pointer - e.g. the groups dialog this gesture opens. The
+      // browser must not add its own menu on top of ours.
+      swallowMenuUntil = performance.now() + 500;
       close(); run(action, position);
     }, true);
     canvas.addEventListener('contextmenu', event => { event.preventDefault(); });
+    doc.addEventListener('contextmenu', event => {
+      if (performance.now() < swallowMenuUntil) { swallowMenuUntil = 0; event.preventDefault(); }
+    }, true);
     canvas.addEventListener('keydown', event => {
       if (event.key === 'ContextMenu' || (event.shiftKey && event.key === 'F10')) {
         event.preventDefault(); const rect = canvas.getBoundingClientRect();

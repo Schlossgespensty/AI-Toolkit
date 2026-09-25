@@ -1,0 +1,81 @@
+castle_document: Le château
+character_document: Le personnage
+experimental_snapshot: Version expérimentale
+official_release: Version officielle
+native_aiv: AIV natif
+step_locked: L’étape {{step}} est verrouillée
+step_unlocked: L’étape {{step}} est à nouveau déverrouillée
+steps_locked: '{{steps}} verrouillés'
+steps_unlocked: '{{steps}} à nouveau déverrouillés'
+fill_result: '{{tiles}} remplis avec {{item}}'
+locked_stay: '{{placements}} restent à leur place'
+map_terrain: relief de la carte inclus
+flat_terrain: terrain plat (aucune donnée de carte)
+fire_estimate: >-
+  Estimation du feu : deux anneaux rouges intérieurs ; halo jaune à bleu selon les points de vie, jusqu’à 8
+  cases.
+start: départ {{number}}
+starting_place: le point de départ
+map_name: ' · carte : {{name}}'
+map_start: ' · départ {{number}} ({{x}}, {{y}})'
+map_start_place: ' · point de départ {{number}} ({{x}}, {{y}})'
+map_rotation: ' · rotation de {{turns}} (valeur du jeu {{value}})'
+map_flat: ' · terrain plat (hauteur {{height}})'
+map_height: ' · dénivelé de {{range}} points (hauteur {{minimum}} à {{maximum}})'
+space_one: '{{count}} emplacement'
+space_other: '{{count}} emplacements'
+food_one: '{{count}} nourriture'
+food_other: '{{count}} nourriture'
+tile_one: '{{count}} case'
+tile_other: '{{count}} cases'
+shortfall: '{{count}} manquants'
+free: '{{count}} libres'
+resource: Ressource
+maximum: Max.
+spaces: Emplacements
+per_space: '{{count}} par emplacement ; {{source}}'
+none_produced: Aucune production correspondante configurée.
+none_produced_or_bought: Aucune production ni aucun recrutement correspondant configuré.
+stockpiles: 'Réserves : {{count}} (donjon compris) ; 4 emplacements par réserve. Espace réservé pour tous les plafonds de ressources.'
+granaries: 'Greniers : {{count}} ; 250 unités par grenier, partagées entre les types de nourriture.'
+armories: 'Armureries : {{count}} ; 10 piles distinctes de 5 armes par armurerie. Achats déduits des paramètres de recrutement.'
+hops: Houblon
+fruit: Fruits
+wav_speech: Voix WAV
+bink_video: Vidéo Bink
+workshop: atelier
+work_unknown: durée de travail inconnue
+cycle_ticks: '{{count}} ticks par cycle de référence'
+cost_table: la table des coûts de construction
+bundled_vanilla: valeurs vanilla incluses
+saved_balance: l’instantané enregistré de {{name}}
+year_one: '{{count}} an'
+year_other: '{{count}} ans'
+month_one: '{{count}} mois'
+month_other: '{{count}} mois'
+day_one: '{{count}} jour'
+day_other: '{{count}} jours'
+quarry_one: '{{count}} carrière'
+quarry_other: '{{count}} carrières'
+iron_mine_one: '{{count}} mine de fer'
+iron_mine_other: '{{count}} mines de fer'
+woodcutter_one: '{{count}} bûcheron'
+woodcutter_other: '{{count}} bûcherons'
+farm_one: '{{count}} ferme'
+farm_other: '{{count}} fermes'
+pitch_rig_one: '{{count}} fosse à poix'
+pitch_rig_other: '{{count}} fosses à poix'
+ox_tether_one: '{{count}} attache à bœufs'
+ox_tether_other: '{{count}} attaches à bœufs'
+hop_farms_one: '{{count}} de ces fermes cultive du houblon.'
+hop_farms_other: '{{count}} de ces fermes cultivent du houblon.'
+open_character_error: 'Impossible d’ouvrir le fichier de personnage : {{error}}'
+save_character_error: 'Impossible d’enregistrer le fichier de personnage : {{error}}'
+recipe_bow: 2 bois ; retour séparé à l’armurerie
+recipe_crossbow: 3 bois ; retour séparé à l’armurerie
+recipe_spear: 1 bois ; durée de travail indiquée uniquement comme inférieure à 1 mois
+recipe_pike: 2 bois ; récupère la première planche après la livraison à l’armurerie
+recipe_iron: 1 fer ; récupère la prochaine matière après la livraison à l’armurerie
+recipe_leather: 3 livraisons par vache ; chaque durée de travail est indiquée uniquement comme inférieure à 3 mois
+recipe_bread: 1 farine ; grenier puis réserve
+recipe_ale: 1 houblon ; matière première et produit passent par la réserve

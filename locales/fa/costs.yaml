@@ -1,0 +1,89 @@
+wood: چوب
+stone: سنگ
+iron: آهن
+pitch: قیر
+gold: طلا
+travel_ticks_tile_override_blank_reference: "تیک حرکت برای هر خانه (خالی: مقدار مرجع)"
+delivery_store: انبار تحویل
+dairy_farm: دامداری
+work_duration_unknown: مدت کار نامشخص
+ticks_per_reference_cycle: " تیک در هر چرخهٔ مرجع"
+unknown: ناشناخته
+hide_cost_per_building: پنهان کردن هزینهٔ هر ساختمان
+show_cost_per_building: نمایش هزینهٔ هر ساختمان
+the_build_cost_table: جدول هزینهٔ ساخت
+cost_table_not_loaded: جدول هزینه بارگذاری نشده است.
+castle_costs: هزینهٔ قلعه ▸
+castle_costs_2: هزینهٔ قلعه ▾
+bundled_base_ucp: پایهٔ همراه برنامه + UCP
+bundled_vanilla: نسخهٔ اصلی همراه برنامه
+the_saved_snapshot_of: "نسخهٔ ذخیره‌شدهٔ "
+partial: " (ناقص)"
+open_a_character_for_production_estimates: برای تخمین تولید یک شخصیت باز کنید.
+reading_selected_installation: در حال خواندن نصب انتخاب‌شده…
+using_bundled_vanilla_prices: استفاده از قیمت‌های اصلی همراه برنامه
+no_steps: بدون گام
+cumulative_total_no_steps: مجموع انباشته · بدون گام
+partial_unknown_prices: " (ناقص: قیمت‌های نامشخص)"
+no_character_file: بدون پروندهٔ شخصیت
+iron_mine: معدن آهن
+iron_mines: معادن آهن
+pitch_rig: چاه قیر
+pitch_rigs: چاه‌های قیر
+ox_tether: محل بستن گاو
+ox_tethers: محل‌های بستن گاو
+1_of_those_farms_grows_hops: یکی از این مزارع رازک می‌کارد
+open_a_character_file_to_see_how_many_resource_buildings_the_aic_would_a: برای دیدن تعداد ساختمان‌های منابعی که AIC اینجا می‌افزاید، پروندهٔ شخصیت را باز کنید.
+nothing_with_a_known_price_up_to_this_step: تا این گام موردی با قیمت معلوم وجود ندارد.
+no_cost: بدون هزینه
+price_from_the_selected_balance_file: قیمت از پروندهٔ تعادل انتخاب‌شده
+price_from_the_game_exe_vanilla: قیمت از فایل اجرایی بازی (نسخهٔ اصلی)
+value_value_value_tiles_value_walking_ticks_value: "{{value1}}. {{note}}. {{value3}} خانه؛ {{value4}} تیک حرکت؛ {{value5}}."
+value_reference_ticks_batch: تیک مرجع {{good}} / هر نوبت
+bundled_vanilla_prices_were_extracted_from_the_game_exe_at_value_load_a_: >-
+  قیمت‌های اصلی همراه برنامه از فایل اجرایی بازی در {{value1}} استخراج شده‌اند. برای تغییر قیمت ساختمان‌ها یک
+  JSON تعادل افزونه بارگذاری کنید؛ قیمت‌های تعریف‌نشده اصلی می‌مانند. بازی در حال اجرا خوانده نمی‌شود. هر گام
+  ساخت = ۵۰ تیک = یک روز بازی (اندازه‌گیری‌شده در هر ۴۴۵ گام).
+ucp_balance_could_not_be_loaded_still_using_value_value: تعادل UCP بارگذاری نشد. همچنان از {{value1}} استفاده می‌شود. {{value2}}
+using_saved_snapshot_value: "استفاده از نسخهٔ ذخیره‌شده: {{choice}}"
+cumulative_total_steps_1_value: مجموع انباشته · گام‌های ۱ تا {{steps}}
+total_through_step_value: مجموع تا گام {{steps}}
+through_step_value_value: "تا گام {{steps}}: {{value2}}"
+price_unknown_not_counted_value_the_build_cost_table_has_no_entry_for_th: "قیمت نامشخص و محاسبه نشده: {{namen}}. این موارد در جدول هزینهٔ ساخت نیستند."
+value_ticks_one_step_is_one_game_day_and_a_step_that_cannot_be_built_sti: >-
+  {{value1}} تیک؛ هر گام یک روز بازی است و گام غیرقابل‌ساخت هم یک روز مصرف می‌کند. اگر هوش مصنوعی پول نداشته
+  باشد منتظر می‌ماند؛ پس این زودترین زمان ممکن است، نه زمان تضمینی.
+at_value_population_the_aic_opens_value: "در جمعیت {{value1}}، AIC این موارد را می‌سازد: {{value2}}."
+1_pitch_per_value_tiles_grouped_across_steps_assumes_a_fresh_placement_c: ؛ یک قیر برای هر {{pitchGroup}} خانه، با گروه‌بندی میان گام‌ها؛ با فرض شمارندهٔ جای‌گذاری تازه
+cumulative_total_through_step_value: مجموع انباشته تا گام {{steps}}
+about_the_castle_cost_overview: دربارهٔ خلاصهٔ هزینهٔ قلعه
+balance: تعادل
+load_a_balance_json_ascension_team_league: بارگذاری JSON تعادل (Ascension، Team League و…)
+load: بارگذاری…
+use_ucp_balance: استفاده از تعادل UCP
+cumulative_through_selected_step: مجموع انباشته تا گام انتخاب‌شده
+total_through_current_step: مجموع تا گام فعلی
+resources_through_this_step: منابع تا این گام
+production_assumptions: فرض‌های تولید
+reference_estimate_from_stronghold_heaven_original_stronghold_assuming_f: >-
+  تخمین مرجع از Stronghold Heaven (بازی Stronghold اصلی)، با فرض تأمین کامل کارگران هم‌زمان با فراهم شدن مسکن.
+  این نرخ‌های تقریبی زمان‌بندی تأییدشدهٔ شبیه‌سازی Crusader نیستند. تأخیر ساخت، مکث، کمبود مواد اولیه، مصرف،
+  تجارت، محدودیت حمل‌ونقل و اثر ترس/استراحت محاسبه نمی‌شود. این کالاها موجودی انبار شما نیستند.
+resource_distance: فاصلهٔ منبع
+per_extra_building: به‌ازای هر ساختمان اضافی
+stockpile_distance: فاصلهٔ انبار منابع
+delivery_store_distance: فاصلهٔ انبار تحویل
+between_stores: بین انبارها
+walking_speed_multiplier: ضریب سرعت حرکت
+delivery_productivity: بهره‌وری تحویل ٪
+skirmish_delivery_bonus_where_enabled_by_balance: پاداش تحویل نبرد، در صورت فعال بودن در تعادل
+workshop_itinerary: مسیر کارگاه
+work_ticks_exclude_the_return_journey_cycle_work_ticks_2_distance_walkin: >-
+  تیک کار شامل مسیر برگشت نیست: چرخه = تیک کار + ۲ × فاصله × تیک حرکت. پیشرفت و بخش کسری پاداش تحویل هر
+  تولیدکننده جدا نگه داشته می‌شود. سنگ، خروجی معدن است؛ حمل با گاو شبیه‌سازی نمی‌شود. فاصله‌های لایهٔ مسیر،
+  سنجهٔ جداگانهٔ چیدمان‌اند و فاصلهٔ اندازه‌گیری‌شده تا منابع بیرونی نیستند.
+elapsed_game_time: زمان سپری‌شدهٔ بازی
+good: کالا
+cost: هزینه
+estimated_gross_production_not_stockpile_inventory: تولید ناخالص تخمینی، نه موجودی انبار
+produced: تولیدشده*

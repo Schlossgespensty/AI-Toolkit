@@ -1,0 +1,25 @@
+rotation_unavailable: 旋转不可用：
+loading_camera_views: 正在加载相机视图…
+loading_map: 正在加载地图…
+items: ' 个元素'
+without_a_sprite: ' 个无精灵图'
+tool: ' · 工具：'
+middle_drag_pans_right_click_clears_camera_controls_match_map: ' · 按住中键拖动平移 · 右键清除选择 · 相机操作与地图一致'
+start_place: ' · 起始位置 '
+no_starting_place_village_in_the_middle_of_the_map: ' · 无起始位置，村庄位于地图中央'
+quarter_turn: ' 次四分之一圈旋转'
+game_value: '（游戏值 '
+not_turned_game_value_0: ' · 未旋转（游戏值 0）'
+flat_ground_height: ' · 平地（高度 '
+ground_rises: ' · 地面升高 '
+2_5d_view_ai_toolkit: 2.5D 视图 — AI Toolkit
+castle_moved_to_start_value_at_value_value: 城堡已移至起点 {{nummer}}，坐标（{{x}}，{{y}}）
+start_value_at_value_value_click_to_build_here: 起点 {{value1}}（{{x}}，{{y}}）— 点击在此建造
+fit_the_castle_into_the_view: 将城堡完整显示在视图中
+show_in_a_window_of_its_own: 在独立窗口中显示
+click_to_show_drag_to_move_it_somewhere_else: 点击显示，拖动以移动位置
+close_the_window_shown_here: 关闭此处显示的窗口
+no_window_open_one_from_the_toolbar: 没有窗口 — 请从工具栏打开
+add_as_a_tab_here: 在此添加为标签页
+esc_cancels: ' · Esc 取消'
+is_missing: ' 缺失'

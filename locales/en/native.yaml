@@ -1,0 +1,60 @@
+classic_export_failed: |-
+  Cannot export this castle as classic AIV:
+  {{issues}}
+  Save as Definitive Edition to preserve it.
+castle_files: Castle files
+images: Images
+choose_game: Choose the Stronghold Crusader installation
+unsaved_title: Unsaved changes
+unsaved_message: |-
+  {{name}} has unsaved changes.
+  Save before continuing?
+  Next action: {{action}}.
+document: document
+continue: Continue
+discard: Discard
+add_to_ai: Add to AI
+edit_separately: Edit separately
+add_document_message: Add this document to {{name}}? Adding a character replaces the existing character file.
+classic_castle: Classic AIV castle
+choose_castle_format: Choose the castle format for this file.
+add_castle_message: |-
+  Add this castle to {{name}}?
+  Add to AI copies it into the AI's aiv folder and keeps the project open.
+  Edit separately leaves the AI project and lets you save the castle elsewhere.
+new_castle_message: |-
+  Create a new castle in {{name}}?
+  Add to AI saves it in the AI's aiv folder and keeps the project open.
+  Edit separately leaves the AI project and lets you save the castle elsewhere.
+replace_character_message: |-
+  Use this Character for {{name}}?
+  Add to AI permanently replaces the AI's current character.json.
+  Edit separately leaves the AI project and keeps its current Character file.
+new_character_message: |-
+  Create a new Character for {{name}}?
+  Add to AI permanently replaces the AI's current character.json.
+  Edit separately leaves the AI project and keeps its current Character file.
+new_window: Add window
+new: New
+open_new_window: Open in new window
+save_as: Save as
+clear_background: Clear background
+castle_mapping: Edit castle mapping…
+shortcuts: Customize castle shortcuts…
+toggle_ox: Toggle AI ox tethers
+toggle_running: Toggle running units
+standard_order: Apply standard order
+ordered_order: Apply ordered order
+toggle_sections: Expand/collapse all
+replace_castle: '{{name}} already exists. Replace the castle file?'
+overviews: Castle overviews
+show_population: Show population
+show_costs: Show castle costs
+population_side: Population side
+costs_side: Castle costs side
+reload: Reload
+fullscreen: Full screen
+developer_tools: Developer tools
+zoom_in: Zoom in
+zoom_out: Zoom out
+reset_zoom: Actual size

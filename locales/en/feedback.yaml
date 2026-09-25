@@ -1,0 +1,24 @@
+missing_sprites: 'Missing sprites: {{count}}'
+playing: 'Playing {{name}}'
+replaced_media: '✓ {{name}} replaced ({{size}})'
+choosing: 'Choosing {{name}}…'
+saved_label: '{{name}} (saved)'
+file_label: 'File: {{name}}'
+loaded_label: 'Loaded: {{name}}'
+balance_help: Use UCP balance to refresh the selected installation. EXE + UCP reads the game cost table from disk and applies the configured rebalancer profile; it does not read the running game.
+item: 'Item {{id}}'
+tool: '{{name}} tool'
+shortcut: 'Shortcut: {{key}}'
+rally_points: 'Rally points: {{count}}'
+rally_point: Rally point
+keep_footprint: '{{width}}×{{height}} + required 5×5 stockpile'
+placement_info: '{{name}} [{{id}}] · {{kind}} · {{size}} · overlap: {{overlap}} · max: {{maximum}}'
+overlap_allow: allowed
+overlap_block: blocked
+overlap_replace: replaces
+resize: Resize
+castle_slot: 'Castle {{slot}}'
+replacing_character: 'Replacing {{name}}''s Character…'
+opening: 'Opening {{name}}…'
+opened: '{{name}} opened.'
+with_castle: ' with {{name}}'

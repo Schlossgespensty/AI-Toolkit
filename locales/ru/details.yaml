@@ -1,0 +1,103 @@
+castle_document: Замок
+character_document: Персонаж
+experimental_snapshot: Экспериментальная сборка
+official_release: Официальный выпуск
+native_aiv: исходный AIV
+step_locked: Шаг строительства {{step}} заблокирован
+step_unlocked: Шаг строительства {{step}} разблокирован
+steps_locked: 'Заблокировано: {{steps}}'
+steps_unlocked: 'Разблокировано: {{steps}}'
+fill_result: 'Заполнено: {{tiles}}; объект: {{item}}'
+locked_stay: '{{placements}} остаются на месте'
+map_terrain: с учётом рельефа карты
+flat_terrain: ровная местность (нет данных карты)
+fire_estimate: 'Оценка пожара: два внутренних красных кольца; жёлто-синий ореол зависит от здоровья, радиус до 8 клеток.'
+start: старт {{number}}
+starting_place: стартовая позиция
+map_name: ' · карта: {{name}}'
+map_start: ' · старт {{number}} ({{x}}, {{y}})'
+map_start_place: ' · стартовая позиция {{number}} ({{x}}, {{y}})'
+map_rotation: ' · поворот: {{turns}} (значение игры {{value}})'
+map_flat: ' · ровная местность (высота {{height}})'
+map_height: ' · перепад {{range}} единиц (высота от {{minimum}} до {{maximum}})'
+space_one: '{{count}} ячейка'
+space_other: '{{count}} ячейки'
+food_one: '{{count}} ед. пищи'
+food_other: '{{count}} ед. пищи'
+tile_one: '{{count}} клетка'
+tile_other: '{{count}} клетки'
+shortfall: 'Не хватает: {{count}}'
+free: 'Свободно: {{count}}'
+resource: Ресурс
+maximum: Макс.
+spaces: Ячейки
+per_space: '{{count}} на ячейку; {{source}}'
+none_produced: Соответствующее производство не настроено.
+none_produced_or_bought: Соответствующее производство или набор войск не настроены.
+stockpiles: 'Складов с учётом главной башни: {{count}}; по 4 ячейки. Учтены все пределы ресурсов.'
+granaries: 'Амбаров: {{count}}; по 250 единиц пищи совместно.'
+armories: 'Оружейных: {{count}}; по 10 отдельных стопок из 5 предметов. Покупки определяются настройками набора.'
+hops: Хмель
+fruit: Фрукты
+wav_speech: речь WAV
+bink_video: видео Bink
+workshop: мастерская
+work_unknown: время работы неизвестно
+cycle_ticks: '{{count}} тактов на эталонный цикл'
+cost_table: таблица стоимости строительства
+bundled_vanilla: встроенные исходные значения
+saved_balance: сохранённая копия {{name}}
+year_one: '{{count}} год'
+year_other: '{{count}} года'
+month_one: '{{count}} месяц'
+month_other: '{{count}} месяца'
+day_one: '{{count}} день'
+day_other: '{{count}} дня'
+quarry_one: '{{count}} каменоломня'
+quarry_other: '{{count}} каменоломни'
+iron_mine_one: '{{count}} железный рудник'
+iron_mine_other: '{{count}} железных рудника'
+woodcutter_one: '{{count}} лесоруб'
+woodcutter_other: '{{count}} лесоруба'
+farm_one: '{{count}} ферма'
+farm_other: '{{count}} фермы'
+pitch_rig_one: '{{count}} смоляная яма'
+pitch_rig_other: '{{count}} смоляные ямы'
+ox_tether_one: '{{count}} привязь для волов'
+ox_tether_other: '{{count}} привязи для волов'
+hop_farms_one: Из них {{count}} ферма выращивает хмель.
+hop_farms_other: Из них {{count}} фермы выращивают хмель.
+open_character_error: 'Не удалось открыть файл персонажа: {{error}}'
+save_character_error: 'Не удалось сохранить файл персонажа: {{error}}'
+recipe_bow: 2 древесины; отдельный возврат из оружейной
+recipe_crossbow: 3 древесины; отдельный возврат из оружейной
+recipe_spear: 1 древесина; известно лишь, что работа длится менее месяца
+recipe_pike: 2 древесины; первую доску забирает после доставки в оружейную
+recipe_iron: 1 железо; следующее сырьё забирает после доставки в оружейную
+recipe_leather: 3 доставки на корову; известно лишь, что каждая работа длится менее 3 месяцев
+recipe_bread: 1 мука; сначала амбар, затем склад
+recipe_ale: 1 хмель; получение и доставка на склад
+space_few: '{{count}} ячейки'
+space_many: '{{count}} ячеек'
+tile_few: '{{count}} клетки'
+tile_many: '{{count}} клеток'
+year_few: '{{count}} года'
+year_many: '{{count}} лет'
+month_few: '{{count}} месяца'
+month_many: '{{count}} месяцев'
+day_few: '{{count}} дня'
+day_many: '{{count}} дней'
+quarry_few: '{{count}} каменоломни'
+quarry_many: '{{count}} каменоломен'
+iron_mine_few: '{{count}} железных рудника'
+iron_mine_many: '{{count}} железных рудников'
+woodcutter_few: '{{count}} лесоруба'
+woodcutter_many: '{{count}} лесорубов'
+farm_few: '{{count}} фермы'
+farm_many: '{{count}} ферм'
+pitch_rig_few: '{{count}} смоляные ямы'
+pitch_rig_many: '{{count}} смоляных ям'
+ox_tether_few: '{{count}} привязи для волов'
+ox_tether_many: '{{count}} привязей для волов'
+hop_farms_few: Из них {{count}} фермы выращивают хмель.
+hop_farms_many: Из них {{count}} ферм выращивают хмель.

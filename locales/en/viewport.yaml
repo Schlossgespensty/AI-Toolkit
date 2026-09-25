@@ -1,0 +1,25 @@
+rotation_unavailable: 'Rotation unavailable: '
+loading_camera_views: Loading camera views...
+loading_map: Loading map...
+items: ' items'
+without_a_sprite: ' without a sprite'
+tool: ' · tool: '
+middle_drag_pans_right_click_clears_camera_controls_match_map: ' · middle-drag pans · right-click clears · camera controls match Map'
+start_place: ' · start place '
+no_starting_place_village_in_the_middle_of_the_map: ' · no starting place, village in the middle of the map'
+quarter_turn: ' quarter turn'
+game_value: ' (game value '
+not_turned_game_value_0: ' · not turned (game value 0)'
+flat_ground_height: ' · flat ground (height '
+ground_rises: ' · ground rises '
+2_5d_view_ai_toolkit: 2.5D view — AI Toolkit
+castle_moved_to_start_value_at_value_value: Castle moved to start {{nummer}} at ({{x}}, {{y}})
+start_value_at_value_value_click_to_build_here: Start {{value1}} at ({{x}}, {{y}}) - click to build here
+fit_the_castle_into_the_view: Fit the castle into the view
+show_in_a_window_of_its_own: Show in a window of its own
+click_to_show_drag_to_move_it_somewhere_else: Click to show, drag to move it somewhere else
+close_the_window_shown_here: Close the window shown here
+no_window_open_one_from_the_toolbar: no window — open one from the toolbar
+add_as_a_tab_here: Add as a tab here
+esc_cancels: ' · Esc cancels'
+is_missing: ' is missing'

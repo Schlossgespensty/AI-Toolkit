@@ -1,0 +1,10 @@
+steps: Bauschritte
+categories: Kategorien
+overview: Übersicht
+resize: Größe von {{panel}} und Übersicht ändern
+resize_help: >-
+  Zum Vergrößern oder Verkleinern ziehen, zum Einklappen bis zum Rand ziehen. Pfeiltasten ändern die Größe,
+  Pos1/Ende klappen ein, Eingabe stellt die Aufteilung wieder her.
+show: '{{panel}} anzeigen'
+hide: '{{panel}} ausblenden'
+move_copy: Kopie an die gewünschte Stelle bewegen und zum Einfügen klicken. Esc bricht ab.

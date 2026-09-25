@@ -1,0 +1,18 @@
+checking_updates: Güncellemeler denetleniyor…
+up_to_date: Güncel
+no_published_builds: Yayımlanmış derleme yok
+no_compatible_build: Uyumlu derleme yok
+retry_updates: Güncellemeyi yeniden dene
+experimental_snapshot: Deneysel sürüm
+official_release: Resmî sürüm
+downloading_update: Güncelleme indiriliyor…
+installing_the_selected_build_and_restarting_toolkit: seçilen derlemeyi yükleyip Toolkit'i yeniden başlatma
+restarting: Yeniden başlatılıyor…
+retry_update: Güncellemeyi yeniden dene
+other_fork: Diğer çatal…
+update_source_value: 'Güncelleme kaynağı: {{repo}}'
+install_value: '{{latest}} yükle'
+value_from_value_value_download_install_and_restart_installed_value: '{{repo}} kaynağından {{value1}}: {{latest}}. İndir, yükle ve yeniden başlat. Yüklü: {{installed}}.'
+installed_value_value_checked_on_startup_and_hourly: 'Yüklü: {{repo}} {{latest}}. Başlangıçta ve saat başı denetlenir.'
+no_installable_windows_zip_with_a_checksum_found_in_value: '{{repo}} içinde sağlama toplamı olan yüklenebilir Windows ZIP dosyası bulunamadı.'
+install_value_2: '{{version}} yükle'

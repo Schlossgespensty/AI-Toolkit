@@ -1,0 +1,32 @@
+failed_to_load_config_files: Impossible de charger les fichiers de configuration.
+all_troops: Toutes les troupes
+initial_role: rôle initial
+unsupported_value: 'Valeur non prise en charge : '
+no_description_yet: Aucune description pour le moment.
+initial_roles: Rôles initiaux
+unknown_parameters_found: |+
+  Paramètres inconnus détectés :
+
+opening_another_character_file: ouverture d'un autre fichier de personnage
+creating_a_new_character: création d'un nouveau personnage
+new_character_added_to_the_loaded_ai: Nouveau personnage ajouté à l'IA chargée
+new_character: Nouveau personnage
+saving: Enregistrement…
+saved: Enregistré !
+error: Erreur !
+open_an_ai_from_the_library_to_edit_its_content: Ouvrez une IA de la bibliothèque pour modifier son contenu
+ai_content_belongs_to_the_loaded_ai_project: Le contenu de l'IA appartient au projet d'IA chargé
+no_file_loadedvalue: Aucun fichier chargé{{dirtyMarker}}
+leather_armor: Armure de cuir
+iron_armor: Armure de fer
+capacity: Capacité
+needed_at_limits: Besoins aux limites
+production: production
+recruitment_purchase: achat pour le recrutement
+maxfood_variance: MaxFood + variation
+no_relevant_production: Aucune production concernée
+or_recruitment: ' ou recrutement'
+positive_negative: Positif / négatif
+net_buildings: Solde des bâtiments
+population_groups_of_16: Population / groupes de 16
+movement: Déplacement

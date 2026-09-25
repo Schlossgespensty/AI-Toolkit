@@ -1,0 +1,250 @@
+experimental_snapshots: Experimental snapshots
+toolkit_fork_owner_repository: Toolkit fork (owner/repository)
+fork_builds_are_experimental_switching_sources_does_not_install_a_build_unti: Fork builds are experimental. Switching sources does not install a build until you press Install.
+cancel: Cancel
+use_fork: Use fork
+editor_workspace: Editor workspace
+application_menus: Application menus
+file_alt_f: File (Alt+F)
+file: File
+edit_alt_e: Edit (Alt+E)
+edit: Edit
+view_alt_v: View (Alt+V)
+view: View
+ucp_ai_library: UCP AI Library
+character: Character
+castle: Castle
+ai_content: AI Content
+update_source: Update source
+official_releases: Official releases
+check_official_releases: Check official releases
+check_updates: Check updates
+character_editor: Character editor
+no_character_loaded: No Character Loaded
+open_a_character_json_file_or_choose_an_ai_from_the_library: Open a character.json file or choose an AI from the Library.
+open_character: Open character
+save_character: Save character
+save_as: Save as
+plugins: Plugins
+ai_ox_tethers: AI ox tethers
+controls_the_amount_of_ox_tethers_built: Controls the amount of ox tethers built
+running_units: Running units
+controls_whether_some_units_will_run_or_walk: Controls whether some units will run or walk.
+ai_troop_behaviour: AI Troop Behaviour
+include_aiv_troop_behaviour_overrides: Include AIV troop behaviour overrides
+population: Population
+available_population: Available population
+decrease_available_population_by_8: Decrease available population by 8
+increase_available_population_by_8: Increase available population by 8
+use_the_population_provided_by_the_currently_loaded_castle: Use the population provided by the currently loaded castle
+use_castle_pop: Use castle pop
+maximum_workers_used: Maximum workers used
+max_workers_used_at_set_population: Max. workers used at set population
+worker_breakdown: Worker breakdown
+farms: Farms
+woodcutters: Woodcutters
+quarries: Quarries
+ox_tethers_up_to: Ox tethers (up to)
+iron_mines: Iron mines
+pitch_rigs: Pitch rigs
+workers_left_after_castle: Workers left after castle
+left_after_castle_character: Left after castle + character
+fear_factor: Fear factor
+stockpile_space: Stockpile space
+find_setting: Find setting
+search_character_fields: Search character fields…
+section_visibility: Section visibility
+expand_all: Expand all
+collapse_all: Collapse all
+character_field_order: Character field order
+standard_template: Standard template
+ordered_template: Ordered template
+castle_files: Castle files
+open_castle: Open castle
+save_castle: Save castle
+export_a_definitive_edition_castle_aivjson: Export a Definitive Edition castle (.aivjson)
+export_de: Export DE
+new: New
+castle_views: Castle views
+show_or_close_the_map_seen_from_above: Show or close the map seen from above
+map: Map
+show_or_close_the_slanted_view_drag_a_tab_to_move_a_window: Show or close the slanted view - drag a tab to move a window
+2_5d_view: 2.5D view
+ai_castle_selection: AI castle selection
+ai_castle: AI castle
+no_ai_project: No AI project
+placement_tools: Placement tools
+shortcut_1_or_s: 'Shortcut: 1 or S'
+single: Single
+shortcut_6_or_l: 'Shortcut: 6 or L'
+line: Line
+shortcut_2_or_b: 'Shortcut: 2 or B'
+brush: Brush
+how_wide_the_brush_paints_and_make_it_smaller_and_bigger: How wide the brush paints. - and + make it smaller and bigger.
+smaller_brush: Smaller brush
+bigger_brush: Bigger brush
+fills_everything_up_to_a_wall_the_edge_of_the_map_counts_as_one_shortcut_7_o: 'Fills everything up to a wall — the edge of the map counts as one. Shortcut: 7 or F'
+fill: Fill
+selection_and_editing_tools: Selection and editing tools
+shortcut_3_or_v: 'Shortcut: 3 or V'
+select_move: Select / Move
+select_mode: Select mode
+flood_selects_connected_placements_of_the_same_type_including_diagonals_shif: >-
+  Flood selects connected placements of the same type, including diagonals. Shift adds; Ctrl-click toggles the
+  connected group.
+border: Border
+flood_fill: Flood Fill
+delete_mode: Delete mode
+area: Area
+flood_fill_2: Flood fill
+display_overlays: Display overlays
+overlays: Overlays
+item_names: Item names
+unit_order: Unit Order
+guide_lines: Guide lines
+estimated_worker_paths_through_the_current_castle: Estimated worker paths through the current castle
+path_map: Path map
+estimated_fire_spread_around_flammable_buildings: Estimated fire spread around flammable buildings
+firespread: Firespread
+build_order: Build order
+0_steps: 0 steps
+current_position: Current position
+no_step_selected: No step selected
+select_and_scroll_to_a_build_step: Select and scroll to a build step
+drag_steps_to_reorder_ctrl_click_or_shift_click_selects_several_steps_right_: >-
+  Drag steps to reorder. Ctrl+click or Shift+click selects several steps. Right-click to merge or lock
+  positions.
+population_up_to_the_selected_build_step: Population up to the selected build step
+population_at_current_step: Population at current step
+about_the_population_overview: About the population overview
+provided_by_castle: Provided by castle
+required_by_castle: Required by castle
+required_by_character_aic: Required by character (AIC)
+free: Free
+these_values_include_only_the_build_steps_up_to_the_current_position: These values include only the build steps up to the current position.
+2d_map_controls: 2D map controls
+use_picture_as_background: Use picture as background
+save_the_whole_castle_as_a_full_resolution_png: Save the whole castle as a full-resolution PNG
+snapshot: Snapshot
+temporary_castle_blueprint: Temporary castle blueprint
+show_or_hide_the_temporary_blueprint: Show or hide the temporary blueprint
+show: Show
+blueprint_opacity: Blueprint opacity
+opacity: Opacity
+2_5d_view_controls: 2.5D view controls
+lay_a_map_of_the_game_under_the_slanted_view_to_scale_one_field_of_the_map_o: Lay a map of the game under the slanted view - to scale, one field of the map on one field of the editor
+game_map: Game map
+which_starting_place_of_the_map_the_castle_is_built_on: Which starting place of the map the castle is built on
+map_starting_place: Map starting place
+take_the_map_of_the_game_away: Take the map of the game away
+remove_game_map: Remove game map
+100_by_100_tile_castle_map: 100 by 100 tile castle map
+the_castle_seen_from_an_angle: The castle seen from an angle
+no_castle_loaded: No castle loaded
+ready: Ready
+building_categories: Building Categories
+select_an_item: Select an item
+castle_costs_up_to_the_selected_build_step: Castle costs up to the selected build step
+assets_and_dialogue: Assets and dialogue
+save_lines_json: Save lines.json
+open_an_ai_from_the_library_first: Open an AI from the Library first.
+no_ai_project_loaded: No AI project loaded
+open_an_installed_ai_or_create_one_from_the_ucp_ai_library: Open an installed AI or create one from the UCP AI Library.
+lines_json: lines.json
+text_used_for_the_ai_s_name_titles_description_and_reactions: Text used for the AI's name, titles, description and reactions.
+saved: Saved
+portraits: Portraits
+images_use_nearest_neighbor_resizing_transparency_is_kept_strictly_on_or_off: Images use nearest-neighbor resizing; transparency is kept strictly on or off.
+ai_portrait: AI portrait
+portrait_png: portrait.png
+saved_as_72_72_pixels: Saved as 72×72 pixels.
+change_portrait: Change portrait
+small_ai_portrait: Small AI portrait
+portrait_small_png: portrait_small.png
+saved_as_36_36_pixels: Saved as 36×36 pixels.
+change_small_portrait: Change small portrait
+speech: Speech
+mapped_wav_files_can_play_here_or_open_in_your_normal_audio_program: Mapped WAV files can play here or open in your normal audio program.
+language: Language
+no_speech: No speech
+bink_videos: Bink videos
+bik_playback_is_handed_to_the_program_associated_with_bink_files_on_windows: BIK playback is handed to the program associated with Bink files on Windows.
+project_browser: Project browser
+browse_and_edit_installed_ai_packages_or_keep_separate_variants_in_my_ais: Browse and edit installed AI packages, or keep separate variants in My AIs.
+create_new_ai: Create new AI
+choose_game_folder: Choose game folder
+open_plugins_folder: Open plugins folder
+refresh: Refresh
+no_ucp_installation_selected: No UCP installation selected
+choose_your_stronghold_crusader_folder_to_begin: Choose your Stronghold Crusader folder to begin.
+installed_ais: Installed AIs
+search: Search
+name_author_or_plugin: Name, author or plugin…
+all_installed_ais: All installed AIs
+active_plugins_only: Active plugins only
+my_ais_only: My AIs only
+no_installation_selected: No installation selected.
+your_existing_editors_stay_unchanged: Your existing editors stay unchanged
+select_an_installed_ai_to_load_and_edit_its_character_castles_lines_and_port: Select an installed AI to load and edit its Character, castles, lines and portraits together.
+installed: Installed
+inactive: Inactive
+author: Author
+version: Version
+source_plugin: Source plugin
+folder_id: Folder ID
+open_ai_project: Open AI project
+loads_the_character_and_castle_1_together_switch_castles_from_the_castle_edi: Loads the Character and Castle 1 together. Switch castles from the Castle editor.
+open_in_editors: Open in editors
+open_source_folder: Open source folder
+clone_to_my_ais: Clone to My AIs
+the_complete_ai_package_is_copied_into_the_editor_owned_ucp_plugin_so_you_ca: The complete AI package is copied into the editor-owned UCP plugin so you can make a separate variant.
+ai_name: AI name
+install_update_in_ucp: Install / Update in UCP
+writes_the_character_and_currently_open_castle_through_a_staging_folder_then: >-
+  Writes the Character and currently open castle through a staging folder, then replaces the managed plugin
+  only after validation succeeds.
+activate_ai_toolkit_my_ais_in_the_ucp_gui_to_use_it_with_ai_swapper: Activate “AI Toolkit - My AIs” in the UCP GUI to use it with AI Swapper.
+creates_a_complete_blank_ai_inside_ai_toolkit_my_ais: Creates a complete blank AI inside AI Toolkit - My AIs.
+create_ai: Create AI
+castle_mapping: Castle mapping
+choose_the_aiv_used_in_each_of_the_ai_s_eight_castle_slots_the_same_file_may: Choose the AIV used in each of the AI's eight castle slots. The same file may be selected more than once.
+save_mapping: Save mapping
+castle_shortcuts: Castle shortcuts
+select_a_field_and_press_a_key_optionally_with_ctrl_alt_or_shift_one_shortcu: >-
+  Select a field and press a key, optionally with Ctrl, Alt or Shift. One shortcut per action; each
+  combination can only be assigned once. Backspace clears a field. Unassigned actions remain available in the
+  UI.
+camera: Camera
+photoshop_controls: Photoshop controls
+arrow_keys_wheel_zoom: Arrow keys + wheel zoom
+mouse_wheel: Mouse wheel
+scroll_pans_alt_scroll_zooms_both_views: Scroll pans, Alt+scroll zooms (both views)
+scroll_zooms_alt_shift_scroll_pans: Scroll zooms, Alt/Shift+scroll pans
+ctrl_scroll_pans_horizontally_in_wheel_zoom_mode_alt_scroll_or_shift_scroll_: >-
+  Ctrl+scroll pans horizontally. In wheel-zoom mode, Alt+scroll or Shift+scroll pans vertically. Middle-drag
+  pans. Camera keys also accept Ctrl/Alt/Shift combinations; Backspace clears. Hold Shift to pan faster.
+left: Left
+right: Right
+up: Up
+down: Down
+pan_speed_pixels_per_keypress: Pan speed (pixels per keypress)
+restore_defaults: Restore defaults
+save_shortcuts: Save shortcuts
+build_step_actions: Build-step actions
+merge_selected_steps: Merge selected steps…
+lock_positions: Lock positions
+save_castle_picture: Save castle picture
+save_png: Save PNG
+picture_size: "Size"
+full_resolution: "Full resolution"
+floor_plan_100x100_1_px_per_tile: "Floor plan 100×100 (1 px per tile)"
+merge_placements_by_item_type: Merge placements by item type
+merge: Merge
+replace_selected_items: Replace selected items
+choose_a_replacement_for_each_item_type_inside_the_box: Choose a replacement for each item type inside the box.
+apply_replacements: Apply replacements
+map_of_the_game: Map of the game
+the_chosen_map_is_laid_under_the_slanted_view_to_scale_one_field_of_the_map_: 'The chosen map is laid under the slanted view to scale: one field of the map is one field of the editor.'
+filter_by_name: Filter by name
+
+brush_size: Brush size

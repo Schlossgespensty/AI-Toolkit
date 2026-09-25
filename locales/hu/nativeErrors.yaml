@@ -1,0 +1,62 @@
+an_ai_with_that_folder_id_already_exists: Már létezik MI ezzel a mappaazonosítóval
+castle_already_exists: A vár már létezik
+castle_file_does_not_exist_in_this_ai: Ez a várfájl nem található ebben az MI-ben
+castle_mapping_must_contain_at_most_eight_slots: A várkiosztás legfeljebb nyolc helyet tartalmazhat
+castle_slots_must_be_an_array: A várhelyeket tömbként kell megadni
+choose_a_fork_of_the_official_ai_toolkit: A hivatalos AI Toolkit egyik elágazását válaszd
+choose_the_stronghold_crusader_installation: Válaszd ki a Stronghold Crusader telepítését
+close_other_editor_windows_before_updating: Frissítés előtt zárd be a szerkesztő többi ablakát
+download_the_release_first: Előbb töltsd le a kiadást
+editor_did_not_close_no_files_were_replaced: A szerkesztő nem zárult be; egyetlen fájl sem lett lecserélve
+editor_window_not_found: A szerkesztő ablaka nem található
+enter_an_ai_name: Add meg az MI nevét
+expected_a_ucp_installation_containing_ucp_plugins: Olyan UCP-telepítés szükséges, amely tartalmazza az ucp/plugins mappát
+expected_an_aiv_castle_filename: AIV-várfájl neve szükséges
+expected_one_ai_toolkit_executable: A csomagnak pontosan egy AI Toolkit futtatható fájlt kell tartalmaznia
+incomplete_download: A letöltés nem fejeződött be
+invalid_ai_folder_id: Érvénytelen MI-mappaazonosító
+invalid_archive_path: Érvénytelen archívumútvonal
+invalid_destination: Érvénytelen célhely
+invalid_executable_path: Érvénytelen programútvonal
+invalid_filename: Érvénytelen fájlnév
+invalid_github_repository: Érvénytelen GitHub-tároló
+invalid_github_response: Érvénytelen GitHub-válasz
+invalid_installation_root: Érvénytelen telepítési gyökérmappa
+invalid_item_type: Érvénytelen elemtípus
+invalid_manifest_path: Érvénytelen jegyzékútvonal
+invalid_package_path: Érvénytelen csomagútvonal
+invalid_png: Érvénytelen PNG-kép
+invalid_portrait_image: Érvénytelen portrékép
+invalid_project_path: Érvénytelen projektútvonal
+invalid_release_url: Érvénytelen kiadási URL
+invalid_resource_directory: Érvénytelen erőforrásmappa
+invalid_settings_document: Érvénytelen beállításfájl
+invalid_staging_path: Érvénytelen előkészítési útvonal
+media_exceeds_playback_limit: A médiafájl meghaladja a lejátszási korlátot
+media_not_mapped: Ez a médiafájl nem szerepel a projekt fájlkiosztásában.
+missing_dialog_choices: Hiányoznak a párbeszédpanel választási lehetőségei
+missing_install_manifest: Hiányzik a telepítési jegyzék
+missing_installation_path: Hiányzik a telepítési útvonal
+missing_release_size: Hiányzik a kiadás mérete
+missing_release_url: Hiányzik a kiadás URL-je
+no_eligible_snapshot_newer_than_the_official_release: Nincs a hivatalos kiadásnál újabb, használható előzetes
+operation_failed: A műveletet nem sikerült végrehajtani.
+missing_argument: 'Hiányzó argumentum: {{name}}'
+missing_resource: 'Hiányzó alkalmazáserőforrás: {{path}}'
+unexpected_package_entry: 'Váratlan csomagelem: {{path}}'
+path_is_outside_the_selected_project: Az útvonal a kiválasztott projekten kívülre mutat
+release_checksum_mismatch: A kiadás ellenőrzőösszege nem egyezik
+release_does_not_contain_ai_toolkit_exe: A kiadás nem tartalmazza az AI Toolkit.exe fájlt
+release_exceeds_size_limits: A kiadás mérete meghaladja az engedélyezett korlátot
+selected_image_exceeds_128_mb: A kiválasztott kép nagyobb 128 MB-nál
+staged_update_changed: Az előkészített frissítés megváltozott
+the_ai_project_no_longer_exists: Az MI-projekt már nem létezik
+the_media_file_type_does_not_match: A médiafájl típusa nem egyezik a várttal
+the_selected_release_changed_check_again: A kiválasztott kiadás megváltozott; ellenőrizd újra
+this_ai_has_no_aiv_folder: Ehhez az MI-hez nem tartozik aiv mappa
+too_many_github_results: Túl sok találat érkezett a GitHubtól
+unexpected_download_size: A letöltött fájl mérete eltér a várttól
+unknown_configuration_file: Ismeretlen beállításfájl
+unknown_language: Ismeretlen nyelv
+unknown_theme: Ismeretlen téma
+use_open_externally_for_bink_video: A Bink-videót a „Megnyitás külső programban” paranccsal nyisd meg

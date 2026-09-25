@@ -1,0 +1,44 @@
+openCastle: 打开城堡
+saveCastle: 保存城堡
+newCastle: 新建城堡
+map: 地图
+iso: 2.5D 视图
+single: 单个
+line: 直线
+brush: 画笔
+brushSmaller: 缩小画笔
+brushLarger: 放大画笔
+bucket: 填充
+select: 选择 / 移动
+replace: 替换
+merge: 合并
+delete: 删除
+overlays: 叠加层菜单
+groups: 分组
+paste: 剪贴板 / 粘贴
+clearClipboard: 清空剪贴板
+names: 元素名称
+units: 单位顺序
+guides: 参考线
+paths: 寻路图
+fire: 火势蔓延
+gameMap: 2.5D：游戏地图
+resetMap: 2.5D：移除游戏地图
+rotateLeft: 2.5D：向左旋转
+rotateRight: 2.5D：向右旋转
+saveAs: 另存为
+undo: 撤销
+redo: 重做
+copy: 复制选区
+cut: 剪切选区
+exportDe: 导出为决定版
+pause: 暂停步骤
+deleteSelected: 删除所选内容
+deselect: 取消选择
+invalid: '{{label}} 的快捷键无效。'
+reserved: '{{key}} 已保留给应用菜单。'
+duplicate: '{{key}} 被重复分配。'
+wheelMode: 请选择滚轮模式。
+cameraSpeed: 相机速度必须介于 1 到 200 像素之间。
+invalidCamera: 相机快捷键无效。
+assigned: 按键 {{key}} 已被分配或保留。

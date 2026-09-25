@@ -1,0 +1,80 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "AI Toolkit",
+  "version": "0.11.0",
+  "identifier": "de.schlossgespenst.aitoolkit",
+  "build": {
+    "beforeBuildCommand": "node scripts/build-desktop.mjs",
+    "beforeDevCommand": "node scripts/build-desktop.mjs",
+    "frontendDist": "../desktop-dist"
+  },
+  "app": {
+    "withGlobalTauri": true,
+    "windows": [
+      {
+        "label": "main",
+        "title": "AI Toolkit",
+        "url": "src/index.html?restoreProject=1",
+        "width": 1440,
+        "height": 960,
+        "minWidth": 800,
+        "minHeight": 600,
+        "visible": false,
+        "create": false
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' asset: http://asset.localhost data: blob:; media-src 'self' asset: http://asset.localhost data: blob:; connect-src 'self' ipc: http://ipc.localhost asset: http://asset.localhost data: blob:; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'none'",
+      "assetProtocol": {
+        "enable": true,
+        "scope": []
+      }
+    }
+  },
+  "bundle": {
+    "active": true,
+    "icon": [
+      "../assets/icon.ico",
+      "icons/icon.png"
+    ],
+    "resources": {
+      "../assets/aiv/iso/verzeichnis.json": "assets/aiv/iso/verzeichnis.json",
+      "../docs/native-preview-readme.txt": "README.txt",
+      "../THIRD_PARTY_NOTICES.txt": "THIRD_PARTY_NOTICES.txt"
+    },
+    "targets": [
+      "nsis"
+    ],
+    "shortDescription": "AI character and castle editor",
+    "category": "Utility",
+    "windows": {
+      "webviewInstallMode": {
+        "type": "downloadBootstrapper",
+        "silent": true
+      },
+      "nsis": {
+        "installerIcon": "../assets/icon.ico",
+        "uninstallerIcon": "../assets/icon.ico",
+        "compression": "lzma",
+        "installMode": "currentUser",
+        "languages": [
+          "English",
+          "German",
+          "French",
+          "Russian",
+          "Hungarian",
+          "Turkish",
+          "SimpChinese",
+          "Spanish",
+          "Farsi"
+        ],
+        "displayLanguageSelector": false,
+        "customLanguageFiles": {
+          "Hungarian": "../scripts/installer/Hungarian.nsh",
+          "Farsi": "../scripts/installer/Farsi.nsh"
+        },
+        "installerHooks": "../scripts/installer/config.nsh"
+      }
+    }
+  }
+}

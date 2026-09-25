@@ -1,0 +1,232 @@
+StrengthMultiplier: Strength Multiplier
+DotColour: Dot Colour
+DotCount: Dot Count
+Type: Type
+ArabArcher: Arab Archer
+Slave: Slave
+Slinger: Slinger
+Assassin: Assassin
+HorseArcher: Horse Archer
+ArabSwordsman: Arab Swordsman
+FireThrower: Fire Thrower
+EuropArcher: Europ Archer
+Spearman: Spearman
+Maceman: Maceman
+Crossbowman: Crossbowman
+Pikeman: Pikeman
+Swordsman: Swordsman
+Knight: Knight
+Monk: Monk
+Engineer: Engineer
+WallDecoration: Wall Decoration
+Unknown001: Unknown001
+Unknown002: Unknown002
+Unknown003: Unknown003
+Unknown004: Unknown004
+Unknown005: Unknown005
+CriticalPopularity: Critical Popularity
+LowestPopularity: Lowest Popularity
+HighestPopularity: Highest Popularity
+TaxesMin: Taxes Min
+TaxesMax: Taxes Max
+Unknown011: Unknown011
+Farm1: Farm1
+Farm2: Farm2
+Farm3: Farm3
+Farm4: Farm4
+Farm5: Farm5
+Farm6: Farm6
+Farm7: Farm7
+Farm8: Farm8
+PopulationPerFarm: Population Per Farm
+PopulationPerWoodcutter: Population Per Woodcutter
+PopulationPerQuarry: Population Per Quarry
+PopulationPerIronmine: Population Per Ironmine
+PopulationPerPitchrig: Population Per Pitchrig
+MaxQuarries: Max Quarries
+MaxIronmines: Max Ironmines
+MaxWoodcutters: Max Woodcutters
+MaxPitchrigs: Max Pitchrigs
+MaxFarms: Max Farms
+BuildInterval: Build Interval
+ResourceRebuildDelay: Resource Rebuild Delay
+MaxFood: Max Food
+MinimumApples: Minimum Apples
+MinimumCheese: Minimum Cheese
+MinimumBread: Minimum Bread
+MinimumWheat: Minimum Wheat
+MinimumHop: Minimum Hop
+TradeAmountFood: Trade Amount Food
+TradeAmountEquipment: Trade Amount Equipment
+AIRequestDelay: AIRequest Delay
+MinimumGoodsRequiredAfterTrade: Minimum Goods Required After Trade
+DoubleRationsFoodThreshold: Double Rations Food Threshold
+MaxWood: Max Wood
+MaxStone: Max Stone
+MaxResourceOther: Max Resource Other
+MaxEquipment: Max Equipment
+MaxBeer: Max Beer
+MaxResourceVariance: Max Resource Variance
+RecruitGoldThreshold: Recruit Gold Threshold
+BlacksmithSetting: Blacksmith Setting
+FletcherSetting: Fletcher Setting
+PoleturnerSetting: Poleturner Setting
+SellResource01: Sell Resource01
+SellResource02: Sell Resource02
+SellResource03: Sell Resource03
+SellResource04: Sell Resource04
+SellResource05: Sell Resource05
+SellResource06: Sell Resource06
+SellResource07: Sell Resource07
+SellResource08: Sell Resource08
+SellResource09: Sell Resource09
+SellResource10: Sell Resource10
+SellResource11: Sell Resource11
+SellResource12: Sell Resource12
+SellResource13: Sell Resource13
+SellResource14: Sell Resource14
+SellResource15: Sell Resource15
+DefWallPatrolRallyTime: Wall patrol waiting time
+DefWallPatrolGroups: Def Wall Patrol Groups
+DefSiegeEngineGoldThreshold: Def Siege Engine Gold Threshold
+DefSiegeEngineBuildDelay: Def Siege Engine Build Delay
+Unknown072: Unknown072
+Unknown073: Unknown073
+RecruitProbDefDefault: Recruit Prob Def Default
+RecruitProbDefWeak: Recruit Prob Def Weak
+RecruitProbDefStrong: Recruit Prob Def Strong
+RecruitProbRaidDefault: Recruit Prob Raid Default
+RecruitProbRaidWeak: Recruit Prob Raid Weak
+RecruitProbRaidStrong: Recruit Prob Raid Strong
+RecruitProbAttackDefault: Recruit Prob Attack Default
+RecruitProbAttackWeak: Recruit Prob Attack Weak
+RecruitProbAttackStrong: Recruit Prob Attack Strong
+SortieUnitRangedMin: Sortie Unit Ranged Min
+SortieUnitRanged: Sortie Unit Ranged
+SortieUnitMeleeMin: Sortie Unit Melee Min
+SortieUnitMelee: Sortie Unit Melee
+DefDiggingUnitMax: Def Digging Unit Max
+DefDiggingUnit: Def Digging Unit
+RecruitInterval: Recruit Interval
+RecruitIntervalWeak: Recruit Interval Weak
+RecruitIntervalStrong: Recruit Interval Strong
+DefTotal: Def Total
+OuterPatrolGroupsCount: Outer Patrol Groups Count
+OuterPatrolGroupsMove: Outer Patrol Groups Move
+OuterPatrolRallyDelay: Outer Patrol Rally Delay
+DefWalls: Def Walls
+DefUnit1: Def Unit1
+DefUnit2: Def Unit2
+DefUnit3: Def Unit3
+DefUnit4: Def Unit4
+DefUnit5: Def Unit5
+DefUnit6: Def Unit6
+DefUnit7: Def Unit7
+DefUnit8: Def Unit8
+RaidUnitsBase: Raid Units Base
+RaidUnitsRandom: Raid Units Random
+RaidUnit1: Raid Unit1
+RaidUnit2: Raid Unit2
+RaidUnit3: Raid Unit3
+RaidUnit4: Raid Unit4
+RaidUnit5: Raid Unit5
+RaidUnit6: Raid Unit6
+RaidUnit7: Raid Unit7
+RaidUnit8: Raid Unit8
+HarassingSiegeEngine1: Harassing Siege Engine1
+HarassingSiegeEngine2: Harassing Siege Engine2
+HarassingSiegeEngine3: Harassing Siege Engine3
+HarassingSiegeEngine4: Harassing Siege Engine4
+HarassingSiegeEngine5: Harassing Siege Engine5
+HarassingSiegeEngine6: Harassing Siege Engine6
+HarassingSiegeEngine7: Harassing Siege Engine7
+HarassingSiegeEngine8: Harassing Siege Engine8
+HarassingSiegeEnginesMax: Harassing Siege Engines Max
+RaidRetargetDelay: Raid Retarget Delay
+AttForceBase: Att Force Base
+AttForceRandom: Att Force Random
+AttForceSupportAllyThreshold: Att Force Support Ally Threshold
+AttForceRallyPercentage: Att Force Rally Percentage
+Unknown129: Unknown129
+AttAssaultDelay: Att Assault Delay
+AttUnitPatrolRecommandDelay: Retreat delay after victory
+Unknown132: Unknown132
+SiegeEngine1: Siege Engine1
+SiegeEngine2: Siege Engine2
+SiegeEngine3: Siege Engine3
+SiegeEngine4: Siege Engine4
+SiegeEngine5: Siege Engine5
+SiegeEngine6: Siege Engine6
+SiegeEngine7: Siege Engine7
+SiegeEngine8: Siege Engine8
+CowThrowInterval: Cow Throw Interval
+Unknown142: Unknown142
+AttMaxEngineers: Att Max Engineers
+AttDiggingUnit: Att Digging Unit
+AttDiggingUnitMax: Att Digging Unit Max
+AttUnitVanguard: Att Unit Vanguard
+AttUnitVanguardMax: Att Unit Vanguard Max
+AttMaxAssassins: Att Max Assassins
+AttMaxLaddermen: Att Max Laddermen
+AttMaxTunnelers: Att Max Tunnelers
+AttUnitPatrol: Att Unit Patrol
+AttUnitPatrolMax: Att Unit Patrol Max
+AttUnitPatrolGroupsCount: Att Unit Patrol Groups Count
+AttUnitBackup: Att Unit Backup
+AttUnitBackupMax: Att Unit Backup Max
+AttUnitBackupGroupsCount: Att Unit Backup Groups Count
+AttUnitEngage: Att Unit Engage
+AttUnitEngageMax: Att Unit Engage Max
+AttUnitSiegeDef: Att Unit Siege Def
+AttUnitSiegeDefMax: Att Unit Siege Def Max
+AttUnitSiegeDefGroupsCount: Att Unit Siege Def Groups Count
+AttUnitMain1: Att Unit Main1
+AttUnitMain2: Att Unit Main2
+AttUnitMain3: Att Unit Main3
+AttUnitMain4: Att Unit Main4
+AttMaxDefault: Main troops before specialists
+AttMainGroupsCount: Att Main Groups Count
+TargetChoice: Target Choice
+AIOxTethers_DisableInitialOxTether: AIOx Tethers Disable Initial Ox Tether
+AIOxTethers_Logic: AIOx Tethers Logic
+AIOxTethers_MaxOxTethers: AIOx Tethers Max Ox Tethers
+AIOxTethers_DynamicMaxOxTethers: AIOx Tethers Dynamic Max Ox Tethers
+AIOxTethers_MinimumOxTethersPerQuarry: AIOx Tethers Minimum Ox Tethers Per Quarry
+AIOxTethers_MaximumOxTethersPerQuarry: AIOx Tethers Maximum Ox Tethers Per Quarry
+AIOxTethers_ThresholdStoneLoad: AIOx Tethers Threshold Stone Load
+RunningUnits_Macemen: Running Units Macemen
+RunningUnits_Spearmen: Running Units Spearmen
+RunningUnits_Slingers: Running Units Slingers
+RunningUnits_Slaves: Running Units Slaves
+AIVTroops_InitialRole: AIVTroops Initial Role
+AIVTroops_Movement: AIVTroops Movement
+AIVTroops_InitialRole_Engineer: AIVTroops Initial Role Engineer
+AIVTroops_Movement_Engineer: AIVTroops Movement Engineer
+AIVTroops_InitialRole_Archer: AIVTroops Initial Role Archer
+AIVTroops_Movement_Archer: AIVTroops Movement Archer
+AIVTroops_InitialRole_Crossbowman: AIVTroops Initial Role Crossbowman
+AIVTroops_Movement_Crossbowman: AIVTroops Movement Crossbowman
+AIVTroops_InitialRole_Spearman: AIVTroops Initial Role Spearman
+AIVTroops_Movement_Spearman: AIVTroops Movement Spearman
+AIVTroops_InitialRole_Pikeman: AIVTroops Initial Role Pikeman
+AIVTroops_Movement_Pikeman: AIVTroops Movement Pikeman
+AIVTroops_InitialRole_Maceman: AIVTroops Initial Role Maceman
+AIVTroops_Movement_Maceman: AIVTroops Movement Maceman
+AIVTroops_InitialRole_Swordsman: AIVTroops Initial Role Swordsman
+AIVTroops_Movement_Swordsman: AIVTroops Movement Swordsman
+AIVTroops_InitialRole_Knight: AIVTroops Initial Role Knight
+AIVTroops_Movement_Knight: AIVTroops Movement Knight
+AIVTroops_InitialRole_Slave: AIVTroops Initial Role Slave
+AIVTroops_Movement_Slave: AIVTroops Movement Slave
+AIVTroops_InitialRole_Slinger: AIVTroops Initial Role Slinger
+AIVTroops_Movement_Slinger: AIVTroops Movement Slinger
+AIVTroops_InitialRole_Assassin: AIVTroops Initial Role Assassin
+AIVTroops_Movement_Assassin: AIVTroops Movement Assassin
+AIVTroops_InitialRole_ArabianArcher: AIVTroops Initial Role Arabian Archer
+AIVTroops_Movement_ArabianArcher: AIVTroops Movement Arabian Archer
+AIVTroops_InitialRole_HorseArcher: AIVTroops Initial Role Horse Archer
+AIVTroops_Movement_HorseArcher: AIVTroops Movement Horse Archer
+AIVTroops_InitialRole_ArabianSwordsman: AIVTroops Initial Role Arabian Swordsman
+AIVTroops_Movement_ArabianSwordsman: AIVTroops Movement Arabian Swordsman
+AIVTroops_InitialRole_FireThrower: AIVTroops Initial Role Fire Thrower
+AIVTroops_Movement_FireThrower: AIVTroops Movement Fire Thrower

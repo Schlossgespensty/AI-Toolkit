@@ -1,0 +1,24 @@
+balance_profile: buildings, resources, units, population veya castle bölümü içeren bir denge profili bekleniyordu.
+balance_section: '{{section}} bölümü geçersiz.'
+balance_building: 'Geçersiz bina: {{name}}'
+balance_health: '{{name}}: health, sıfır veya pozitif bir tam sayı olmalı.'
+balance_housing: '{{name}}: housing, sıfır veya pozitif bir tam sayı olmalı.'
+balance_cost: '{{name}}: cost, sıfır veya pozitif beş tam sayı içermeli (odun, taş, demir, zift, altın).'
+balance_resource: 'Geçersiz kaynak: {{name}}'
+balance_delivery: '{{name}}: teslimat miktarı bir bayta sığmalı (0–255).'
+balance_bonus: '{{name}}: skirmishBonus, true veya false olmalı.'
+balance_ditch: castle.ditch_per_pitch, 1, 2, 3 veya 4 olmalı.
+frames_array: Kale adımları bir dizi olmalı.
+tile_offset: '{{label}}: kare konumu geçersiz.'
+step_object: '{{step}}. adım: bir nesne bekleniyordu.'
+step_positions: '{{step}}. adım: öğe veya konumlar geçersiz.'
+step_pause: '{{step}}. adım: duraklatma değeri geçersiz.'
+step: '{{step}}. adım'
+markers_array: Kale işaretçileri bir dizi olmalı.
+marker_invalid: Kale işaretçisi geçersiz.
+marker: Kale işaretçisi
+pause_delay: Duraklatma süresi geçersiz.
+classic_empty_steps: Boş inşa adımları klasik AIV biçiminde korunamaz.
+classic_item: '{{name}}, klasik AIV biçiminde desteklenmez.'
+classic_pauses: İnşa adımı duraklamaları klasik editörde devre dışıdır.
+classic_marker: '{{name}}, klasik AIV biçiminde korunamaz.'

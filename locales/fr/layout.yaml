@@ -1,0 +1,10 @@
+steps: Étapes
+categories: Catégories
+overview: Vue d’ensemble
+resize: Redimensionner {{panel}} et la vue d’ensemble
+resize_help: >-
+  Faites glisser pour redimensionner ; atteignez une extrémité pour replier. Les flèches redimensionnent,
+  Début/Fin replient, Entrée restaure.
+show: Afficher {{panel}}
+hide: Masquer {{panel}}
+move_copy: Déplacez la copie à l’endroit voulu ; cliquez pour coller, Échap pour annuler.

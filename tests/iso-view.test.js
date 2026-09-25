@@ -297,6 +297,29 @@ test('no box, no outline', () => {
   assert.equal(geometry.marqueeOutline(null, view), null);
 });
 
+test('a free-standing crenel is always the single merlon, a row keeps the checkerboard', () => {
+  const b = name => ({ bild: name, breite: 30, hoehe: 135 });
+  const paar = name => ({ klotz: b(name + '_klotz'), scharte: b(name + '_scharte') });
+  const reihe = name => ({ klotz: Array.from({length: 16}, () => b(name + '_klotz')), scharte: Array.from({length: 16}, () => b(name + '_scharte')) });
+  const zinne = { kacheln: 1, mauer: { hoehe: 98, zinne: true, laengs: reihe('l'), quer: reihe('q'),
+    rand: { laengs: paar('rl'), quer: paar('rq'), allein: paar('ra') } } };
+  const felder = new Set();
+  const mauerAn = (gx, gy) => felder.has(gx + ':' + gy) ? zinne.mauer : null;
+  const bild = (gx, gy) => geometry.variantFor(zinne, gx, gy, mauerAn).bild;
+  // x + y gerade: das Spiel malte hier die Scharte.
+  felder.add('10:89');
+  assert.equal(bild(10, 89), 'ra_klotz', 'allein auf einem Schartenfeld');
+  felder.clear(); felder.add('11:89');
+  assert.equal(bild(11, 89), 'ra_klotz', 'allein auf einem Klotzfeld');
+  felder.clear(); for (const gx of [10, 11, 12]) felder.add(gx + ':89');
+  assert.equal(bild(11, 89), 'l_klotz');
+  assert.equal(bild(10, 89), 'rl_scharte', 'Reihen behalten das Schachbrett');
+  assert.equal(bild(12, 89), 'ra_scharte', 'auch das hintere Ende einer Reihe');
+  felder.clear(); felder.add('10:89'); felder.add('10:90');
+  assert.equal(bild(10, 89), 'rq_scharte');
+  assert.equal(bild(10, 90), 'ra_klotz', 'x + y ungerade');
+});
+
 test('every drawn item carries the key the editor uses for its selection', () => {
   const dokument = { frames: [
     { itemType: 20, tilePositionOfsets: [2030, 2031] },
@@ -524,11 +547,23 @@ test('the ground is tiled at the same scale as the map, not stretched', () => {
 
 test('absolute sprite atlas URLs are loaded without the bundled sprite path', () => {
   const iso = fs.readFileSync(path.join(root, 'src', 'js', 'iso-view.js'), 'utf8');
-  const laden = iso.slice(iso.indexOf('function image('), iso.indexOf('function drawDiamond'));
-  // Eine data:-Adresse ist schon vollstaendig. Wer ihr den Sprite-Pfad
-  // voranstellt, baut eine Adresse ins Nichts - und es erscheint nichts.
-  assert.match(laden, /\^\(data:\|blob:\|https\?:\|file:\)/);
-  assert.match(laden, /\? filename : SPRITE_PATH \+ filename/);
+  const source = iso.slice(iso.indexOf('function image('), iso.indexOf('function currentDocument('));
+  class ImageStub {
+    set src(value) {
+      assert.equal(this.crossOrigin, 'anonymous', 'set CORS before loading to preserve canvas export');
+      this.url = value;
+    }
+  }
+  const load = new Function('state', 'Image', 'refresh', 'onImageFailed', 'SPRITE_PATH', source + ';return image;')(
+    { images: new Map() }, ImageStub, () => {}, () => {}, '/bundled/',
+  );
+  for (const url of ['data:image/png;base64,AA==', 'blob:atlas', 'http://asset.localhost/game.png',
+    'https://asset.localhost/game.png', 'file:///game.png', 'asset://localhost/game.png']) {
+    const image = load(url);
+    assert.equal(image.url, url);
+    assert.equal(load(url), image, 'cached images retain identity');
+  }
+  assert.equal(load('keep.png').url, '/bundled/keep.png');
 });
 
 // ------------------------------- eine Karte des Spiels unter der Ansicht
@@ -709,8 +744,8 @@ test('die Ansicht dreht die Burg und rechnet die Maus zurueck', () => {
   assert.match(iso, /geo\.marqueeOutline\(box, state\.view, currentRotation\(\)\)/);
   // Die Drehung steht in der Statuszeile, sonst sieht man nur, DASS etwas
   // anders liegt.
-  assert.match(iso, /turned '/);
-  assert.match(iso, /game value/);
+  assert.match(iso, /details:map_rotation/);
+  assert.match(require('../src/js/i18n').t('details:map_rotation',{turns:'1 quarter turn',value:2}), /turned 1 quarter turn \(game value 2\)/);
 });
 
 // ------------------------------------------- der Bergfried auf der Karte

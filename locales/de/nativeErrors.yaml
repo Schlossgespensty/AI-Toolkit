@@ -1,0 +1,62 @@
+an_ai_with_that_folder_id_already_exists: Eine KI mit dieser Ordner-ID existiert bereits.
+castle_already_exists: Diese Burgdatei existiert bereits.
+castle_file_does_not_exist_in_this_ai: Die Burgdatei wurde im Ordner dieser KI nicht gefunden.
+castle_mapping_must_contain_at_most_eight_slots: Einer KI k?nnen h?chstens acht Burgen zugewiesen werden.
+castle_slots_must_be_an_array: Die Liste der Burgzuweisungen hat ein ung?ltiges Format.
+choose_a_fork_of_the_official_ai_toolkit: W?hle einen Fork des offiziellen AI-Toolkit-Repositories.
+choose_the_stronghold_crusader_installation: W?hle den Installationsordner von Stronghold Crusader.
+close_other_editor_windows_before_updating: Schlie?e vor dem Update die anderen Editorfenster.
+download_the_release_first: Lade die neue Version zuerst herunter.
+editor_did_not_close_no_files_were_replaced: Der Editor wurde nicht geschlossen. Es wurden keine Dateien ersetzt.
+editor_window_not_found: Das Editorfenster wurde nicht gefunden.
+enter_an_ai_name: Gib einen Namen f?r die KI ein.
+expected_a_ucp_installation_containing_ucp_plugins: W?hle eine UCP-Spielinstallation mit dem Unterordner ucp/plugins.
+expected_an_aiv_castle_filename: Der Dateiname muss auf .aiv enden.
+expected_one_ai_toolkit_executable: Das Updatepaket muss genau eine ausf?hrbare AI-Toolkit-Datei enthalten.
+incomplete_download: Der Download ist unvollst?ndig.
+invalid_ai_folder_id: Die Ordner-ID der KI ist ung?ltig.
+invalid_archive_path: Das Archiv enth?lt einen ung?ltigen Dateipfad.
+invalid_destination: Das Speicherziel ist ung?ltig.
+invalid_executable_path: Der Pfad zur Programmdatei ist ung?ltig.
+invalid_filename: Der Dateiname ist ung?ltig.
+invalid_github_repository: Gib das GitHub-Repository als Eigent?mer/Repository an.
+invalid_github_response: GitHub hat eine unerwartete Antwort zur?ckgegeben.
+invalid_installation_root: Der Installationsordner ist ung?ltig.
+invalid_item_type: Der Elementtyp ist ung?ltig.
+invalid_manifest_path: Die Dateiliste des Updates enth?lt einen ung?ltigen Pfad.
+invalid_package_path: Das Updatepaket enth?lt einen ung?ltigen Pfad.
+invalid_png: Die Datei ist kein g?ltiges PNG-Bild.
+invalid_portrait_image: Das Portr?tbild ist ung?ltig.
+invalid_project_path: Der Projektpfad ist ung?ltig.
+invalid_release_url: Die Downloadadresse der Version ist ung?ltig.
+invalid_resource_directory: Der Ressourcenordner ist ung?ltig.
+invalid_settings_document: Die Einstellungsdatei hat ein ung?ltiges Format.
+invalid_staging_path: Der tempor?re Speicherpfad ist ung?ltig.
+media_exceeds_playback_limit: Die Mediendatei ist f?r die Wiedergabe im Editor zu gro?.
+media_not_mapped: Diese Mediendatei ist dem Projekt nicht zugeordnet.
+missing_argument: 'Ein erforderlicher Parameter fehlt: {{name}}'
+missing_dialog_choices: Die Auswahlm?glichkeiten des Dialogs fehlen.
+missing_install_manifest: Die Dateiliste f?r die Installation fehlt.
+missing_installation_path: Der Installationspfad fehlt.
+missing_release_size: Die Gr??enangabe f?r den Download fehlt.
+missing_release_url: Die Downloadadresse der Version fehlt.
+missing_resource: 'Eine Programmressource fehlt: {{path}}'
+no_eligible_snapshot_newer_than_the_official_release: In diesem Fork gibt es keinen geeigneten Snapshot, der neuer als die offizielle Version ist.
+operation_failed: Der Vorgang konnte nicht abgeschlossen werden.
+path_is_outside_the_selected_project: Der Pfad liegt au?erhalb des ausgew?hlten Projekts.
+release_checksum_mismatch: Die Pr?fsumme des Downloads stimmt nicht ?berein.
+release_does_not_contain_ai_toolkit_exe: Das Updatepaket enth?lt keine AI Toolkit.exe.
+release_exceeds_size_limits: Das Updatepaket ?berschreitet die zul?ssige Gr??e.
+selected_image_exceeds_128_mb: Das ausgew?hlte Bild ist gr??er als 128 MB.
+staged_update_changed: Die heruntergeladenen Updatedateien wurden nachtr?glich ver?ndert.
+the_ai_project_no_longer_exists: Das KI-Projekt existiert nicht mehr.
+the_media_file_type_does_not_match: Der Dateityp passt nicht zur ersetzten Mediendatei.
+the_selected_release_changed_check_again: Die ausgew?hlte Version hat sich ge?ndert. Pr?fe erneut auf Updates.
+this_ai_has_no_aiv_folder: Diese KI hat keinen aiv-Ordner.
+too_many_github_results: GitHub hat zu viele Ergebnisse geliefert.
+unexpected_download_size: Die Downloadgr??e weicht von der erwarteten Gr??e ab.
+unexpected_package_entry: 'Unerwarteter Eintrag im Updatepaket: {{path}}'
+unknown_configuration_file: Diese Konfigurationsdatei wird nicht erkannt.
+unknown_language: Diese Sprache wird nicht unterst?tzt.
+unknown_theme: Dieses Design wurde nicht gefunden.
+use_open_externally_for_bink_video: '?ffne Bink-Videos ?ber ?Extern ?ffnen?.'

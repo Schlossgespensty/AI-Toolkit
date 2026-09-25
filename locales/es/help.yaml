@@ -1,0 +1,775 @@
+StrengthMultiplier: |-
+  Multiplica los puntos de vida del señor.
+  Rata = 0.5
+  Normal = 1
+  Lobo = 1.5
+DotColour: >-
+  Color de los puntos que indican la fuerza del señor. En el juego original, amarillo indica debilidad y azul
+  indica fuerza.
+DotCount: Número de puntos que indican la fuerza del señor; un punto por cada 0.1 del multiplicador.
+Type: Tipo de señor que aparece en la torre del homenaje.
+ArabArcher: Número de arqueros árabes que aparecen junto a la torre del homenaje al comenzar la partida.
+Slave: Número de esclavos que aparecen junto a la torre del homenaje al comenzar la partida.
+Slinger: Número de honderos que aparecen junto a la torre del homenaje al comenzar la partida.
+Assassin: Número de asesinos que aparecen junto a la torre del homenaje al comenzar la partida.
+HorseArcher: Número de arqueros a caballo que aparecen junto a la torre del homenaje al comenzar la partida.
+ArabSwordsman: Número de espadachines árabes que aparecen junto a la torre del homenaje al comenzar la partida.
+FireThrower: Número de lanzafuegos que aparecen junto a la torre del homenaje al comenzar la partida.
+EuropArcher: Número de arqueros europeos que aparecen junto a la torre del homenaje al comenzar la partida.
+Spearman: Número de lanceros que aparecen junto a la torre del homenaje al comenzar la partida.
+Maceman: Número de soldados con maza que aparecen junto a la torre del homenaje al comenzar la partida.
+Crossbowman: Número de ballesteros que aparecen junto a la torre del homenaje al comenzar la partida.
+Pikeman: Número de piqueros que aparecen junto a la torre del homenaje al comenzar la partida.
+Swordsman: Número de espadachines que aparecen junto a la torre del homenaje al comenzar la partida.
+Knight: Número de caballeros que aparecen junto a la torre del homenaje al comenzar la partida.
+Monk: Número de monjes que aparecen junto a la torre del homenaje al comenzar la partida.
+WallDecoration: |-
+  Decoración que usa el señor al colocar una bandera en el editor AIV.
+
+  8 = aceite ardiendo al verterse
+  9 = llamas
+  10 = bandera pequeña
+  11 = bandera grande
+  12 = bandera mediana
+  13 = bandera cruzada
+  14 = braseros
+  15 = calaveras decorativas
+  21 = nubes de vapor
+  22 = nubes de enfermedad
+  26 = explosiones de fuego
+  28 = cuervos descendiendo
+  29 = piedras medianas cayendo al agua
+  30 = piedras pequeñas impactando en estructuras
+  31 = piedras pequeñas cayendo al agua
+  40 = indicador ascendente de cero de oro
+  41 = indicador ascendente de cero de popularidad
+  42 = indicador ascendente vacío
+  43 = indicador ascendente vacío
+Unknown001: Valor sin uso.
+Unknown002: Valor sin uso.
+Unknown003: Valor sin uso.
+Unknown004: Valor sin uso.
+Unknown005: Valor sin uso.
+CriticalPopularity: >-
+  Por debajo de esta popularidad, la IA vende recursos de forma agresiva para obtener oro. 10000 equivale a
+  100 de popularidad; 5000 equivale a 50.
+LowestPopularity: >-
+  Por debajo de esta popularidad, la IA baja los impuestos a TaxesMin y ofrece raciones adicionales hasta
+  alcanzar HighestPopularity. 10000 equivale a 100 de popularidad; 5000 equivale a 50.
+HighestPopularity: >-
+  Por encima de esta popularidad, la IA sube los impuestos hasta estabilizar el modificador de popularidad,
+  permitiendo hasta −3. 10000 equivale a 100 de popularidad; 5000 equivale a 50.
+TaxesMin: Nivel mínimo de impuestos permitido. 0 ofrece los mayores sobornos; 11 aplica los impuestos más altos.
+TaxesMax: Nivel máximo de impuestos permitido. 0 ofrece los mayores sobornos; 11 aplica los impuestos más altos.
+Unknown011: Valor sin uso.
+Farm1: >-
+  Granja 1 de la secuencia de construcción. Al destruirse una granja, se construye la siguiente de la lista,
+  no necesariamente otra del mismo tipo.
+Farm2: >-
+  Granja 2 de la secuencia de construcción. Al destruirse una granja, se construye la siguiente de la lista,
+  no necesariamente otra del mismo tipo.
+Farm3: >-
+  Granja 3 de la secuencia de construcción. Al destruirse una granja, se construye la siguiente de la lista,
+  no necesariamente otra del mismo tipo.
+Farm4: >-
+  Granja 4 de la secuencia de construcción. Al destruirse una granja, se construye la siguiente de la lista,
+  no necesariamente otra del mismo tipo.
+Farm5: >-
+  Granja 5 de la secuencia de construcción. Al destruirse una granja, se construye la siguiente de la lista,
+  no necesariamente otra del mismo tipo.
+Farm6: >-
+  Granja 6 de la secuencia de construcción. Al destruirse una granja, se construye la siguiente de la lista,
+  no necesariamente otra del mismo tipo.
+Farm7: >-
+  Granja 7 de la secuencia de construcción. Al destruirse una granja, se construye la siguiente de la lista,
+  no necesariamente otra del mismo tipo.
+Farm8: >-
+  Granja 8 de la secuencia de construcción. Al destruirse una granja, se construye la siguiente de la lista,
+  no necesariamente otra del mismo tipo. Después de Farm8, la secuencia vuelve al principio.
+PopulationPerFarm: >-
+  La IA construye una granja por esta cantidad de capacidad de población. La primera se construye incluso con
+  una capacidad de 0. Las granjas de lúpulo no cuentan para este límite; se construyen cuando les toca en la
+  secuencia de granjas.
+PopulationPerWoodcutter: >-
+  La IA construye una cabaña de leñador por esta cantidad de capacidad de población. Al alcanzar el primer
+  umbral, construye dos.
+PopulationPerQuarry: >-
+  La IA construye una cantera por esta cantidad de capacidad de población. Al alcanzar el primer umbral,
+  construye dos.
+PopulationPerIronmine: >-
+  La IA construye una mina de hierro por esta cantidad de capacidad de población. Al alcanzar el primer
+  umbral, construye dos.
+PopulationPerPitchrig: La IA construye un pozo de brea por esta cantidad de capacidad de población.
+MaxQuarries: Número máximo de canteras que construye la IA.
+MaxIronmines: Número máximo de minas de hierro que construye la IA.
+MaxWoodcutters: Número máximo de cabañas de leñador que construye la IA.
+MaxPitchrigs: Número máximo de pozos de brea que construye la IA.
+MaxFarms: Número máximo de granjas que construye la IA. Las granjas de lúpulo no cuentan para este límite.
+BuildInterval: >-
+  Intervalo entre construcciones de la IA, tanto dentro como fuera del AIV, incluidas las reparaciones. 1 es
+  la velocidad máxima.
+ResourceRebuildDelay: Tiempo de espera antes de intentar reconstruir un edificio de recursos que no está definido en el AIV.
+MaxFood: >-
+  Cantidad máxima de cada alimento (manzanas, queso, carne, pan y trigo), más MaxResourceVariance. El límite
+  se aplica a cada recurso por separado, no a su suma.
+MinimumApples: >-
+  Si hay menos manzanas que esta cantidad, la IA compra lotes de TradeAmountFood hasta alcanzar el umbral. 0
+  significa que nunca compra manzanas.
+MinimumCheese: >-
+  Si hay menos queso que esta cantidad, la IA compra lotes de TradeAmountFood hasta alcanzar el umbral. 0
+  significa que nunca compra queso.
+MinimumBread: >-
+  Si hay menos pan que esta cantidad, la IA compra lotes de TradeAmountFood hasta alcanzar el umbral. 0
+  significa que nunca compra pan. Con una economía de pan, puede convenir dejarlo en 0 y comprar trigo.
+MinimumWheat: >-
+  Si hay menos trigo que esta cantidad, la IA compra lotes de TradeAmountFood hasta alcanzar el umbral. 0
+  significa que nunca compra trigo.
+MinimumHop: >-
+  Si hay menos lúpulo que esta cantidad, la IA compra lotes de TradeAmountFood hasta alcanzar el umbral. 0
+  significa que nunca compra lúpulo.
+TradeAmountFood: >-
+  Cantidad de alimento comprada en cada operación; solo se compra un tipo a la vez. Un valor bajo permite
+  compras más baratas y fiables, pero requiere más operaciones, repone las existencias más despacio y puede
+  causar breves carencias.
+TradeAmountEquipment: >-
+  Cantidad de equipo comprada en cada operación; solo se compra un tipo a la vez. Un valor bajo permite
+  compras más baratas y fiables, pero requiere más operaciones, repone las existencias más despacio y puede
+  causar breves carencias.
+AIRequestDelay: >-
+  Intervalo entre las peticiones de recursos de la IA al jugador. Un valor menor hace que las peticiones sean
+  más frecuentes.
+MinimumGoodsRequiredAfterTrade: >-
+  Cantidad que debe quedarle a la IA después de un intercambio para que acepte la petición. De lo contrario,
+  la rechaza.
+DoubleRationsFoodThreshold: La IA ofrece raciones dobles cuando la suma de manzanas, queso, carne y pan supera este umbral.
+MaxWood: Cantidad máxima de madera, más MaxResourceVariance.
+MaxStone: Cantidad máxima de piedra, más MaxResourceVariance.
+MaxResourceOther: >-
+  Cantidad máxima de hierro, brea, lúpulo y harina, más MaxResourceVariance. Se aplica a cada recurso por
+  separado, no a su suma.
+MaxEquipment: >-
+  Cantidad máxima de cada arma o armadura, más MaxResourceVariance. Se aplica a cada tipo por separado, no a
+  su suma.
+MaxBeer: Cantidad máxima de cerveza, más MaxResourceVariance.
+MaxResourceVariance: Desviación permitida sobre cualquiera de los límites máximos de recursos.
+RecruitGoldThreshold: Cantidad mínima de oro necesaria antes de reclutar unidades.
+BlacksmithSetting: 'Producción de la herrería. «Ambos» alterna entre espadas y mazas: espada, maza, espada…'
+FletcherSetting: 'Producción del fabricante de arcos. «Ambos» alterna entre arcos y ballestas: arco, ballesta, arco…'
+PoleturnerSetting: 'Producción del taller de lanzas. «Ambos» alterna entre lanzas y picas: lanza, pica, lanza…'
+SellResource01: Este recurso se vende inmediatamente en cuanto se obtiene.
+SellResource02: Este recurso se vende inmediatamente en cuanto se obtiene.
+SellResource03: Este recurso se vende inmediatamente en cuanto se obtiene.
+SellResource04: Este recurso se vende inmediatamente en cuanto se obtiene.
+SellResource05: Este recurso se vende inmediatamente en cuanto se obtiene.
+SellResource06: Este recurso se vende inmediatamente en cuanto se obtiene.
+SellResource07: Este recurso se vende inmediatamente en cuanto se obtiene.
+SellResource08: Este recurso se vende inmediatamente en cuanto se obtiene.
+SellResource09: Este recurso se vende inmediatamente en cuanto se obtiene.
+SellResource10: Este recurso se vende inmediatamente en cuanto se obtiene.
+SellResource11: Este recurso se vende inmediatamente en cuanto se obtiene.
+SellResource12: Este recurso se vende inmediatamente en cuanto se obtiene.
+SellResource13: Este recurso se vende inmediatamente en cuanto se obtiene.
+SellResource14: Este recurso se vende inmediatamente en cuanto se obtiene.
+SellResource15: Este recurso se vende inmediatamente en cuanto se obtiene.
+DefWallPatrolRallyTime: >-
+  Tiempo de espera antes de que las unidades de muralla caminen al siguiente puesto del AIV. No todos los
+  tipos de unidad pueden patrullar murallas.
+DefWallPatrolGroups: Número de grupos de muralla que patrullan los puestos del AIV.
+DefSiegeEngineGoldThreshold: Cantidad de oro necesaria antes de construir las máquinas de asedio definidas en el AIV.
+DefSiegeEngineBuildDelay: >-
+  Tiempo de espera antes de reconstruir una máquina de asedio del AIV destruida. Un valor menor la repone
+  antes.
+Unknown072: Valor sin uso.
+Unknown073: Valor sin uso.
+RecruitProbDefDefault: >-
+  Probabilidad de reclutar unidades de defensa en el estado normal.
+
+
+  Débil casi nunca se activa, normalmente solo al borde de la derrota. Normal suele usarse durante los
+  primeros años. Fuerte es el estado más habitual; se alcanza con frecuencia cuando la población y el número
+  de unidades superan 40.
+RecruitProbDefWeak: >-
+  Probabilidad de reclutar unidades de defensa en el estado débil.
+
+
+  Débil casi nunca se activa, normalmente solo al borde de la derrota. Normal suele usarse durante los
+  primeros años. Fuerte es el estado más habitual; se alcanza con frecuencia cuando la población y el número
+  de unidades superan 40.
+RecruitProbDefStrong: >-
+  Probabilidad de reclutar unidades de defensa en el estado fuerte.
+
+
+  Débil casi nunca se activa, normalmente solo al borde de la derrota. Normal suele usarse durante los
+  primeros años. Fuerte es el estado más habitual; se alcanza con frecuencia cuando la población y el número
+  de unidades superan 40.
+RecruitProbRaidDefault: >-
+  Probabilidad de reclutar unidades de incursión en el estado normal.
+
+
+  Débil casi nunca se activa, normalmente solo al borde de la derrota. Normal suele usarse durante los
+  primeros años. Fuerte es el estado más habitual; se alcanza con frecuencia cuando la población y el número
+  de unidades superan 40.
+RecruitProbRaidWeak: >-
+  Probabilidad de reclutar unidades de incursión en el estado débil.
+
+
+  Débil casi nunca se activa, normalmente solo al borde de la derrota. Normal suele usarse durante los
+  primeros años. Fuerte es el estado más habitual; se alcanza con frecuencia cuando la población y el número
+  de unidades superan 40.
+RecruitProbRaidStrong: >-
+  Probabilidad de reclutar unidades de incursión en el estado fuerte.
+
+
+  Débil casi nunca se activa, normalmente solo al borde de la derrota. Normal suele usarse durante los
+  primeros años. Fuerte es el estado más habitual; se alcanza con frecuencia cuando la población y el número
+  de unidades superan 40.
+RecruitProbAttackDefault: >-
+  Probabilidad de reclutar unidades de ataque en el estado normal.
+
+
+  Débil casi nunca se activa, normalmente solo al borde de la derrota. Normal suele usarse durante los
+  primeros años. Fuerte es el estado más habitual; se alcanza con frecuencia cuando la población y el número
+  de unidades superan 40.
+RecruitProbAttackWeak: >-
+  Probabilidad de reclutar unidades de ataque en el estado débil.
+
+
+  Débil casi nunca se activa, normalmente solo al borde de la derrota. Normal suele usarse durante los
+  primeros años. Fuerte es el estado más habitual; se alcanza con frecuencia cuando la población y el número
+  de unidades superan 40.
+RecruitProbAttackStrong: >-
+  Probabilidad de reclutar unidades de ataque en el estado fuerte.
+
+
+  Débil casi nunca se activa, normalmente solo al borde de la derrota. Normal suele usarse durante los
+  primeros años. Fuerte es el estado más habitual; se alcanza con frecuencia cuando la población y el número
+  de unidades superan 40.
+SortieUnitRangedMin: >-
+  Número mínimo de unidades de salida a distancia.
+
+
+  Débil casi nunca se activa, normalmente solo al borde de la derrota. Normal suele usarse durante los
+  primeros años. Fuerte es el estado más habitual; se alcanza con frecuencia cuando la población y el número
+  de unidades superan 40.
+SortieUnitRanged: >-
+  Tipo de unidad de salida a distancia. Se reúne fuera del castillo, donde murieron trabajadores. Su número
+  aumenta cuando mueren unidades y más tarde suele superar el mínimo en unas 25. Se reclutan incluso con un
+  mínimo de 0; para desactivarlas, elige un tipo que no pueda reclutarse. Las salidas tienen prioridad sobre
+  cualquier otro reclutamiento.
+SortieUnitMeleeMin: Número exacto de unidades de salida cuerpo a cuerpo.
+SortieUnitMelee: >-
+  Tipo de unidad de salida cuerpo a cuerpo. Intercepta tropas que destruyen edificios y regresa a lo alto de
+  la torre del homenaje cuando muere su objetivo. Las salidas tienen prioridad sobre cualquier otro
+  reclutamiento.
+DefDiggingUnitMax: >-
+  Número máximo de excavadores. Mientras haya un foso propio o aliado pendiente de excavar, se reclutan antes
+  que las unidades de defensa, incursión y ataque.
+DefDiggingUnit: Tipo de unidad que excava los fosos defensivos propios y aliados.
+RecruitInterval: >-
+  Tiempo de espera entre reclutamientos en el estado normal. 1 es la velocidad máxima.
+
+
+  Débil casi nunca se activa, normalmente solo al borde de la derrota. Normal suele usarse durante los
+  primeros años. Fuerte es el estado más habitual; se alcanza con frecuencia cuando la población y el número
+  de unidades superan 40.
+RecruitIntervalWeak: >-
+  Tiempo de espera entre reclutamientos en el estado débil. 1 es la velocidad máxima.
+
+
+  Débil casi nunca se activa, normalmente solo al borde de la derrota. Normal suele usarse durante los
+  primeros años. Fuerte es el estado más habitual; se alcanza con frecuencia cuando la población y el número
+  de unidades superan 40.
+RecruitIntervalStrong: >-
+  Tiempo de espera entre reclutamientos en el estado fuerte. 1 es la velocidad máxima.
+
+
+  Débil casi nunca se activa, normalmente solo al borde de la derrota. Normal suele usarse durante los
+  primeros años. Fuerte es el estado más habitual; se alcanza con frecuencia cuando la población y el número
+  de unidades superan 40.
+DefTotal: Número total de unidades defensivas.
+OuterPatrolGroupsCount: Número de grupos defensivos que patrullan la zona económica.
+OuterPatrolGroupsMove: >-
+  Indica si los defensores que no están en las murallas patrullan la zona económica o permanecen quietos,
+  normalmente cerca de las canteras.
+OuterPatrolRallyDelay: Tiempo de espera de los defensores exteriores antes de ir al siguiente punto de patrulla.
+DefWalls: >-
+  Número de unidades de DefTotal asignadas a los puestos de muralla del AIV. Las restantes patrullan la zona
+  económica.
+DefUnit1: >-
+  Puesto 1 de la secuencia de reclutamiento de defensa. Si no puede pagar una unidad, la IA intenta reclutar
+  la siguiente de la lista.
+DefUnit2: >-
+  Puesto 2 de la secuencia de reclutamiento de defensa. Si no puede pagar una unidad, la IA intenta reclutar
+  la siguiente de la lista.
+DefUnit3: >-
+  Puesto 3 de la secuencia de reclutamiento de defensa. Si no puede pagar una unidad, la IA intenta reclutar
+  la siguiente de la lista.
+DefUnit4: >-
+  Puesto 4 de la secuencia de reclutamiento de defensa. Si no puede pagar una unidad, la IA intenta reclutar
+  la siguiente de la lista.
+DefUnit5: >-
+  Puesto 5 de la secuencia de reclutamiento de defensa. Si no puede pagar una unidad, la IA intenta reclutar
+  la siguiente de la lista.
+DefUnit6: >-
+  Puesto 6 de la secuencia de reclutamiento de defensa. Si no puede pagar una unidad, la IA intenta reclutar
+  la siguiente de la lista.
+DefUnit7: >-
+  Puesto 7 de la secuencia de reclutamiento de defensa. Si no puede pagar una unidad, la IA intenta reclutar
+  la siguiente de la lista.
+DefUnit8: >-
+  Puesto 8 de la secuencia de reclutamiento de defensa. Si no puede pagar una unidad, la IA intenta reclutar
+  la siguiente de la lista. Después de DefUnit8, vuelve al principio.
+RaidUnitsBase: Número de unidades que realizan incursiones contra edificios enemigos.
+RaidUnitsRandom: Unidades adicionales sobre RaidUnitsBase cuando la IA se considera fuerte y rica.
+RaidUnit1: >-
+  Puesto 1 de la secuencia de reclutamiento de incursión. Si no puede pagar una unidad, la IA intenta reclutar
+  la siguiente de la lista.
+RaidUnit2: >-
+  Puesto 2 de la secuencia de reclutamiento de incursión. Si no puede pagar una unidad, la IA intenta reclutar
+  la siguiente de la lista.
+RaidUnit3: >-
+  Puesto 3 de la secuencia de reclutamiento de incursión. Si no puede pagar una unidad, la IA intenta reclutar
+  la siguiente de la lista.
+RaidUnit4: >-
+  Puesto 4 de la secuencia de reclutamiento de incursión. Si no puede pagar una unidad, la IA intenta reclutar
+  la siguiente de la lista.
+RaidUnit5: >-
+  Puesto 5 de la secuencia de reclutamiento de incursión. Si no puede pagar una unidad, la IA intenta reclutar
+  la siguiente de la lista.
+RaidUnit6: >-
+  Puesto 6 de la secuencia de reclutamiento de incursión. Si no puede pagar una unidad, la IA intenta reclutar
+  la siguiente de la lista.
+RaidUnit7: >-
+  Puesto 7 de la secuencia de reclutamiento de incursión. Si no puede pagar una unidad, la IA intenta reclutar
+  la siguiente de la lista.
+RaidUnit8: >-
+  Puesto 8 de la secuencia de reclutamiento de incursión. Si no puede pagar una unidad, la IA intenta reclutar
+  la siguiente de la lista. Después de RaidUnit8, vuelve al principio.
+HarassingSiegeEngine1: >-
+  Máquina de hostigamiento 1 de la secuencia de reclutamiento. Viaja desde el gremio de ingenieros al castillo
+  enemigo y dispara a edificios por el camino. Las balistas de fuego también atacan unidades.
+HarassingSiegeEngine2: >-
+  Máquina de hostigamiento 2 de la secuencia de reclutamiento. Viaja desde el gremio de ingenieros al castillo
+  enemigo y dispara a edificios por el camino. Las balistas de fuego también atacan unidades.
+HarassingSiegeEngine3: >-
+  Máquina de hostigamiento 3 de la secuencia de reclutamiento. Viaja desde el gremio de ingenieros al castillo
+  enemigo y dispara a edificios por el camino. Las balistas de fuego también atacan unidades.
+HarassingSiegeEngine4: >-
+  Máquina de hostigamiento 4 de la secuencia de reclutamiento. Viaja desde el gremio de ingenieros al castillo
+  enemigo y dispara a edificios por el camino. Las balistas de fuego también atacan unidades.
+HarassingSiegeEngine5: >-
+  Máquina de hostigamiento 5 de la secuencia de reclutamiento. Viaja desde el gremio de ingenieros al castillo
+  enemigo y dispara a edificios por el camino. Las balistas de fuego también atacan unidades.
+HarassingSiegeEngine6: >-
+  Máquina de hostigamiento 6 de la secuencia de reclutamiento. Viaja desde el gremio de ingenieros al castillo
+  enemigo y dispara a edificios por el camino. Las balistas de fuego también atacan unidades.
+HarassingSiegeEngine7: >-
+  Máquina de hostigamiento 7 de la secuencia de reclutamiento. Viaja desde el gremio de ingenieros al castillo
+  enemigo y dispara a edificios por el camino. Las balistas de fuego también atacan unidades.
+HarassingSiegeEngine8: >-
+  Máquina de hostigamiento 8 de la secuencia de reclutamiento. Viaja desde el gremio de ingenieros al castillo
+  enemigo y dispara a edificios por el camino. Las balistas de fuego también atacan unidades. Después del
+  puesto 8, la secuencia vuelve al principio.
+HarassingSiegeEnginesMax: Número máximo de máquinas de hostigamiento presentes a la vez en el campo.
+RaidRetargetDelay: Tiempo de espera antes de elegir otro edificio como objetivo de la incursión.
+AttForceBase: >-
+  Número de unidades necesario para iniciar un ataque. Aumenta después de cada ataque según la opción de UCP;
+  en el juego original aumenta en 5.
+AttForceRandom: Unidades adicionales sobre AttForceBase cuando la IA se considera fuerte y rica.
+AttForceSupportAllyThreshold: Número de tropas de ataque necesario para obedecer las órdenes «Atacar» o «Ayudar» del jugador.
+AttForceRallyPercentage: Porcentaje del ejército que debe llegar al punto de reunión antes de comenzar el ataque.
+Unknown129: >-
+  Tiene muy poco efecto: porcentaje que debe llegar al punto de reunión antes de retirar un ataque débil y
+  porcentaje de tropas en retirada que debe llegar a la torre del homenaje antes de reclutar el siguiente
+  ataque.
+AttAssaultDelay: >-
+  Tiempo que esperan las unidades de ataque y las máquinas de asedio en el punto de reunión antes de avanzar
+  al asalto.
+AttUnitPatrolRecommandDelay: >-
+  Tiempo de espera antes de retirarse tras ganar un ataque. Normalmente es 0, pues no hace falta permanecer
+  junto a la tumba del enemigo.
+Unknown132: >-
+  Probabilidad porcentual de esperar el ataque de un aliado. Más adelante, la IA puede atacar sin haber
+  completado el reclutamiento para unirse a un ataque aliado.
+SiegeEngine1: Máquina de asedio 1 reclutada para el ataque.
+SiegeEngine2: Máquina de asedio 2 reclutada para el ataque.
+SiegeEngine3: Máquina de asedio 3 reclutada para el ataque.
+SiegeEngine4: Máquina de asedio 4 reclutada para el ataque.
+SiegeEngine5: Máquina de asedio 5 reclutada para el ataque.
+SiegeEngine6: Máquina de asedio 6 reclutada para el ataque.
+SiegeEngine7: Máquina de asedio 7 reclutada para el ataque.
+SiegeEngine8: Máquina de asedio 8 reclutada para el ataque. Se reclutan como máximo ocho máquinas.
+CowThrowInterval: Número de piedras que lanza una catapulta antes de lanzar una vaca en su lugar.
+Unknown142: Valor sin uso.
+AttMaxEngineers: >-
+  Número máximo de ingenieros que maneja las máquinas de los puestos SiegeEngine. Debe ser al menos la suma de
+  los ingenieros necesarios para operar todas esas máquinas.
+AttDiggingUnit: Tipo de unidad que rellena el foso enemigo durante un ataque.
+AttDiggingUnitMax: Número máximo de excavadores reclutados por ataque.
+AttUnitVanguard: Tipo de unidad que corre a atacar el castillo enemigo antes que las demás.
+AttUnitVanguardMax: Número máximo de unidades de vanguardia reclutadas por ataque.
+AttMaxAssassins: Número máximo de asesinos que intentan escalar las puertas enemigas durante un asedio.
+AttMaxLaddermen: Número máximo de escaleros que intentan apoyar sus escaleras en una muralla durante un asedio.
+AttMaxTunnelers: Número máximo de zapadores que intentan excavar hacia la torre del homenaje enemiga.
+AttUnitPatrol: Unidades que patrullan alrededor del castillo enemigo y disparan a sus tropas.
+AttUnitPatrolMax: Número máximo de unidades de patrulla reclutadas por ataque.
+AttUnitPatrolGroupsCount: Número de grupos en que se dividen las patrullas al comenzar un ataque.
+AttUnitBackup: >-
+  Unidades que esperan en el punto de reunión y solo atacan cuando hay un camino a la torre del homenaje
+  enemiga. Se retiran si mueren todos los demás atacantes.
+AttUnitBackupMax: Número máximo de unidades de reserva reclutadas por ataque.
+AttUnitBackupGroupsCount: Número de grupos en que se divide la reserva al atacar la torre del homenaje enemiga.
+AttUnitEngage: Unidades que intentan atacar soldados y campesinos enemigos en lugar de murallas.
+AttUnitEngageMax: Número máximo de unidades de enfrentamiento reclutadas por ataque.
+AttUnitSiegeDef: >-
+  Las escoltas de asedio permanecen junto a las máquinas durante un ataque. Pueden proteger tanto máquinas de
+  ataque como de hostigamiento y defensa.
+AttUnitSiegeDefMax: Número máximo de escoltas de asedio reclutadas por ataque.
+AttUnitSiegeDefGroupsCount: Número de grupos en que se dividen las escoltas de asedio durante un ataque.
+AttUnitMain1: >-
+  Puesto 1 de la secuencia de reclutamiento del ejército principal. Solo estas unidades aumentan sin límite.
+  Si no puede pagar una unidad, la IA intenta reclutar la siguiente.
+AttUnitMain2: >-
+  Puesto 2 de la secuencia de reclutamiento del ejército principal. Solo estas unidades aumentan sin límite.
+  Si no puede pagar una unidad, la IA intenta reclutar la siguiente.
+AttUnitMain3: >-
+  Puesto 3 de la secuencia de reclutamiento del ejército principal. Solo estas unidades aumentan sin límite.
+  Si no puede pagar una unidad, la IA intenta reclutar la siguiente.
+AttUnitMain4: >-
+  Puesto 4 de la secuencia de reclutamiento del ejército principal. Solo estas unidades aumentan sin límite.
+  Si no puede pagar una unidad, la IA intenta reclutar la siguiente. Después de AttUnitMain4, vuelve al
+  principio.
+AttMaxDefault: >-
+  Número de unidades del ejército principal que la IA puede reclutar antes de tener que completar todos los
+  puestos especializados (AttLaddermen, AttAssassins, AttUnitPatrol, etc.). Con 0, debe completar todos los
+  puestos especializados antes de reclutar cualquier AttUnitMain.
+AttMainGroupsCount: Número de grupos en que se dividen las unidades AttUnitMain durante un ataque.
+TargetChoice: >-
+  Cómo elige la IA a quién atacar.
+
+
+  Oro: al enemigo con más oro.
+
+
+  Equilibrado: según una puntuación calculada de debilidad; es la opción más compleja y matizada.
+
+
+  Más cercano: al enemigo cuya torre del homenaje esté más cerca.
+
+
+  Cualquiera: al siguiente enemigo de la lista interna de jugadores. Puede parecer aleatorio, pero sigue un
+  orden fijo.
+
+
+  Jugador: da prioridad a los jugadores humanos. Si no hay enemigos humanos, usa «Más cercano».
+AIOxTethers_DisableInitialOxTether: >-
+  False conserva el comportamiento original; True impide construir un amarre de bueyes cada vez que se
+  construye o reconstruye una cantera.
+AIOxTethers_Logic: 'Lógica aplicada: False conserva la original; True usa la dinámica.'
+AIOxTethers_MaxOxTethers: El número total de amarres de bueyes de esta IA nunca superará este valor.
+AIOxTethers_DynamicMaxOxTethers: El número total de amarres de bueyes nunca superará este valor multiplicado por el número de canteras.
+AIOxTethers_MinimumOxTethersPerQuarry: >-
+  Si hay menos amarres vinculados transportando piedra de esta cantera que este valor, se construye otro para
+  ella.
+AIOxTethers_MaximumOxTethersPerQuarry: Si el número de amarres vinculados a una cantera supera este valor, no se construye otro para ella.
+AIOxTethers_ThresholdStoneLoad: >-
+  Si la cantidad de piedra dividida entre los amarres vinculados a una cantera supera este valor, se construye
+  otro amarre para ella.
+RunningUnits_Macemen: >-
+  Si se activa, los soldados con maza siempre corren, incluso en grupos con unidades más lentas. Si se
+  desactiva, igualan la velocidad de la unidad más lenta del grupo, como en el juego original.
+RunningUnits_Spearmen: >-
+  Si se activa, los lanceros siempre corren, incluso en grupos con unidades más lentas. Si se desactiva,
+  igualan la velocidad de la unidad más lenta del grupo, como en el juego original.
+RunningUnits_Slingers: >-
+  Si se activa, los honderos siempre corren, incluso en grupos con unidades más lentas. Si se desactiva,
+  igualan la velocidad de la unidad más lenta del grupo, como en el juego original.
+RunningUnits_Slaves: >-
+  Si se activa, los esclavos siempre corren, incluso en grupos con unidades más lentas. Si se desactiva,
+  igualan la velocidad de la unidad más lenta del grupo, como en el juego original.
+AIVTroops_InitialRole: >-
+  Asignación inicial de las tropas de inicio o escenario sin tarea. Excavar requiere que puedan excavar y que
+  existan casillas de foso; si no, se asignan a defensa.
+
+
+  Valor común para todas las tropas compatibles. Vanilla omite este campo al guardar el personaje y usa el
+  siguiente valor común o de menú aplicable. Requiere aiv-troops-behaviour con «Ajustes de tropas» y «Usar
+  ajustes del AIC» activados. Reinicia UCP e inicia una partida nueva tras cambiarlo.
+AIVTroops_Movement: >-
+  Movimiento defensivo entre los puestos del AIV. La patrulla usa DefWallPatrolGroups y
+  DefWallPatrolRallyTime; con cero grupos, las tropas permanecen quietas.
+
+
+  Valor común para todas las tropas compatibles. Vanilla omite este campo al guardar el personaje y usa el
+  siguiente valor común o de menú aplicable. Requiere aiv-troops-behaviour con «Ajustes de tropas» y «Usar
+  ajustes del AIC» activados. Reinicia UCP e inicia una partida nueva tras cambiarlo.
+AIVTroops_InitialRole_Engineer: >-
+  Asignación inicial de las tropas de inicio o escenario sin tarea. Excavar requiere que puedan excavar y que
+  existan casillas de foso; si no, se asignan a defensa.
+
+
+  El ajuste específico de esta tropa tiene prioridad sobre el campo común del AIC. Vanilla omite este campo al
+  guardar el personaje y usa el siguiente valor común o de menú aplicable. Requiere aiv-troops-behaviour con
+  «Ajustes de tropas» y «Usar ajustes del AIC» activados. Reinicia UCP e inicia una partida nueva tras
+  cambiarlo.
+AIVTroops_Movement_Engineer: >-
+  Movimiento defensivo entre los puestos del AIV. La patrulla usa DefWallPatrolGroups y
+  DefWallPatrolRallyTime; con cero grupos, las tropas permanecen quietas.
+
+
+  El ajuste específico de esta tropa tiene prioridad sobre el campo común del AIC. Vanilla omite este campo al
+  guardar el personaje y usa el siguiente valor común o de menú aplicable. Requiere aiv-troops-behaviour con
+  «Ajustes de tropas» y «Usar ajustes del AIC» activados. Reinicia UCP e inicia una partida nueva tras
+  cambiarlo.
+AIVTroops_InitialRole_Archer: >-
+  Asignación inicial de las tropas de inicio o escenario sin tarea. Excavar requiere que puedan excavar y que
+  existan casillas de foso; si no, se asignan a defensa.
+
+
+  El ajuste específico de esta tropa tiene prioridad sobre el campo común del AIC. Vanilla omite este campo al
+  guardar el personaje y usa el siguiente valor común o de menú aplicable. Requiere aiv-troops-behaviour con
+  «Ajustes de tropas» y «Usar ajustes del AIC» activados. Reinicia UCP e inicia una partida nueva tras
+  cambiarlo.
+AIVTroops_Movement_Archer: >-
+  Movimiento defensivo entre los puestos del AIV. La patrulla usa DefWallPatrolGroups y
+  DefWallPatrolRallyTime; con cero grupos, las tropas permanecen quietas.
+
+
+  El ajuste específico de esta tropa tiene prioridad sobre el campo común del AIC. Vanilla omite este campo al
+  guardar el personaje y usa el siguiente valor común o de menú aplicable. Requiere aiv-troops-behaviour con
+  «Ajustes de tropas» y «Usar ajustes del AIC» activados. Reinicia UCP e inicia una partida nueva tras
+  cambiarlo.
+AIVTroops_InitialRole_Crossbowman: >-
+  Asignación inicial de las tropas de inicio o escenario sin tarea. Excavar requiere que puedan excavar y que
+  existan casillas de foso; si no, se asignan a defensa.
+
+
+  El ajuste específico de esta tropa tiene prioridad sobre el campo común del AIC. Vanilla omite este campo al
+  guardar el personaje y usa el siguiente valor común o de menú aplicable. Requiere aiv-troops-behaviour con
+  «Ajustes de tropas» y «Usar ajustes del AIC» activados. Reinicia UCP e inicia una partida nueva tras
+  cambiarlo.
+AIVTroops_Movement_Crossbowman: >-
+  Movimiento defensivo entre los puestos del AIV. La patrulla usa DefWallPatrolGroups y
+  DefWallPatrolRallyTime; con cero grupos, las tropas permanecen quietas.
+
+
+  El ajuste específico de esta tropa tiene prioridad sobre el campo común del AIC. Vanilla omite este campo al
+  guardar el personaje y usa el siguiente valor común o de menú aplicable. Requiere aiv-troops-behaviour con
+  «Ajustes de tropas» y «Usar ajustes del AIC» activados. Reinicia UCP e inicia una partida nueva tras
+  cambiarlo.
+AIVTroops_InitialRole_Spearman: >-
+  Asignación inicial de las tropas de inicio o escenario sin tarea. Excavar requiere que puedan excavar y que
+  existan casillas de foso; si no, se asignan a defensa.
+
+
+  El ajuste específico de esta tropa tiene prioridad sobre el campo común del AIC. Vanilla omite este campo al
+  guardar el personaje y usa el siguiente valor común o de menú aplicable. Requiere aiv-troops-behaviour con
+  «Ajustes de tropas» y «Usar ajustes del AIC» activados. Reinicia UCP e inicia una partida nueva tras
+  cambiarlo.
+AIVTroops_Movement_Spearman: >-
+  Movimiento defensivo entre los puestos del AIV. La patrulla usa DefWallPatrolGroups y
+  DefWallPatrolRallyTime; con cero grupos, las tropas permanecen quietas.
+
+
+  El ajuste específico de esta tropa tiene prioridad sobre el campo común del AIC. Vanilla omite este campo al
+  guardar el personaje y usa el siguiente valor común o de menú aplicable. Requiere aiv-troops-behaviour con
+  «Ajustes de tropas» y «Usar ajustes del AIC» activados. Reinicia UCP e inicia una partida nueva tras
+  cambiarlo.
+AIVTroops_InitialRole_Pikeman: >-
+  Asignación inicial de las tropas de inicio o escenario sin tarea. Excavar requiere que puedan excavar y que
+  existan casillas de foso; si no, se asignan a defensa.
+
+
+  El ajuste específico de esta tropa tiene prioridad sobre el campo común del AIC. Vanilla omite este campo al
+  guardar el personaje y usa el siguiente valor común o de menú aplicable. Requiere aiv-troops-behaviour con
+  «Ajustes de tropas» y «Usar ajustes del AIC» activados. Reinicia UCP e inicia una partida nueva tras
+  cambiarlo.
+AIVTroops_Movement_Pikeman: >-
+  Movimiento defensivo entre los puestos del AIV. La patrulla usa DefWallPatrolGroups y
+  DefWallPatrolRallyTime; con cero grupos, las tropas permanecen quietas.
+
+
+  El ajuste específico de esta tropa tiene prioridad sobre el campo común del AIC. Vanilla omite este campo al
+  guardar el personaje y usa el siguiente valor común o de menú aplicable. Requiere aiv-troops-behaviour con
+  «Ajustes de tropas» y «Usar ajustes del AIC» activados. Reinicia UCP e inicia una partida nueva tras
+  cambiarlo.
+AIVTroops_InitialRole_Maceman: >-
+  Asignación inicial de las tropas de inicio o escenario sin tarea. Excavar requiere que puedan excavar y que
+  existan casillas de foso; si no, se asignan a defensa.
+
+
+  El ajuste específico de esta tropa tiene prioridad sobre el campo común del AIC. Vanilla omite este campo al
+  guardar el personaje y usa el siguiente valor común o de menú aplicable. Requiere aiv-troops-behaviour con
+  «Ajustes de tropas» y «Usar ajustes del AIC» activados. Reinicia UCP e inicia una partida nueva tras
+  cambiarlo.
+AIVTroops_Movement_Maceman: >-
+  Movimiento defensivo entre los puestos del AIV. La patrulla usa DefWallPatrolGroups y
+  DefWallPatrolRallyTime; con cero grupos, las tropas permanecen quietas.
+
+
+  El ajuste específico de esta tropa tiene prioridad sobre el campo común del AIC. Vanilla omite este campo al
+  guardar el personaje y usa el siguiente valor común o de menú aplicable. Requiere aiv-troops-behaviour con
+  «Ajustes de tropas» y «Usar ajustes del AIC» activados. Reinicia UCP e inicia una partida nueva tras
+  cambiarlo.
+AIVTroops_InitialRole_Swordsman: >-
+  Asignación inicial de las tropas de inicio o escenario sin tarea. Excavar requiere que puedan excavar y que
+  existan casillas de foso; si no, se asignan a defensa.
+
+
+  El ajuste específico de esta tropa tiene prioridad sobre el campo común del AIC. Vanilla omite este campo al
+  guardar el personaje y usa el siguiente valor común o de menú aplicable. Requiere aiv-troops-behaviour con
+  «Ajustes de tropas» y «Usar ajustes del AIC» activados. Reinicia UCP e inicia una partida nueva tras
+  cambiarlo.
+AIVTroops_Movement_Swordsman: >-
+  Movimiento defensivo entre los puestos del AIV. La patrulla usa DefWallPatrolGroups y
+  DefWallPatrolRallyTime; con cero grupos, las tropas permanecen quietas.
+
+
+  El ajuste específico de esta tropa tiene prioridad sobre el campo común del AIC. Vanilla omite este campo al
+  guardar el personaje y usa el siguiente valor común o de menú aplicable. Requiere aiv-troops-behaviour con
+  «Ajustes de tropas» y «Usar ajustes del AIC» activados. Reinicia UCP e inicia una partida nueva tras
+  cambiarlo.
+AIVTroops_InitialRole_Knight: >-
+  Asignación inicial de las tropas de inicio o escenario sin tarea. Excavar requiere que puedan excavar y que
+  existan casillas de foso; si no, se asignan a defensa.
+
+
+  El ajuste específico de esta tropa tiene prioridad sobre el campo común del AIC. Vanilla omite este campo al
+  guardar el personaje y usa el siguiente valor común o de menú aplicable. Requiere aiv-troops-behaviour con
+  «Ajustes de tropas» y «Usar ajustes del AIC» activados. Reinicia UCP e inicia una partida nueva tras
+  cambiarlo.
+AIVTroops_Movement_Knight: >-
+  Movimiento defensivo entre los puestos del AIV. La patrulla usa DefWallPatrolGroups y
+  DefWallPatrolRallyTime; con cero grupos, las tropas permanecen quietas.
+
+
+  El ajuste específico de esta tropa tiene prioridad sobre el campo común del AIC. Vanilla omite este campo al
+  guardar el personaje y usa el siguiente valor común o de menú aplicable. Requiere aiv-troops-behaviour con
+  «Ajustes de tropas» y «Usar ajustes del AIC» activados. Reinicia UCP e inicia una partida nueva tras
+  cambiarlo.
+AIVTroops_InitialRole_Slave: >-
+  Asignación inicial de las tropas de inicio o escenario sin tarea. Excavar requiere que puedan excavar y que
+  existan casillas de foso; si no, se asignan a defensa.
+
+
+  El ajuste específico de esta tropa tiene prioridad sobre el campo común del AIC. Vanilla omite este campo al
+  guardar el personaje y usa el siguiente valor común o de menú aplicable. Requiere aiv-troops-behaviour con
+  «Ajustes de tropas» y «Usar ajustes del AIC» activados. Reinicia UCP e inicia una partida nueva tras
+  cambiarlo.
+AIVTroops_Movement_Slave: >-
+  Movimiento defensivo entre los puestos del AIV. La patrulla usa DefWallPatrolGroups y
+  DefWallPatrolRallyTime; con cero grupos, las tropas permanecen quietas.
+
+
+  El ajuste específico de esta tropa tiene prioridad sobre el campo común del AIC. Vanilla omite este campo al
+  guardar el personaje y usa el siguiente valor común o de menú aplicable. Requiere aiv-troops-behaviour con
+  «Ajustes de tropas» y «Usar ajustes del AIC» activados. Reinicia UCP e inicia una partida nueva tras
+  cambiarlo.
+AIVTroops_InitialRole_Slinger: >-
+  Asignación inicial de las tropas de inicio o escenario sin tarea. Excavar requiere que puedan excavar y que
+  existan casillas de foso; si no, se asignan a defensa.
+
+
+  El ajuste específico de esta tropa tiene prioridad sobre el campo común del AIC. Vanilla omite este campo al
+  guardar el personaje y usa el siguiente valor común o de menú aplicable. Requiere aiv-troops-behaviour con
+  «Ajustes de tropas» y «Usar ajustes del AIC» activados. Reinicia UCP e inicia una partida nueva tras
+  cambiarlo.
+AIVTroops_Movement_Slinger: >-
+  Movimiento defensivo entre los puestos del AIV. La patrulla usa DefWallPatrolGroups y
+  DefWallPatrolRallyTime; con cero grupos, las tropas permanecen quietas.
+
+
+  El ajuste específico de esta tropa tiene prioridad sobre el campo común del AIC. Vanilla omite este campo al
+  guardar el personaje y usa el siguiente valor común o de menú aplicable. Requiere aiv-troops-behaviour con
+  «Ajustes de tropas» y «Usar ajustes del AIC» activados. Reinicia UCP e inicia una partida nueva tras
+  cambiarlo.
+AIVTroops_InitialRole_Assassin: >-
+  Asignación inicial de las tropas de inicio o escenario sin tarea. Excavar requiere que puedan excavar y que
+  existan casillas de foso; si no, se asignan a defensa.
+
+
+  El ajuste específico de esta tropa tiene prioridad sobre el campo común del AIC. Vanilla omite este campo al
+  guardar el personaje y usa el siguiente valor común o de menú aplicable. Requiere aiv-troops-behaviour con
+  «Ajustes de tropas» y «Usar ajustes del AIC» activados. Reinicia UCP e inicia una partida nueva tras
+  cambiarlo.
+AIVTroops_Movement_Assassin: >-
+  Movimiento defensivo entre los puestos del AIV. La patrulla usa DefWallPatrolGroups y
+  DefWallPatrolRallyTime; con cero grupos, las tropas permanecen quietas.
+
+
+  El ajuste específico de esta tropa tiene prioridad sobre el campo común del AIC. Vanilla omite este campo al
+  guardar el personaje y usa el siguiente valor común o de menú aplicable. Requiere aiv-troops-behaviour con
+  «Ajustes de tropas» y «Usar ajustes del AIC» activados. Reinicia UCP e inicia una partida nueva tras
+  cambiarlo.
+AIVTroops_InitialRole_ArabianArcher: >-
+  Asignación inicial de las tropas de inicio o escenario sin tarea. Excavar requiere que puedan excavar y que
+  existan casillas de foso; si no, se asignan a defensa.
+
+
+  El ajuste específico de esta tropa tiene prioridad sobre el campo común del AIC. Vanilla omite este campo al
+  guardar el personaje y usa el siguiente valor común o de menú aplicable. Requiere aiv-troops-behaviour con
+  «Ajustes de tropas» y «Usar ajustes del AIC» activados. Reinicia UCP e inicia una partida nueva tras
+  cambiarlo.
+AIVTroops_Movement_ArabianArcher: >-
+  Movimiento defensivo entre los puestos del AIV. La patrulla usa DefWallPatrolGroups y
+  DefWallPatrolRallyTime; con cero grupos, las tropas permanecen quietas.
+
+
+  El ajuste específico de esta tropa tiene prioridad sobre el campo común del AIC. Vanilla omite este campo al
+  guardar el personaje y usa el siguiente valor común o de menú aplicable. Requiere aiv-troops-behaviour con
+  «Ajustes de tropas» y «Usar ajustes del AIC» activados. Reinicia UCP e inicia una partida nueva tras
+  cambiarlo.
+AIVTroops_InitialRole_HorseArcher: >-
+  Asignación inicial de las tropas de inicio o escenario sin tarea. Excavar requiere que puedan excavar y que
+  existan casillas de foso; si no, se asignan a defensa.
+
+
+  El ajuste específico de esta tropa tiene prioridad sobre el campo común del AIC. Vanilla omite este campo al
+  guardar el personaje y usa el siguiente valor común o de menú aplicable. Requiere aiv-troops-behaviour con
+  «Ajustes de tropas» y «Usar ajustes del AIC» activados. Reinicia UCP e inicia una partida nueva tras
+  cambiarlo.
+AIVTroops_Movement_HorseArcher: >-
+  Movimiento defensivo entre los puestos del AIV. La patrulla usa DefWallPatrolGroups y
+  DefWallPatrolRallyTime; con cero grupos, las tropas permanecen quietas.
+
+
+  El ajuste específico de esta tropa tiene prioridad sobre el campo común del AIC. Vanilla omite este campo al
+  guardar el personaje y usa el siguiente valor común o de menú aplicable. Requiere aiv-troops-behaviour con
+  «Ajustes de tropas» y «Usar ajustes del AIC» activados. Reinicia UCP e inicia una partida nueva tras
+  cambiarlo.
+AIVTroops_InitialRole_ArabianSwordsman: >-
+  Asignación inicial de las tropas de inicio o escenario sin tarea. Excavar requiere que puedan excavar y que
+  existan casillas de foso; si no, se asignan a defensa.
+
+
+  El ajuste específico de esta tropa tiene prioridad sobre el campo común del AIC. Vanilla omite este campo al
+  guardar el personaje y usa el siguiente valor común o de menú aplicable. Requiere aiv-troops-behaviour con
+  «Ajustes de tropas» y «Usar ajustes del AIC» activados. Reinicia UCP e inicia una partida nueva tras
+  cambiarlo.
+AIVTroops_Movement_ArabianSwordsman: >-
+  Movimiento defensivo entre los puestos del AIV. La patrulla usa DefWallPatrolGroups y
+  DefWallPatrolRallyTime; con cero grupos, las tropas permanecen quietas.
+
+
+  El ajuste específico de esta tropa tiene prioridad sobre el campo común del AIC. Vanilla omite este campo al
+  guardar el personaje y usa el siguiente valor común o de menú aplicable. Requiere aiv-troops-behaviour con
+  «Ajustes de tropas» y «Usar ajustes del AIC» activados. Reinicia UCP e inicia una partida nueva tras
+  cambiarlo.
+AIVTroops_InitialRole_FireThrower: >-
+  Asignación inicial de las tropas de inicio o escenario sin tarea. Excavar requiere que puedan excavar y que
+  existan casillas de foso; si no, se asignan a defensa.
+
+
+  El ajuste específico de esta tropa tiene prioridad sobre el campo común del AIC. Vanilla omite este campo al
+  guardar el personaje y usa el siguiente valor común o de menú aplicable. Requiere aiv-troops-behaviour con
+  «Ajustes de tropas» y «Usar ajustes del AIC» activados. Reinicia UCP e inicia una partida nueva tras
+  cambiarlo.
+AIVTroops_Movement_FireThrower: >-
+  Movimiento defensivo entre los puestos del AIV. La patrulla usa DefWallPatrolGroups y
+  DefWallPatrolRallyTime; con cero grupos, las tropas permanecen quietas.
+
+
+  El ajuste específico de esta tropa tiene prioridad sobre el campo común del AIC. Vanilla omite este campo al
+  guardar el personaje y usa el siguiente valor común o de menú aplicable. Requiere aiv-troops-behaviour con
+  «Ajustes de tropas» y «Usar ajustes del AIC» activados. Reinicia UCP e inicia una partida nueva tras
+  cambiarlo.

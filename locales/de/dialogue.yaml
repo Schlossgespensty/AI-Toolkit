@@ -1,0 +1,32 @@
+ai_name: KI-Name
+description: Beschreibung
+title: Titel
+complete_title: Name und Titel
+unknown: Unbekannte Textzeile
+anger_1: Angriff abgewehrt
+anger_2: Eigenes Gebäude zerstört
+plead: Niederlage als Gegner
+victory_1: Erfolgreiche Verteidigung
+victory_2: Feindliches Gebäude zerstört
+victory_3: Spieler besiegt
+victory_4: Feindliche KI besiegt
+request: Waren anfordern
+thanks: Waren erhalten
+ally_death: Niederlage als Verbündeter
+congrats: Verbündeten beglückwünschen
+boast: Sieg verkünden
+help: Hilfe anfordern
+extra: Lange Partie
+kick_player: Spieler entfernt
+add_player: Spieler beigetreten
+siege: Ungenutzter Belagerungstext
+no_sent: Warenlieferung abgelehnt
+sent: Waren verschickt
+team_winning: Team im Vorteil
+team_losing: Team im Nachteil
+help_sent: Hilfe geschickt
+will_attack: Angriff zugesagt
+taunt: Spott beim Angriff
+nervous: Wird angegriffen
+no_attack: Angriff abgelehnt
+no_help: Hilfe abgelehnt

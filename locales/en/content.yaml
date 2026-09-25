@@ -1,0 +1,56 @@
+character_name: Character name.
+character_description: Character description.
+the_ai_s_attack_has_been_repelled: The AI's attack has been repelled.
+one_of_the_ai_s_buildings_has_been_destroyed: One of the AI's buildings has been destroyed.
+the_ai_has_been_defeated_if_enemy: The AI has been defeated (if enemy)
+the_ai_has_successfully_defended_itself: The AI has successfully defended itself.
+the_ai_destroys_a_building: The AI destroys a building.
+the_ai_has_killed_the_player: The AI has killed the player.
+the_ai_defeats_another_enemy_ai: The AI defeats another enemy AI.
+the_ai_requests_goods: The AI requests goods.
+the_player_sends_goods_to_the_ai: The player sends goods to the AI.
+the_ai_has_been_defeated_if_ally: The AI has been defeated (if ally)
+the_player_defeats_an_enemy_while_allied_with_this_ai: The player defeats an enemy while allied with this AI.
+the_allied_ai_defeats_an_enemy: The allied AI defeats an enemy.
+the_ai_is_under_attack_and_asks_for_help: The AI is under attack and asks for help.
+the_game_has_been_going_on_for_a_long_time: The game has been going on for a long time.
+a_player_is_removed_from_the_map: A player is removed from the map.
+a_player_is_added_to_the_map: A player is added to the map.
+not_used: Not used.
+the_ai_does_not_send_the_requested_goods: The AI does not send the requested goods.
+the_ai_sends_the_requested_goods: The AI sends the requested goods.
+the_team_is_winning: The team is winning.
+the_team_is_losing: The team is losing.
+the_ai_sends_the_requested_help: The AI sends the requested help.
+the_ai_will_attack_the_requested_enemy: The AI will attack the requested enemy.
+character_title_include_quotation_marks_for_a_quoted_title: Character title (include quotation marks for a quoted title).
+character_name_followed_by_the_title_include_quotation_marks_for_a_quote: Character name, followed by the title (include quotation marks for a quoted title).
+the_ai_attacks_the_player: The AI attacks the player.
+the_player_attacks_the_ai: The player attacks the AI.
+the_ai_refuses_to_attack_the_requested_enemy: The AI refuses to attack the requested enemy.
+the_ai_refuses_a_request_for_help: The AI refuses a request for help.
+replay: Replay
+play: Play
+media_replacement_cancelled: Media replacement cancelled
+wav_speech: WAV speech
+bink_video: Bink video
+missing: Missing
+mapped_asset: Mapped asset
+open_externally: Open externally
+open_play: Open / play
+saving_lines_json: Saving lines.json…
+portrait_change_cancelled: Portrait change cancelled
+loading_value: Loading {{fileName}}…
+could_not_play_value_here_value_use_open_externally: 'Could not play {{fileName}} here: {{message}} Use Open externally.'
+downloaded_value_open_it_with_its_associated_program: Downloaded {{fileName}}. Open it with its associated program.
+opened_value_in_its_associated_program: Opened {{fileName}} in its associated program.
+could_not_open_value_value: 'Could not open {{fileName}}: {{message}}'
+choosing_a_replacement_for_value: Choosing a replacement for {{fileName}}…
+could_not_replace_value_value: 'Could not replace {{fileName}}: {{message}}'
+no_mapped_wav_speech_files_found_for_value: No mapped WAV speech files found for {{value1}}.
+no_mapped_value_files_found: No mapped {{value1}} files found.
+this_wav_codec_cannot_play_in_the_editor_use_open_externally: This WAV codec cannot play in the editor. Use Open externally.
+value_content_loaded: '{{value1}} content loaded'
+could_not_save_lines_json_value: 'Could not save lines.json: {{message}}'
+value_saved_as_value_value: ✓ {{value1}} saved as {{width}}×{{height}}
+could_not_change_portrait_value: 'Could not change portrait: {{message}}'

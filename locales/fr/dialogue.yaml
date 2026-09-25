@@ -1,0 +1,32 @@
+ai_name: Nom de l’IA
+description: Description
+title: Titre
+complete_title: Nom et titre
+unknown: Réplique inconnue
+anger_1: Attaque repoussée
+anger_2: Son bâtiment détruit
+plead: Défaite en tant qu’ennemi
+victory_1: Défense réussie
+victory_2: Bâtiment ennemi détruit
+victory_3: Joueur vaincu
+victory_4: IA ennemie vaincue
+request: Demander des ressources
+thanks: Ressources reçues
+ally_death: Défaite en tant qu’allié
+congrats: Féliciter un allié
+boast: Annoncer la victoire
+help: Demander de l’aide
+extra: Partie prolongée
+kick_player: Joueur exclu
+add_player: Arrivée d’un joueur
+siege: Réplique de siège inutilisée
+no_sent: Ressources refusées
+sent: Ressources envoyées
+team_winning: Équipe en tête
+team_losing: Équipe en difficulté
+help_sent: Aide envoyée
+will_attack: Attaque acceptée
+taunt: Provocation d’attaque
+nervous: Sous attaque
+no_attack: Attaque refusée
+no_help: Aide refusée

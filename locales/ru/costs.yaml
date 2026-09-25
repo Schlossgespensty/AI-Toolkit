@@ -1,0 +1,91 @@
+wood: Дерево
+stone: Камень
+iron: Железо
+pitch: Смола
+gold: Золото
+travel_ticks_tile_override_blank_reference: "Тактoв пути на клетку (пусто: стандарт)"
+delivery_store: склад доставки
+dairy_farm: молочная ферма
+work_duration_unknown: время работы неизвестно
+ticks_per_reference_cycle: " тактов за стандартный цикл"
+unknown: Неизвестно
+hide_cost_per_building: Скрыть стоимость по зданиям
+show_cost_per_building: Показать стоимость по зданиям
+the_build_cost_table: таблицу стоимости строительства
+cost_table_not_loaded: Таблица стоимости не загружена.
+castle_costs: Стоимость замка ▸
+castle_costs_2: Стоимость замка ▾
+bundled_base_ucp: Встроенные базовые + UCP
+bundled_vanilla: встроенные стандартные
+the_saved_snapshot_of: "сохраненный снимок "
+partial: " (частично)"
+open_a_character_for_production_estimates: Откройте персонажа для оценки производства.
+reading_selected_installation: Чтение выбранной установки…
+using_bundled_vanilla_prices: Используются встроенные стандартные цены
+no_steps: нет шагов
+cumulative_total_no_steps: Нарастающий итог · нет шагов
+partial_unknown_prices: " (частично: неизвестные цены)"
+no_character_file: нет файла персонажа
+iron_mine: железный рудник
+iron_mines: железные рудники
+pitch_rig: смоляная яма
+pitch_rigs: смоляные ямы
+ox_tether: привязь вола
+ox_tethers: привязи волов
+1_of_those_farms_grows_hops: Одна из этих ферм выращивает хмель
+open_a_character_file_to_see_how_many_resource_buildings_the_aic_would_a: Откройте файл персонажа, чтобы узнать, сколько производственных зданий добавит AIC.
+nothing_with_a_known_price_up_to_this_step: До этого шага нет объектов с известной ценой.
+no_cost: бесплатно
+price_from_the_selected_balance_file: Цена из выбранного файла баланса
+price_from_the_game_exe_vanilla: Цена из исполняемого файла игры (стандарт)
+value_value_value_tiles_value_walking_ticks_value: "{{value1}}. {{note}}. {{value3}} клеток; {{value4}} тактов ходьбы; {{value5}}."
+value_reference_ticks_batch: "{{good}}: стандартных тактов на партию"
+bundled_vanilla_prices_were_extracted_from_the_game_exe_at_value_load_a_: >-
+  Встроенные стандартные цены извлечены из файла игры по адресу {{value1}}. Загрузите JSON баланса плагина для
+  изменения цен; отсутствующие значения сохраняют стандартные цены. Запущенная игра не читается. Один шаг
+  строительства = 50 тактов = один игровой день (проверено на 445 из 445 шагов).
+ucp_balance_could_not_be_loaded_still_using_value_value: Не удалось загрузить баланс UCP. По-прежнему используется {{value1}}. {{value2}}
+using_saved_snapshot_value: "Используется сохраненный снимок: {{choice}}"
+cumulative_total_steps_1_value: Нарастающий итог · шаги 1–{{steps}}
+total_through_step_value: Итого до шага {{steps}}
+through_step_value_value: "До шага {{steps}}: {{value2}}"
+price_unknown_not_counted_value_the_build_cost_table_has_no_entry_for_th: "Цена неизвестна, не учтено: {{namen}}. В таблице стоимости нет этих записей."
+value_ticks_one_step_is_one_game_day_and_a_step_that_cannot_be_built_sti: >-
+  {{value1}} тактов: один шаг равен игровому дню, даже если его постройка невозможна. Когда золото кончается,
+  ИИ ждет, поэтому это самое раннее возможное время, а не гарантия.
+at_value_population_the_aic_opens_value: При населении {{value1}} AIC добавляет {{value2}}.
+1_pitch_per_value_tiles_grouped_across_steps_assumes_a_fresh_placement_c: ; 1 смола на {{pitchGroup}} клеток, с группировкой между шагами; счетчик размещения считается новым
+cumulative_total_through_step_value: Нарастающий итог до шага {{steps}}
+about_the_castle_cost_overview: Об обзоре стоимости замка
+balance: Баланс
+load_a_balance_json_ascension_team_league: Загрузить JSON баланса (Ascension, Team League и др.)
+load: Загрузить…
+use_ucp_balance: Использовать баланс UCP
+cumulative_through_selected_step: Итого до выбранного шага
+total_through_current_step: Итого до текущего шага
+resources_through_this_step: Ресурсы до этого шага
+production_assumptions: Предположения о производстве
+reference_estimate_from_stronghold_heaven_original_stronghold_assuming_f: >-
+  Справочная оценка Stronghold Heaven (оригинальный Stronghold), предполагающая полную занятость при появлении
+  жилья. Эти приблизительные скорости не проверены как точные времена симуляции Crusader. Не учитываются
+  задержки строительства, паузы, нехватка сырья, потребление, торговля, транспортные ограничения, страх и
+  отдых. Это не текущие запасы на складе.
+resource_distance: Расстояние до ресурса
+per_extra_building: На дополнительное здание
+stockpile_distance: Расстояние до склада
+delivery_store_distance: Расстояние до склада доставки
+between_stores: Между складами
+walking_speed_multiplier: Множитель скорости ходьбы
+delivery_productivity: Производительность доставки, %
+skirmish_delivery_bonus_where_enabled_by_balance: Бонус доставки в схватке, если включен балансом
+workshop_itinerary: Маршрут мастерской
+work_ticks_exclude_the_return_journey_cycle_work_ticks_2_distance_walkin: >-
+  Время работы не включает обратный путь: цикл = рабочие такты + 2 × расстояние × такты ходьбы. У каждого
+  производителя собственный прогресс и дробный бонус доставки. Камень означает выпуск каменоломни; перевозка
+  волами не моделируется. Расстояния наложения путей — отдельная диагностика планировки, не измеренные
+  расстояния до внешних ресурсов.
+elapsed_game_time: Прошедшее игровое время
+good: Товар
+cost: Стоимость
+estimated_gross_production_not_stockpile_inventory: Расчетное валовое производство, не текущие запасы
+produced: Произведено*

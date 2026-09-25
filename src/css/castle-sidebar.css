@@ -1,3 +1,4 @@
+@layer components {
 /* Shared theme variables and ordinary castle buttons, for either colour scheme. */
 .castlePanel.castleSidebarSplit { display: grid; overflow: hidden; }
 .castleSidebarMain {
@@ -87,3 +88,5 @@
 .simulationTimeline { display: flex; align-items: center; gap: 10px; }
 .simulationTimeline input { flex: 1; }
 #simulationMessage, #simulationDetails { color: var(--text-muted); font-size: 12px; overflow-wrap: anywhere; }
+
+}

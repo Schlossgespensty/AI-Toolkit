@@ -1,0 +1,112 @@
+'1': Ingénieur avec huile bouillante
+'2': Mangonneau
+'3': Baliste
+'4': Trébuchet
+'5': Baliste incendiaire
+'6': Archer
+'7': Arbalétrier
+'8': Lancier
+'9': Piquier
+'10': Massier
+'11': Épéiste
+'12': Chevalier
+'13': Esclave
+'14': Frondeur
+'15': Assassin
+'16': Archer arabe
+'17': Archer monté
+'18': Épéiste arabe
+'19': Lanceur de feu
+'20': Brasero
+'21': Drapeau
+'25': Mur haut
+'26': Créneau haut
+'35': Créneau bas
+'46': Mur bas
+'50': Archerie
+'51': Bûcheron
+'52': Réserve
+'53': Avant-poste bédouin
+'54': Maison
+'55': Attache à bœufs
+'56': Carrière
+'61': Donjon
+'65': Écuries
+'70': Ferme de blé
+'71': Ferme de houblon
+'72': Verger
+'73': Ferme laitière
+'74': Moulin
+'75': Boulangerie
+'76': Brasserie
+'77': Marché
+'78': Poste de chasse
+'79': Camp bédouin
+'80': Grenier
+'81': Armurerie
+'82': Atelier de lances
+'83': Forge
+'84': Atelier d'armures
+'85': Tannerie
+'86': Poste de mercenaires
+'87': Caserne
+'88': Guilde des ingénieurs
+'89': Guilde des tunneliers
+'90': Mine de fer
+'91': Fosse à poix
+'92': Auberge
+'93': Guérisseurs
+'95': Chapelle
+'96': Église
+'97': Cathédrale
+'98': Fosse piégée
+'99': Poix
+'105': Pont-levis
+'106': Douves ×1
+'110': Tour 1
+'111': Tour 2
+'112': Tour 3
+'113': Tour 4
+'114': Tour 5
+'144': Petite porte N–S
+'145': Petite porte E–O
+'146': Grande porte N–S
+'147': Grande porte E–O
+'166': Jardin communal
+'169': Jardin urbain
+'175': Mât de mai
+'176': Potence
+'177': Pilori
+'178': Avant-poste européen
+'179': Avant-poste arabe
+'180': Fonderie d'huile
+'181': Escalier 1 (le plus haut)
+'182': Escalier 2
+'183': Escalier 3
+'184': Escalier 4
+'185': Escalier 5 (le plus bas)
+'186': Escalier 6 (sol)
+'200': Étape de pause
+'301': Fosse d'aisances
+'305': Bûcher
+'306': Gibet
+'307': Cachot
+'308': Chevalet de torture
+'310': Billot
+'311': Bassin de supplice
+'312': Cage de chiens de guerre
+'313': Statue
+'318': Sanctuaire
+'324': Ours dansant
+'330': Puits
+'342': Réservoir d'eau
+'9022': Lancier à dos de chameau
+'9023': Guérisseur
+'9024': Eunuque
+'9025': Embusqué
+'9026': Tirailleur
+'9027': Chamelier lourd
+'9028': Sapeur
+'9029': Démolisseur
+'10001': Escalier haut
+'10002': Escalier bas

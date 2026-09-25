@@ -1,0 +1,62 @@
+classic_export_failed: |-
+  A vár nem exportálható klasszikus AIV-ként:
+  {{issues}}
+  Az adatok megőrzéséhez mentse Definitive Edition formátumban.
+castle_files: Várfájlok
+images: Képek
+choose_game: Válassza ki a Stronghold Crusader telepítését
+unsaved_title: Nem mentett módosítások
+unsaved_message: |-
+  {{name}} nem mentett módosításokat tartalmaz.
+  Mented a folytatás előtt?
+  Következő művelet: {{action}}.
+document: dokumentum
+continue: folytatás
+discard: Elvetés
+add_to_ai: Hozzáadás az MI-hez
+edit_separately: Külön szerkesztés
+classic_castle: Klasszikus AIV-vár
+choose_castle_format: Válaszd ki a fájl várformátumát.
+add_castle_message: |-
+  Hozzáadod ezt a várat a(z) {{name}} projekthez?
+  A „Hozzáadás az MI-hez” az MI aiv mappájába másolja a várat, és nyitva hagyja a projektet.
+  A „Külön szerkesztés” kilép az MI-projektből, így a várat máshová mentheted.
+new_castle_message: |-
+  Új várat hozol létre a(z) {{name}} projektben?
+  A „Hozzáadás az MI-hez” az MI aiv mappájába menti a várat, és nyitva hagyja a projektet.
+  A „Külön szerkesztés” kilép az MI-projektből, így a várat máshová mentheted.
+replace_character_message: |-
+  Ezt a karaktert használod a(z) {{name}} projekthez?
+  A „Hozzáadás az MI-hez” véglegesen felülírja az MI jelenlegi character.json fájlját.
+  A „Külön szerkesztés” kilép az MI-projektből, és megtartja annak jelenlegi karakterfájlját.
+new_character_message: |-
+  Új karaktert hozol létre a(z) {{name}} projekthez?
+  A „Hozzáadás az MI-hez” véglegesen felülírja az MI jelenlegi character.json fájlját.
+  A „Külön szerkesztés” kilép az MI-projektből, és megtartja annak jelenlegi karakterfájlját.
+add_document_message: >-
+  Hozzáadja ezt a dokumentumot a(z) {{name}} projekthez? Új karakter hozzáadása felülírja a meglévő
+  karakterfájlt.
+new_window: Ablak hozzáadása
+new: Új
+open_new_window: Megnyitás új ablakban
+save_as: Mentés másként
+clear_background: Háttér törlése
+castle_mapping: Vár-hozzárendelések szerkesztése…
+shortcuts: Várszerkesztő gyorsbillentyűinek beállítása…
+toggle_ox: MI ökörkarámok kapcsolása
+toggle_running: Futó egységek kapcsolása
+standard_order: Szokásos sorrend alkalmazása
+ordered_order: Rendezett sorrend alkalmazása
+toggle_sections: Összes kibontása/összecsukása
+replace_castle: A(z) {{name}} már létezik. Lecseréli a várfájlt?
+overviews: Váráttekintések
+show_population: Népesség megjelenítése
+show_costs: Várköltségek megjelenítése
+population_side: Népességpanel oldala
+costs_side: Költségpanel oldala
+reload: Újratöltés
+fullscreen: Teljes képernyő
+developer_tools: Fejlesztői eszközök
+zoom_in: Nagyítás
+zoom_out: Kicsinyítés
+reset_zoom: Eredeti méret

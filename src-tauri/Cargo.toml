@@ -1,0 +1,54 @@
+[package]
+name = "ai-toolkit"
+version = "0.11.0"
+description = "AI Toolkit desktop editor"
+edition = "2021"
+rust-version = "1.88"
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = ["protocol-asset", "devtools"] }
+tauri-plugin-dialog = "2"
+tauri-plugin-opener = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = { version = "1", features = ["preserve_order"] }
+serde_yaml = "0.9"
+sha2 = "0.10"
+regex = "1"
+png = "0.17"
+base64 = "0.22"
+url = "2"
+explode = "0.1.2"
+flate2 = "1"
+walkdir = "2"
+semver = "1"
+dunce = "1"
+rusty-leveldb = "4"
+reqwest = { version = "0.12", default-features = false, features = ["blocking", "json"] }
+zip = { version = "2", default-features = false, features = ["deflate"] }
+asar = { version = "=0.3.0", default-features = false }
+
+[target.'cfg(windows)'.dependencies]
+# Reuse Windows certificate policy and SChannel instead of bundling a second TLS stack.
+reqwest = { version = "0.12", default-features = false, features = ["native-tls"] }
+
+[target.'cfg(not(windows))'.dependencies]
+reqwest = { version = "0.12", default-features = false, features = ["rustls-tls"] }
+
+[profile.release]
+panic = "abort"
+codegen-units = 1
+lto = true
+opt-level = "s"
+strip = true
+
+[features]
+default = ["custom-protocol"]
+custom-protocol = ["tauri/custom-protocol"]
+
+[dev-dependencies]
+asar = { version = "=0.3.0", default-features = false, features = ["write"] }
+# Generate frontend request types from the serde wire contract; never shipped.
+ts-rs = { version = "=12.0.1", features = ["serde-json-impl"] }

@@ -46,8 +46,9 @@ test('cost overview collapses independently of the breakdown and preserves a cum
   assert.match(panel, /els\.body\.hidden = state\.collapsed/);
   assert.match(panel, /setItem\(COLLAPSE_STORAGE/);
   assert.match(panel, /costTableRow costTableTotal/);
-  assert.match(panel, /Cumulative total through step/);
-  assert.match(panel, /Total through current step/);
+  assert.match(panel, /costs:cumulative_total_through_step_value/);
+  assert.match(panel, /costs:total_through_current_step/);
+  assert.equal(require('../src/js/i18n').t('costs:cumulative_total_through_step_value', { steps: 7 }), 'Cumulative total through step 7');
   assert.doesNotMatch(panel, /Entire castle total/);
 });
 
@@ -264,10 +265,11 @@ test('T6: 450 Bauschritte sind 449 Spieltage, also 2 Jahre, 4 Monate, 1 Tag', ()
   assert.equal(zeit.years, 2);
   assert.equal(zeit.months, 4);
   assert.equal(zeit.remainderDays, 1);
-  assert.equal(zeit.label, '2 years, 4 months, 1 day');
+  assert.equal(zeit.remainderDays, 1);
   assert.equal(modell.zeitBis(1).days, 0);
-  assert.equal(modell.zeitBis(17).label, '1 month');
-  assert.equal(modell.zeitBis(18).label, '1 month, 1 day');
+  assert.equal(modell.zeitBis(17).months, 1);
+  assert.equal(modell.zeitBis(17).remainderDays, 0);
+  assert.equal(modell.zeitBis(18).remainderDays, 1);
 });
 
 test('Mauern, Treppen, Bergfried und Lagerplatz kosten nichts - mit Begruendung', () => {

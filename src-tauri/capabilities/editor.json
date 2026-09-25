@@ -1,0 +1,7 @@
+{
+  "$schema":"../gen/schemas/desktop-schema.json",
+  "identifier":"editor",
+  "description":"Local editor windows and their native controls",
+  "windows":["main","editor-*"],
+  "permissions":["core:default","core:menu:default","core:window:allow-close","core:window:allow-show","core:window:allow-set-title","core:window:allow-maximize","core:window:allow-unmaximize","core:window:allow-minimize","core:window:allow-toggle-maximize","core:window:allow-start-dragging","core:window:allow-set-fullscreen","core:webview:allow-set-webview-zoom","core:webview:allow-create-webview-window","dialog:default"]
+}

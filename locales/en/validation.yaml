@@ -1,0 +1,24 @@
+balance_profile: Expected a rebalancer profile with a buildings, resources, units, population or castle section.
+balance_section: 'Invalid {{section}} section.'
+balance_building: 'Invalid building: {{name}}'
+balance_health: '{{name}}: health must be a non-negative integer.'
+balance_housing: '{{name}}: housing must be a non-negative integer.'
+balance_cost: '{{name}}: cost must contain five non-negative integers (wood, stone, iron, pitch, gold).'
+balance_resource: 'Invalid resource: {{name}}'
+balance_delivery: '{{name}}: delivery must fit a byte (0–255).'
+balance_bonus: '{{name}}: skirmishBonus must be true or false.'
+balance_ditch: castle.ditch_per_pitch must be 1, 2, 3 or 4.
+frames_array: Castle frames must be an array.
+tile_offset: '{{label}}: invalid tile offset.'
+step_object: 'Step {{step}}: expected an object.'
+step_positions: 'Step {{step}}: invalid item or positions.'
+step_pause: 'Step {{step}}: invalid pause flag.'
+step: 'Step {{step}}'
+markers_array: Castle markers must be an array.
+marker_invalid: Invalid castle marker.
+marker: Castle marker
+pause_delay: Invalid pause delay.
+classic_empty_steps: Empty build steps cannot be preserved in classic AIV.
+classic_item: '{{name}} is not supported by classic AIV.'
+classic_pauses: Build-step pauses are disabled in the classic editor.
+classic_marker: '{{name}} cannot be preserved in classic AIV.'

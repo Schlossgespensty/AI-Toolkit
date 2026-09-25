@@ -1,0 +1,25 @@
+rotation_unavailable: "Поворот недоступен: "
+loading_camera_views: Загрузка ракурсов…
+loading_map: Загрузка карты…
+items: " объектов"
+without_a_sprite: " без спрайта"
+tool: " · инструмент: "
+middle_drag_pans_right_click_clears_camera_controls_match_map: " · средняя кнопка: перемещение · правая кнопка: сброс · управление камерой как на карте"
+start_place: " · стартовая позиция "
+no_starting_place_village_in_the_middle_of_the_map: " · стартовой позиции нет, замок в центре карты"
+quarter_turn: " четверть оборота"
+game_value: " (значение в игре "
+not_turned_game_value_0: " · без поворота (значение в игре 0)"
+flat_ground_height: " · ровная земля (высота "
+ground_rises: " · подъем земли "
+2_5d_view_ai_toolkit: Вид 2.5D — AI Toolkit
+castle_moved_to_start_value_at_value_value: "Замок перемещен на старт {{nummer}}: ({{x}}, {{y}})"
+start_value_at_value_value_click_to_build_here: "Старт {{value1}}: ({{x}}, {{y}}) — нажмите для постройки здесь"
+fit_the_castle_into_the_view: Вместить замок в область просмотра
+show_in_a_window_of_its_own: Показать в отдельном окне
+click_to_show_drag_to_move_it_somewhere_else: Нажмите для показа, перетащите в другое место
+close_the_window_shown_here: Закрыть это окно
+no_window_open_one_from_the_toolbar: нет окна — откройте его на панели инструментов
+add_as_a_tab_here: Добавить сюда как вкладку
+esc_cancels: " · Esc: отмена"
+is_missing: " отсутствует"

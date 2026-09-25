@@ -1,0 +1,24 @@
+balance_profile: 需要包含 buildings、resources、units、population 或 castle 节的平衡调整配置。
+balance_section: '{{section}} 节无效。'
+balance_building: 无效建筑：{{name}}
+balance_health: '{{name}}：health 必须是非负整数。'
+balance_housing: '{{name}}：housing 必须是非负整数。'
+balance_cost: '{{name}}：cost 必须包含五个非负整数，依次为木材、石材、铁、沥青和金币。'
+balance_resource: 无效资源：{{name}}
+balance_delivery: '{{name}}：delivery 必须在单字节范围内（0–255）。'
+balance_bonus: '{{name}}：skirmishBonus 必须为 true 或 false。'
+balance_ditch: castle.ditch_per_pitch 必须为 1、2、3 或 4。
+frames_array: 城堡建造步骤必须为数组。
+tile_offset: '{{label}}：格子偏移量无效。'
+step_object: 步骤 {{step}}：应为对象。
+step_positions: 步骤 {{step}}：物件或位置无效。
+step_pause: 步骤 {{step}}：暂停标记无效。
+step: 步骤 {{step}}
+markers_array: 城堡标记必须为数组。
+marker_invalid: 城堡标记无效。
+marker: 城堡标记
+pause_delay: 暂停时长无效。
+classic_empty_steps: 经典版 AIV 格式无法保留空建造步骤。
+classic_item: 经典版 AIV 格式不支持 {{name}}。
+classic_pauses: 经典版编辑器中已禁用建造步骤暂停。
+classic_marker: 经典版 AIV 格式无法保留 {{name}}。

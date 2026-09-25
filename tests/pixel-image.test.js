@@ -6,6 +6,14 @@ const {
   placeholderPortraitPng,
   resizeBgraBitmapToPng
 } = require('../src/node/pixel-image');
+const { resizePortraitPixels } = require('../src/shared/portrait-pixels');
+
+test('native portrait pixels preserve straight RGB and classic floor sampling', () => {
+  const rgba = Uint8Array.from([255, 0, 0, 128, 0, 200, 0, 127, 0, 0, 255, 255]);
+  const resized = resizePortraitPixels(rgba, 3, 1, 2, 2);
+  assert.deepEqual([...resized], [255, 0, 0, 255, 0, 0, 0, 0, 255, 0, 0, 255, 0, 0, 0, 0]);
+  assert.deepEqual([...rgba], [255, 0, 0, 128, 0, 200, 0, 127, 0, 0, 255, 255]);
+});
 
 function decodeSimpleRgbaPng(png) {
   assert.deepEqual([...png.subarray(0, 8)], [137, 80, 78, 71, 13, 10, 26, 10]);

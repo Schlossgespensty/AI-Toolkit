@@ -1,0 +1,257 @@
+experimental_snapshots: Experimentelle Vorschauen
+toolkit_fork_owner_repository: Toolkit-Fork (Besitzer/Repository)
+fork_builds_are_experimental_switching_sources_does_not_install_a_build_unti: Versionen aus Forks sind experimentell. Die gewählte Version wird erst mit „Installieren“ installiert.
+cancel: Abbrechen
+use_fork: Fork verwenden
+editor_workspace: Editor-Arbeitsbereich
+application_menus: Anwendungsmenüs
+file_alt_f: Datei (Alt+F)
+file: Datei
+edit_alt_e: Bearbeiten (Alt+E)
+edit: Bearbeiten
+view_alt_v: Ansicht (Alt+V)
+view: Ansicht
+ucp_ai_library: UCP-KI-Bibliothek
+character: Charakter
+castle: Burg
+ai_content: KI-Inhalte
+update_source: Updatequelle
+official_releases: Offizielle Versionen
+check_official_releases: Offizielle Versionen prüfen
+check_updates: Updates prüfen
+character_editor: Charaktereditor
+no_character_loaded: Kein Charakter geladen
+open_a_character_json_file_or_choose_an_ai_from_the_library: Öffne eine character.json oder wähle eine KI aus der Bibliothek.
+open_character: Charakter öffnen
+save_character: Charakter speichern
+save_as: Speichern unter
+plugins: Plugins
+ai_ox_tethers: KI-Ochsenjoche
+controls_the_amount_of_ox_tethers_built: Steuert die Anzahl gebauter Ochsenjoche
+running_units: Rennende Einheiten
+controls_whether_some_units_will_run_or_walk: Legt fest, ob bestimmte Einheiten rennen oder gehen.
+ai_troop_behaviour: KI-Truppenverhalten
+include_aiv_troop_behaviour_overrides: AIV-Truppenverhalten einbeziehen
+population: Bevölkerung
+available_population: Bevölkerungszahl
+decrease_available_population_by_8: Verfügbare Bevölkerung um 8 verringern
+increase_available_population_by_8: Verfügbare Bevölkerung um 8 erhöhen
+use_the_population_provided_by_the_currently_loaded_castle: Bevölkerung der aktuell geladenen Burg verwenden
+use_castle_pop: Burgbevölkerung nutzen
+maximum_workers_used: Maximaler Arbeiterbedarf
+max_workers_used_at_set_population: Arbeiterbedarf bei dieser Bevölkerung
+worker_breakdown: Arbeiteraufteilung
+farms: Farmen
+woodcutters: Holzfäller
+quarries: Steinbrüche
+ox_tethers_up_to: Ochsenjoche (bis zu)
+iron_mines: Eisenminen
+pitch_rigs: Pechgruben
+workers_left_after_castle: Nach Burgbedarf verfügbar
+left_after_castle_character: Nach Burg- und KI-Bedarf verfügbar
+fear_factor: Angstfaktor
+stockpile_space: Lagerplatz
+find_setting: Einstellung suchen
+search_character_fields: Charakterfelder durchsuchen…
+section_visibility: Sichtbare Abschnitte
+expand_all: Alle aufklappen
+collapse_all: Alle einklappen
+character_field_order: Reihenfolge der Charakterfelder
+standard_template: Standardreihenfolge
+ordered_template: Thematische Reihenfolge
+castle_files: Burgdateien
+open_castle: Burg öffnen
+save_castle: Burg speichern
+export_a_definitive_edition_castle_aivjson: Burg für Definitive Edition exportieren (.aivjson)
+export_de: DE exportieren
+new: Neu
+castle_views: Burgansichten
+show_or_close_the_map_seen_from_above: Karten-Draufsicht anzeigen oder schließen
+map: Karte
+show_or_close_the_slanted_view_drag_a_tab_to_move_a_window: 2,5D-Ansicht öffnen oder schließen. Zum Verschieben die Registerkarte ziehen.
+2_5d_view: 2,5D-Ansicht
+ai_castle_selection: KI-Burgauswahl
+ai_castle: KI-Burg
+no_ai_project: Kein KI-Projekt
+placement_tools: Platzierungswerkzeuge
+shortcut_1_or_s: 'Tastenkürzel: 1 oder S'
+single: Einzeln
+shortcut_6_or_l: 'Tastenkürzel: 6 oder L'
+line: Linie
+shortcut_2_or_b: 'Tastenkürzel: 2 oder B'
+brush: Pinsel
+how_wide_the_brush_paints_and_make_it_smaller_and_bigger: Breite des Pinsels. Mit - verkleinern und mit + vergrößern.
+smaller_brush: Kleinerer Pinsel
+bigger_brush: Größerer Pinsel
+fills_everything_up_to_a_wall_the_edge_of_the_map_counts_as_one_shortcut_7_o: 'Füllt die zusammenhängende freie Fläche bis zu Mauern oder zum Kartenrand. Tastenkürzel: 7 oder F'
+fill: Füllen
+selection_and_editing_tools: Auswahl- und Bearbeitungswerkzeuge
+shortcut_3_or_v: 'Tastenkürzel: 3 oder V'
+select_move: Auswählen / Verschieben
+select_mode: Auswahlmodus
+flood_selects_connected_placements_of_the_same_type_including_diagonals_shif: >-
+  Wählt verbundene Elemente desselben Typs, auch diagonal. Umschalt erweitert die Auswahl; Strg+Klick wählt
+  eine ganze Gruppe aus oder ab.
+border: Rahmen
+flood_fill: Zusammenhängend
+delete_mode: Löschmodus
+area: Fläche
+flood_fill_2: Zusammenhängend
+display_overlays: Hilfsebenen anzeigen
+overlays: Hilfsebenen
+item_names: Bezeichnungen
+unit_order: Einheitenreihenfolge
+guide_lines: Hilfslinien
+estimated_worker_paths_through_the_current_castle: Geschätzte Arbeiterwege durch die aktuelle Burg
+path_map: Wegekarte
+estimated_fire_spread_around_flammable_buildings: Geschätzte Brandausbreitung um brennbare Gebäude
+firespread: Brandausbreitung
+build_order: Baureihenfolge
+0_steps: 0 Schritte
+current_position: Aktuelle Position
+no_step_selected: Kein Schritt ausgewählt
+select_and_scroll_to_a_build_step: Bauschritt auswählen und dorthin scrollen
+drag_steps_to_reorder_ctrl_click_or_shift_click_selects_several_steps_right_: >-
+  Schritte zum Umsortieren ziehen. Strg+Klick oder Umschalt+Klick wählt mehrere Schritte. Rechtsklick zum
+  Zusammenführen oder Sperren der Positionen.
+population_up_to_the_selected_build_step: Bevölkerung bis zum gewählten Bauschritt
+population_at_current_step: Bevölkerung bei diesem Bauschritt
+about_the_population_overview: Zur Bevölkerungsübersicht
+provided_by_castle: Wohnplätze in der Burg
+required_by_castle: Arbeiter für Burggebäude
+required_by_character_aic: Arbeiter für KI-Wirtschaft (AIC)
+free: Frei
+these_values_include_only_the_build_steps_up_to_the_current_position: Diese Werte berücksichtigen nur Bauschritte bis zur aktuellen Position.
+2d_map_controls: 2D-Kartensteuerung
+use_picture_as_background: Bild als Hintergrund verwenden
+save_the_whole_castle_as_a_full_resolution_png: Gesamte Burg als PNG in voller Auflösung speichern
+snapshot: Bild
+temporary_castle_blueprint: Temporäre Burgvorlage
+show_or_hide_the_temporary_blueprint: Temporäre Vorlage ein- oder ausblenden
+show: Anzeigen
+blueprint_opacity: Deckkraft der Vorlage
+opacity: Deckkraft
+2_5d_view_controls: 2,5D-Ansichtssteuerung
+lay_a_map_of_the_game_under_the_slanted_view_to_scale_one_field_of_the_map_o: Spielkarte maßstabsgetreu unter die Schrägansicht legen – ein Kartenfeld entspricht einem Editorfeld
+game_map: Spielkarte
+which_starting_place_of_the_map_the_castle_is_built_on: Startplatz der Karte, auf dem die Burg gebaut wird
+map_starting_place: Kartenstartplatz
+take_the_map_of_the_game_away: Spielkarte entfernen
+remove_game_map: Spielkarte entfernen
+100_by_100_tile_castle_map: Burgkarte mit 100 × 100 Feldern
+the_castle_seen_from_an_angle: Burg aus schrägem Blickwinkel
+no_castle_loaded: Keine Burg geladen
+ready: Bereit
+building_categories: Gebäudekategorien
+select_an_item: Element auswählen
+castle_costs_up_to_the_selected_build_step: Burgkosten bis zum gewählten Bauschritt
+saved: Gespeichert
+language: Sprache
+merge: Zusammenführen
+assets_and_dialogue: Grafiken und Dialoge
+save_lines_json: lines.json speichern
+open_an_ai_from_the_library_first: Öffne zuerst eine KI aus der Bibliothek.
+no_ai_project_loaded: Kein KI-Projekt geladen
+open_an_installed_ai_or_create_one_from_the_ucp_ai_library: Öffne eine installierte KI oder erstelle eine in der UCP-KI-Bibliothek.
+lines_json: lines.json
+text_used_for_the_ai_s_name_titles_description_and_reactions: Texte für Name, Titel, Beschreibung und Reaktionen der KI.
+portraits: Porträts
+images_use_nearest_neighbor_resizing_transparency_is_kept_strictly_on_or_off: >-
+  Bilder werden ohne Weichzeichnung skaliert. Transparenz bleibt vollständig deckend oder vollständig
+  durchsichtig.
+ai_portrait: KI-Porträt
+portrait_png: portrait.png
+saved_as_72_72_pixels: Als 72 × 72 Pixel gespeichert.
+change_portrait: Porträt ändern
+small_ai_portrait: Kleines KI-Porträt
+portrait_small_png: portrait_small.png
+saved_as_36_36_pixels: Als 36 × 36 Pixel gespeichert.
+change_small_portrait: Kleines Porträt ändern
+speech: Sprachausgabe
+mapped_wav_files_can_play_here_or_open_in_your_normal_audio_program: Zugeordnete WAV-Dateien können hier oder im üblichen Audioprogramm abgespielt werden.
+no_speech: Keine Sprachausgabe
+bink_videos: Bink-Videos
+bik_playback_is_handed_to_the_program_associated_with_bink_files_on_windows: BIK-Dateien werden unter Windows im zugeordneten Programm abgespielt.
+project_browser: Projektübersicht
+browse_and_edit_installed_ai_packages_or_keep_separate_variants_in_my_ais: Installierte KI-Pakete durchsuchen und bearbeiten oder eigene Varianten in „Meine KIs“ behalten.
+create_new_ai: Neue KI erstellen
+choose_game_folder: Spielordner wählen
+open_plugins_folder: Plugin-Ordner öffnen
+refresh: Aktualisieren
+no_ucp_installation_selected: Keine UCP-Installation gewählt
+choose_your_stronghold_crusader_folder_to_begin: Wähle zum Start deinen Stronghold-Crusader-Ordner.
+installed_ais: Installierte KIs
+search: Suchen
+name_author_or_plugin: Name, Autor oder Plugin…
+all_installed_ais: Alle installierten KIs
+active_plugins_only: Nur aktive Plugins
+my_ais_only: Nur meine KIs
+no_installation_selected: Keine Installation gewählt.
+your_existing_editors_stay_unchanged: Deine geöffneten Editoren bleiben unverändert
+select_an_installed_ai_to_load_and_edit_its_character_castles_lines_and_port: Wähle eine installierte KI, um Charakter, Burgen, Texte und Porträts gemeinsam zu laden und zu bearbeiten.
+installed: Installiert
+inactive: Inaktiv
+author: Autor
+version: Version
+source_plugin: Quell-Plugin
+folder_id: Ordner-ID
+open_ai_project: KI-Projekt öffnen
+loads_the_character_and_castle_1_together_switch_castles_from_the_castle_edi: Lädt Charakter und Burg 1 gemeinsam. Burgen wechselst du im Burgeditor.
+open_in_editors: In Editoren öffnen
+open_source_folder: Quellordner öffnen
+clone_to_my_ais: Nach „Meine KIs“ kopieren
+the_complete_ai_package_is_copied_into_the_editor_owned_ucp_plugin_so_you_ca: >-
+  Das vollständige KI-Paket wird in das UCP-Plugin des Editors kopiert, damit du eine eigene Variante
+  erstellen kannst.
+ai_name: KI-Name
+install_update_in_ucp: In UCP installieren / aktualisieren
+writes_the_character_and_currently_open_castle_through_a_staging_folder_then: >-
+  Schreibt Charakter und geöffnete Burg zunächst in einen Zwischenordner und ersetzt das verwaltete Plugin
+  erst nach erfolgreicher Prüfung.
+activate_ai_toolkit_my_ais_in_the_ucp_gui_to_use_it_with_ai_swapper: Aktiviere „AI Toolkit - My AIs“ in der UCP-Oberfläche, um es mit AI Swapper zu nutzen.
+creates_a_complete_blank_ai_inside_ai_toolkit_my_ais: Erstellt eine vollständige leere KI in „AI Toolkit - My AIs“.
+create_ai: KI erstellen
+castle_mapping: Burgzuordnung
+choose_the_aiv_used_in_each_of_the_ai_s_eight_castle_slots_the_same_file_may: Wähle die AIV für jeden der acht Burgplätze der KI. Dieselbe Datei darf mehrfach gewählt werden.
+save_mapping: Zuordnung speichern
+castle_shortcuts: Burg-Tastenkürzel
+select_a_field_and_press_a_key_optionally_with_ctrl_alt_or_shift_one_shortcu: >-
+  Wähle ein Feld und drücke eine Taste, optional mit Strg, Alt oder Umschalt. Ein Kürzel pro Aktion; jede
+  Kombination ist nur einmal belegbar. Rücktaste leert das Feld. Unbelegte Aktionen bleiben über die
+  Oberfläche verfügbar.
+camera: Kamera
+photoshop_controls: Photoshop-Steuerung
+arrow_keys_wheel_zoom: Pfeiltasten + Mausradzoom
+mouse_wheel: Mausrad
+scroll_pans_alt_scroll_zooms_both_views: Mausrad verschiebt, Alt+Mausrad zoomt (beide Ansichten)
+scroll_zooms_alt_shift_scroll_pans: Mausrad zoomt, Alt/Umschalt+Mausrad verschiebt
+ctrl_scroll_pans_horizontally_in_wheel_zoom_mode_alt_scroll_or_shift_scroll_: >-
+  Strg+Mausrad verschiebt horizontal. Im Mausradzoom-Modus verschiebt Alt+Mausrad oder Umschalt+Mausrad
+  vertikal. Ziehen mit mittlerer Maustaste verschiebt. Kameratasten erlauben Strg/Alt/Umschalt; Rücktaste
+  löscht. Umschalt beschleunigt das Verschieben.
+left: Links
+right: Rechts
+up: Oben
+down: Unten
+pan_speed_pixels_per_keypress: Verschiebegeschwindigkeit (Pixel je Tastendruck)
+restore_defaults: Standardwerte wiederherstellen
+save_shortcuts: Tastenkürzel speichern
+build_step_actions: Bauschritt-Aktionen
+merge_selected_steps: Gewählte Schritte zusammenführen…
+lock_positions: Positionen sperren
+save_castle_picture: Burgbild speichern
+save_png: PNG speichern
+picture_size: "Größe"
+full_resolution: "Volle Auflösung"
+floor_plan_100x100_1_px_per_tile: "Grundriss 100×100 (1 px je Feld)"
+merge_placements_by_item_type: Platzierungen nach Elementtyp zusammenführen
+replace_selected_items: Gewählte Elemente ersetzen
+choose_a_replacement_for_each_item_type_inside_the_box: Wähle einen Ersatz für jeden Elementtyp innerhalb des Rahmens.
+apply_replacements: Ersetzungen anwenden
+map_of_the_game: Spielkarte
+the_chosen_map_is_laid_under_the_slanted_view_to_scale_one_field_of_the_map_: >-
+  Die gewählte Karte wird maßstabsgetreu unter die Schrägansicht gelegt: Ein Kartenfeld entspricht einem
+  Editorfeld.
+filter_by_name: Nach Namen filtern
+
+brush_size: Pinselgröße

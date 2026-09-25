@@ -1,0 +1,82 @@
+name: Native CI
+
+on:
+  push:
+    branches: [main, 'experiment/**']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: native-ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: Native (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-24.04, macos-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    defaults:
+      run:
+        shell: bash
+    env:
+      # The existing CI job owns Electron integration tests. Native checks need
+      # its npm dependencies, but never the downloaded Chromium executable.
+      ELECTRON_SKIP_BINARY_DOWNLOAD: '1'
+      CARGO_BUILD_JOBS: '2'
+      CARGO_PROFILE_DEV_DEBUG: '0'
+      CARGO_PROFILE_TEST_DEBUG: '0'
+      RUST_BACKTRACE: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12
+          cache: npm
+      - name: Install Linux WebKit build dependencies
+        if: runner.os == 'Linux'
+        # https://v2.tauri.app/start/prerequisites/#linux
+        run: |
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends -y \
+            libwebkit2gtk-4.1-dev build-essential curl wget file \
+            libxdo-dev libssl-dev libayatana-appindicator3-dev librsvg2-dev
+      - name: Install stable Rust
+        id: rust
+        run: |
+          rustup toolchain install stable --profile minimal --component rustfmt
+          rustup default stable
+          echo "version=$(rustc --version)" >> "$GITHUB_OUTPUT"
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            src-tauri/target
+          key: native-ci-${{ runner.os }}-${{ runner.arch }}-${{ steps.rust.outputs.version }}-${{ hashFiles('src-tauri/Cargo.lock') }}
+          restore-keys: native-ci-${{ runner.os }}-${{ runner.arch }}-${{ steps.rust.outputs.version }}-
+      - run: npm ci
+      - name: Validate translations and the shared package policy
+        run: |
+          npm run check:locales
+          node scripts/package-policy.mjs
+      - name: Check native bridge types and portable frontend behavior
+        run: |
+          npx tsc --project tsconfig.desktop.json --noEmit
+          node --test tests/desktop-bridge.test.js tests/native-package.test.js tests/native-viewport-close.test.js
+      - name: Build the embedded frontend
+        run: node scripts/build-desktop.mjs
+      - name: Check Rust formatting
+        run: cargo fmt --manifest-path src-tauri/Cargo.toml --check
+      - name: Test native logic and generated IPC contracts
+        # The game parity fixture remains opt-in: no copyrighted game data or
+        # game executable is downloaded, started or accessed by this workflow.
+        run: cargo test --locked --all-targets --manifest-path src-tauri/Cargo.toml
+      - name: Compile the native application
+        run: cargo build --locked --bins --manifest-path src-tauri/Cargo.toml

@@ -1,7 +1,7 @@
 ﻿const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
-const vm = require('node:vm');
+const vm = require('./helpers/localized-vm');
 const geometry = require('../src/js/castle-geometry');
 const {direction} = require('../src/js/castle-pie-menu');
 const {clipboardFromMembers} = require('../src/js/editor-extras');
@@ -80,6 +80,12 @@ test('right gestures release capture; cancellation and focus loss never invoke a
   assert.deepEqual(actions,['merge','deselect','groups'],'idle right-click opens groups directly');
   canvas.fire('pointerdown');canvas.fire('pointermove',{clientY:200});canvas.fire('pointerup',{clientY:200});
   assert.equal(actions.at(-1),'groups');assert.equal(menusShown,5,'idle right-click never shows the full pie');
+  // Windows fires contextmenu after the release, on the groups dialog now under
+  // the pointer; only that one is swallowed, later menus in text fields work.
+  const menu=()=>{let blocked=false;doc.fire('contextmenu',{preventDefault(){blocked=true;}});return blocked;};
+  canvas.fire('pointerdown');canvas.fire('pointerup');
+  assert.equal(menu(),true,'the browser menu never covers the groups dialog');
+  assert.equal(menu(),false);
 });
 
 test('only an idle canvas uses direct groups; selections and placement previews retain the pie', () => {

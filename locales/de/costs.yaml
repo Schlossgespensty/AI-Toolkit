@@ -1,0 +1,91 @@
+wood: Holz
+stone: Stein
+iron: Eisen
+pitch: Pech
+gold: Gold
+travel_ticks_tile_override_blank_reference: "Lauf-Ticks je Feld überschreiben (leer: Referenz)"
+delivery_store: Lieferlager
+dairy_farm: Käserei
+work_duration_unknown: Arbeitsdauer unbekannt
+ticks_per_reference_cycle: " Ticks je Referenzzyklus"
+unknown: Unbekannt
+hide_cost_per_building: Kosten je Gebäude ausblenden
+show_cost_per_building: Kosten je Gebäude anzeigen
+the_build_cost_table: die Baukostentabelle
+cost_table_not_loaded: Kostentabelle nicht geladen.
+castle_costs: Burgkosten ▸
+castle_costs_2: Burgkosten ▾
+bundled_base_ucp: Mitgelieferte Basis + UCP
+bundled_vanilla: mitgelieferte Vanilla-Werte
+the_saved_snapshot_of: "der gespeicherte Stand von "
+partial: " (teilweise)"
+open_a_character_for_production_estimates: Öffne einen Charakter für Produktionsschätzungen.
+reading_selected_installation: Gewählte Installation wird gelesen…
+using_bundled_vanilla_prices: Mitgelieferte Vanilla-Preise werden verwendet
+no_steps: keine Schritte
+cumulative_total_no_steps: Gesamtsumme · keine Schritte
+partial_unknown_prices: " (teilweise: unbekannte Preise)"
+no_character_file: keine Charakterdatei
+iron_mine: Eisenmine
+iron_mines: Eisenminen
+pitch_rig: Pechgrube
+pitch_rigs: Pechgruben
+ox_tether: Ochsenjoch
+ox_tethers: Ochsenjoche
+1_of_those_farms_grows_hops: Eine dieser Farmen baut Hopfen an
+open_a_character_file_to_see_how_many_resource_buildings_the_aic_would_a: Öffne eine Charakterdatei, um zu sehen, wie viele Rohstoffgebäude die AIC hier ergänzen würde.
+nothing_with_a_known_price_up_to_this_step: Bis zu diesem Schritt ist kein Preis bekannt.
+no_cost: keine Kosten
+price_from_the_selected_balance_file: Preis aus der gewählten Balance-Datei
+price_from_the_game_exe_vanilla: Preis aus der Spiel-EXE (Vanilla)
+value_value_value_tiles_value_walking_ticks_value: "{{value1}}. {{note}}. {{value3}} Felder; {{value4}} Lauf-Ticks; {{value5}}."
+value_reference_ticks_batch: "{{good}}: Referenz-Ticks je Charge"
+bundled_vanilla_prices_were_extracted_from_the_game_exe_at_value_load_a_: >-
+  Mitgelieferte Vanilla-Preise wurden bei {{value1}} aus der Spiel-EXE gelesen. Eine Plugin-Balance-JSON
+  überschreibt Gebäudepreise; fehlende Werte behalten Vanilla-Preise. Das laufende Spiel wird nicht
+  ausgelesen. Ein Bauschritt = 50 Ticks = ein Spieltag (gemessen: 445 von 445 Schritten).
+ucp_balance_could_not_be_loaded_still_using_value_value: UCP-Balance konnte nicht geladen werden. {{value1}} bleibt aktiv. {{value2}}
+using_saved_snapshot_value: "Gespeicherter Stand wird verwendet: {{choice}}"
+cumulative_total_steps_1_value: Gesamtsumme · Schritte 1–{{steps}}
+total_through_step_value: Summe bis Schritt {{steps}}
+through_step_value_value: "Bis Schritt {{steps}}: {{value2}}"
+price_unknown_not_counted_value_the_build_cost_table_has_no_entry_for_th: "Preis unbekannt, nicht gezählt: {{namen}}. Dafür fehlen Einträge in der Baukostentabelle."
+value_ticks_one_step_is_one_game_day_and_a_step_that_cannot_be_built_sti: >-
+  {{value1}} Ticks – ein Schritt entspricht einem Spieltag, auch wenn er nicht gebaut werden kann. Ohne Geld
+  wartet die KI. Dies ist daher der frühestmögliche Zeitpunkt, keine Zusage.
+at_value_population_the_aic_opens_value: Bei {{value1}} Bevölkerung sieht die AIC {{value2}} vor.
+1_pitch_per_value_tiles_grouped_across_steps_assumes_a_fresh_placement_c: ; 1 Pech je {{pitchGroup}} Felder, schrittübergreifend gruppiert; neuer Platzierungszähler angenommen
+cumulative_total_through_step_value: Gesamtsumme bis Schritt {{steps}}
+about_the_castle_cost_overview: Zur Burgkostenübersicht
+balance: Balance
+load_a_balance_json_ascension_team_league: Balance-JSON laden (Ascension, Team League, …)
+load: Laden…
+use_ucp_balance: UCP-Balance verwenden
+cumulative_through_selected_step: Kumuliert bis zum gewählten Schritt
+total_through_current_step: Summe bis zum aktuellen Schritt
+resources_through_this_step: Rohstoffe bis zu diesem Schritt
+production_assumptions: Produktionsannahmen
+reference_estimate_from_stronghold_heaven_original_stronghold_assuming_f: >-
+  Referenzschätzung von Stronghold Heaven (ursprüngliches Stronghold), mit voller Besetzung bei verfügbarem
+  Wohnraum. Diese Näherungswerte sind keine geprüften Crusader-Simulationszeiten. Bauverzögerungen, Pausen,
+  Rohstoffmangel, Verbrauch, Handel, Transportengpässe sowie Furcht- und Ruheeffekte fehlen. Diese Waren
+  entsprechen nicht deinem Lagerbestand.
+resource_distance: Rohstoffentfernung
+per_extra_building: Je zusätzlichem Gebäude
+stockpile_distance: Vorratslagerentfernung
+delivery_store_distance: Lieferlagerentfernung
+between_stores: Zwischen Lagern
+walking_speed_multiplier: Laufgeschwindigkeitsfaktor
+delivery_productivity: Lieferproduktivität %
+skirmish_delivery_bonus_where_enabled_by_balance: Gefechts-Lieferbonus, sofern durch Balance aktiviert
+workshop_itinerary: Werkstattweg
+work_ticks_exclude_the_return_journey_cycle_work_ticks_2_distance_walkin: >-
+  Arbeits-Ticks enthalten den Rückweg nicht: Zyklus = Arbeits-Ticks + 2 × Entfernung × Lauf-Ticks. Jeder
+  Produzent behält seinen Fortschritt und anteiligen Lieferbonus. Stein bezeichnet den Steinbruchausstoß;
+  Ochsentransport wird nicht simuliert. Entfernungen der Wegeüberlagerung sind separate Layoutdiagnosen, keine
+  gemessenen Wege zu externen Rohstoffen.
+elapsed_game_time: Vergangene Spielzeit
+good: Ware
+cost: Kosten
+estimated_gross_production_not_stockpile_inventory: Geschätzte Bruttoproduktion, kein Lagerbestand
+produced: Produziert*

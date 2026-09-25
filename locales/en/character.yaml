@@ -1,0 +1,32 @@
+failed_to_load_config_files: Failed to load config files.
+all_troops: All troops
+initial_role: initial role
+unsupported_value: 'Unsupported value: '
+no_description_yet: No description yet.
+initial_roles: Initial roles
+unknown_parameters_found: |+
+  Unknown parameters found:
+
+opening_another_character_file: opening another Character file
+creating_a_new_character: creating a new Character
+new_character_added_to_the_loaded_ai: New Character added to the loaded AI
+new_character: New Character
+saving: Saving...
+saved: Saved!
+error: Error!
+open_an_ai_from_the_library_to_edit_its_content: Open an AI from the Library to edit its content
+ai_content_belongs_to_the_loaded_ai_project: AI Content belongs to the loaded AI project
+no_file_loadedvalue: No file loaded{{dirtyMarker}}
+leather_armor: Leather armor
+iron_armor: Iron armor
+capacity: Capacity
+needed_at_limits: Needed at limits
+production: production
+recruitment_purchase: recruitment purchase
+maxfood_variance: MaxFood + variance
+no_relevant_production: No relevant production
+or_recruitment: ' or recruitment'
+positive_negative: Positive / negative
+net_buildings: Net buildings
+population_groups_of_16: Population / groups of 16
+movement: Movement

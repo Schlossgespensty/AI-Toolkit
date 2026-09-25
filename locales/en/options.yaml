@@ -1,0 +1,64 @@
+None: None
+ArabArcher: Arab Archer
+Slave: Slave
+Slinger: Slinger
+Assassin: Assassin
+HorseArcher: Horse Archer
+ArabSwordsman: Arab Swordsman
+FireThrower: Fire Thrower
+EuropArcher: European Archer
+Spearman: Spearman
+Maceman: Maceman
+Crossbowman: Crossbowman
+Pikeman: Pikeman
+Swordsman: Swordsman
+Knight: Knight
+Monk: Monk
+Tunneler: Tunneler
+Engineer: Engineer
+FireBallista: Fire Ballista
+Catapult: Catapult
+Trebuchet: Trebuchet
+BatteringRam: Battering Ram
+SiegeTower: Siege Tower
+Shield: Shield
+WheatFarm: Wheat Farm
+DairyFarm: Dairy Farm
+AppleFarm: Apple Farm
+HopFarm: Hop Farm
+Wheat: Wheat
+Flour: Flour
+Hop: Hop
+Beer: Beer
+Spears: Spears
+Pikes: Pikes
+Bows: Bows
+Crossbows: Crossbows
+Swords: Swords
+Maces: Maces
+LeatherArmors: Leather Armors
+IronArmors: Iron Armors
+Iron: Iron
+Pitch: Pitch
+Stone: Stone
+Wood: Wood
+Cheese: Cheese
+Meat: Meat
+Bread: Bread
+Apples: Apples
+'True': 'True'
+'False': 'False'
+Yellow: Yellow
+Blue: Blue
+Europ: European
+Arab: Arabian
+Both: Both
+Balanced: Balanced
+Closest: Closest
+Gold: Gold
+Any: Any
+Player: Player
+defend: defend
+dig: dig
+hold: hold
+patrol: patrol

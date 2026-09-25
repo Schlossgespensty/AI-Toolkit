@@ -256,6 +256,10 @@
       else if (traegt(gx, gy - 1) && traegt(gx, gy + 1)) gewaehlt = mauer.quer[welche][y & 15];
       else if (traegt(gx + 1, gy)) gewaehlt = mauer.rand.laengs[welche];
       else if (traegt(gx, gy + 1)) gewaehlt = mauer.rand.quer[welche];
+      // Eine ganz allein stehende Zinne ist immer die Einzelzinne. Das
+      // Schachbrett des Spiels gaebe jedem zweiten Feld die Scharte - in den
+      // Originalgrafiken fast gleich, in anderen Texturen fehlt die Zinne.
+      else if (!traegt(gx - 1, gy) && !traegt(gx, gy - 1)) gewaehlt = mauer.rand.allein.klotz;
     }
     if (!gewaehlt) gewaehlt = mauer.rand.allein[welche];
     return { ...gewaehlt, kacheln: sprite.kacheln };
@@ -466,6 +470,25 @@
       }
     }
     return out;
+  }
+
+  // Resolve synthetic standby/lord groups against the visible keep, not a
+  // future build step. Keep plates have world offsets; only the camera rotates
+  // those offsets. Return AIV coordinates so all troops share one tile layout.
+  function troopAnchors(groups, keep, rotation) {
+    const camera = keep?.cameraRotation || 0;
+    const origin = keep && rotateGrid(keep.gx,keep.gy,keep.tiles,(8-camera)%8);
+    const camp = keep && collectPlates([keep]).find(plate=>plate.sprite.dx===0 && plate.sprite.dy===8);
+    const campOrigin = camp && rotateGrid(camp.gx,camp.gy,camp.tiles,(8-camera)%8);
+    return groups.flatMap(group=>{
+      if (!group.destination) return [{...group,...gridFromOffset(group.offset)}];
+      if (!origin || (group.destination==='campfire' && !campOrigin)) return [];
+      const anchor = group.destination==='campfire'
+        ? {gx:campOrigin.gx+3,gy:campOrigin.gy}
+        : {gx:origin.gx+3,gy:origin.gy+(group.destination==='lord' ? 3 : 4)};
+      const tile = rotateGrid(anchor.gx,anchor.gy,1,camera);
+      return [{...group,...rotateGrid(tile.gx,tile.gy,1,(8-rotation)%8)}];
+    });
   }
 
   function byDepth(a, b) { return depth(a) - depth(b); }
@@ -776,7 +799,7 @@
            gridFromOffset, offsetFromGrid, isoPoint,
            tileFromPoint, editorTileFromPoint,
            depth, byDepth, renderOrder, spriteRect, groundTextureScale, variantFor, wallLookup, hoehenLookup,
-           collectItems, collectPlates, attachDrawbridges, buildingParts, moatPicture, resolveMoats, marqueeOutline, fitView,
+           collectItems, collectPlates, troopAnchors, attachDrawbridges, buildingParts, moatPicture, resolveMoats, marqueeOutline, fitView,
            rotateGrid, unrotateGrid, keepOrientation, turnCameraView, cameraCanvasTransform,
            mapTileForGrid, mapTileForView, viewTileForMap,
            mapTileHeight, keepAnchor, previewPointForMapTile, centreKeep,

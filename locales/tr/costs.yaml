@@ -1,0 +1,92 @@
+wood: Odun
+stone: Taş
+iron: Demir
+pitch: Zift
+gold: Altın
+unknown: Bilinmiyor
+travel_ticks_tile_override_blank_reference: 'Kare başına yolculuk tikleri (boş: referans)'
+delivery_store: teslimat deposu
+dairy_farm: mandıra
+work_duration_unknown: çalışma süresi bilinmiyor
+ticks_per_reference_cycle: ' referans döngüsü başına tik'
+hide_cost_per_building: Bina başına maliyeti gizle
+show_cost_per_building: Bina başına maliyeti göster
+the_build_cost_table: inşa maliyeti tablosu
+cost_table_not_loaded: Maliyet tablosu yüklenmedi.
+castle_costs: Kale maliyetleri ▸
+castle_costs_2: Kale maliyetleri ▾
+bundled_base_ucp: Birlikte gelen temel değerler + UCP
+bundled_vanilla: birlikte gelen orijinal değerler
+the_saved_snapshot_of: 'kaydedilmiş kopya: '
+partial: ' (kısmi)'
+open_a_character_for_production_estimates: Üretim tahminleri için bir karakter açın.
+reading_selected_installation: Seçili kurulum okunuyor…
+using_bundled_vanilla_prices: Birlikte gelen orijinal fiyatlar kullanılıyor
+no_steps: adım yok
+cumulative_total_no_steps: Birikimli toplam · adım yok
+partial_unknown_prices: ' (kısmi: bilinmeyen fiyatlar)'
+no_character_file: karakter dosyası yok
+iron_mine: demir madeni
+iron_mines: demir madenleri
+pitch_rig: zift kuyusu
+pitch_rigs: zift kuyuları
+ox_tether: öküz bağlama yeri
+ox_tethers: öküz bağlama yerleri
+1_of_those_farms_grows_hops: Bu çiftliklerden 1 tanesi şerbetçiotu yetiştirir
+open_a_character_file_to_see_how_many_resource_buildings_the_aic_would_a: AIC'nin buraya kaç kaynak binası ekleyeceğini görmek için bir karakter dosyası açın.
+nothing_with_a_known_price_up_to_this_step: Bu adıma kadar fiyatı bilinen bir öğe yok.
+no_cost: maliyet yok
+price_from_the_selected_balance_file: Seçili denge dosyasındaki fiyat
+price_from_the_game_exe_vanilla: Oyun yürütülebilir dosyasındaki fiyat (orijinal)
+value_value_value_tiles_value_walking_ticks_value: '{{value1}}. {{note}}. {{value3}} kare; {{value4}} yürüme tiki; {{value5}}.'
+value_reference_ticks_batch: '{{good}}: parti başına referans tikleri'
+bundled_vanilla_prices_were_extracted_from_the_game_exe_at_value_load_a_: >-
+  Birlikte gelen orijinal fiyatlar oyun dosyasından {{value1}} konumunda çıkarıldı. Bina fiyatlarını
+  değiştirmek için bir eklenti denge JSON'u yükleyin; belirtilmeyenler orijinal fiyatını korur. Çalışan oyun
+  okunmaz. Bir inşa adımı = 50 tik = bir oyun günü (445 adımın tamamında ölçüldü).
+ucp_balance_could_not_be_loaded_still_using_value_value: UCP dengesi yüklenemedi. {{value1}} kullanılmaya devam ediliyor. {{value2}}
+using_saved_snapshot_value: 'Kaydedilmiş kopya kullanılıyor: {{choice}}'
+cumulative_total_steps_1_value: Birikimli toplam · 1–{{steps}}. adımlar
+total_through_step_value: '{{steps}}. adıma kadarki toplam'
+through_step_value_value: '{{steps}}. adıma kadar: {{value2}}'
+price_unknown_not_counted_value_the_build_cost_table_has_no_entry_for_th: 'Fiyat bilinmiyor, sayılmadı: {{namen}}. İnşa maliyeti tablosunda bu öğeler için kayıt yok.'
+value_ticks_one_step_is_one_game_day_and_a_step_that_cannot_be_built_sti: >-
+  {{value1}} tik: bir adım bir oyun günüdür; yapılamayan adımlar da o günü harcar. Yapay zekânın parası
+  biterse bekler. Bu en erken olası süredir, garanti değildir.
+at_value_population_the_aic_opens_value: '{{value1}} nüfusta AIC şunları açar: {{value2}}.'
+1_pitch_per_value_tiles_grouped_across_steps_assumes_a_fresh_placement_c: >-
+  ; adımlar arasında gruplanan her {{pitchGroup}} kare için 1 zift; yerleştirme sayacının sıfır olduğu
+  varsayılır
+cumulative_total_through_step_value: '{{steps}}. adıma kadarki birikimli toplam'
+about_the_castle_cost_overview: Kale maliyeti özeti hakkında
+balance: Denge
+load_a_balance_json_ascension_team_league: Denge JSON'u yükle (Ascension, Team League, ...)
+load: Yükle…
+use_ucp_balance: UCP dengesini kullan
+cumulative_through_selected_step: Seçili adıma kadarki birikim
+total_through_current_step: Geçerli adıma kadarki toplam
+resources_through_this_step: Bu adıma kadarki kaynaklar
+production_assumptions: Üretim varsayımları
+reference_estimate_from_stronghold_heaven_original_stronghold_assuming_f: >-
+  Stronghold Heaven'dan (ilk Stronghold) alınan referans tahmin; konut sağlandıkça tam işçi kapasitesi
+  varsayılır. Bu yaklaşık oranlar doğrulanmış Crusader simülasyon süreleri değildir. İnşaat gecikmeleri,
+  duraklamalar, girdi eksikliği, tüketim, ticaret, taşıma darboğazları ve korku/dinlenme etkileri dahil
+  değildir. Bu mallar stok bakiyeniz değildir.
+resource_distance: Kaynağa uzaklık
+per_extra_building: Ek bina başına
+stockpile_distance: Stok alanına uzaklık
+delivery_store_distance: Teslimat deposuna uzaklık
+between_stores: Depolar arası
+walking_speed_multiplier: Yürüme hızı çarpanı
+delivery_productivity: Teslimat verimliliği %
+skirmish_delivery_bonus_where_enabled_by_balance: Denge tarafından etkinleştirildiğinde çatışma teslimat bonusu
+workshop_itinerary: Atölye güzergâhı
+work_ticks_exclude_the_return_journey_cycle_work_ticks_2_distance_walkin: >-
+  Çalışma tikleri dönüş yolunu içermez: döngü = çalışma tikleri + 2 × uzaklık × yürüme tikleri. Her üretici
+  kendi ilerlemesini ve kesirli teslimat bonusunu korur. Taş, taş ocağı çıktısıdır; öküz taşımacılığı simüle
+  edilmez. Yol katmanı uzaklıkları ayrı yerleşim tanılarıdır; ölçülmüş dış kaynak uzaklıkları değildir.
+elapsed_game_time: Geçen oyun süresi
+good: Mal
+cost: Maliyet
+estimated_gross_production_not_stockpile_inventory: Tahmini brüt üretim; stok envanteri değildir
+produced: Üretilen*

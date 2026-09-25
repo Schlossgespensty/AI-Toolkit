@@ -1,4 +1,5 @@
 (() => {
+  const tr = (key, options) => globalThis.toolkitI18n.t(key, options);
   let active = 'ucp';
   const tabs = Array.from(document.querySelectorAll('.workspaceTab'));
   const workspaces = {
@@ -19,10 +20,10 @@
     }
     for (const tab of tabs) tab.classList.toggle('active', tab.dataset.workspace === name);
     window.electronAPI.setActiveWorkspace(name);
-    status.textContent = name === 'castle'
-      ? 'Castle editor'
-      : name === 'content' ? 'AI Content'
-      : name === 'ucp' ? 'UCP AI Library' : 'Character editor';
+    setStatus(() => name === 'castle'
+      ? tr("shell:castle_editor")
+      : name === 'content' ? tr("interface:ai_content")
+      : name === 'ucp' ? tr("interface:ucp_ai_library") : tr("interface:character_editor"));
     // A frame later, so the boxes of the view tree have their size before
     // the editor measures the one its map ended up with.
     if (name === 'castle') requestAnimationFrame(() => {
@@ -35,7 +36,7 @@
   }
 
   function getActive() { return active; }
-  function setStatus(text) { status.textContent = text; }
+  function setStatus(text) { window.toolkitI18n.bindText(status, text); }
 
   function editorFor(name) {
     if (name === 'castle') return window.castleEditor;
@@ -48,7 +49,7 @@
     const editor = editorFor(name);
     if (!editor?.isDirty?.()) return true;
     const choice = await window.electronAPI.confirmUnsaved({
-      documentName: name === 'castle' ? 'The Castle' : name === 'content' ? 'lines.json' : 'The Character',
+      documentName: name === 'castle' ? tr('details:castle_document') : name === 'content' ? 'lines.json' : tr('details:character_document'),
       action
     });
     if (choice === 'cancel') return false;
@@ -71,7 +72,7 @@
     if (closePromptOpen) return;
     closePromptOpen = true;
     try {
-      if (await confirmAll('closing this window')) window.electronAPI.confirmWindowClose();
+      if (await confirmAll(tr("shell:closing_this_window"))) window.electronAPI.confirmWindowClose();
     } finally {
       closePromptOpen = false;
     }

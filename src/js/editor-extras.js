@@ -4,12 +4,15 @@
 // Placement always uses the editor's existing validation and undo pipeline.
 
 (function (global) {
+  const tr = (key, options) => (globalThis.toolkitI18n || require('./i18n')).t(key, options);
 
   // ---------------------------------------------------------------------
   // Reine Rechenteile. Sie kennen kein Fenster und keine Oberflaeche, damit
   // ein Test sie ohne Browser pruefen kann.
   // ---------------------------------------------------------------------
 
+  // A persisted identity, not a display label: existing groups must survive
+  // language changes and remain compatible with the original storage format.
   const UNSAVED_KEY = '(unsaved castle)';
   // Dieselbe Kantenlaenge wie im Editor: ein Feld-Versatz ist y * GRID + x.
   const GRID = 100;
@@ -180,14 +183,14 @@
 
   function newGroupFromSelection(name) {
     const members = selectedMembers();
-    if (!members.length) return 'Select something on the map first.';
+    if (!members.length) return tr("castle:select_something_on_the_map_first");
     if (groups.some(group => group.name.toLowerCase() === name.toLowerCase())) {
-      return `A group called "${name}" is already there.`;
+      return tr("castle:a_group_called_value_is_already_there", { name: name });
     }
     groups.push({ id: `g${Date.now().toString(36)}${groups.length}`, name, members });
     saveGroups();
     renderGroups();
-    ex.setStatus(`Group "${name}" saved with ${members.length} placement${members.length === 1 ? '' : 's'}`);
+    ex.setStatus(() => tr("castle:group_value_saved_with_value_placementvalue", { name: name, quantityvalue3: tr("quantity:placement", { count: members.length }) }));
     return '';
   }
 
@@ -201,27 +204,28 @@
     if (!groups.length) {
       const empty = doc.createElement('p');
       empty.className = 'castleGroupsEmpty';
-      empty.textContent = 'No groups in this castle yet. Select placements on the map, give them a name and save.';
+      empty.textContent = tr("castle:no_groups_in_this_castle_yet_select_placements_on_the_map_give_them_a_na");
       els.list.appendChild(empty);
+      global.toolkitI18n.applyTextDirection(els.list);
       return;
     }
     for (const group of groups) {
       const row = doc.createElement('div'); row.className = 'castleGroupEntry';
-      row.appendChild(rowButton(group.name, 'Copy this group for placement', () => {
+      row.appendChild(rowButton(group.name, tr("castle:copy_this_group_for_placement"), () => {
         const buffer = clipboardFromMembers(group.members, ed.getItemDefinitions());
-        if (!buffer) return setGroupError('This group has no copyable items.');
+        if (!buffer) return setGroupError(tr("castle:this_group_has_no_copyable_items"));
         ex.state.copyBuffer = buffer;
         rememberClipboard();
         ex.setTool('copy');
         els.dialog.close();
-        ex.setStatus('Move the group into place; click to paste, Esc to cancel.');
+        ex.setStatus(() => tr('layout:move_copy'));
       }));
-      const remove = rowButton('', `Delete group "${group.name}"`, () => {
+      const remove = rowButton('', tr("castle:delete_group_value", { name: group.name }), () => {
         groups = groups.filter(saved => saved.id !== group.id);
         saveGroups(); renderGroups();
       });
       remove.className = 'castleGroupRemove';
-      remove.setAttribute('aria-label', `Delete group "${group.name}"`);
+      remove.setAttribute('aria-label', tr("castle:delete_group_value", { name: group.name }));
       const icon = doc.createElementNS('http://www.w3.org/2000/svg', 'svg');
       icon.setAttribute('viewBox', '0 0 18 20'); icon.setAttribute('aria-hidden', 'true');
       const path = doc.createElementNS('http://www.w3.org/2000/svg', 'path');
@@ -231,6 +235,7 @@
       icon.appendChild(path); remove.appendChild(icon); row.appendChild(remove);
       els.list.appendChild(row);
     }
+    global.toolkitI18n.applyTextDirection(els.list);
   }
 
   function rowButton(label, title, onClick) {
@@ -285,19 +290,19 @@
     ex.scheduleDraw();
     writeStore(CLIP_STORE, null);
     updateClipboardButton();
-    ex.setStatus('Clipboard emptied');
+    ex.setStatus(() => tr("castle:clipboard_emptied"));
   }
 
   function updateClipboardButton() {
     if (!els.clipboard) return;
     const count = clipboard?.count || 0;
     const key = ed.getShortcut('paste');
-    els.clipboard.textContent = count ? `Paste ${count}${key ? ' (' + key.toUpperCase() + ')' : ''}` : 'Paste';
+    els.clipboard.textContent = count ? `${tr('common:actions.paste')} ${count}${key ? ' (' + key.toUpperCase() + ')' : ''}` : tr("common:actions.paste");
     els.clipboard.parentElement.hidden = !count;
     els.clipboard.disabled = !count;
     els.clipboard.title = count
-      ? `${count} placement${count === 1 ? '' : 's'} copied — works in every castle. Click, then click on the map, or press Ctrl+V.`
-      : 'Nothing copied yet. Copy something with Ctrl+C or the Copy tool.';
+      ? tr("castle:value_placementvalue_copied_works_in_every_castle_click_then_click_on_th", { quantityvalue2: tr("quantity:placement", { count: count }) })
+      : tr("castle:nothing_copied_yet_copy_something_with_ctrl_c_or_the_copy_tool");
     if (els.clipboardClear) els.clipboardClear.hidden = !count;
   }
 
@@ -327,12 +332,12 @@
     if (!status) return;
     const group = doc.createElement('span');
     group.className = 'castleClipboardStatus';
-    els.clipboard = toolbarButton('castleClipboardBtn', 'Paste', 'Paste at the cursor', () => {
+    els.clipboard = toolbarButton('castleClipboardBtn', tr('common:actions.paste'), tr("castle:paste_at_the_cursor"), () => {
       if (!armClipboard()) return;
       ex.setTool('copy');
-      ex.setStatus('Move the copy into place; click to paste, Esc to cancel.');
+      ex.setStatus(() => tr('layout:move_copy'));
     });
-    els.clipboardClear = toolbarButton('castleClipboardClearBtn', 'Clear', 'Empty the clipboard', clearClipboard);
+    els.clipboardClear = toolbarButton('castleClipboardClearBtn', tr('common:actions.remove'), tr("castle:empty_the_clipboard"), clearClipboard);
     group.append(els.clipboard, els.clipboardClear);
     status.appendChild(group);
     updateClipboardButton();
@@ -342,22 +347,23 @@
     const dialog = doc.createElement('dialog');
     dialog.id = 'castleGroupsDialog';
     dialog.className = 'castleGroupsDialog';
-    dialog.setAttribute('aria-label', 'Groups');
+    dialog.dataset.i18nAttrs = 'aria-label=castle:groups';
     const form = doc.createElement('form'); form.id = 'castleGroupsForm';
     const nameRow = doc.createElement('div'); nameRow.className = 'castleGroupsNew';
     const name = doc.createElement('input'); name.id = 'castleGroupNameInput';
-    name.placeholder = 'Group name'; name.setAttribute('aria-label', 'Group name');
+    name.dataset.i18nAttrs = 'placeholder=castle:group_name;aria-label=castle:group_name';
     name.maxLength = 60; name.autocomplete = 'off';
-    const save = doc.createElement('button'); save.type = 'submit'; save.textContent = 'Save group';
+    const save = doc.createElement('button'); save.type = 'submit'; save.dataset.i18n = 'castle:save_group';
     nameRow.append(name, save);
     const list = doc.createElement('div'); list.id = 'castleGroupsList'; list.className = 'castleGroupsList';
     const error = doc.createElement('div'); error.setAttribute('role', 'alert');
     form.append(nameRow, list, error); dialog.appendChild(form); doc.body.appendChild(dialog);
+    global.toolkitI18n.applyBindings(dialog);
     Object.assign(els, {dialog, name, nameRow, list, error});
     form.addEventListener('submit', event => {
       event.preventDefault();
       const value = name.value.trim();
-      const problem = value ? newGroupFromSelection(value) : 'Enter a group name.';
+      const problem = value ? newGroupFromSelection(value) : tr("castle:enter_a_group_name");
       if (problem) return setGroupError(problem);
       name.value = ''; dialog.close();
     });
@@ -459,6 +465,14 @@
   // Diese Datei wird vom Editor nachgeladen und ist damit nicht an seiner
   // Reihenfolge festgemacht. Ist er noch nicht fertig, wird kurz gewartet -
   // aber nicht endlos, damit ein Fehler sichtbar bleibt.
+  global.toolkitI18n?.onChange(() => {
+    updateClipboardButton();
+    renderGroups();
+    if (els.clipboardClear) {
+      els.clipboardClear.textContent = tr('common:actions.remove');
+      els.clipboardClear.title = tr('castle:empty_the_clipboard');
+    }
+  });
   let attempts = 0;
   (function tryStart() {
     if (start()) return;

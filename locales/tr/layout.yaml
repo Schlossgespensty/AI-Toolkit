@@ -1,0 +1,10 @@
+steps: Adımlar
+categories: Kategoriler
+overview: Özet
+resize: '{{panel}} ve özet boyutunu değiştir'
+resize_help: >-
+  Boyutlandırmak için sürükleyin; daraltmak için bir uca kadar sürükleyin. Oklar boyutlandırır, Home/End
+  daraltır, Enter geri açar.
+show: '{{panel}} göster'
+hide: '{{panel}} gizle'
+move_copy: Kopyayı istediğiniz yere taşıyın; yapıştırmak için tıklayın, iptal için Esc tuşuna basın.

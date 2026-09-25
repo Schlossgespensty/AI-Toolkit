@@ -338,3 +338,20 @@ test('recruitment footprints keep only the building and flag tiles solid',()=>{
     assert.ok(rs[0].path.some(t=>t.x>3&&t.x<12&&t.y>=3&&t.y<8));
   }
 });
+test('analysis worker loads every dependency and returns fire and routes together',()=>{
+  const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
+  const dir=path.join(__dirname,'../src/js'),messages=[];
+  const context=vm.createContext({postMessage:m=>messages.push(m)});
+  context.self=context;
+  context.importScripts=(...files)=>files.forEach(file=>vm.runInContext(fs.readFileSync(path.join(dir,file),'utf8'),context,{filename:file}));
+  vm.runInContext(fs.readFileSync(path.join(dir,'castle-analysis-worker.js'),'utf8'),context);
+  const ps=[p(null,rect(0,0,14,14)),p(52,rect(1,5)),p(186,rect(2,5)),
+    p(110,rect(3,4,5,6),{ref:'left'}),p(25,rect(6,5)),
+    p(110,rect(7,4,9,6),{ref:'right'}),p(186,rect(10,5)),p(50,rect(11,5,12,6),{worker:true}),
+    p(54,rect(40,40),{name:'Hovel',health:200})];
+  context.onmessage({data:{id:1,placements:ps,terrain:null,fire:true,paths:true}});
+  const [result]=messages;
+  assert.equal(result.error,undefined);
+  assert.ok(result.heat.some(v=>v>0),'fire heat survives enabling paths');
+  assert.ok(result.routes[0].path.some(t=>t.x===6 && t.y===5 && t.height===90));
+});

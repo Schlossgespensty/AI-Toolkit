@@ -1,0 +1,56 @@
+character_name: Имя персонажа.
+character_description: Описание персонажа.
+the_ai_s_attack_has_been_repelled: Атака ИИ отражена.
+one_of_the_ai_s_buildings_has_been_destroyed: Одно из зданий ИИ уничтожено.
+the_ai_has_been_defeated_if_enemy: ИИ побежден (если он враг).
+the_ai_has_successfully_defended_itself: ИИ успешно отбился.
+the_ai_destroys_a_building: ИИ уничтожает здание.
+the_ai_has_killed_the_player: ИИ убил игрока.
+the_ai_defeats_another_enemy_ai: ИИ побеждает другого вражеского ИИ.
+the_ai_requests_goods: ИИ запрашивает товары.
+the_player_sends_goods_to_the_ai: Игрок отправляет товары ИИ.
+the_ai_has_been_defeated_if_ally: ИИ побежден (если он союзник).
+the_player_defeats_an_enemy_while_allied_with_this_ai: Игрок побеждает врага, будучи союзником этого ИИ.
+the_allied_ai_defeats_an_enemy: Союзный ИИ побеждает врага.
+the_ai_is_under_attack_and_asks_for_help: ИИ атакован и просит помощи.
+the_game_has_been_going_on_for_a_long_time: Игра продолжается уже долго.
+a_player_is_removed_from_the_map: Игрок удален с карты.
+a_player_is_added_to_the_map: Игрок добавлен на карту.
+not_used: Не используется.
+the_ai_does_not_send_the_requested_goods: ИИ не отправляет запрошенные товары.
+the_ai_sends_the_requested_goods: ИИ отправляет запрошенные товары.
+the_team_is_winning: Команда выигрывает.
+the_team_is_losing: Команда проигрывает.
+the_ai_sends_the_requested_help: ИИ отправляет запрошенную помощь.
+the_ai_will_attack_the_requested_enemy: ИИ атакует указанного врага.
+character_title_include_quotation_marks_for_a_quoted_title: Титул персонажа (добавьте кавычки, если титул должен быть в кавычках).
+character_name_followed_by_the_title_include_quotation_marks_for_a_quote: Имя персонажа, затем титул (добавьте кавычки, если они нужны).
+the_ai_attacks_the_player: ИИ атакует игрока.
+the_player_attacks_the_ai: Игрок атакует ИИ.
+the_ai_refuses_to_attack_the_requested_enemy: ИИ отказывается атаковать указанного врага.
+the_ai_refuses_a_request_for_help: ИИ отказывает в помощи.
+replay: Повторить
+play: Воспроизвести
+media_replacement_cancelled: Замена медиа отменена
+wav_speech: Речь WAV
+bink_video: Видео Bink
+missing: Отсутствует
+mapped_asset: Назначенный ресурс
+open_externally: Открыть внешней программой
+open_play: Открыть / воспроизвести
+saving_lines_json: Сохранение lines.json…
+portrait_change_cancelled: Замена портрета отменена
+loading_value: Загрузка {{fileName}}…
+could_not_play_value_here_value_use_open_externally: "Не удалось воспроизвести {{fileName}} здесь: {{message}}. Откройте внешней программой."
+downloaded_value_open_it_with_its_associated_program: Файл {{fileName}} загружен. Откройте его связанной программой.
+opened_value_in_its_associated_program: Файл {{fileName}} открыт связанной программой.
+could_not_open_value_value: "Не удалось открыть {{fileName}}: {{message}}"
+choosing_a_replacement_for_value: Выбор замены для {{fileName}}…
+could_not_replace_value_value: "Не удалось заменить {{fileName}}: {{message}}"
+no_mapped_wav_speech_files_found_for_value: Для {{value1}} не найдены назначенные WAV-файлы речи.
+no_mapped_value_files_found: Назначенные файлы {{value1}} не найдены.
+this_wav_codec_cannot_play_in_the_editor_use_open_externally: Редактор не поддерживает этот кодек WAV. Откройте файл внешней программой.
+value_content_loaded: Содержимое {{value1}} загружено
+could_not_save_lines_json_value: "Не удалось сохранить lines.json: {{message}}"
+value_saved_as_value_value: ✓ {{value1}} сохранено в размере {{width}}×{{height}}
+could_not_change_portrait_value: "Не удалось изменить портрет: {{message}}"

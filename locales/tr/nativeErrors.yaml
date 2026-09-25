@@ -1,0 +1,62 @@
+an_ai_with_that_folder_id_already_exists: Bu klasör kimliğine sahip bir yapay zekâ zaten var
+castle_already_exists: Kale zaten var
+castle_file_does_not_exist_in_this_ai: Bu yapay zekâda kale dosyası yok
+castle_mapping_must_contain_at_most_eight_slots: Kale eşlemesi en fazla sekiz yuva içerebilir
+castle_slots_must_be_an_array: Kale yuvaları bir dizi olmalıdır
+choose_a_fork_of_the_official_ai_toolkit: Resmî AI Toolkit deposunun bir çatalını seçin
+choose_the_stronghold_crusader_installation: Stronghold Crusader kurulumunu seçin
+close_other_editor_windows_before_updating: Güncellemeden önce diğer düzenleyici pencerelerini kapatın
+download_the_release_first: Önce sürümü indirin
+editor_did_not_close_no_files_were_replaced: Düzenleyici kapanmadı; hiçbir dosya değiştirilmedi
+editor_window_not_found: Düzenleyici penceresi bulunamadı
+enter_an_ai_name: Bir yapay zekâ adı girin
+expected_a_ucp_installation_containing_ucp_plugins: ucp/plugins içeren bir UCP kurulumu bekleniyordu
+expected_an_aiv_castle_filename: Bir AIV kale dosyası adı bekleniyordu
+expected_one_ai_toolkit_executable: Tek bir AI Toolkit yürütülebilir dosyası bekleniyordu
+incomplete_download: İndirme tamamlanmadı
+invalid_ai_folder_id: Geçersiz yapay zekâ klasör kimliği
+invalid_archive_path: Geçersiz arşiv yolu
+invalid_destination: Geçersiz hedef
+invalid_executable_path: Geçersiz yürütülebilir dosya yolu
+invalid_filename: Geçersiz dosya adı
+invalid_github_repository: Geçersiz GitHub deposu
+invalid_github_response: Geçersiz GitHub yanıtı
+invalid_installation_root: Geçersiz kurulum kökü
+invalid_item_type: Geçersiz öğe türü
+invalid_manifest_path: Geçersiz bildirim dosyası yolu
+invalid_package_path: Geçersiz paket yolu
+invalid_png: Geçersiz PNG
+invalid_portrait_image: Geçersiz portre resmi
+invalid_project_path: Geçersiz proje yolu
+invalid_release_url: Geçersiz sürüm URL'si
+invalid_resource_directory: Geçersiz kaynak dizini
+invalid_settings_document: Geçersiz ayar belgesi
+invalid_staging_path: Geçersiz hazırlama yolu
+media_exceeds_playback_limit: Medya oynatma sınırını aşıyor
+missing_dialog_choices: İletişim kutusu seçenekleri eksik
+missing_install_manifest: Kurulum bildirim dosyası eksik
+missing_installation_path: Kurulum yolu eksik
+missing_release_size: Sürüm boyutu eksik
+missing_release_url: Sürüm URL'si eksik
+no_eligible_snapshot_newer_than_the_official_release: Resmî sürümden daha yeni uygun bir önizleme yok
+operation_failed: İşlem tamamlanamadı.
+missing_argument: 'Eksik bağımsız değişken: {{name}}'
+missing_resource: 'Eksik uygulama kaynağı: {{path}}'
+unexpected_package_entry: 'Beklenmeyen paket girdisi: {{path}}'
+path_is_outside_the_selected_project: Yol seçili projenin dışında
+release_checksum_mismatch: Sürüm sağlama toplamı uyuşmuyor
+release_does_not_contain_ai_toolkit_exe: Sürüm AI Toolkit.exe içermiyor
+release_exceeds_size_limits: Sürüm boyut sınırlarını aşıyor
+selected_image_exceeds_128_mb: Seçilen resim 128 MB sınırını aşıyor
+staged_update_changed: Hazırlanan güncelleme değişti
+the_ai_project_no_longer_exists: Yapay zekâ projesi artık mevcut değil
+the_media_file_type_does_not_match: Medya dosyası türü uyuşmuyor
+the_selected_release_changed_check_again: Seçilen sürüm değişti; yeniden denetleyin
+this_ai_has_no_aiv_folder: Bu yapay zekânın aiv klasörü yok
+too_many_github_results: Çok fazla GitHub sonucu
+unexpected_download_size: Beklenmeyen indirme boyutu
+unknown_configuration_file: Bilinmeyen yapılandırma dosyası
+unknown_language: Bilinmeyen dil
+unknown_theme: Bilinmeyen tema
+use_open_externally_for_bink_video: Bink video için «Harici uygulamada aç» seçeneğini kullanın
+media_not_mapped: Bu medya dosyası seçili yapay zekâya eşlenmemiş

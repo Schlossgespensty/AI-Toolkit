@@ -1,0 +1,858 @@
+StrengthMultiplier: |-
+  A nagyúr életerejének szorzója.
+  Patkány = 0.5
+  Alapérték = 1
+  Farkas = 1.5
+DotColour: |-
+  A nagyúr erejét jelző pontok színe.
+  Az eredeti játék gyenge MI-hez sárgát, erőshöz kéket használ.
+DotCount: |-
+  A nagyúr erejét jelző pontok száma.
+  Az eredeti játék a szorzó minden 0.1 értékéhez egy pontot használ.
+Type: Az öregtoronyban megjelenő nagyúr típusa.
+ArabArcher: "A játék kezdetén az öregtorony mellett megjelenő egységek száma ebből a típusból: Arab íjász."
+Slave: "A játék kezdetén az öregtorony mellett megjelenő egységek száma ebből a típusból: Rabszolga."
+Slinger: "A játék kezdetén az öregtorony mellett megjelenő egységek száma ebből a típusból: Parittyás."
+Assassin: "A játék kezdetén az öregtorony mellett megjelenő egységek száma ebből a típusból: Orgyilkos."
+HorseArcher: "A játék kezdetén az öregtorony mellett megjelenő egységek száma ebből a típusból: Lovasíjász."
+ArabSwordsman: "A játék kezdetén az öregtorony mellett megjelenő egységek száma ebből a típusból: Arab kardforgató."
+FireThrower: "A játék kezdetén az öregtorony mellett megjelenő egységek száma ebből a típusból: Tűzhajító."
+EuropArcher: "A játék kezdetén az öregtorony mellett megjelenő egységek száma ebből a típusból: Európai íjász."
+Spearman: "A játék kezdetén az öregtorony mellett megjelenő egységek száma ebből a típusból: Lándzsás."
+Maceman: "A játék kezdetén az öregtorony mellett megjelenő egységek száma ebből a típusból: Buzogányos."
+Crossbowman: "A játék kezdetén az öregtorony mellett megjelenő egységek száma ebből a típusból: Számszeríjász."
+Pikeman: "A játék kezdetén az öregtorony mellett megjelenő egységek száma ebből a típusból: Pikás."
+Swordsman: "A játék kezdetén az öregtorony mellett megjelenő egységek száma ebből a típusból: Kardforgató."
+Knight: "A játék kezdetén az öregtorony mellett megjelenő egységek száma ebből a típusból: Lovag."
+Monk: "A játék kezdetén az öregtorony mellett megjelenő egységek száma ebből a típusból: Szerzetes."
+WallDecoration: |-
+  Az AIV-szerkesztő flg jelölőinél használt nagyúri díszítés.
+
+  8 = kiömlő, égő olaj
+  9 = lángok
+  10 = kis zászló
+  11 = nagy zászló
+  12 = közepes zászló
+  13 = keresztes zászló
+  14 = tűzserpenyők
+  15 = díszkoponyák
+  21 = gőzfelhők
+  22 = betegségfelhők
+  26 = tűzrobbanások
+  28 = leszálló hollók
+  29 = vízbe eső közepes kövek
+  30 = építményt eltaláló kis kövek
+  31 = vízbe eső kis kövek
+  40 = felszálló nulla aranyjelzés
+  41 = felszálló nulla népszerűségjelzés
+  42 = üres felszálló jelzés
+  43 = üres felszálló jelzés
+Unknown001: Nem használt érték.
+Unknown002: Nem használt érték.
+Unknown003: Nem használt érték.
+Unknown004: Nem használt érték.
+Unknown005: Nem használt érték.
+CriticalPopularity: |-
+  E népszerűség alatt az MI erőteljesen árusít, hogy aranyhoz jusson.
+
+  10000 = 100 népszerűség.
+  5000 = 50 népszerűség.
+LowestPopularity: >-
+  E népszerűség alatt az MI a TaxesMin felé csökkenti az adót, és többletfejadagot ad a HighestPopularity
+  eléréséig.
+
+
+  10000 = 100 népszerűség.
+
+  5000 = 50 népszerűség.
+HighestPopularity: |-
+  E népszerűség felett az MI növeli az adókat, amíg legfeljebb −3-as stabil népszerűség-módosítót nem ér el.
+
+  10000 = 100 népszerűség.
+  5000 = 50 népszerűség.
+TaxesMin: |-
+  Legalacsonyabb megengedett adószint.
+  0 = legnagyobb juttatás
+  11 = legmagasabb adó
+TaxesMax: |-
+  Legmagasabb megengedett adószint.
+  0 = legnagyobb juttatás
+  11 = legmagasabb adó
+Unknown011: Nem használt érték.
+Farm1: |-
+  Az MI által épített 1. gazdaság.
+
+  Az elpusztult gazdaságot nem azonos típusú, hanem a sorban következő gazdaság váltja fel.
+Farm2: |-
+  Az MI által épített 2. gazdaság.
+
+  Az elpusztult gazdaságot nem azonos típusú, hanem a sorban következő gazdaság váltja fel.
+Farm3: |-
+  Az MI által épített 3. gazdaság.
+
+  Az elpusztult gazdaságot nem azonos típusú, hanem a sorban következő gazdaság váltja fel.
+Farm4: |-
+  Az MI által épített 4. gazdaság.
+
+  Az elpusztult gazdaságot nem azonos típusú, hanem a sorban következő gazdaság váltja fel.
+Farm5: |-
+  Az MI által épített 5. gazdaság.
+
+  Az elpusztult gazdaságot nem azonos típusú, hanem a sorban következő gazdaság váltja fel.
+Farm6: |-
+  Az MI által épített 6. gazdaság.
+
+  Az elpusztult gazdaságot nem azonos típusú, hanem a sorban következő gazdaság váltja fel.
+Farm7: |-
+  Az MI által épített 7. gazdaság.
+
+  Az elpusztult gazdaságot nem azonos típusú, hanem a sorban következő gazdaság váltja fel.
+Farm8: |-
+  Az MI által épített 8. gazdaság. A Farm8 után a sor elölről kezdődik.
+
+  Az elpusztult gazdaságot nem azonos típusú, hanem a sorban következő gazdaság váltja fel.
+PopulationPerFarm: |-
+  Ennyi lakókapacitásonként az MI egy gazdaságot épít. Az első gazdaság mindig 0 népességnél épül.
+
+  A komlóföldek nem számítanak bele, és megépülnek, amikor sorra kerülnek.
+PopulationPerWoodcutter: Ennyi lakókapacitásonként az MI egy favágót épít. A határ első elérésekor egy helyett kettőt épít.
+PopulationPerQuarry: Ennyi lakókapacitásonként az MI egy kőfejtőt épít. A határ első elérésekor egy helyett kettőt épít.
+PopulationPerIronmine: Ennyi lakókapacitásonként az MI egy vasbányát épít. A határ első elérésekor egy helyett kettőt épít.
+PopulationPerPitchrig: Ennyi lakókapacitásonként az MI egy szurokkitermelőt épít.
+MaxQuarries: Az MI által építhető kőfejtők legnagyobb száma.
+MaxIronmines: Az MI által építhető vasbányák legnagyobb száma.
+MaxWoodcutters: Az MI által építhető favágók legnagyobb száma.
+MaxPitchrigs: Az MI által építhető szurokkitermelők legnagyobb száma.
+MaxFarms: |-
+  Az MI által építhető gazdaságok legnagyobb száma.
+
+  A komlóföldek nem számítanak bele.
+BuildInterval: |-
+  Az MI építési sebessége. Mindenre vonatkozik: AIV-épületekre, egyéb épületekre és minden javításra.
+
+  1 a leggyorsabb.
+ResourceRebuildDelay: Az MI várakozási ideje egy nem AIV-s termelőépület újjáépítési kísérlete előtt.
+MaxFood: |-
+  Az alma, sajt, hús, kenyér és búza legnagyobb készlete (plusz ResourceVariance).
+
+  A határ típusonként érvényes, nem az összegükre.
+MinimumApples: >-
+  Ha a(z) alma készlete e szint alá esik, az MI [TradeAmountFood] mennyiségekben vásárol, amíg ismét eléri a
+  szintet.
+
+
+  0 esetén sosem vásárolja ezt az árut.
+MinimumCheese: >-
+  Ha a(z) sajt készlete e szint alá esik, az MI [TradeAmountFood] mennyiségekben vásárol, amíg ismét eléri a
+  szintet.
+
+
+  0 esetén sosem vásárolja ezt az árut.
+MinimumBread: >-
+  Ha a(z) kenyér készlete e szint alá esik, az MI [TradeAmountFood] mennyiségekben vásárol, amíg ismét eléri a
+  szintet.
+
+
+  0 esetén sosem vásárolja ezt az árut.
+
+
+  Kenyéralapú gazdaságnál jobb lehet 0-n hagyni és inkább búzát vásárolni.
+MinimumWheat: >-
+  Ha a(z) búza készlete e szint alá esik, az MI [TradeAmountFood] mennyiségekben vásárol, amíg ismét eléri a
+  szintet.
+
+
+  0 esetén sosem vásárolja ezt az árut.
+MinimumHop: >-
+  Ha a(z) komló készlete e szint alá esik, az MI [TradeAmountFood] mennyiségekben vásárol, amíg ismét eléri a
+  szintet.
+
+
+  0 esetén sosem vásárolja ezt az árut.
+TradeAmountFood: >-
+  Az MI által egyszerre vásárolt élelmiszer mennyisége. Egyszerre csak egy élelmiszerfajtát vesz.
+
+
+  Kis értéknél olcsóbb egy vásárlás (nagyobb eséllyel történik meg), de több vásárlás kellhet: a feltöltés
+  lassabb, rövid hiányok keletkezhetnek.
+TradeAmountEquipment: >-
+  Az MI által egyszerre vásárolt fegyverek mennyisége. Egyszerre csak egy felszereléstípust vesz.
+
+
+  Kis értéknél olcsóbb egy vásárlás (nagyobb eséllyel történik meg), de több vásárlás kellhet: a
+  fegyverutánpótlás lassabb, rövid hiányok keletkezhetnek.
+AIRequestDelay: |-
+  Az MI erőforráskéréseinek gyakorisága a játékostól.
+  Kisebb érték: gyakoribb kérések.
+MinimumGoodsRequiredAfterTrade: >-
+  Az MI akkor egyezik bele a játékossal való kereskedésbe, ha utána legalább ennyi erőforrása marad. Ellenkező
+  esetben elutasítja.
+DoubleRationsFoodThreshold: Ha az alma, sajt, hús és kenyér összesített készlete meghaladja ezt az értéket, az MI dupla fejadagot ad.
+MaxWood: Fa legnagyobb készlete (plusz ResourceVariance).
+MaxStone: Kő legnagyobb készlete (plusz ResourceVariance).
+MaxResourceOther: |-
+  Vas, szurok, komló és liszt legnagyobb készlete (plusz ResourceVariance).
+
+  A határ típusonként érvényes, nem az összegükre.
+MaxEquipment: >-
+  Fegyverek és páncélok legnagyobb készlete (plusz ResourceVariance). A határ típusonként érvényes, nem az
+  összegükre.
+MaxBeer: Sör legnagyobb készlete (plusz ResourceVariance).
+MaxResourceVariance: A Max[Resource] értékektől megengedett eltérés.
+RecruitGoldThreshold: Az MI-nek legalább ennyi aranyra van szüksége a toborzás megkezdéséhez.
+BlacksmithSetting: >-
+  Az MI kovácsműhelyeinek beállítását határozza meg. „Mindkettő” esetén az első kardot, a második buzogányt, a
+  harmadik kardot készít, és így tovább.
+FletcherSetting: >-
+  Az MI íjkészítőinek beállítását határozza meg. „Mindkettő” esetén az első íjat, a második számszeríjat, a
+  harmadik íjat készít, és így tovább.
+PoleturnerSetting: >-
+  Az MI lándzsakészítőinek beállítását határozza meg. „Mindkettő” esetén az első lándzsát, a második pikát, a
+  harmadik lándzsát készít, és így tovább.
+SellResource01: Erőforrás, amelyet az MI megszerzés után mindig azonnal elad.
+SellResource02: Erőforrás, amelyet az MI megszerzés után mindig azonnal elad.
+SellResource03: Erőforrás, amelyet az MI megszerzés után mindig azonnal elad.
+SellResource04: Erőforrás, amelyet az MI megszerzés után mindig azonnal elad.
+SellResource05: Erőforrás, amelyet az MI megszerzés után mindig azonnal elad.
+SellResource06: Erőforrás, amelyet az MI megszerzés után mindig azonnal elad.
+SellResource07: Erőforrás, amelyet az MI megszerzés után mindig azonnal elad.
+SellResource08: Erőforrás, amelyet az MI megszerzés után mindig azonnal elad.
+SellResource09: Erőforrás, amelyet az MI megszerzés után mindig azonnal elad.
+SellResource10: Erőforrás, amelyet az MI megszerzés után mindig azonnal elad.
+SellResource11: Erőforrás, amelyet az MI megszerzés után mindig azonnal elad.
+SellResource12: Erőforrás, amelyet az MI megszerzés után mindig azonnal elad.
+SellResource13: Erőforrás, amelyet az MI megszerzés után mindig azonnal elad.
+SellResource14: Erőforrás, amelyet az MI megszerzés után mindig azonnal elad.
+SellResource15: Erőforrás, amelyet az MI megszerzés után mindig azonnal elad.
+DefWallPatrolRallyTime: >-
+  A falvédők várakozási ideje a következő AIV-pont felé indulás előtt. Nem minden falvédőtípus képes
+  járőrözni.
+DefWallPatrolGroups: Hány falvédőcsoport járőrözik az AIV-pontjai között.
+DefSiegeEngineGoldThreshold: Az AIV ostromgépek építéséhez szükséges aranymennyiség.
+DefSiegeEngineBuildDelay: "Az MI várakozási ideje az elpusztult AIV-ostromgépek újjáépítése előtt. Kisebb érték: rövidebb várakozás."
+Unknown072: Nem használt érték.
+Unknown073: Nem használt érték.
+RecruitProbDefDefault: |-
+  A(z) védők toborzásának esélye az MI normál állapotában.
+
+  Gyenge: szinte sosem aktív, főként vereség közelében.
+  Normál: többnyire a játék első néhány éve.
+  Erős: leggyakrabban aktív; gyakran már 40 feletti népességnél és egységszámnál eléri.
+RecruitProbDefWeak: |-
+  A(z) védők toborzásának esélye az MI gyenge állapotában.
+
+  Gyenge: szinte sosem aktív, főként vereség közelében.
+  Normál: többnyire a játék első néhány éve.
+  Erős: leggyakrabban aktív; gyakran már 40 feletti népességnél és egységszámnál eléri.
+RecruitProbDefStrong: |-
+  A(z) védők toborzásának esélye az MI erős állapotában.
+
+  Gyenge: szinte sosem aktív, főként vereség közelében.
+  Normál: többnyire a játék első néhány éve.
+  Erős: leggyakrabban aktív; gyakran már 40 feletti népességnél és egységszámnál eléri.
+RecruitProbRaidDefault: |-
+  A(z) portyázók toborzásának esélye az MI normál állapotában.
+
+  Gyenge: szinte sosem aktív, főként vereség közelében.
+  Normál: többnyire a játék első néhány éve.
+  Erős: leggyakrabban aktív; gyakran már 40 feletti népességnél és egységszámnál eléri.
+RecruitProbRaidWeak: |-
+  A(z) portyázók toborzásának esélye az MI gyenge állapotában.
+
+  Gyenge: szinte sosem aktív, főként vereség közelében.
+  Normál: többnyire a játék első néhány éve.
+  Erős: leggyakrabban aktív; gyakran már 40 feletti népességnél és egységszámnál eléri.
+RecruitProbRaidStrong: |-
+  A(z) portyázók toborzásának esélye az MI erős állapotában.
+
+  Gyenge: szinte sosem aktív, főként vereség közelében.
+  Normál: többnyire a játék első néhány éve.
+  Erős: leggyakrabban aktív; gyakran már 40 feletti népességnél és egységszámnál eléri.
+RecruitProbAttackDefault: |-
+  A(z) támadók toborzásának esélye az MI normál állapotában.
+
+  Gyenge: szinte sosem aktív, főként vereség közelében.
+  Normál: többnyire a játék első néhány éve.
+  Erős: leggyakrabban aktív; gyakran már 40 feletti népességnél és egységszámnál eléri.
+RecruitProbAttackWeak: |-
+  A(z) támadók toborzásának esélye az MI gyenge állapotában.
+
+  Gyenge: szinte sosem aktív, főként vereség közelében.
+  Normál: többnyire a játék első néhány éve.
+  Erős: leggyakrabban aktív; gyakran már 40 feletti népességnél és egységszámnál eléri.
+RecruitProbAttackStrong: |-
+  A(z) támadók toborzásának esélye az MI erős állapotában.
+
+  Gyenge: szinte sosem aktív, főként vereség közelében.
+  Normál: többnyire a játék első néhány éve.
+  Erős: leggyakrabban aktív; gyakran már 40 feletti népességnél és egységszámnál eléri.
+SortieUnitRangedMin: |-
+  Az MI által küldött távolsági kitörőegységek legkisebb száma.
+
+  Gyenge: szinte sosem aktív, főként vereség közelében.
+  Normál: többnyire a játék első néhány éve.
+  Erős: leggyakrabban aktív; gyakran már 40 feletti népességnél és egységszámnál eléri.
+SortieUnitRanged: >-
+  A távolsági kitörőegységek típusa. A váron kívül oda állnak, ahol munkások haltak meg. Minél gyakrabban ölik
+  meg őket, annál többet toboroz az MI; később általában mintegy 25-tel többet a megadott értéknél.
+
+
+  0 esetén is toborozza őket; kikapcsoláshoz válasszon nem toborozható típust.
+
+
+  A kitörőegységek toborzása mindig minden más előtt történik.
+SortieUnitMeleeMin: Az MI által küldött közelharci kitörőegységek pontos száma.
+SortieUnitMelee: >-
+  Az épületeket romboló csapatok elfogására küldött kitörőegység típusa. Célpontjuk halála után visszatérnek
+  az öregtorony tetejére.
+
+
+  A kitörőegységek toborzása mindig minden más előtt történik.
+DefDiggingUnitMax: >-
+  A toborzott ásóegységek legnagyobb száma. Amíg az MI vagy szövetségese várárkot tervez, az ásók toborzása
+  megelőzi a védőket, portyázókat és támadókat.
+DefDiggingUnit: Az MI vagy szövetségese védőárkának ásására használt egységtípus.
+RecruitInterval: |-
+  Az MI várakozási ideje a következő egység toborzása előtt normál állapotban. 1 a leggyorsabb.
+
+  Gyenge: szinte sosem aktív, főként vereség közelében.
+  Normál: többnyire a játék első néhány éve.
+  Erős: leggyakrabban aktív; gyakran már 40 feletti népességnél és egységszámnál eléri.
+RecruitIntervalWeak: |-
+  Az MI várakozási ideje a következő egység toborzása előtt gyenge állapotban. 1 a leggyorsabb.
+
+  Gyenge: szinte sosem aktív, főként vereség közelében.
+  Normál: többnyire a játék első néhány éve.
+  Erős: leggyakrabban aktív; gyakran már 40 feletti népességnél és egységszámnál eléri.
+RecruitIntervalStrong: |-
+  Az MI várakozási ideje a következő egység toborzása előtt erős állapotban. 1 a leggyorsabb.
+
+  Gyenge: szinte sosem aktív, főként vereség közelében.
+  Normál: többnyire a játék első néhány éve.
+  Erős: leggyakrabban aktív; gyakran már 40 feletti népességnél és egységszámnál eléri.
+DefTotal: Az MI által toborzott védők teljes létszáma.
+OuterPatrolGroupsCount: A gazdasági épületek körül járőröző védőcsoportok száma.
+OuterPatrolGroupsMove: >-
+  A falvédőkön kívüli védők járőrözzenek-e a gazdasági épületek körül, vagy álljanak helyben (gyakran a
+  kőfejtőknél).
+OuterPatrolRallyDelay: A falvédőkön kívüli védők várakozási ideje a következő helyre indulás előtt.
+DefWalls: >-
+  Az összes védő közül hányan legyenek falvédők. Ők a vár AIV-pontjaira mennek, a többiek a gazdasági
+  épületeket járőrözik.
+DefUnit1: |-
+  A(z) 1. védőegység, amelyet az MI megpróbál toborozni.
+
+  Ha nem tudja megfizetni az adott típust, a soron következőt próbálja.
+DefUnit2: |-
+  A(z) 2. védőegység, amelyet az MI megpróbál toborozni.
+
+  Ha nem tudja megfizetni az adott típust, a soron következőt próbálja.
+DefUnit3: |-
+  A(z) 3. védőegység, amelyet az MI megpróbál toborozni.
+
+  Ha nem tudja megfizetni az adott típust, a soron következőt próbálja.
+DefUnit4: |-
+  A(z) 4. védőegység, amelyet az MI megpróbál toborozni.
+
+  Ha nem tudja megfizetni az adott típust, a soron következőt próbálja.
+DefUnit5: |-
+  A(z) 5. védőegység, amelyet az MI megpróbál toborozni.
+
+  Ha nem tudja megfizetni az adott típust, a soron következőt próbálja.
+DefUnit6: |-
+  A(z) 6. védőegység, amelyet az MI megpróbál toborozni.
+
+  Ha nem tudja megfizetni az adott típust, a soron következőt próbálja.
+DefUnit7: |-
+  A(z) 7. védőegység, amelyet az MI megpróbál toborozni.
+
+  Ha nem tudja megfizetni az adott típust, a soron következőt próbálja.
+DefUnit8: |-
+  A(z) 8. védőegység, amelyet az MI megpróbál toborozni.
+
+  Ha nem tudja megfizetni az adott típust, a soron következőt próbálja.
+
+  A DefUnit8 után a lista elölről kezdődik.
+RaidUnitsBase: Az MI által az ellenfél épületei elleni portyázáshoz használt egységek száma.
+RaidUnitsRandom: Hány egységet adhat az MI a RaidUnitsBase létszámához, ha erősnek érzi magát és sok aranya van.
+RaidUnit1: |-
+  A(z) 1. portyázóegység, amelyet az MI megpróbál toborozni.
+
+  Ha nem tudja megfizetni az adott típust, a soron következőt próbálja.
+RaidUnit2: |-
+  A(z) 2. portyázóegység, amelyet az MI megpróbál toborozni.
+
+  Ha nem tudja megfizetni az adott típust, a soron következőt próbálja.
+RaidUnit3: |-
+  A(z) 3. portyázóegység, amelyet az MI megpróbál toborozni.
+
+  Ha nem tudja megfizetni az adott típust, a soron következőt próbálja.
+RaidUnit4: |-
+  A(z) 4. portyázóegység, amelyet az MI megpróbál toborozni.
+
+  Ha nem tudja megfizetni az adott típust, a soron következőt próbálja.
+RaidUnit5: |-
+  A(z) 5. portyázóegység, amelyet az MI megpróbál toborozni.
+
+  Ha nem tudja megfizetni az adott típust, a soron következőt próbálja.
+RaidUnit6: |-
+  A(z) 6. portyázóegység, amelyet az MI megpróbál toborozni.
+
+  Ha nem tudja megfizetni az adott típust, a soron következőt próbálja.
+RaidUnit7: |-
+  A(z) 7. portyázóegység, amelyet az MI megpróbál toborozni.
+
+  Ha nem tudja megfizetni az adott típust, a soron következőt próbálja.
+RaidUnit8: |-
+  A(z) 8. portyázóegység, amelyet az MI megpróbál toborozni.
+
+  Ha nem tudja megfizetni az adott típust, a soron következőt próbálja.
+
+  A RaidUnit8 után a lista elölről kezdődik.
+HarassingSiegeEngine1: |-
+  Az MI által toborzott 1. zaklató ostromgép.
+
+  A mérnökcéhtől az ellenséges várhoz halad, útközben épületekre lő; a tüzes balliszták egységekre is lőnek.
+HarassingSiegeEngine2: |-
+  Az MI által toborzott 2. zaklató ostromgép.
+
+  A mérnökcéhtől az ellenséges várhoz halad, útközben épületekre lő; a tüzes balliszták egységekre is lőnek.
+HarassingSiegeEngine3: |-
+  Az MI által toborzott 3. zaklató ostromgép.
+
+  A mérnökcéhtől az ellenséges várhoz halad, útközben épületekre lő; a tüzes balliszták egységekre is lőnek.
+HarassingSiegeEngine4: |-
+  Az MI által toborzott 4. zaklató ostromgép.
+
+  A mérnökcéhtől az ellenséges várhoz halad, útközben épületekre lő; a tüzes balliszták egységekre is lőnek.
+HarassingSiegeEngine5: |-
+  Az MI által toborzott 5. zaklató ostromgép.
+
+  A mérnökcéhtől az ellenséges várhoz halad, útközben épületekre lő; a tüzes balliszták egységekre is lőnek.
+HarassingSiegeEngine6: |-
+  Az MI által toborzott 6. zaklató ostromgép.
+
+  A mérnökcéhtől az ellenséges várhoz halad, útközben épületekre lő; a tüzes balliszták egységekre is lőnek.
+HarassingSiegeEngine7: |-
+  Az MI által toborzott 7. zaklató ostromgép.
+
+  A mérnökcéhtől az ellenséges várhoz halad, útközben épületekre lő; a tüzes balliszták egységekre is lőnek.
+HarassingSiegeEngine8: |-
+  Az MI által toborzott 8. zaklató ostromgép.
+
+  A mérnökcéhtől az ellenséges várhoz halad, útközben épületekre lő; a tüzes balliszták egységekre is lőnek.
+
+  A HarassingSiegeEngine8 után a lista elölről kezdődik.
+HarassingSiegeEnginesMax: A pályán egyszerre jelen lévő zaklató ostromgépek legnagyobb száma.
+RaidRetargetDelay: A portyázó csapatok várakozási ideje új célpontépület választása előtt.
+AttForceBase: >-
+  Az MI által támadás előtt toborzott egységek száma. Minden támadás után nő az UCP beállítása szerint; az
+  eredetiben támadásonként 5-tel.
+AttForceRandom: Hány egységet adhat az MI az AttForceBase létszámához, ha erősnek érzi magát és sok aranya van.
+AttForceSupportAllyThreshold: Ennyi támadóegységet kell toborozni, mielőtt az MI végrehajtja a játékos Támadás/Segítség parancsát.
+AttForceRallyPercentage: Az egységek hány százalékának kell a gyülekezőpontra érnie az MI támadása előtt.
+Unknown129: >-
+  Hatása közel nulla. Az egységek hány százalékának kell elérnie a gyülekezőpontot, mielőtt az MI visszavonul,
+  ha a támadást túl gyengének ítéli a károkozáshoz.
+
+
+  Egyben a visszavonulók azon százaléka, amelynek vissza kell érnie az öregtoronyhoz az új támadás toborzása
+  előtt.
+AttAssaultDelay: >-
+  A támadó csapatok és ostromgépek várakozási ideje a gyülekezőponton a támadás megkezdése után, mielőtt
+  harcba küldik őket.
+AttUnitPatrolRecommandDelay: |-
+  Az MI várakozási ideje sikeres támadás után, visszavonulás előtt.
+
+  Általában 0 legyen, mert nincs oka az ellenfél sírjánál várakozni.
+Unknown132: >-
+  Annak százalékos esélye, hogy az MI megvárja a szövetséges támadását. Később azt is eredményezheti, hogy az
+  MI a teljes támadósereg toborzása előtt csatlakozik a szövetséges támadásához.
+SiegeEngine1: Az MI által támadáshoz toborzott 1. ostromgép.
+SiegeEngine2: Az MI által támadáshoz toborzott 2. ostromgép.
+SiegeEngine3: Az MI által támadáshoz toborzott 3. ostromgép.
+SiegeEngine4: Az MI által támadáshoz toborzott 4. ostromgép.
+SiegeEngine5: Az MI által támadáshoz toborzott 5. ostromgép.
+SiegeEngine6: Az MI által támadáshoz toborzott 6. ostromgép.
+SiegeEngine7: Az MI által támadáshoz toborzott 7. ostromgép.
+SiegeEngine8: |-
+  Az MI által támadáshoz toborzott 8. ostromgép.
+
+  Legfeljebb nyolc támadó ostromgép lehet.
+CowThrowInterval: Hány követ kell kilőnie a katapultnak, mielőtt helyette tehenet hajít.
+Unknown142: Nem használt érték.
+AttMaxEngineers: >-
+  A SiegeEngine-helyek ostromgépeit kezelő mérnökök felső határa. Legalább annyi legyen, amennyit az összes
+  ostromgép működtetése igényel.
+AttDiggingUnit: Az ellenséges várárok betemetésére használt egység támadás közben.
+AttDiggingUnitMax: Támadásonként toborzott ásóegységek felső határa.
+AttUnitVanguard: Az az egység, amely mindenki más előtt rohan az ellenséges várra.
+AttUnitVanguardMax: Támadásonként toborzott elővéd felső határa.
+AttMaxAssassins: Az ostrom során ellenséges kapukra felmászó orgyilkosok felső határa.
+AttMaxLaddermen: Az ostrom során falakhoz létrát állító létrások felső határa.
+AttMaxTunnelers: Az ellenséges öregtorony felé alagutat ásó egységek felső határa.
+AttUnitPatrol: Az ellenséges vár körül járőröző és ellenséges egységekre lövő csapatok.
+AttUnitPatrolMax: Támadásonként toborzott járőregységek felső határa.
+AttUnitPatrolGroupsCount: A járőregységek csoportjainak száma a támadás kezdetén.
+AttUnitBackup: >-
+  A gyülekezőponton maradó egységek, amelyek csak akkor támadnak, ha van út az ellenséges öregtoronyhoz. Ha a
+  többi támadó meghal, visszavonulnak.
+AttUnitBackupMax: Támadásonként toborzott tartalékegységek felső határa.
+AttUnitBackupGroupsCount: A tartalékegységek csoportjainak száma az ellenséges öregtorony támadásakor.
+AttUnitEngage: Azok az egységek, amelyek falak helyett ellenséges katonákat és parasztokat támadnak.
+AttUnitEngageMax: Támadásonként toborzott harcba lépő egységek felső határa.
+AttUnitSiegeDef: >-
+  Az ostromgépvédők a támadás alatt az ostromgépeknél maradnak. Nemcsak támadó, hanem zaklató és védelmi
+  ostromgépeket is kísérhetnek.
+AttUnitSiegeDefMax: Támadásonként toborzott ostromgépvédők felső határa.
+AttUnitSiegeDefGroupsCount: Az ostromgépvédők csoportjainak száma támadás közben.
+AttUnitMain1: |-
+  Az MI által a fő támadócsoporthoz toborzott 1. egységtípus. Csak ezek létszáma növekedhet korlátlanul.
+
+  Ha nem tudja megfizetni az adott típust, a soron következőt próbálja.
+AttUnitMain2: |-
+  Az MI által a fő támadócsoporthoz toborzott 2. egységtípus. Csak ezek létszáma növekedhet korlátlanul.
+
+  Ha nem tudja megfizetni az adott típust, a soron következőt próbálja.
+AttUnitMain3: |-
+  Az MI által a fő támadócsoporthoz toborzott 3. egységtípus. Csak ezek létszáma növekedhet korlátlanul.
+
+  Ha nem tudja megfizetni az adott típust, a soron következőt próbálja.
+AttUnitMain4: |-
+  Az MI által a fő támadócsoporthoz toborzott 4. egységtípus. Csak ezek létszáma növekedhet korlátlanul.
+
+  Ha nem tudja megfizetni az adott típust, a soron következőt próbálja.
+
+  Az AttUnitMain4 után a lista elölről kezdődik.
+AttMaxDefault: >-
+  Hány fősereg-egységet toborozhat az MI, mielőtt MINDEN különleges szerepet teljesen feltöltene
+  (AttLaddermen, AttAssassins, AttUnitPatrol stb.). 0 esetén előbb minden különleges szerepet fel kell
+  töltenie, és csak utána toborozhat AttUnitMain egységeket.
+AttMainGroupsCount: Az AttUnitMain-egységek csoportjainak száma támadás közben.
+TargetChoice: >-
+  A támadás célpontválasztási módja.
+
+
+  Arany: mindig a legtöbb arannyal rendelkező ellenséget támadja.
+
+
+  Kiegyensúlyozott: számított gyengeségi pontszám alapján választ. Ez a legösszetettebb, legárnyaltabb mód.
+
+
+  Legközelebbi: mindig az öregtornyok távolsága alapján legközelebbi ellenséget támadja.
+
+
+  Bármelyik: a belső játékoslistán következő ellenséget támadja. Véletlenszerűnek tűnhet, de rögzített
+  sorrendű.
+
+
+  Játékos: először mindig emberi játékost céloz. Emberi ellenség hiányában a legközelebbit választja.
+AIOxTethers_DisableInitialOxTether: "False: eredeti működés. True: ne építsen ökörkarámot minden kőfejtő építésekor vagy újjáépítésekor."
+AIOxTethers_Logic: |-
+  Az alkalmazott működési szabály.
+  False: eredeti; True: dinamikus.
+AIOxTethers_MaxOxTethers: Az MI ökörkarámjainak teljes száma sosem haladja meg ezt az értéket.
+AIOxTethers_DynamicMaxOxTethers: Az MI ökörkarámjainak teljes száma sosem haladja meg ezt az értéket a kőfejtők számával megszorozva.
+AIOxTethers_MinimumOxTethersPerQuarry: Ha ennél kevesebb kapcsolt ökörkarám szállít követ a kőfejtőből, új ökörkarám épül hozzá.
+AIOxTethers_MaximumOxTethersPerQuarry: Ha a kőfejtőhöz kapcsolt ökörkarámok száma meghaladja ezt az értéket, nem épül hozzá újabb.
+AIOxTethers_ThresholdStoneLoad: Ha a kőfejtő „kövek / kapcsolt ökörkarámok” aránya meghaladja ezt az értéket, újabb ökörkarám épül hozzá.
+RunningUnits_Macemen: >-
+  True esetén a(z) buzogányosok mindig futnak, lassabb egységekkel egy csoportban is. False esetén a csoport
+  leglassabb egységéhez igazítják a sebességüket, mint az eredetiben.
+RunningUnits_Spearmen: >-
+  True esetén a(z) lándzsások mindig futnak, lassabb egységekkel egy csoportban is. False esetén a csoport
+  leglassabb egységéhez igazítják a sebességüket, mint az eredetiben.
+RunningUnits_Slingers: >-
+  True esetén a(z) parittyások mindig futnak, lassabb egységekkel egy csoportban is. False esetén a csoport
+  leglassabb egységéhez igazítják a sebességüket, mint az eredetiben.
+RunningUnits_Slaves: >-
+  True esetén a(z) rabszolgák mindig futnak, lassabb egységekkel egy csoportban is. False esetén a csoport
+  leglassabb egységéhez igazítják a sebességüket, mint az eredetiben.
+AIVTroops_InitialRole: >-
+  A még be nem osztott kezdő- vagy forgatókönyvbeli csapatok kezdeti szerepe. Az ásáshoz tényleges ásási
+  képesség és várárokmezők kellenek; különben védelem lesz.
+
+
+  Közös alapérték minden támogatott egységtípushoz. Az Eredeti érték kihagyja ezt a mezőt a mentett
+  karakterből, és a következő alkalmazható közös vagy menübeli alapértéket használja. Az aiv-troops-behaviour
+  bővítményben a Troop settings és Use AIC overrides legyen bekapcsolva. Módosítás után indítsa újra az UCP-t
+  és kezdjen új mérkőzést.
+AIVTroops_Movement: >-
+  Védelmi AIV-pontok közötti mozgás. A járőrözés a DefWallPatrolGroups és DefWallPatrolRallyTime értékeit
+  használja; nulla csoport esetén helyben maradnak.
+
+
+  Közös alapérték minden támogatott egységtípushoz. Az Eredeti érték kihagyja ezt a mezőt a mentett
+  karakterből, és a következő alkalmazható közös vagy menübeli alapértéket használja. Az aiv-troops-behaviour
+  bővítményben a Troop settings és Use AIC overrides legyen bekapcsolva. Módosítás után indítsa újra az UCP-t
+  és kezdjen új mérkőzést.
+AIVTroops_InitialRole_Engineer: >-
+  A még be nem osztott kezdő- vagy forgatókönyvbeli csapatok kezdeti szerepe. Az ásáshoz tényleges ásási
+  képesség és várárokmezők kellenek; különben védelem lesz.
+
+
+  Az egységtípusra szabott felülírás elsőbbséget élvez a közös AIC-mezővel szemben. Az Eredeti érték kihagyja
+  ezt a mezőt a mentett karakterből, és a következő alkalmazható közös vagy menübeli alapértéket használja. Az
+  aiv-troops-behaviour bővítményben a Troop settings és Use AIC overrides legyen bekapcsolva. Módosítás után
+  indítsa újra az UCP-t és kezdjen új mérkőzést.
+AIVTroops_Movement_Engineer: >-
+  Védelmi AIV-pontok közötti mozgás. A járőrözés a DefWallPatrolGroups és DefWallPatrolRallyTime értékeit
+  használja; nulla csoport esetén helyben maradnak.
+
+
+  Az egységtípusra szabott felülírás elsőbbséget élvez a közös AIC-mezővel szemben. Az Eredeti érték kihagyja
+  ezt a mezőt a mentett karakterből, és a következő alkalmazható közös vagy menübeli alapértéket használja. Az
+  aiv-troops-behaviour bővítményben a Troop settings és Use AIC overrides legyen bekapcsolva. Módosítás után
+  indítsa újra az UCP-t és kezdjen új mérkőzést.
+AIVTroops_InitialRole_Archer: >-
+  A még be nem osztott kezdő- vagy forgatókönyvbeli csapatok kezdeti szerepe. Az ásáshoz tényleges ásási
+  képesség és várárokmezők kellenek; különben védelem lesz.
+
+
+  Az egységtípusra szabott felülírás elsőbbséget élvez a közös AIC-mezővel szemben. Az Eredeti érték kihagyja
+  ezt a mezőt a mentett karakterből, és a következő alkalmazható közös vagy menübeli alapértéket használja. Az
+  aiv-troops-behaviour bővítményben a Troop settings és Use AIC overrides legyen bekapcsolva. Módosítás után
+  indítsa újra az UCP-t és kezdjen új mérkőzést.
+AIVTroops_Movement_Archer: >-
+  Védelmi AIV-pontok közötti mozgás. A járőrözés a DefWallPatrolGroups és DefWallPatrolRallyTime értékeit
+  használja; nulla csoport esetén helyben maradnak.
+
+
+  Az egységtípusra szabott felülírás elsőbbséget élvez a közös AIC-mezővel szemben. Az Eredeti érték kihagyja
+  ezt a mezőt a mentett karakterből, és a következő alkalmazható közös vagy menübeli alapértéket használja. Az
+  aiv-troops-behaviour bővítményben a Troop settings és Use AIC overrides legyen bekapcsolva. Módosítás után
+  indítsa újra az UCP-t és kezdjen új mérkőzést.
+AIVTroops_InitialRole_Crossbowman: >-
+  A még be nem osztott kezdő- vagy forgatókönyvbeli csapatok kezdeti szerepe. Az ásáshoz tényleges ásási
+  képesség és várárokmezők kellenek; különben védelem lesz.
+
+
+  Az egységtípusra szabott felülírás elsőbbséget élvez a közös AIC-mezővel szemben. Az Eredeti érték kihagyja
+  ezt a mezőt a mentett karakterből, és a következő alkalmazható közös vagy menübeli alapértéket használja. Az
+  aiv-troops-behaviour bővítményben a Troop settings és Use AIC overrides legyen bekapcsolva. Módosítás után
+  indítsa újra az UCP-t és kezdjen új mérkőzést.
+AIVTroops_Movement_Crossbowman: >-
+  Védelmi AIV-pontok közötti mozgás. A járőrözés a DefWallPatrolGroups és DefWallPatrolRallyTime értékeit
+  használja; nulla csoport esetén helyben maradnak.
+
+
+  Az egységtípusra szabott felülírás elsőbbséget élvez a közös AIC-mezővel szemben. Az Eredeti érték kihagyja
+  ezt a mezőt a mentett karakterből, és a következő alkalmazható közös vagy menübeli alapértéket használja. Az
+  aiv-troops-behaviour bővítményben a Troop settings és Use AIC overrides legyen bekapcsolva. Módosítás után
+  indítsa újra az UCP-t és kezdjen új mérkőzést.
+AIVTroops_InitialRole_Spearman: >-
+  A még be nem osztott kezdő- vagy forgatókönyvbeli csapatok kezdeti szerepe. Az ásáshoz tényleges ásási
+  képesség és várárokmezők kellenek; különben védelem lesz.
+
+
+  Az egységtípusra szabott felülírás elsőbbséget élvez a közös AIC-mezővel szemben. Az Eredeti érték kihagyja
+  ezt a mezőt a mentett karakterből, és a következő alkalmazható közös vagy menübeli alapértéket használja. Az
+  aiv-troops-behaviour bővítményben a Troop settings és Use AIC overrides legyen bekapcsolva. Módosítás után
+  indítsa újra az UCP-t és kezdjen új mérkőzést.
+AIVTroops_Movement_Spearman: >-
+  Védelmi AIV-pontok közötti mozgás. A járőrözés a DefWallPatrolGroups és DefWallPatrolRallyTime értékeit
+  használja; nulla csoport esetén helyben maradnak.
+
+
+  Az egységtípusra szabott felülírás elsőbbséget élvez a közös AIC-mezővel szemben. Az Eredeti érték kihagyja
+  ezt a mezőt a mentett karakterből, és a következő alkalmazható közös vagy menübeli alapértéket használja. Az
+  aiv-troops-behaviour bővítményben a Troop settings és Use AIC overrides legyen bekapcsolva. Módosítás után
+  indítsa újra az UCP-t és kezdjen új mérkőzést.
+AIVTroops_InitialRole_Pikeman: >-
+  A még be nem osztott kezdő- vagy forgatókönyvbeli csapatok kezdeti szerepe. Az ásáshoz tényleges ásási
+  képesség és várárokmezők kellenek; különben védelem lesz.
+
+
+  Az egységtípusra szabott felülírás elsőbbséget élvez a közös AIC-mezővel szemben. Az Eredeti érték kihagyja
+  ezt a mezőt a mentett karakterből, és a következő alkalmazható közös vagy menübeli alapértéket használja. Az
+  aiv-troops-behaviour bővítményben a Troop settings és Use AIC overrides legyen bekapcsolva. Módosítás után
+  indítsa újra az UCP-t és kezdjen új mérkőzést.
+AIVTroops_Movement_Pikeman: >-
+  Védelmi AIV-pontok közötti mozgás. A járőrözés a DefWallPatrolGroups és DefWallPatrolRallyTime értékeit
+  használja; nulla csoport esetén helyben maradnak.
+
+
+  Az egységtípusra szabott felülírás elsőbbséget élvez a közös AIC-mezővel szemben. Az Eredeti érték kihagyja
+  ezt a mezőt a mentett karakterből, és a következő alkalmazható közös vagy menübeli alapértéket használja. Az
+  aiv-troops-behaviour bővítményben a Troop settings és Use AIC overrides legyen bekapcsolva. Módosítás után
+  indítsa újra az UCP-t és kezdjen új mérkőzést.
+AIVTroops_InitialRole_Maceman: >-
+  A még be nem osztott kezdő- vagy forgatókönyvbeli csapatok kezdeti szerepe. Az ásáshoz tényleges ásási
+  képesség és várárokmezők kellenek; különben védelem lesz.
+
+
+  Az egységtípusra szabott felülírás elsőbbséget élvez a közös AIC-mezővel szemben. Az Eredeti érték kihagyja
+  ezt a mezőt a mentett karakterből, és a következő alkalmazható közös vagy menübeli alapértéket használja. Az
+  aiv-troops-behaviour bővítményben a Troop settings és Use AIC overrides legyen bekapcsolva. Módosítás után
+  indítsa újra az UCP-t és kezdjen új mérkőzést.
+AIVTroops_Movement_Maceman: >-
+  Védelmi AIV-pontok közötti mozgás. A járőrözés a DefWallPatrolGroups és DefWallPatrolRallyTime értékeit
+  használja; nulla csoport esetén helyben maradnak.
+
+
+  Az egységtípusra szabott felülírás elsőbbséget élvez a közös AIC-mezővel szemben. Az Eredeti érték kihagyja
+  ezt a mezőt a mentett karakterből, és a következő alkalmazható közös vagy menübeli alapértéket használja. Az
+  aiv-troops-behaviour bővítményben a Troop settings és Use AIC overrides legyen bekapcsolva. Módosítás után
+  indítsa újra az UCP-t és kezdjen új mérkőzést.
+AIVTroops_InitialRole_Swordsman: >-
+  A még be nem osztott kezdő- vagy forgatókönyvbeli csapatok kezdeti szerepe. Az ásáshoz tényleges ásási
+  képesség és várárokmezők kellenek; különben védelem lesz.
+
+
+  Az egységtípusra szabott felülírás elsőbbséget élvez a közös AIC-mezővel szemben. Az Eredeti érték kihagyja
+  ezt a mezőt a mentett karakterből, és a következő alkalmazható közös vagy menübeli alapértéket használja. Az
+  aiv-troops-behaviour bővítményben a Troop settings és Use AIC overrides legyen bekapcsolva. Módosítás után
+  indítsa újra az UCP-t és kezdjen új mérkőzést.
+AIVTroops_Movement_Swordsman: >-
+  Védelmi AIV-pontok közötti mozgás. A járőrözés a DefWallPatrolGroups és DefWallPatrolRallyTime értékeit
+  használja; nulla csoport esetén helyben maradnak.
+
+
+  Az egységtípusra szabott felülírás elsőbbséget élvez a közös AIC-mezővel szemben. Az Eredeti érték kihagyja
+  ezt a mezőt a mentett karakterből, és a következő alkalmazható közös vagy menübeli alapértéket használja. Az
+  aiv-troops-behaviour bővítményben a Troop settings és Use AIC overrides legyen bekapcsolva. Módosítás után
+  indítsa újra az UCP-t és kezdjen új mérkőzést.
+AIVTroops_InitialRole_Knight: >-
+  A még be nem osztott kezdő- vagy forgatókönyvbeli csapatok kezdeti szerepe. Az ásáshoz tényleges ásási
+  képesség és várárokmezők kellenek; különben védelem lesz.
+
+
+  Az egységtípusra szabott felülírás elsőbbséget élvez a közös AIC-mezővel szemben. Az Eredeti érték kihagyja
+  ezt a mezőt a mentett karakterből, és a következő alkalmazható közös vagy menübeli alapértéket használja. Az
+  aiv-troops-behaviour bővítményben a Troop settings és Use AIC overrides legyen bekapcsolva. Módosítás után
+  indítsa újra az UCP-t és kezdjen új mérkőzést.
+AIVTroops_Movement_Knight: >-
+  Védelmi AIV-pontok közötti mozgás. A járőrözés a DefWallPatrolGroups és DefWallPatrolRallyTime értékeit
+  használja; nulla csoport esetén helyben maradnak.
+
+
+  Az egységtípusra szabott felülírás elsőbbséget élvez a közös AIC-mezővel szemben. Az Eredeti érték kihagyja
+  ezt a mezőt a mentett karakterből, és a következő alkalmazható közös vagy menübeli alapértéket használja. Az
+  aiv-troops-behaviour bővítményben a Troop settings és Use AIC overrides legyen bekapcsolva. Módosítás után
+  indítsa újra az UCP-t és kezdjen új mérkőzést.
+AIVTroops_InitialRole_Slave: >-
+  A még be nem osztott kezdő- vagy forgatókönyvbeli csapatok kezdeti szerepe. Az ásáshoz tényleges ásási
+  képesség és várárokmezők kellenek; különben védelem lesz.
+
+
+  Az egységtípusra szabott felülírás elsőbbséget élvez a közös AIC-mezővel szemben. Az Eredeti érték kihagyja
+  ezt a mezőt a mentett karakterből, és a következő alkalmazható közös vagy menübeli alapértéket használja. Az
+  aiv-troops-behaviour bővítményben a Troop settings és Use AIC overrides legyen bekapcsolva. Módosítás után
+  indítsa újra az UCP-t és kezdjen új mérkőzést.
+AIVTroops_Movement_Slave: >-
+  Védelmi AIV-pontok közötti mozgás. A járőrözés a DefWallPatrolGroups és DefWallPatrolRallyTime értékeit
+  használja; nulla csoport esetén helyben maradnak.
+
+
+  Az egységtípusra szabott felülírás elsőbbséget élvez a közös AIC-mezővel szemben. Az Eredeti érték kihagyja
+  ezt a mezőt a mentett karakterből, és a következő alkalmazható közös vagy menübeli alapértéket használja. Az
+  aiv-troops-behaviour bővítményben a Troop settings és Use AIC overrides legyen bekapcsolva. Módosítás után
+  indítsa újra az UCP-t és kezdjen új mérkőzést.
+AIVTroops_InitialRole_Slinger: >-
+  A még be nem osztott kezdő- vagy forgatókönyvbeli csapatok kezdeti szerepe. Az ásáshoz tényleges ásási
+  képesség és várárokmezők kellenek; különben védelem lesz.
+
+
+  Az egységtípusra szabott felülírás elsőbbséget élvez a közös AIC-mezővel szemben. Az Eredeti érték kihagyja
+  ezt a mezőt a mentett karakterből, és a következő alkalmazható közös vagy menübeli alapértéket használja. Az
+  aiv-troops-behaviour bővítményben a Troop settings és Use AIC overrides legyen bekapcsolva. Módosítás után
+  indítsa újra az UCP-t és kezdjen új mérkőzést.
+AIVTroops_Movement_Slinger: >-
+  Védelmi AIV-pontok közötti mozgás. A járőrözés a DefWallPatrolGroups és DefWallPatrolRallyTime értékeit
+  használja; nulla csoport esetén helyben maradnak.
+
+
+  Az egységtípusra szabott felülírás elsőbbséget élvez a közös AIC-mezővel szemben. Az Eredeti érték kihagyja
+  ezt a mezőt a mentett karakterből, és a következő alkalmazható közös vagy menübeli alapértéket használja. Az
+  aiv-troops-behaviour bővítményben a Troop settings és Use AIC overrides legyen bekapcsolva. Módosítás után
+  indítsa újra az UCP-t és kezdjen új mérkőzést.
+AIVTroops_InitialRole_Assassin: >-
+  A még be nem osztott kezdő- vagy forgatókönyvbeli csapatok kezdeti szerepe. Az ásáshoz tényleges ásási
+  képesség és várárokmezők kellenek; különben védelem lesz.
+
+
+  Az egységtípusra szabott felülírás elsőbbséget élvez a közös AIC-mezővel szemben. Az Eredeti érték kihagyja
+  ezt a mezőt a mentett karakterből, és a következő alkalmazható közös vagy menübeli alapértéket használja. Az
+  aiv-troops-behaviour bővítményben a Troop settings és Use AIC overrides legyen bekapcsolva. Módosítás után
+  indítsa újra az UCP-t és kezdjen új mérkőzést.
+AIVTroops_Movement_Assassin: >-
+  Védelmi AIV-pontok közötti mozgás. A járőrözés a DefWallPatrolGroups és DefWallPatrolRallyTime értékeit
+  használja; nulla csoport esetén helyben maradnak.
+
+
+  Az egységtípusra szabott felülírás elsőbbséget élvez a közös AIC-mezővel szemben. Az Eredeti érték kihagyja
+  ezt a mezőt a mentett karakterből, és a következő alkalmazható közös vagy menübeli alapértéket használja. Az
+  aiv-troops-behaviour bővítményben a Troop settings és Use AIC overrides legyen bekapcsolva. Módosítás után
+  indítsa újra az UCP-t és kezdjen új mérkőzést.
+AIVTroops_InitialRole_ArabianArcher: >-
+  A még be nem osztott kezdő- vagy forgatókönyvbeli csapatok kezdeti szerepe. Az ásáshoz tényleges ásási
+  képesség és várárokmezők kellenek; különben védelem lesz.
+
+
+  Az egységtípusra szabott felülírás elsőbbséget élvez a közös AIC-mezővel szemben. Az Eredeti érték kihagyja
+  ezt a mezőt a mentett karakterből, és a következő alkalmazható közös vagy menübeli alapértéket használja. Az
+  aiv-troops-behaviour bővítményben a Troop settings és Use AIC overrides legyen bekapcsolva. Módosítás után
+  indítsa újra az UCP-t és kezdjen új mérkőzést.
+AIVTroops_Movement_ArabianArcher: >-
+  Védelmi AIV-pontok közötti mozgás. A járőrözés a DefWallPatrolGroups és DefWallPatrolRallyTime értékeit
+  használja; nulla csoport esetén helyben maradnak.
+
+
+  Az egységtípusra szabott felülírás elsőbbséget élvez a közös AIC-mezővel szemben. Az Eredeti érték kihagyja
+  ezt a mezőt a mentett karakterből, és a következő alkalmazható közös vagy menübeli alapértéket használja. Az
+  aiv-troops-behaviour bővítményben a Troop settings és Use AIC overrides legyen bekapcsolva. Módosítás után
+  indítsa újra az UCP-t és kezdjen új mérkőzést.
+AIVTroops_InitialRole_HorseArcher: >-
+  A még be nem osztott kezdő- vagy forgatókönyvbeli csapatok kezdeti szerepe. Az ásáshoz tényleges ásási
+  képesség és várárokmezők kellenek; különben védelem lesz.
+
+
+  Az egységtípusra szabott felülírás elsőbbséget élvez a közös AIC-mezővel szemben. Az Eredeti érték kihagyja
+  ezt a mezőt a mentett karakterből, és a következő alkalmazható közös vagy menübeli alapértéket használja. Az
+  aiv-troops-behaviour bővítményben a Troop settings és Use AIC overrides legyen bekapcsolva. Módosítás után
+  indítsa újra az UCP-t és kezdjen új mérkőzést.
+AIVTroops_Movement_HorseArcher: >-
+  Védelmi AIV-pontok közötti mozgás. A járőrözés a DefWallPatrolGroups és DefWallPatrolRallyTime értékeit
+  használja; nulla csoport esetén helyben maradnak.
+
+
+  Az egységtípusra szabott felülírás elsőbbséget élvez a közös AIC-mezővel szemben. Az Eredeti érték kihagyja
+  ezt a mezőt a mentett karakterből, és a következő alkalmazható közös vagy menübeli alapértéket használja. Az
+  aiv-troops-behaviour bővítményben a Troop settings és Use AIC overrides legyen bekapcsolva. Módosítás után
+  indítsa újra az UCP-t és kezdjen új mérkőzést.
+AIVTroops_InitialRole_ArabianSwordsman: >-
+  A még be nem osztott kezdő- vagy forgatókönyvbeli csapatok kezdeti szerepe. Az ásáshoz tényleges ásási
+  képesség és várárokmezők kellenek; különben védelem lesz.
+
+
+  Az egységtípusra szabott felülírás elsőbbséget élvez a közös AIC-mezővel szemben. Az Eredeti érték kihagyja
+  ezt a mezőt a mentett karakterből, és a következő alkalmazható közös vagy menübeli alapértéket használja. Az
+  aiv-troops-behaviour bővítményben a Troop settings és Use AIC overrides legyen bekapcsolva. Módosítás után
+  indítsa újra az UCP-t és kezdjen új mérkőzést.
+AIVTroops_Movement_ArabianSwordsman: >-
+  Védelmi AIV-pontok közötti mozgás. A járőrözés a DefWallPatrolGroups és DefWallPatrolRallyTime értékeit
+  használja; nulla csoport esetén helyben maradnak.
+
+
+  Az egységtípusra szabott felülírás elsőbbséget élvez a közös AIC-mezővel szemben. Az Eredeti érték kihagyja
+  ezt a mezőt a mentett karakterből, és a következő alkalmazható közös vagy menübeli alapértéket használja. Az
+  aiv-troops-behaviour bővítményben a Troop settings és Use AIC overrides legyen bekapcsolva. Módosítás után
+  indítsa újra az UCP-t és kezdjen új mérkőzést.
+AIVTroops_InitialRole_FireThrower: >-
+  A még be nem osztott kezdő- vagy forgatókönyvbeli csapatok kezdeti szerepe. Az ásáshoz tényleges ásási
+  képesség és várárokmezők kellenek; különben védelem lesz.
+
+
+  Az egységtípusra szabott felülírás elsőbbséget élvez a közös AIC-mezővel szemben. Az Eredeti érték kihagyja
+  ezt a mezőt a mentett karakterből, és a következő alkalmazható közös vagy menübeli alapértéket használja. Az
+  aiv-troops-behaviour bővítményben a Troop settings és Use AIC overrides legyen bekapcsolva. Módosítás után
+  indítsa újra az UCP-t és kezdjen új mérkőzést.
+AIVTroops_Movement_FireThrower: >-
+  Védelmi AIV-pontok közötti mozgás. A járőrözés a DefWallPatrolGroups és DefWallPatrolRallyTime értékeit
+  használja; nulla csoport esetén helyben maradnak.
+
+
+  Az egységtípusra szabott felülírás elsőbbséget élvez a közös AIC-mezővel szemben. Az Eredeti érték kihagyja
+  ezt a mezőt a mentett karakterből, és a következő alkalmazható közös vagy menübeli alapértéket használja. Az
+  aiv-troops-behaviour bővítményben a Troop settings és Use AIC overrides legyen bekapcsolva. Módosítás után
+  indítsa újra az UCP-t és kezdjen új mérkőzést.

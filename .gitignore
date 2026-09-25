@@ -1,6 +1,11 @@
 # Dependencies
 node_modules/
 src/vendor/pixi/
+src/vendor/i18next/
+src/js/desktop-api.js
+desktop-dist/
+src-tauri/target/
+src-tauri/gen/
 
 # Build and packaged application output
 dist/

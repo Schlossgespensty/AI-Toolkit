@@ -1,0 +1,233 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AI Toolkit editor theme",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "id",
+    "name",
+    "version",
+    "variables",
+    "colorScheme",
+    "textures",
+    "attribution"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]{0,47}$"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 80
+    },
+    "version": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 40
+    },
+    "extends": {
+      "const": "default"
+    },
+    "variables": {
+      "description": "Known primitive, semantic and component CSS variables; includes toolbar/group decoration and spacing. Selectors and scripts are not allowed.",
+      "const": "variables.css"
+    },
+    "colorScheme": {
+      "enum": [
+        "dark",
+        "light"
+      ]
+    },
+    "textures": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "control": {
+          "$ref": "#/$defs/texture"
+        },
+        "controlHover": {
+          "$ref": "#/$defs/texture"
+        },
+        "controlPressed": {
+          "$ref": "#/$defs/texture"
+        },
+        "panel": {
+          "$ref": "#/$defs/texture"
+        },
+        "panelSurface": {
+          "$ref": "#/$defs/texture"
+        },
+        "checkbox": {
+          "$ref": "#/$defs/texture"
+        },
+        "checkboxChecked": {
+          "$ref": "#/$defs/texture"
+        },
+        "sidebar": {
+          "$ref": "#/$defs/texture"
+        },
+        "backdrop": {
+          "$ref": "#/$defs/texture"
+        },
+        "tab": {
+          "$ref": "#/$defs/texture"
+        },
+        "tabActive": {
+          "$ref": "#/$defs/texture"
+        },
+        "input": {
+          "$ref": "#/$defs/texture"
+        },
+        "value": {
+          "$ref": "#/$defs/texture"
+        },
+        "dropdown": {
+          "$ref": "#/$defs/texture"
+        },
+        "outline": {
+          "$ref": "#/$defs/texture"
+        },
+        "rangeTrack": {
+          "$ref": "#/$defs/texture"
+        },
+        "rangeStart": {
+          "$ref": "#/$defs/texture"
+        },
+        "rangeEnd": {
+          "$ref": "#/$defs/texture"
+        },
+        "rangeThumb": {
+          "$ref": "#/$defs/texture"
+        },
+        "rangeThumbActive": {
+          "$ref": "#/$defs/texture"
+        },
+        "scrollTrack": {
+          "$ref": "#/$defs/texture"
+        },
+        "scrollThumb": {
+          "$ref": "#/$defs/texture"
+        },
+        "moveUp": {
+          "$ref": "#/$defs/texture"
+        },
+        "moveUpHover": {
+          "$ref": "#/$defs/texture"
+        },
+        "moveUpPressed": {
+          "$ref": "#/$defs/texture"
+        },
+        "moveDown": {
+          "$ref": "#/$defs/texture"
+        },
+        "moveDownHover": {
+          "$ref": "#/$defs/texture"
+        },
+        "moveDownPressed": {
+          "$ref": "#/$defs/texture"
+        },
+        "add": {
+          "$ref": "#/$defs/texture"
+        },
+        "addHover": {
+          "$ref": "#/$defs/texture"
+        },
+        "remove": {
+          "$ref": "#/$defs/texture"
+        },
+        "removeHover": {
+          "$ref": "#/$defs/texture"
+        },
+        "ornament": {
+          "$ref": "#/$defs/texture"
+        }
+      }
+    },
+    "attribution": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "author",
+          "scope",
+          "permission"
+        ],
+        "properties": {
+          "author": {
+            "type": "string"
+          },
+          "scope": {
+            "type": "string"
+          },
+          "permission": {
+            "type": "string"
+          },
+          "source": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "texture": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "file",
+        "mode"
+      ],
+      "properties": {
+        "file": {
+          "type": "string",
+          "pattern": "^textures/[a-zA-Z0-9_/-]+\\.(png|webp|svg)$"
+        },
+        "mode": {
+          "enum": [
+            "frame",
+            "tile",
+            "cover",
+            "contain"
+          ]
+        },
+        "slice": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 64
+        },
+        "width": {
+          "type": "number",
+          "minimum": 1,
+          "maximum": 32
+        },
+        "fill": {
+          "type": "boolean"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "mode": {
+                "const": "frame"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "slice",
+              "width"
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

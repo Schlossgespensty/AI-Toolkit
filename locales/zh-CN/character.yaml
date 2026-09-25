@@ -1,0 +1,32 @@
+failed_to_load_config_files: 无法加载配置文件。
+all_troops: 所有部队
+initial_role: 初始任务
+unsupported_value: 不支持的值：
+no_description_yet: 暂无说明。
+initial_roles: 初始任务
+unknown_parameters_found: |+
+  发现未知参数：
+
+opening_another_character_file: 打开另一个角色文件
+creating_a_new_character: 创建新角色
+new_character_added_to_the_loaded_ai: 已向当前 AI 添加新角色
+new_character: 新角色
+saving: 正在保存…
+saved: 已保存！
+error: 错误！
+open_an_ai_from_the_library_to_edit_its_content: 从资源库打开 AI 以编辑其内容
+ai_content_belongs_to_the_loaded_ai_project: AI 内容属于当前加载的 AI 项目
+no_file_loadedvalue: 未加载文件{{dirtyMarker}}
+leather_armor: 皮甲
+iron_armor: 铁甲
+capacity: 容量
+needed_at_limits: 达到上限时的需求
+production: 生产
+recruitment_purchase: 招募采购
+maxfood_variance: MaxFood + 浮动量
+no_relevant_production: 无相关生产
+or_recruitment: 或招募
+positive_negative: 正面 / 负面
+net_buildings: 净建筑数
+population_groups_of_16: 人口 / 每 16 人一组
+movement: 移动方式

@@ -1,0 +1,24 @@
+missing_sprites: 'Eksik sprite sayısı: {{count}}'
+playing: '{{name}} oynatılıyor'
+replaced_media: ✓ {{name}} değiştirildi ({{size}})
+choosing: '{{name}} seçiliyor…'
+saved_label: '{{name}} (kayıtlı)'
+file_label: 'Dosya: {{name}}'
+loaded_label: 'Yüklendi: {{name}}'
+balance_help: UCP dengesini kullan, seçili kurulumun verilerini yeniler. EXE + UCP, oyun maliyet tablosunu diskten okur ve yapılandırılmış denge profilini uygular; çalışan oyundan veri okumaz.
+item: Öğe {{id}}
+tool: '{{name}} aracı'
+shortcut: 'Kısayol: {{key}}'
+rally_points: 'Toplanma noktaları: {{count}}'
+rally_point: Toplanma noktası
+keep_footprint: '{{width}}×{{height}} + zorunlu 5×5 stok sahası'
+placement_info: '{{name}} [{{id}}] · {{kind}} · {{size}} · üst üste yerleştirme: {{overlap}} · en fazla: {{maximum}}'
+overlap_allow: izin verilir
+overlap_block: engellenir
+overlap_replace: yerine geçer
+resize: Boyutlandır
+castle_slot: Kale {{slot}}
+replacing_character: '{{name}} karakteri değiştiriliyor…'
+opening: '{{name}} açılıyor…'
+opened: '{{name}} açıldı.'
+with_castle: ' — {{name}}'

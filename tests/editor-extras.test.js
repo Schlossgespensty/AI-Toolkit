@@ -8,6 +8,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const test = require('node:test');
+const vm = require('node:vm');
 
 const root = path.resolve(__dirname, '..');
 const extras = require(path.join(root, 'src', 'js', 'editor-extras.js'));
@@ -23,6 +24,14 @@ test('Ein Burgenpfad wird immer zum selben Ablageschluessel', () => {
   assert.equal(windows, unix);
   assert.equal(extras.castleKeyForPath(null), extras.UNSAVED_KEY);
   assert.equal(extras.castleKeyForPath('   '), extras.UNSAVED_KEY);
+});
+
+test('unsaved group identity stays compatible across interface languages', () => {
+  for (const label of ['Unsaved castle', 'Ungespeicherte Burg', 'Castillo sin guardar']) {
+    const context = vm.createContext({ module: { exports: {} }, toolkitI18n: { t: () => label } });
+    vm.runInContext(extrasSource, context);
+    assert.equal(context.module.exports.castleKeyForPath(null), '(unsaved castle)');
+  }
 });
 
 test('Der Kopierspeicher nimmt nur an, was der Editor auch setzen kann', () => {

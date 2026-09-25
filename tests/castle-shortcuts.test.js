@@ -1,7 +1,7 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
-const vm = require('node:vm');
+const vm = require('./helpers/localized-vm');
 const shortcuts = require('../src/js/castle-shortcuts');
 const camera = require('../src/js/castle-camera');
 const source = fs.readFileSync(require.resolve('../src/js/castle-editor.js'), 'utf8');
@@ -115,8 +115,8 @@ test('palette entries and both mode dropdowns override generic button/select siz
   const html = fs.readFileSync(require.resolve('../src/index.html'), 'utf8');
   assert.match(css, /\.castlePanel \.paletteItem\s*\{\s*width: 100%/);
   assert.match(css, /#castleDeleteMode, #castleSelectMode \{ width: auto; min-width: 0/);
-  assert.match(html, /value="area">Border<\/option>/);
-  assert.match(html, /value="flood">Flood Fill<\/option>/);
+  assert.match(html, /value="area"[^>]*data-i18n="interface:border"[^>]*>Border<\/option>/);
+  assert.match(html, /value="flood"[^>]*data-i18n="interface:flood_fill"[^>]*>Flood Fill<\/option>/);
 });
 
 
@@ -134,12 +134,31 @@ test('upgrading fills free bindings while preserving custom shortcuts and camera
   assert.deepEqual(next.groups,['']);
   assert.deepEqual(next.merge,['']);
   assert.deepEqual(next.brush,['g']);
-  assert.deepEqual(shortcuts.upgrade({...old,brush:['2']}).groups,['g']);
+  assert.deepEqual(shortcuts.upgrade({...old,brush:['3']}).groups,['g']);
   assert.deepEqual(shortcuts.validate({...next,groups:['']}).groups,[''],'explicitly cleared v3 keys remain empty');
 });
 
 test('group and merge keys dispatch the same actions as the pie menu', () => {
-  const h = renderer(); h.key('g'); h.key('m'); h.key('8');
+  const h = renderer(); h.key('g'); h.key('m'); h.key('r');
   assert.deepEqual(h.calls, ['groups','merge','replace']);
   h.key('g',{repeat:true}); assert.equal(h.calls.length,3);
+});
+
+test('new installs start with the number-row tool layout and -/+ brush size', () => {
+  const fresh = shortcuts.migrate(null);
+  assert.deepEqual(Object.fromEntries(['single','line','brush','bucket','select','replace','delete','brushSmaller','brushLarger'].map(id => [id, fresh[id][0]])),
+    {single:'1', line:'2', brush:'3', bucket:'4', select:'5', replace:'r', delete:'d', brushSmaller:'-', brushLarger:'plus'});
+  assert.equal(shortcuts.actionFor({key:'+'}, fresh), 'brushLarger');
+});
+
+test('profiles that saved the old tool defaults untouched move to the number row, customised ones stay', () => {
+  const old = {...shortcuts.defaults, line: ['6'], brush: ['2'], brushSmaller: ['['], brushLarger: [']'], bucket: ['7'], select: ['3'], replace: ['8'], delete: ['4']};
+  assert.deepEqual(shortcuts.validate(shortcuts.refreshDefaults(old)), shortcuts.defaults);
+  const custom = {...old, select: ['v']};
+  assert.equal(shortcuts.refreshDefaults(custom), custom, 'one changed tool key keeps the whole set');
+  const taken = {...old, rotateLeft: ['r']};
+  assert.equal(shortcuts.refreshDefaults(taken), taken, 'a new key held by another action keeps the old set');
+  assert.equal(shortcuts.refreshDefaults(shortcuts.defaults), shortcuts.defaults);
+  assert.match(source, /const saved = stored && shortcutConfig\.refreshDefaults\(stored\);/);
+  assert.match(source, /if \(saved !== stored \|\| \(!stored && \(previous \|\| first\)\)\) localStorage\.setItem\(SHORTCUT_STORAGE_KEY/);
 });

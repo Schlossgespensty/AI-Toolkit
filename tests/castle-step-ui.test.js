@@ -1,7 +1,7 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
-const vm = require('node:vm');
+const vm = require('./helpers/localized-vm');
 const geometry = require('../src/js/castle-geometry');
 const source = fs.readFileSync(require.resolve('../src/js/castle-editor.js'), 'utf8');
 const section = (start, end) => source.slice(source.indexOf(start), source.indexOf(end));
@@ -38,7 +38,7 @@ function setup() {
       addEventListener(type, fn) { this.handlers[type] = fn; }, setAttribute(k, v) { this.attributes[k] = v; },
       removeAttribute(k) { delete this.attributes[k]; }, focus() {},
       scrollIntoView(options) { scrolled.push({index: Number(this.dataset.index), current: this.attributes['aria-current'], block: options.block}); },
-      classList: {add(key) { this[key] = true; }, remove(key) { this[key] = false; }, toggle(key, value) { this[key] = value; }}};
+      classList: {add(key) { this[key] = true; }, remove(key) { this[key] = false; }, toggle(key, value) { this[key] = value; }, contains(key) { return this[key] === true; }}};
     Object.defineProperty(node, 'innerHTML', {set() { this.children = []; }});
     return node;
   };

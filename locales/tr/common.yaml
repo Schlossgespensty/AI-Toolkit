@@ -1,0 +1,28 @@
+actions:
+  cancel: İptal
+  save: Kaydet
+  close: Kapat
+  open: Aç
+  delete: Sil
+  remove: Kaldır
+  apply: Uygula
+  reset: Sıfırla
+  replace: Değiştir
+  merge: Birleştir
+  copy: Kopyala
+  cut: Kes
+  paste: Yapıştır
+  undo: Geri al
+  redo: Yinele
+preferences:
+  theme: Tema
+  language: Dil
+  system: Sistem
+  defaultTheme: Varsayılan
+state:
+  loading: Yükleniyor…
+  saved: Kaydedildi
+  unsaved: Kaydedilmedi
+  error: Hata
+  none: Yok
+  vanilla: Orijinal

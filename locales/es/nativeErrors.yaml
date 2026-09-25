@@ -1,0 +1,62 @@
+an_ai_with_that_folder_id_already_exists: Ya existe una IA con ese identificador de carpeta
+castle_already_exists: El castillo ya existe
+castle_file_does_not_exist_in_this_ai: El archivo de castillo no existe en esta IA
+castle_mapping_must_contain_at_most_eight_slots: La asignación de castillos admite como máximo ocho puestos
+castle_slots_must_be_an_array: Los puestos de castillo deben formar una matriz
+choose_a_fork_of_the_official_ai_toolkit: Elige una bifurcación del AI Toolkit oficial
+choose_the_stronghold_crusader_installation: Selecciona la instalación de Stronghold Crusader
+close_other_editor_windows_before_updating: Cierra las demás ventanas del editor antes de actualizar
+download_the_release_first: Descarga primero la versión
+editor_did_not_close_no_files_were_replaced: El editor no se cerró; no se sustituyó ningún archivo
+editor_window_not_found: No se encontró la ventana del editor
+enter_an_ai_name: Introduce un nombre para la IA
+expected_a_ucp_installation_containing_ucp_plugins: Se esperaba una instalación de UCP que contuviera ucp/plugins
+expected_an_aiv_castle_filename: Se esperaba un nombre de archivo de castillo AIV
+expected_one_ai_toolkit_executable: Se esperaba un único ejecutable de AI Toolkit
+incomplete_download: Descarga incompleta
+invalid_ai_folder_id: Identificador de carpeta de IA no válido
+invalid_archive_path: Ruta del archivo comprimido no válida
+invalid_destination: Destino no válido
+invalid_executable_path: Ruta del ejecutable no válida
+invalid_filename: Nombre de archivo no válido
+invalid_github_repository: Repositorio de GitHub no válido
+invalid_github_response: Respuesta de GitHub no válida
+invalid_installation_root: Carpeta raíz de instalación no válida
+invalid_item_type: Tipo de elemento no válido
+invalid_manifest_path: Ruta del manifiesto no válida
+invalid_package_path: Ruta del paquete no válida
+invalid_png: PNG no válido
+invalid_portrait_image: Imagen de retrato no válida
+invalid_project_path: Ruta del proyecto no válida
+invalid_release_url: URL de la versión no válida
+invalid_resource_directory: Carpeta de recursos no válida
+invalid_settings_document: Documento de ajustes no válido
+invalid_staging_path: Ruta temporal de preparación no válida
+media_exceeds_playback_limit: El archivo multimedia supera el límite de reproducción
+missing_dialog_choices: Faltan las opciones del diálogo
+missing_install_manifest: Falta el manifiesto de instalación
+missing_installation_path: Falta la ruta de instalación
+missing_release_size: Falta el tamaño de la versión
+missing_release_url: Falta la URL de la versión
+no_eligible_snapshot_newer_than_the_official_release: No hay ninguna vista previa compatible más reciente que la versión oficial
+operation_failed: No se pudo completar la operación.
+missing_argument: 'Falta el argumento: {{name}}'
+missing_resource: 'Falta un recurso de la aplicación: {{path}}'
+unexpected_package_entry: 'Entrada de paquete inesperada: {{path}}'
+path_is_outside_the_selected_project: La ruta está fuera del proyecto seleccionado
+release_checksum_mismatch: La suma de comprobación de la versión no coincide
+release_does_not_contain_ai_toolkit_exe: La versión no contiene AI Toolkit.exe
+release_exceeds_size_limits: La versión supera los límites de tamaño
+selected_image_exceeds_128_mb: La imagen seleccionada supera los 128 MB
+staged_update_changed: La actualización preparada ha cambiado
+the_ai_project_no_longer_exists: El proyecto de IA ya no existe
+the_media_file_type_does_not_match: El tipo de archivo multimedia no coincide
+the_selected_release_changed_check_again: La versión seleccionada ha cambiado; compruébalo de nuevo
+this_ai_has_no_aiv_folder: Esta IA no tiene carpeta aiv
+too_many_github_results: Demasiados resultados de GitHub
+unexpected_download_size: Tamaño de descarga inesperado
+unknown_configuration_file: Archivo de configuración desconocido
+unknown_language: Idioma desconocido
+unknown_theme: Tema desconocido
+use_open_externally_for_bink_video: Usa «Abrir externamente» para vídeos Bink
+media_not_mapped: Este archivo multimedia no está asignado a la IA seleccionada

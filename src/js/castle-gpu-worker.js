@@ -1,5 +1,5 @@
 "use strict";
-importScripts("../vendor/pixi/pixi.min.js", "../vendor/pixi/csp.min.js");
+importScripts("../vendor/pixi/pixi.min.js");
 const assets = new Map();
 async function createStage(canvas) {
   const P = self.PIXI;

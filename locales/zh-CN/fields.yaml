@@ -1,0 +1,232 @@
+StrengthMultiplier: 领主生命值倍率
+DotColour: 圆点颜色
+DotCount: 圆点数量
+Type: 类型
+ArabArcher: 阿拉伯弓箭手
+Slave: 奴隶
+Slinger: 投石兵
+Assassin: 刺客
+HorseArcher: 骑射手
+ArabSwordsman: 阿拉伯剑士
+FireThrower: 火焰投掷兵
+EuropArcher: 欧洲弓箭手
+Spearman: 长矛兵
+Maceman: 链锤兵
+Crossbowman: 弩手
+Pikeman: 长戟兵
+Swordsman: 剑士
+Knight: 骑士
+Monk: 僧侣
+Engineer: 工程师
+WallDecoration: 城墙装饰
+Unknown001: 未知参数 001
+Unknown002: 未知参数 002
+Unknown003: 未知参数 003
+Unknown004: 未知参数 004
+Unknown005: 未知参数 005
+CriticalPopularity: 危急民心值
+LowestPopularity: 民心下限
+HighestPopularity: 民心上限
+TaxesMin: 最低税率
+TaxesMax: 最高税率
+Unknown011: 未知参数 011
+Farm1: 农场 1
+Farm2: 农场 2
+Farm3: 农场 3
+Farm4: 农场 4
+Farm5: 农场 5
+Farm6: 农场 6
+Farm7: 农场 7
+Farm8: 农场 8
+PopulationPerFarm: 每座农场对应的住房容量
+PopulationPerWoodcutter: 每座伐木场对应的住房容量
+PopulationPerQuarry: 每座采石场对应的住房容量
+PopulationPerIronmine: 每座铁矿场对应的住房容量
+PopulationPerPitchrig: 每座沥青矿场对应的住房容量
+MaxQuarries: 采石场上限
+MaxIronmines: 铁矿场上限
+MaxWoodcutters: 伐木场上限
+MaxPitchrigs: 沥青矿场上限
+MaxFarms: 农场上限
+BuildInterval: 建造间隔
+ResourceRebuildDelay: 资源建筑重建延迟
+MaxFood: 食物上限
+MinimumApples: 苹果最低库存
+MinimumCheese: 奶酪最低库存
+MinimumBread: 面包最低库存
+MinimumWheat: 小麦最低库存
+MinimumHop: 啤酒花最低库存
+TradeAmountFood: 食物单次购买量
+TradeAmountEquipment: 装备单次购买量
+AIRequestDelay: AI 请求间隔
+MinimumGoodsRequiredAfterTrade: 交易后最低库存
+DoubleRationsFoodThreshold: 双倍口粮食物阈值
+MaxWood: 木材上限
+MaxStone: 石料上限
+MaxResourceOther: 其他资源上限
+MaxEquipment: 装备上限
+MaxBeer: 啤酒上限
+MaxResourceVariance: 库存上限允许超出的数量
+RecruitGoldThreshold: 招募黄金阈值
+BlacksmithSetting: 铁匠铺生产设置
+FletcherSetting: 弓弩作坊生产设置
+PoleturnerSetting: 长柄武器作坊生产设置
+SellResource01: 出售资源 01
+SellResource02: 出售资源 02
+SellResource03: 出售资源 03
+SellResource04: 出售资源 04
+SellResource05: 出售资源 05
+SellResource06: 出售资源 06
+SellResource07: 出售资源 07
+SellResource08: 出售资源 08
+SellResource09: 出售资源 09
+SellResource10: 出售资源 10
+SellResource11: 出售资源 11
+SellResource12: 出售资源 12
+SellResource13: 出售资源 13
+SellResource14: 出售资源 14
+SellResource15: 出售资源 15
+DefWallPatrolRallyTime: 城墙巡逻停留时间
+DefWallPatrolGroups: 城墙巡逻组数
+DefSiegeEngineGoldThreshold: 防御攻城器械黄金阈值
+DefSiegeEngineBuildDelay: 防御攻城器械重建延迟
+Unknown072: 未知参数 072
+Unknown073: 未知参数 073
+RecruitProbDefDefault: 防守招募权重（普通）
+RecruitProbDefWeak: 防守招募权重（弱势）
+RecruitProbDefStrong: 防守招募权重（强势）
+RecruitProbRaidDefault: 袭扰招募权重（普通）
+RecruitProbRaidWeak: 袭扰招募权重（弱势）
+RecruitProbRaidStrong: 袭扰招募权重（强势）
+RecruitProbAttackDefault: 进攻招募权重（普通）
+RecruitProbAttackWeak: 进攻招募权重（弱势）
+RecruitProbAttackStrong: 进攻招募权重（强势）
+SortieUnitRangedMin: 远程出击部队最低数量
+SortieUnitRanged: 远程出击兵种
+SortieUnitMeleeMin: 近战出击人数
+SortieUnitMelee: 近战出击兵种
+DefDiggingUnitMax: 防守挖掘单位上限
+DefDiggingUnit: 防守挖掘兵种
+RecruitInterval: 招募间隔
+RecruitIntervalWeak: 招募间隔（弱势）
+RecruitIntervalStrong: 招募间隔（强势）
+DefTotal: 防守部队总数
+OuterPatrolGroupsCount: 外部巡逻组数
+OuterPatrolGroupsMove: 外部巡逻移动
+OuterPatrolRallyDelay: 外围巡逻停留时间
+DefWalls: 城墙守军数量
+DefUnit1: 防守兵种 1
+DefUnit2: 防守兵种 2
+DefUnit3: 防守兵种 3
+DefUnit4: 防守兵种 4
+DefUnit5: 防守兵种 5
+DefUnit6: 防守兵种 6
+DefUnit7: 防守兵种 7
+DefUnit8: 防守兵种 8
+RaidUnitsBase: 袭扰基础兵力
+RaidUnitsRandom: 袭扰随机额外兵力
+RaidUnit1: 袭扰兵种 1
+RaidUnit2: 袭扰兵种 2
+RaidUnit3: 袭扰兵种 3
+RaidUnit4: 袭扰兵种 4
+RaidUnit5: 袭扰兵种 5
+RaidUnit6: 袭扰兵种 6
+RaidUnit7: 袭扰兵种 7
+RaidUnit8: 袭扰兵种 8
+HarassingSiegeEngine1: 袭扰攻城器械 1
+HarassingSiegeEngine2: 袭扰攻城器械 2
+HarassingSiegeEngine3: 袭扰攻城器械 3
+HarassingSiegeEngine4: 袭扰攻城器械 4
+HarassingSiegeEngine5: 袭扰攻城器械 5
+HarassingSiegeEngine6: 袭扰攻城器械 6
+HarassingSiegeEngine7: 袭扰攻城器械 7
+HarassingSiegeEngine8: 袭扰攻城器械 8
+HarassingSiegeEnginesMax: 袭扰攻城器械上限
+RaidRetargetDelay: 袭扰目标切换延迟
+AttForceBase: 进攻基础兵力
+AttForceRandom: 进攻随机额外兵力
+AttForceSupportAllyThreshold: 支援盟友兵力阈值
+AttForceRallyPercentage: 进攻集结比例
+Unknown129: 未知参数 129
+AttAssaultDelay: 突击延迟
+AttUnitPatrolRecommandDelay: 胜利后撤退延迟
+Unknown132: 未知参数 132
+SiegeEngine1: 攻城器械 1
+SiegeEngine2: 攻城器械 2
+SiegeEngine3: 攻城器械 3
+SiegeEngine4: 攻城器械 4
+SiegeEngine5: 攻城器械 5
+SiegeEngine6: 攻城器械 6
+SiegeEngine7: 攻城器械 7
+SiegeEngine8: 攻城器械 8
+CowThrowInterval: 抛牛前投石次数
+Unknown142: 未知参数 142
+AttMaxEngineers: 进攻工程师上限
+AttDiggingUnit: 进攻挖掘兵种
+AttDiggingUnitMax: 进攻挖掘单位上限
+AttUnitVanguard: 先锋兵种
+AttUnitVanguardMax: 先锋部队上限
+AttMaxAssassins: 进攻刺客上限
+AttMaxLaddermen: 云梯兵上限
+AttMaxTunnelers: 掘地兵上限
+AttUnitPatrol: 进攻巡逻兵种
+AttUnitPatrolMax: 进攻巡逻部队上限
+AttUnitPatrolGroupsCount: 进攻巡逻组数
+AttUnitBackup: 后备兵种
+AttUnitBackupMax: 后备部队上限
+AttUnitBackupGroupsCount: 后备部队组数
+AttUnitEngage: 交战兵种
+AttUnitEngageMax: 交战部队上限
+AttUnitSiegeDef: 攻城器械护卫兵种
+AttUnitSiegeDefMax: 攻城器械护卫上限
+AttUnitSiegeDefGroupsCount: 攻城器械护卫组数
+AttUnitMain1: 主力进攻兵种 1
+AttUnitMain2: 主力进攻兵种 2
+AttUnitMain3: 主力进攻兵种 3
+AttUnitMain4: 主力进攻兵种 4
+AttMaxDefault: 优先招募主力上限
+AttMainGroupsCount: 主力部队组数
+TargetChoice: 目标选择
+AIOxTethers_DisableInitialOxTether: 禁用初始牛车站
+AIOxTethers_Logic: 牛车站逻辑
+AIOxTethers_MaxOxTethers: 牛车站总数上限
+AIOxTethers_DynamicMaxOxTethers: 牛车站动态上限
+AIOxTethers_MinimumOxTethersPerQuarry: 每座采石场最低牛车站数
+AIOxTethers_MaximumOxTethersPerQuarry: 每座采石场最高牛车站数
+AIOxTethers_ThresholdStoneLoad: 石料负载阈值
+RunningUnits_Macemen: 链锤兵奔跑
+RunningUnits_Spearmen: 长矛兵奔跑
+RunningUnits_Slingers: 投石兵奔跑
+RunningUnits_Slaves: 奴隶奔跑
+AIVTroops_InitialRole: 所有部队：初始任务
+AIVTroops_Movement: 所有部队：移动方式
+AIVTroops_InitialRole_Engineer: 工程师：初始任务
+AIVTroops_Movement_Engineer: 工程师：移动方式
+AIVTroops_InitialRole_Archer: 弓箭手：初始任务
+AIVTroops_Movement_Archer: 弓箭手：移动方式
+AIVTroops_InitialRole_Crossbowman: 弩手：初始任务
+AIVTroops_Movement_Crossbowman: 弩手：移动方式
+AIVTroops_InitialRole_Spearman: 长矛兵：初始任务
+AIVTroops_Movement_Spearman: 长矛兵：移动方式
+AIVTroops_InitialRole_Pikeman: 长戟兵：初始任务
+AIVTroops_Movement_Pikeman: 长戟兵：移动方式
+AIVTroops_InitialRole_Maceman: 链锤兵：初始任务
+AIVTroops_Movement_Maceman: 链锤兵：移动方式
+AIVTroops_InitialRole_Swordsman: 剑士：初始任务
+AIVTroops_Movement_Swordsman: 剑士：移动方式
+AIVTroops_InitialRole_Knight: 骑士：初始任务
+AIVTroops_Movement_Knight: 骑士：移动方式
+AIVTroops_InitialRole_Slave: 奴隶：初始任务
+AIVTroops_Movement_Slave: 奴隶：移动方式
+AIVTroops_InitialRole_Slinger: 投石兵：初始任务
+AIVTroops_Movement_Slinger: 投石兵：移动方式
+AIVTroops_InitialRole_Assassin: 刺客：初始任务
+AIVTroops_Movement_Assassin: 刺客：移动方式
+AIVTroops_InitialRole_ArabianArcher: 阿拉伯弓箭手：初始任务
+AIVTroops_Movement_ArabianArcher: 阿拉伯弓箭手：移动方式
+AIVTroops_InitialRole_HorseArcher: 骑射手：初始任务
+AIVTroops_Movement_HorseArcher: 骑射手：移动方式
+AIVTroops_InitialRole_ArabianSwordsman: 阿拉伯剑士：初始任务
+AIVTroops_Movement_ArabianSwordsman: 阿拉伯剑士：移动方式
+AIVTroops_InitialRole_FireThrower: 火焰投掷兵：初始任务
+AIVTroops_Movement_FireThrower: 火焰投掷兵：移动方式

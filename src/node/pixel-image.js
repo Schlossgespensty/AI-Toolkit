@@ -1,6 +1,7 @@
 'use strict';
 
 const zlib = require('node:zlib');
+const { resizePortraitPixels } = require('../shared/portrait-pixels');
 
 const PNG_SIGNATURE = Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]);
 
@@ -114,24 +115,10 @@ function resizeBgraBitmapToPng(bitmap, sourceWidth, sourceHeight, targetWidth, t
     throw new Error('The decoded portrait bitmap has an unexpected size.');
   }
 
-  const rgba = Buffer.alloc(targetWidth * targetHeight * 4);
-  for (let y = 0; y < targetHeight; y += 1) {
-    const sourceY = Math.min(sourceHeight - 1, Math.floor(y * sourceHeight / targetHeight));
-    for (let x = 0; x < targetWidth; x += 1) {
-      const sourceX = Math.min(sourceWidth - 1, Math.floor(x * sourceWidth / targetWidth));
-      const sourceOffset = (sourceY * sourceWidth + sourceX) * 4;
-      const targetOffset = (y * targetWidth + x) * 4;
-      const alpha = bitmap[sourceOffset + 3];
-      if (alpha < alphaThreshold) continue;
-
-      const unpremultiply = alpha < 255 ? 255 / alpha : 1;
-      rgba[targetOffset] = clampByte(bitmap[sourceOffset + 2] * unpremultiply);
-      rgba[targetOffset + 1] = clampByte(bitmap[sourceOffset + 1] * unpremultiply);
-      rgba[targetOffset + 2] = clampByte(bitmap[sourceOffset] * unpremultiply);
-      rgba[targetOffset + 3] = 255;
-    }
-  }
-  return encodeRgbaPng(targetWidth, targetHeight, rgba);
+  const rgba = resizePortraitPixels(bitmap, sourceWidth, sourceHeight, targetWidth, targetHeight, {
+    bgra: true, premultiplied: true, alphaThreshold
+  });
+  return encodeRgbaPng(targetWidth, targetHeight, Buffer.from(rgba));
 }
 
 module.exports = {

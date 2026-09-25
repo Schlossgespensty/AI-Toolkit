@@ -26,16 +26,16 @@
   // Explicit itineraries: a leg is a one-way journey, not a resource count.
   // W = workshop, S = stockpile, D = delivery store, C = cow source.
   const recipes = {
-    Bow: { work: 2*MONTH, speed: 25, path: ['W','S','W','S','W','D','W'], note: '2 wood; separate armoury return' },
-    Crossbow: { work: 2*MONTH, speed: 25, path: ['W','S','W','S','W','S','W','D','W'], note: '3 wood; separate armoury return' },
-    Spear: { work: null, speed: 25, path: ['W','D','S','W'], note: '1 wood; work time is only documented as less than 1 month' },
-    Pike: { work: 2*MONTH, speed: 25, path: ['W','S','W','D','S','W'], note: '2 wood; collects first plank after armoury delivery' },
-    Sword: { work: 2*MONTH, speed: 25, path: ['W','D','S','W'], note: '1 iron; collects next input after armoury delivery' },
-    Mace: { work: 2*MONTH, speed: 25, path: ['W','D','S','W'], note: '1 iron; collects next input after armoury delivery' },
-    Armour: { work: 2*MONTH, speed: 25, path: ['W','D','S','W'], note: '1 iron; collects next input after armoury delivery' },
-    Leather: { work: null, speed: 25, path: ['W','C','W','D','W','D','W','D','W'], note: '3 deliveries per cow; each work time is only documented as less than 3 months' },
-    Bread: { work: 2*MONTH, speed: 100/3, path: ['W','D','S','W'], note: '1 flour; granary then stockpile' },
-    Ale: { work: 4*MONTH, speed: 25, path: ['W','S','W','S','W'], note: '1 hop; stockpile input and output' }
+    Bow: { work: 2*MONTH, speed: 25, path: ['W','S','W','S','W','D','W'], note: 'details:recipe_bow' },
+    Crossbow: { work: 2*MONTH, speed: 25, path: ['W','S','W','S','W','S','W','D','W'], note: 'details:recipe_crossbow' },
+    Spear: { work: null, speed: 25, path: ['W','D','S','W'], note: 'details:recipe_spear' },
+    Pike: { work: 2*MONTH, speed: 25, path: ['W','S','W','D','S','W'], note: 'details:recipe_pike' },
+    Sword: { work: 2*MONTH, speed: 25, path: ['W','D','S','W'], note: 'details:recipe_iron' },
+    Mace: { work: 2*MONTH, speed: 25, path: ['W','D','S','W'], note: 'details:recipe_iron' },
+    Armour: { work: 2*MONTH, speed: 25, path: ['W','D','S','W'], note: 'details:recipe_iron' },
+    Leather: { work: null, speed: 25, path: ['W','C','W','D','W','D','W','D','W'], note: 'details:recipe_leather' },
+    Bread: { work: 2*MONTH, speed: 100/3, path: ['W','D','S','W'], note: 'details:recipe_bread' },
+    Ale: { work: 4*MONTH, speed: 25, path: ['W','S','W','S','W'], note: 'details:recipe_ale' }
   };
   const defaults = { distance: 25, extraDistance: 5, stockpileDistance: 25, deliveryDistance: 25,
     storesDistance: 25, walkSpeedMultiplier: 1, productivity: 100, skirmish: true,

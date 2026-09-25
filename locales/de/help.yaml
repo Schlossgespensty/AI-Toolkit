@@ -1,0 +1,852 @@
+StrengthMultiplier: |-
+  Multipliziert die Lebenspunkte des Burgherrn.
+  Ratte = 0,5
+  Standard = 1
+  Wolf = 1,5
+DotColour: |-
+  Farbe der Punkte, die die Stärke des Burgherrn anzeigen.
+  Vanilla verwendet Gelb für schwache und Blau für starke KIs.
+DotCount: |-
+  Anzahl der Punkte, die die Stärke des Burgherrn anzeigen.
+  Vanilla verwendet einen Punkt je 0,1 des Multiplikators.
+Type: Typ des Burgherrn, der auf dem Bergfried erscheint.
+ArabArcher: Anzahl der Einheiten (Arabischer Bogenschütze), die zu Spielbeginn beim Bergfried erscheinen.
+Slave: Anzahl der Einheiten (Sklave), die zu Spielbeginn beim Bergfried erscheinen.
+Slinger: Anzahl der Einheiten (Schleuderer), die zu Spielbeginn beim Bergfried erscheinen.
+Assassin: Anzahl der Einheiten (Assassine), die zu Spielbeginn beim Bergfried erscheinen.
+HorseArcher: Anzahl der Einheiten (Berittener Bogenschütze), die zu Spielbeginn beim Bergfried erscheinen.
+ArabSwordsman: Anzahl der Einheiten (Arabischer Schwertkämpfer), die zu Spielbeginn beim Bergfried erscheinen.
+FireThrower: Anzahl der Einheiten (Feuerwerfer), die zu Spielbeginn beim Bergfried erscheinen.
+EuropArcher: Anzahl der Einheiten (Europäischer Bogenschütze), die zu Spielbeginn beim Bergfried erscheinen.
+Spearman: Anzahl der Einheiten (Lanzenträger), die zu Spielbeginn beim Bergfried erscheinen.
+Maceman: Anzahl der Einheiten (Keulenkämpfer), die zu Spielbeginn beim Bergfried erscheinen.
+Crossbowman: Anzahl der Einheiten (Armbrustschütze), die zu Spielbeginn beim Bergfried erscheinen.
+Pikeman: Anzahl der Einheiten (Pikenier), die zu Spielbeginn beim Bergfried erscheinen.
+Swordsman: Anzahl der Einheiten (Schwertkämpfer), die zu Spielbeginn beim Bergfried erscheinen.
+Knight: Anzahl der Einheiten (Ritter), die zu Spielbeginn beim Bergfried erscheinen.
+Monk: Anzahl der Einheiten (Mönch), die zu Spielbeginn beim Bergfried erscheinen.
+WallDecoration: |-
+  Dekoration des Burgherrn für „flg“-Platzierungen im AIV-Editor.
+
+  8 = brennendes auslaufendes Öl
+  9 = Flammen
+  10 = kleine Flagge
+  11 = große Flagge
+  12 = mittlere Flagge
+  13 = Kreuzritterflagge
+  14 = Feuerbecken
+  15 = Zierschädel
+  21 = Dampfwolken
+  22 = Krankheitswolken
+  26 = Feuerexplosionen
+  28 = herabfliegende Raben
+  29 = mittlere Steine im Wasser
+  30 = kleine Steine an Gebäuden
+  31 = kleine Steine im Wasser
+  40 = aufsteigende Null-Gold-Meldung
+  41 = aufsteigende Null-Beliebtheitsmeldung
+  42 = leere aufsteigende Meldung
+  43 = leere aufsteigende Meldung
+Unknown001: Unbenutzter Wert.
+Unknown002: Unbenutzter Wert.
+Unknown003: Unbenutzter Wert.
+Unknown004: Unbenutzter Wert.
+Unknown005: Unbenutzter Wert.
+CriticalPopularity: |-
+  Unter dieser Beliebtheit verkauft die KI verstärkt Waren, um Gold zu erhalten.
+
+  10000 = 100 Beliebtheit.
+  5000 = 50 Beliebtheit.
+LowestPopularity: >-
+  Unter dieser Beliebtheit senkt die KI die Steuern in Richtung TaxesMin und gibt zusätzliche Rationen, bis
+  HighestPopularity erreicht ist.
+
+
+  10000 = 100 Beliebtheit.
+
+  5000 = 50 Beliebtheit.
+HighestPopularity: >-
+  Über dieser Beliebtheit erhöht die KI die Steuern, bis ein stabiler Beliebtheitsmodifikator von bis zu −3
+  erreicht ist.
+
+
+  10000 = 100 Beliebtheit.
+
+  5000 = 50 Beliebtheit.
+TaxesMin: |-
+  Niedrigste erlaubte Steuerstufe.
+  0 = höchste Bestechung
+  11 = höchste Steuern
+TaxesMax: |-
+  Höchste erlaubte Steuerstufe.
+  0 = höchste Bestechung
+  11 = höchste Steuern
+Unknown011: Unbenutzter Wert.
+Farm1: |-
+  1. Farm in der Baureihenfolge der KI.
+
+  Zerstörte Farmen werden nicht durch denselben Typ ersetzt, sondern durch den nächsten in der Reihenfolge.
+Farm2: |-
+  2. Farm in der Baureihenfolge der KI.
+
+  Zerstörte Farmen werden nicht durch denselben Typ ersetzt, sondern durch den nächsten in der Reihenfolge.
+Farm3: |-
+  3. Farm in der Baureihenfolge der KI.
+
+  Zerstörte Farmen werden nicht durch denselben Typ ersetzt, sondern durch den nächsten in der Reihenfolge.
+Farm4: |-
+  4. Farm in der Baureihenfolge der KI.
+
+  Zerstörte Farmen werden nicht durch denselben Typ ersetzt, sondern durch den nächsten in der Reihenfolge.
+Farm5: |-
+  5. Farm in der Baureihenfolge der KI.
+
+  Zerstörte Farmen werden nicht durch denselben Typ ersetzt, sondern durch den nächsten in der Reihenfolge.
+Farm6: |-
+  6. Farm in der Baureihenfolge der KI.
+
+  Zerstörte Farmen werden nicht durch denselben Typ ersetzt, sondern durch den nächsten in der Reihenfolge.
+Farm7: |-
+  7. Farm in der Baureihenfolge der KI.
+
+  Zerstörte Farmen werden nicht durch denselben Typ ersetzt, sondern durch den nächsten in der Reihenfolge.
+Farm8: |-
+  8. Farm in der Baureihenfolge der KI. Nach Farm8 beginnt die Reihenfolge von vorn.
+
+  Zerstörte Farmen werden nicht durch denselben Typ ersetzt, sondern durch den nächsten in der Reihenfolge.
+PopulationPerFarm: >-
+  Je dieser Anzahl unterbringbarer Einwohner baut die KI eine Farm. Die erste Farm wird immer bei Bevölkerung
+  0 gebaut.
+
+
+  Hopfenfarmen zählen nicht mit und werden gebaut, sobald sie in der Reihenfolge anstehen.
+PopulationPerWoodcutter: >-
+  Je dieser Anzahl unterbringbarer Einwohner baut die KI einen Holzfäller. Beim ersten Erreichen dieser Anzahl
+  werden stattdessen zwei gebaut.
+PopulationPerQuarry: >-
+  Je dieser Anzahl unterbringbarer Einwohner baut die KI einen Steinbruch. Beim ersten Erreichen dieser Anzahl
+  werden stattdessen zwei gebaut.
+PopulationPerIronmine: >-
+  Je dieser Anzahl unterbringbarer Einwohner baut die KI eine Eisenmine. Beim ersten Erreichen dieser Anzahl
+  werden stattdessen zwei gebaut.
+PopulationPerPitchrig: Je dieser Anzahl unterbringbarer Einwohner baut die KI eine Pechgrube.
+MaxQuarries: Höchstzahl der Steinbrüche, die die KI baut.
+MaxIronmines: Höchstzahl der Eisenminen, die die KI baut.
+MaxWoodcutters: Höchstzahl der Holzfäller, die die KI baut.
+MaxPitchrigs: Höchstzahl der Pechgruben, die die KI baut.
+MaxFarms: |-
+  Höchstzahl der Farmen, die die KI baut.
+
+  Hopfenfarmen zählen nicht mit.
+BuildInterval: |-
+  Baugeschwindigkeit der KI. Gilt für AIV-Gebäude, externe Gebäude und alle Reparaturen.
+
+  1 ist am schnellsten.
+ResourceRebuildDelay: Wartezeit vor dem Wiederaufbau eines Rohstoffgebäudes außerhalb der AIV.
+MaxFood: |-
+  Höchstbestand an Äpfeln, Käse, Fleisch, Brot und Weizen, zuzüglich ResourceVariance.
+
+  Der Wert gilt je Warentyp, NICHT insgesamt.
+MinimumApples: >-
+  Unter diesem Apfelbestand kauft die KI jeweils [TradeAmountFood] Äpfel nach, bis der Wert wieder erreicht
+  ist.
+
+
+  Bei 0 kauft die KI niemals Äpfel.
+MinimumCheese: |-
+  Unter diesem Käsebestand kauft die KI jeweils [TradeAmountFood] Käse nach, bis der Wert wieder erreicht ist.
+
+  Bei 0 kauft die KI niemals Käse.
+MinimumBread: |-
+  Unter diesem Brotbestand kauft die KI jeweils [TradeAmountFood] Brot nach, bis der Wert wieder erreicht ist.
+
+  Bei 0 kauft sie niemals Brot.
+
+  Bei einer Brotwirtschaft kann 0 sinnvoller sein, um stattdessen Weizen zu kaufen.
+MinimumWheat: >-
+  Unter diesem Weizenbestand kauft die KI jeweils [TradeAmountFood] Weizen nach, bis der Wert wieder erreicht
+  ist.
+
+
+  Bei 0 kauft sie niemals Weizen.
+MinimumHop: >-
+  Unter diesem Hopfenbestand kauft die KI jeweils [TradeAmountFood] Hopfen nach, bis der Wert wieder erreicht
+  ist. Bei 0 kauft sie niemals Hopfen.
+TradeAmountFood: >-
+  Nahrungsmenge je Einkauf. Die KI kauft jeweils nur einen Nahrungstyp.
+
+
+  Ein niedriger Wert macht Einkäufe günstiger und damit wahrscheinlicher, kann aber mehr Einkäufe erfordern:
+  langsameres Auffüllen und mögliche kurze Engpässe.
+TradeAmountEquipment: >-
+  Waffenmenge je Einkauf. Die KI kauft jeweils nur einen Ausrüstungstyp.
+
+
+  Ein niedriger Wert macht Einkäufe günstiger und damit wahrscheinlicher, kann aber mehr Einkäufe erfordern:
+  langsameres Auffüllen und mögliche kurze Engpässe.
+AIRequestDelay: Häufigkeit der Rohstoffanfragen an den Spieler. Niedrigerer Wert → häufiger.
+MinimumGoodsRequiredAfterTrade: >-
+  Mindestbestand einer Ware, der der KI nach einem Handel mit dem Spieler bleiben muss. Andernfalls lehnt sie
+  den Handel ab.
+DoubleRationsFoodThreshold: >-
+  Wenn der gemeinsame Bestand an Äpfeln, Käse, Fleisch und Brot diesen Wert übersteigt, gibt die KI doppelte
+  Rationen.
+MaxWood: Höchster Holzbestand, zuzüglich ResourceVariance.
+MaxStone: Höchster Steinbestand, zuzüglich ResourceVariance.
+MaxResourceOther: |-
+  Höchstbestand an Eisen, Pech, Hopfen und Mehl, zuzüglich ResourceVariance.
+
+  Gilt je Warentyp, nicht insgesamt.
+MaxEquipment: Höchstbestand an Waffen und Rüstungen, zuzüglich ResourceVariance. Gilt je Typ, nicht insgesamt.
+MaxBeer: Höchster Bierbestand, zuzüglich ResourceVariance.
+MaxResourceVariance: Erlaubte Abweichung von jedem „Max[Resource]“-Wert.
+RecruitGoldThreshold: Mindestgoldbestand, bevor die KI mit dem Rekrutieren beginnt.
+BlacksmithSetting: >-
+  Legt die Schmiedeproduktion fest. Bei „Beide“ fertigt die erste Schmiede Schwerter, die zweite Keulen, die
+  dritte Schwerter usw.
+FletcherSetting: >-
+  Legt die Bogenmacherproduktion fest. Bei „Beide“ fertigt der erste Bögen, der zweite Armbrüste, der dritte
+  Bögen usw.
+PoleturnerSetting: >-
+  Legt die Lanzenmacherproduktion fest. Bei „Beide“ fertigt der erste Lanzen, der zweite Piken, der dritte
+  Lanzen usw.
+SellResource01: Diese Ware wird bei Erhalt immer sofort von der KI verkauft.
+SellResource02: Diese Ware wird bei Erhalt immer sofort von der KI verkauft.
+SellResource03: Diese Ware wird bei Erhalt immer sofort von der KI verkauft.
+SellResource04: Diese Ware wird bei Erhalt immer sofort von der KI verkauft.
+SellResource05: Diese Ware wird bei Erhalt immer sofort von der KI verkauft.
+SellResource06: Diese Ware wird bei Erhalt immer sofort von der KI verkauft.
+SellResource07: Diese Ware wird bei Erhalt immer sofort von der KI verkauft.
+SellResource08: Diese Ware wird bei Erhalt immer sofort von der KI verkauft.
+SellResource09: Diese Ware wird bei Erhalt immer sofort von der KI verkauft.
+SellResource10: Diese Ware wird bei Erhalt immer sofort von der KI verkauft.
+SellResource11: Diese Ware wird bei Erhalt immer sofort von der KI verkauft.
+SellResource12: Diese Ware wird bei Erhalt immer sofort von der KI verkauft.
+SellResource13: Diese Ware wird bei Erhalt immer sofort von der KI verkauft.
+SellResource14: Diese Ware wird bei Erhalt immer sofort von der KI verkauft.
+SellResource15: Diese Ware wird bei Erhalt immer sofort von der KI verkauft.
+DefWallPatrolRallyTime: >-
+  Wartezeit der Mauerverteidiger vor dem Weitergehen zum nächsten AIV-Einheitenplatz. Nicht alle
+  Mauerverteidiger können patrouillieren.
+DefWallPatrolGroups: Anzahl der Mauerverteidigergruppen, die zwischen ihren AIV-Plätzen patrouillieren.
+DefSiegeEngineGoldThreshold: Erforderlicher Goldbestand zum Bau von AIV-Belagerungsgeräten.
+DefSiegeEngineBuildDelay: Wartezeit vor dem Wiederaufbau zerstörter AIV-Belagerungsgeräte. Kleinerer Wert → kürzere Wartezeit.
+Unknown072: Unbenutzter Wert.
+Unknown073: Unbenutzter Wert.
+RecruitProbDefDefault: |-
+  Wahrscheinlichkeit zur Rekrutierung von Verteidigern im Zustand „Normal“.
+
+  Schwach: fast nie aktiv, meist kurz vor der Niederlage.
+  Normal: meist die ersten Spieljahre.
+  Stark: am häufigsten aktiv, oft schon bei Bevölkerung und Truppenzahl > 40.
+RecruitProbDefWeak: |-
+  Wahrscheinlichkeit zur Rekrutierung von Verteidigern im Zustand „Schwach“.
+
+  Schwach: fast nie aktiv, meist kurz vor der Niederlage.
+  Normal: meist die ersten Spieljahre.
+  Stark: am häufigsten aktiv, oft schon bei Bevölkerung und Truppenzahl > 40.
+RecruitProbDefStrong: |-
+  Wahrscheinlichkeit zur Rekrutierung von Verteidigern im Zustand „Stark“.
+
+  Schwach: fast nie aktiv, meist kurz vor der Niederlage.
+  Normal: meist die ersten Spieljahre.
+  Stark: am häufigsten aktiv, oft schon bei Bevölkerung und Truppenzahl > 40.
+RecruitProbRaidDefault: |-
+  Wahrscheinlichkeit zur Rekrutierung von Überfalltruppen im Zustand „Normal“.
+
+  Schwach: fast nie aktiv, meist kurz vor der Niederlage.
+  Normal: meist die ersten Spieljahre.
+  Stark: am häufigsten aktiv, oft schon bei Bevölkerung und Truppenzahl > 40.
+RecruitProbRaidWeak: |-
+  Wahrscheinlichkeit zur Rekrutierung von Überfalltruppen im Zustand „Schwach“.
+
+  Schwach: fast nie aktiv, meist kurz vor der Niederlage.
+  Normal: meist die ersten Spieljahre.
+  Stark: am häufigsten aktiv, oft schon bei Bevölkerung und Truppenzahl > 40.
+RecruitProbRaidStrong: |-
+  Wahrscheinlichkeit zur Rekrutierung von Überfalltruppen im Zustand „Stark“.
+
+  Schwach: fast nie aktiv, meist kurz vor der Niederlage.
+  Normal: meist die ersten Spieljahre.
+  Stark: am häufigsten aktiv, oft schon bei Bevölkerung und Truppenzahl > 40.
+RecruitProbAttackDefault: |-
+  Wahrscheinlichkeit zur Rekrutierung von Angriffstruppen im Zustand „Normal“.
+
+  Schwach: fast nie aktiv, meist kurz vor der Niederlage.
+  Normal: meist die ersten Spieljahre.
+  Stark: am häufigsten aktiv, oft schon bei Bevölkerung und Truppenzahl > 40.
+RecruitProbAttackWeak: |-
+  Wahrscheinlichkeit zur Rekrutierung von Angriffstruppen im Zustand „Schwach“.
+
+  Schwach: fast nie aktiv, meist kurz vor der Niederlage.
+  Normal: meist die ersten Spieljahre.
+  Stark: am häufigsten aktiv, oft schon bei Bevölkerung und Truppenzahl > 40.
+RecruitProbAttackStrong: |-
+  Wahrscheinlichkeit zur Rekrutierung von Angriffstruppen im Zustand „Stark“.
+
+  Schwach: fast nie aktiv, meist kurz vor der Niederlage.
+  Normal: meist die ersten Spieljahre.
+  Stark: am häufigsten aktiv, oft schon bei Bevölkerung und Truppenzahl > 40.
+Unknown142: Unbenutzter Wert.
+SortieUnitRangedMin: |-
+  Mindestzahl der Fernkampfeinheiten für Ausfälle.
+
+  Schwach: fast nie aktiv, meist kurz vor der Niederlage.
+  Normal: meist die ersten Spieljahre.
+  Stark: am häufigsten aktiv, oft schon bei Bevölkerung und Truppenzahl > 40.
+SortieUnitRanged: >-
+  Fernkampftyp für Ausfälle. Diese Einheiten stehen außerhalb der Burg an Stellen, wo Arbeiter starben. Nach
+  wiederholten Verlusten wächst ihre Anzahl; später werden meist etwa 25 mehr als eingestellt rekrutiert.
+
+
+  Auch bei 0 wird rekrutiert. Zum Deaktivieren einen nicht rekrutierbaren Typ wählen.
+
+
+  Ausfalleinheiten haben immer Vorrang vor allen anderen Rekrutierungen.
+SortieUnitMeleeMin: Genaue Anzahl der Nahkampfeinheiten für Ausfälle.
+SortieUnitMelee: >-
+  Einheitentyp für Ausfälle gegen Truppen, die Gebäude zerstören. Nach dem Tod des Ziels kehren sie auf den
+  Bergfried zurück.
+
+
+  Ausfalleinheiten haben immer Vorrang vor allen anderen Rekrutierungen.
+DefDiggingUnitMax: >-
+  Maximale Anzahl rekrutierter Grabeneinheiten. Solange die KI oder ein Verbündeter einen Graben plant, werden
+  sie vor Verteidigern, Überfall- und Angriffstruppen rekrutiert.
+DefDiggingUnit: Einheitentyp zum Ausheben eigener Gräben oder der Gräben eines Verbündeten.
+RecruitInterval: >-
+  Wartezeit vor der nächsten Rekrutierung im Zustand „Normal“. 1 ist am schnellsten.
+
+
+  Schwach: fast nie aktiv, meist kurz vor der Niederlage. Normal: meist die ersten Spieljahre. Stark: am
+  häufigsten aktiv, oft schon bei Bevölkerung und Truppenzahl > 40.
+RecruitIntervalWeak: >-
+  Wartezeit vor der nächsten Rekrutierung im Zustand „Schwach“. 1 ist am schnellsten.
+
+
+  Schwach: fast nie aktiv, meist kurz vor der Niederlage. Normal: meist die ersten Spieljahre. Stark: am
+  häufigsten aktiv, oft schon bei Bevölkerung und Truppenzahl > 40.
+RecruitIntervalStrong: >-
+  Wartezeit vor der nächsten Rekrutierung im Zustand „Stark“. 1 ist am schnellsten.
+
+
+  Schwach: fast nie aktiv, meist kurz vor der Niederlage. Normal: meist die ersten Spieljahre. Stark: am
+  häufigsten aktiv, oft schon bei Bevölkerung und Truppenzahl > 40.
+DefTotal: Gesamtzahl der Verteidigungseinheiten, die die KI rekrutiert.
+OuterPatrolGroupsCount: Anzahl der Verteidigergruppen, die die Wirtschaftsgebäude patrouillieren.
+OuterPatrolGroupsMove: >-
+  Ob Verteidiger außerhalb der Mauern um die Wirtschaft patrouillieren oder stehen bleiben, oft bei
+  Steinbrüchen.
+OuterPatrolRallyDelay: Wartezeit der Verteidiger außerhalb der Mauern, bevor sie zum nächsten Ort gehen.
+DefWalls: >-
+  Anzahl der Mauerverteidiger aus der Gesamtzahl der Verteidiger. Sie gehen zu ihren AIV-Plätzen in der Burg;
+  die übrigen patrouillieren die Wirtschaft.
+DefUnit1: |-
+  1. Verteidigungseinheit in der Rekrutierungsreihenfolge.
+
+  Wenn die KI einen Platz nicht bezahlen kann, versucht sie den nächsten.
+DefUnit2: |-
+  2. Verteidigungseinheit in der Rekrutierungsreihenfolge.
+
+  Wenn die KI einen Platz nicht bezahlen kann, versucht sie den nächsten.
+DefUnit3: |-
+  3. Verteidigungseinheit in der Rekrutierungsreihenfolge.
+
+  Wenn die KI einen Platz nicht bezahlen kann, versucht sie den nächsten.
+DefUnit4: |-
+  4. Verteidigungseinheit in der Rekrutierungsreihenfolge.
+
+  Wenn die KI einen Platz nicht bezahlen kann, versucht sie den nächsten.
+DefUnit5: |-
+  5. Verteidigungseinheit in der Rekrutierungsreihenfolge.
+
+  Wenn die KI einen Platz nicht bezahlen kann, versucht sie den nächsten.
+DefUnit6: |-
+  6. Verteidigungseinheit in der Rekrutierungsreihenfolge.
+
+  Wenn die KI einen Platz nicht bezahlen kann, versucht sie den nächsten.
+DefUnit7: |-
+  7. Verteidigungseinheit in der Rekrutierungsreihenfolge.
+
+  Wenn die KI einen Platz nicht bezahlen kann, versucht sie den nächsten.
+DefUnit8: |-
+  8. Verteidigungseinheit in der Rekrutierungsreihenfolge.
+
+  Wenn die KI einen Platz nicht bezahlen kann, versucht sie den nächsten.
+
+  Nach DefUnit8 beginnt die Liste von vorn.
+RaidUnitsBase: Anzahl der Einheiten für Überfälle auf gegnerische Gebäude.
+RaidUnitsRandom: Mögliche zusätzliche Einheiten über RaidUnitsBase hinaus, wenn die KI stark ist und viel Gold hat.
+RaidUnit1: |-
+  1. Überfalleinheit in der Rekrutierungsreihenfolge.
+
+  Wenn die KI einen Platz nicht bezahlen kann, versucht sie den nächsten.
+RaidUnit2: |-
+  2. Überfalleinheit in der Rekrutierungsreihenfolge.
+
+  Wenn die KI einen Platz nicht bezahlen kann, versucht sie den nächsten.
+RaidUnit3: |-
+  3. Überfalleinheit in der Rekrutierungsreihenfolge.
+
+  Wenn die KI einen Platz nicht bezahlen kann, versucht sie den nächsten.
+RaidUnit4: |-
+  4. Überfalleinheit in der Rekrutierungsreihenfolge.
+
+  Wenn die KI einen Platz nicht bezahlen kann, versucht sie den nächsten.
+RaidUnit5: |-
+  5. Überfalleinheit in der Rekrutierungsreihenfolge.
+
+  Wenn die KI einen Platz nicht bezahlen kann, versucht sie den nächsten.
+RaidUnit6: |-
+  6. Überfalleinheit in der Rekrutierungsreihenfolge.
+
+  Wenn die KI einen Platz nicht bezahlen kann, versucht sie den nächsten.
+RaidUnit7: |-
+  7. Überfalleinheit in der Rekrutierungsreihenfolge.
+
+  Wenn die KI einen Platz nicht bezahlen kann, versucht sie den nächsten.
+RaidUnit8: |-
+  8. Überfalleinheit in der Rekrutierungsreihenfolge.
+
+  Wenn die KI einen Platz nicht bezahlen kann, versucht sie den nächsten.
+
+  Nach RaidUnit8 beginnt die Liste von vorn.
+HarassingSiegeEngine1: >-
+  1. Belagerungsgerät für Störangriffe. Es fährt von der Ingenieursgilde zur gegnerischen Burg und beschießt
+  unterwegs Gebäude; Feuerballisten auch Einheiten.
+HarassingSiegeEngine2: >-
+  2. Belagerungsgerät für Störangriffe. Es fährt von der Ingenieursgilde zur gegnerischen Burg und beschießt
+  unterwegs Gebäude; Feuerballisten auch Einheiten.
+HarassingSiegeEngine3: >-
+  3. Belagerungsgerät für Störangriffe. Es fährt von der Ingenieursgilde zur gegnerischen Burg und beschießt
+  unterwegs Gebäude; Feuerballisten auch Einheiten.
+HarassingSiegeEngine4: >-
+  4. Belagerungsgerät für Störangriffe. Es fährt von der Ingenieursgilde zur gegnerischen Burg und beschießt
+  unterwegs Gebäude; Feuerballisten auch Einheiten.
+HarassingSiegeEngine5: >-
+  5. Belagerungsgerät für Störangriffe. Es fährt von der Ingenieursgilde zur gegnerischen Burg und beschießt
+  unterwegs Gebäude; Feuerballisten auch Einheiten.
+HarassingSiegeEngine6: >-
+  6. Belagerungsgerät für Störangriffe. Es fährt von der Ingenieursgilde zur gegnerischen Burg und beschießt
+  unterwegs Gebäude; Feuerballisten auch Einheiten.
+HarassingSiegeEngine7: >-
+  7. Belagerungsgerät für Störangriffe. Es fährt von der Ingenieursgilde zur gegnerischen Burg und beschießt
+  unterwegs Gebäude; Feuerballisten auch Einheiten.
+HarassingSiegeEngine8: >-
+  8. Belagerungsgerät für Störangriffe. Es fährt von der Ingenieursgilde zur gegnerischen Burg und beschießt
+  unterwegs Gebäude; Feuerballisten auch Einheiten.
+
+
+  Nach HarassingSiegeEngine8 beginnt die Liste von vorn.
+HarassingSiegeEnginesMax: Höchstzahl gleichzeitig eingesetzter Belagerungsgeräte für Störangriffe.
+RaidRetargetDelay: Wartezeit der Überfalltruppen, bevor sie ein neues Gebäude anvisieren.
+AttForceBase: >-
+  Anzahl der Angriffseinheiten vor einem Angriff. Sie steigt mit jedem Angriff gemäß UCP-Einstellung, in
+  Vanilla um 5 pro Angriff.
+AttForceRandom: Mögliche zusätzliche Einheiten über AttForceBase hinaus, wenn die KI stark ist und viel Gold hat.
+AttForceSupportAllyThreshold: >-
+  Erforderliche Anzahl rekrutierter Angriffseinheiten, bevor die KI Angriffs- oder Hilfsbefehle des Spielers
+  ausführt.
+AttForceRallyPercentage: Anteil der Einheiten in %, der sich am Sammelpunkt einfinden muss, bevor die KI angreift.
+Unknown129: >-
+  Fast ohne Auswirkung. Anteil in % am Sammelpunkt, bevor die KI den Rückzug beginnt, falls ihr Angriff als zu
+  schwach bewertet wird.
+
+
+  Außerdem der Anteil dieser Rückzügler, der den Bergfried erreichen muss, bevor die Rekrutierung für den
+  nächsten Angriff beginnt.
+AttAssaultDelay: >-
+  Wartezeit der Angriffseinheiten und Belagerungsgeräte am Sammelpunkt nach Angriffsbeginn, bevor sie
+  vorgeschickt werden.
+AttUnitPatrolRecommandDelay: |-
+  Wartezeit vor dem Rückzug nach erfolgreichem Angriff.
+
+  Normalerweise 0: Es gibt keinen Grund, am Grab des Gegners zu warten.
+Unknown132: >-
+  Wahrscheinlichkeit in %, mit einem Angriff auf einen Verbündeten zu warten. Später kann die KI dadurch auch
+  vor vollständiger Rekrutierung angreifen, um einen Verbündeten beim Angriff zu unterstützen.
+SiegeEngine1: 1. Belagerungsgerät für Angriffe.
+SiegeEngine2: 2. Belagerungsgerät für Angriffe.
+SiegeEngine3: 3. Belagerungsgerät für Angriffe.
+SiegeEngine4: 4. Belagerungsgerät für Angriffe.
+SiegeEngine5: 5. Belagerungsgerät für Angriffe.
+SiegeEngine6: 6. Belagerungsgerät für Angriffe.
+SiegeEngine7: 7. Belagerungsgerät für Angriffe.
+SiegeEngine8: 8. Belagerungsgerät für Angriffe. Maximal acht angreifende Belagerungsgeräte sind möglich.
+CowThrowInterval: Anzahl der Steinwürfe eines Katapults, bevor es stattdessen eine Kuh wirft.
+AttMaxEngineers: >-
+  Höchstzahl der Ingenieure zur Bedienung der Geräte in den SiegeEngine-Plätzen. Der Wert sollte mindestens
+  deren gemeinsamen Personalbedarf decken.
+AttDiggingUnit: Einheit zum Zuschütten gegnerischer Gräben während eines Angriffs.
+AttDiggingUnitMax: Höchstzahl der Grabeneinheiten je Angriff.
+AttUnitVanguard: Einheit, die vor allen anderen zum Angriff auf die gegnerische Burg läuft.
+AttUnitVanguardMax: Höchstzahl der Vorhuteinheiten je Angriff.
+AttMaxAssassins: Höchstzahl der Assassinen, die bei Belagerungen gegnerische Torhäuser erklimmen.
+AttMaxLaddermen: Höchstzahl der Leiterträger, die bei Belagerungen Leitern an Mauern stellen.
+AttMaxTunnelers: Höchstzahl der Tunnelgräber, die in Richtung des gegnerischen Bergfrieds graben.
+AttUnitPatrol: Einheiten, die um die gegnerische Burg patrouillieren und gegnerische Einheiten beschießen.
+AttUnitPatrolMax: Höchstzahl der Patrouilleneinheiten je Angriff.
+AttUnitPatrolGroupsCount: Anzahl der Gruppen, in die sich Patrouilleneinheiten zu Angriffsbeginn aufteilen.
+AttUnitBackup: >-
+  Einheiten, die am Sammelpunkt bleiben und erst angreifen, wenn ein Weg zum gegnerischen Bergfried frei ist.
+  Wenn alle übrigen Angreifer sterben, ziehen sie sich zurück.
+AttUnitBackupMax: Höchstzahl der Reserveeinheiten je Angriff.
+AttUnitBackupGroupsCount: Anzahl der Reservegruppen beim Angriff auf den gegnerischen Bergfried.
+AttUnitEngage: Einheiten, die gegnerische Einheiten und Bauern statt Mauern angreifen.
+AttUnitEngageMax: Höchstzahl der Abfangeinheiten je Angriff.
+AttUnitSiegeDef: >-
+  Belagerungsschutz bleibt während des Angriffs bei Belagerungsgeräten. Dies kann auch Geräte für Störangriffe
+  und Verteidigung betreffen.
+AttUnitSiegeDefMax: Höchstzahl der Belagerungsschutz-Einheiten je Angriff.
+AttUnitSiegeDefGroupsCount: Anzahl der Belagerungsschutzgruppen während eines Angriffs.
+AttUnitMain1: |-
+  1. Einheit der Hauptangriffsgruppe. Nur diese Einheiten wachsen unbegrenzt mit.
+
+  Wenn die KI einen Platz nicht bezahlen kann, versucht sie den nächsten.
+AttUnitMain2: |-
+  2. Einheit der Hauptangriffsgruppe. Nur diese Einheiten wachsen unbegrenzt mit.
+
+  Wenn die KI einen Platz nicht bezahlen kann, versucht sie den nächsten.
+AttUnitMain3: |-
+  3. Einheit der Hauptangriffsgruppe. Nur diese Einheiten wachsen unbegrenzt mit.
+
+  Wenn die KI einen Platz nicht bezahlen kann, versucht sie den nächsten.
+AttUnitMain4: |-
+  4. Einheit der Hauptangriffsgruppe. Nur diese Einheiten wachsen unbegrenzt mit.
+
+  Wenn die KI einen Platz nicht bezahlen kann, versucht sie den nächsten.
+
+  Nach AttUnitMain4 beginnt die Liste von vorn.
+AttMaxDefault: >-
+  Anzahl der Hauptangriffseinheiten, die vor vollständiger Rekrutierung ALLER Spezialrollen (AttLaddermen,
+  AttAssassins, AttUnitPatrol usw.) rekrutiert werden DÜRFEN.
+
+  Bei 0 müssen zuerst alle Spezialrollen vollständig besetzt sein.
+AttMainGroupsCount: Anzahl der Gruppen, in die sich AttUnitMain-Einheiten beim Angriff aufteilen.
+TargetChoice: |-
+  Legt die Auswahl des Angriffsziels fest.
+
+  Gold: Gegner mit dem meisten Gold.
+
+  Ausgeglichen: berechneter Schwächewert; komplexeste und differenzierteste Zielwahl.
+
+  Am nächsten: nächster Gegner, von Bergfried zu Bergfried gemessen.
+
+  Beliebig: nächster Gegner in der internen Spielerliste. Wirkt zufällig, folgt aber fester Reihenfolge.
+
+  Spieler: bevorzugt menschliche Gegner. Ohne menschlichen Gegner wird „Am nächsten“ verwendet.
+AIOxTethers_DisableInitialOxTether: >-
+  „Nein“ verwendet Vanilla-Verhalten. „Ja“ verhindert, dass bei jedem (Wieder-)Bau eines Steinbruchs
+  automatisch ein Ochsenjoch gebaut wird.
+AIOxTethers_Logic: |-
+  Angewandte Logik.
+  Nein = Vanilla, Ja = dynamisch.
+AIOxTethers_MaxOxTethers: Die Gesamtzahl der Ochsenjoche dieser KI überschreitet diesen Wert nie.
+AIOxTethers_DynamicMaxOxTethers: Die Gesamtzahl der Ochsenjoche überschreitet diesen Wert multipliziert mit der Anzahl der Steinbrüche nie.
+AIOxTethers_MinimumOxTethersPerQuarry: >-
+  Wenn weniger als diese Anzahl zugeordneter Ochsenjoche Stein aus einem Steinbruch abholen, wird dort ein
+  weiteres gebaut.
+AIOxTethers_MaximumOxTethersPerQuarry: Wenn mehr als diese Anzahl Ochsenjoche einem Steinbruch zugeordnet sind, wird dort kein weiteres gebaut.
+AIOxTethers_ThresholdStoneLoad: >-
+  Wenn Steinmenge / zugeordnete Ochsenjoche diesen Wert für einen Steinbruch übersteigt, wird dort ein
+  weiteres Ochsenjoch gebaut.
+RunningUnits_Macemen: >-
+  Bei „Ja“ laufen Keulenkämpfer immer, auch mit langsameren Einheiten in der Gruppe. Bei „Nein“ passen sie
+  sich wie in Vanilla an die langsamste Einheit ihrer Gruppe an.
+RunningUnits_Spearmen: >-
+  Bei „Ja“ laufen Lanzenträger immer, auch mit langsameren Einheiten in der Gruppe. Bei „Nein“ passen sie sich
+  wie in Vanilla an die langsamste Einheit ihrer Gruppe an.
+RunningUnits_Slingers: >-
+  Bei „Ja“ laufen Schleuderer immer, auch mit langsameren Einheiten in der Gruppe. Bei „Nein“ passen sie sich
+  wie in Vanilla an die langsamste Einheit ihrer Gruppe an.
+RunningUnits_Slaves: >-
+  Bei „Ja“ laufen Sklaven immer, auch mit langsameren Einheiten in der Gruppe. Bei „Nein“ passen sie sich wie
+  in Vanilla an die langsamste Einheit ihrer Gruppe an.
+AIVTroops_InitialRole: >-
+  Anfangszuweisung noch unzugeordneter Start- oder Szenariotruppen. Graben setzt tatsächliche Grabefähigkeit
+  und Grabenfelder voraus; sonst wird Verteidigung verwendet.
+
+
+  Gemeinsamer Standard aller unterstützten Truppen. Vanilla lässt dieses Feld beim Speichern weg und nutzt den
+  nächsten passenden allgemeinen oder Menüstandard. Benötigt aiv-troops-behaviour mit aktivierten
+  Truppeneinstellungen und AIC-Überschreibungen. Nach Änderungen UCP neu starten und eine neue Partie
+  beginnen.
+AIVTroops_Movement: >-
+  Bewegung defensiver AIV-Einheitenplätze. Patrouille verwendet DefWallPatrolGroups und
+  DefWallPatrolRallyTime; bei null Gruppen bleiben Einheiten stehen.
+
+
+  Gemeinsamer Standard aller unterstützten Truppen. Vanilla lässt dieses Feld beim Speichern weg und nutzt den
+  nächsten passenden allgemeinen oder Menüstandard. Benötigt aiv-troops-behaviour mit aktivierten
+  Truppeneinstellungen und AIC-Überschreibungen. Nach Änderungen UCP neu starten und eine neue Partie
+  beginnen.
+AIVTroops_InitialRole_Engineer: >-
+  Anfangszuweisung noch unzugeordneter Start- oder Szenariotruppen. Graben setzt tatsächliche Grabefähigkeit
+  und Grabenfelder voraus; sonst wird Verteidigung verwendet.
+
+
+  Diese einheitenspezifische Einstellung hat Vorrang vor dem gemeinsamen AIC-Feld. Vanilla lässt das Feld beim
+  Speichern weg und nutzt den nächsten passenden allgemeinen oder Menüstandard. Benötigt aiv-troops-behaviour
+  mit aktivierten Truppeneinstellungen und AIC-Überschreibungen. Nach Änderungen UCP neu starten und eine neue
+  Partie beginnen.
+AIVTroops_Movement_Engineer: >-
+  Bewegung defensiver AIV-Einheitenplätze. Patrouille verwendet DefWallPatrolGroups und
+  DefWallPatrolRallyTime; bei null Gruppen bleiben Einheiten stehen.
+
+
+  Diese einheitenspezifische Einstellung hat Vorrang vor dem gemeinsamen AIC-Feld. Vanilla lässt das Feld beim
+  Speichern weg und nutzt den nächsten passenden allgemeinen oder Menüstandard. Benötigt aiv-troops-behaviour
+  mit aktivierten Truppeneinstellungen und AIC-Überschreibungen. Nach Änderungen UCP neu starten und eine neue
+  Partie beginnen.
+AIVTroops_InitialRole_Archer: >-
+  Anfangszuweisung noch unzugeordneter Start- oder Szenariotruppen. Graben setzt tatsächliche Grabefähigkeit
+  und Grabenfelder voraus; sonst wird Verteidigung verwendet.
+
+
+  Diese einheitenspezifische Einstellung hat Vorrang vor dem gemeinsamen AIC-Feld. Vanilla lässt das Feld beim
+  Speichern weg und nutzt den nächsten passenden allgemeinen oder Menüstandard. Benötigt aiv-troops-behaviour
+  mit aktivierten Truppeneinstellungen und AIC-Überschreibungen. Nach Änderungen UCP neu starten und eine neue
+  Partie beginnen.
+AIVTroops_Movement_Archer: >-
+  Bewegung defensiver AIV-Einheitenplätze. Patrouille verwendet DefWallPatrolGroups und
+  DefWallPatrolRallyTime; bei null Gruppen bleiben Einheiten stehen.
+
+
+  Diese einheitenspezifische Einstellung hat Vorrang vor dem gemeinsamen AIC-Feld. Vanilla lässt das Feld beim
+  Speichern weg und nutzt den nächsten passenden allgemeinen oder Menüstandard. Benötigt aiv-troops-behaviour
+  mit aktivierten Truppeneinstellungen und AIC-Überschreibungen. Nach Änderungen UCP neu starten und eine neue
+  Partie beginnen.
+AIVTroops_InitialRole_Crossbowman: >-
+  Anfangszuweisung noch unzugeordneter Start- oder Szenariotruppen. Graben setzt tatsächliche Grabefähigkeit
+  und Grabenfelder voraus; sonst wird Verteidigung verwendet.
+
+
+  Diese einheitenspezifische Einstellung hat Vorrang vor dem gemeinsamen AIC-Feld. Vanilla lässt das Feld beim
+  Speichern weg und nutzt den nächsten passenden allgemeinen oder Menüstandard. Benötigt aiv-troops-behaviour
+  mit aktivierten Truppeneinstellungen und AIC-Überschreibungen. Nach Änderungen UCP neu starten und eine neue
+  Partie beginnen.
+AIVTroops_Movement_Crossbowman: >-
+  Bewegung defensiver AIV-Einheitenplätze. Patrouille verwendet DefWallPatrolGroups und
+  DefWallPatrolRallyTime; bei null Gruppen bleiben Einheiten stehen.
+
+
+  Diese einheitenspezifische Einstellung hat Vorrang vor dem gemeinsamen AIC-Feld. Vanilla lässt das Feld beim
+  Speichern weg und nutzt den nächsten passenden allgemeinen oder Menüstandard. Benötigt aiv-troops-behaviour
+  mit aktivierten Truppeneinstellungen und AIC-Überschreibungen. Nach Änderungen UCP neu starten und eine neue
+  Partie beginnen.
+AIVTroops_InitialRole_Spearman: >-
+  Anfangszuweisung noch unzugeordneter Start- oder Szenariotruppen. Graben setzt tatsächliche Grabefähigkeit
+  und Grabenfelder voraus; sonst wird Verteidigung verwendet.
+
+
+  Diese einheitenspezifische Einstellung hat Vorrang vor dem gemeinsamen AIC-Feld. Vanilla lässt das Feld beim
+  Speichern weg und nutzt den nächsten passenden allgemeinen oder Menüstandard. Benötigt aiv-troops-behaviour
+  mit aktivierten Truppeneinstellungen und AIC-Überschreibungen. Nach Änderungen UCP neu starten und eine neue
+  Partie beginnen.
+AIVTroops_Movement_Spearman: >-
+  Bewegung defensiver AIV-Einheitenplätze. Patrouille verwendet DefWallPatrolGroups und
+  DefWallPatrolRallyTime; bei null Gruppen bleiben Einheiten stehen.
+
+
+  Diese einheitenspezifische Einstellung hat Vorrang vor dem gemeinsamen AIC-Feld. Vanilla lässt das Feld beim
+  Speichern weg und nutzt den nächsten passenden allgemeinen oder Menüstandard. Benötigt aiv-troops-behaviour
+  mit aktivierten Truppeneinstellungen und AIC-Überschreibungen. Nach Änderungen UCP neu starten und eine neue
+  Partie beginnen.
+AIVTroops_InitialRole_Pikeman: >-
+  Anfangszuweisung noch unzugeordneter Start- oder Szenariotruppen. Graben setzt tatsächliche Grabefähigkeit
+  und Grabenfelder voraus; sonst wird Verteidigung verwendet.
+
+
+  Diese einheitenspezifische Einstellung hat Vorrang vor dem gemeinsamen AIC-Feld. Vanilla lässt das Feld beim
+  Speichern weg und nutzt den nächsten passenden allgemeinen oder Menüstandard. Benötigt aiv-troops-behaviour
+  mit aktivierten Truppeneinstellungen und AIC-Überschreibungen. Nach Änderungen UCP neu starten und eine neue
+  Partie beginnen.
+AIVTroops_Movement_Pikeman: >-
+  Bewegung defensiver AIV-Einheitenplätze. Patrouille verwendet DefWallPatrolGroups und
+  DefWallPatrolRallyTime; bei null Gruppen bleiben Einheiten stehen.
+
+
+  Diese einheitenspezifische Einstellung hat Vorrang vor dem gemeinsamen AIC-Feld. Vanilla lässt das Feld beim
+  Speichern weg und nutzt den nächsten passenden allgemeinen oder Menüstandard. Benötigt aiv-troops-behaviour
+  mit aktivierten Truppeneinstellungen und AIC-Überschreibungen. Nach Änderungen UCP neu starten und eine neue
+  Partie beginnen.
+AIVTroops_InitialRole_Maceman: >-
+  Anfangszuweisung noch unzugeordneter Start- oder Szenariotruppen. Graben setzt tatsächliche Grabefähigkeit
+  und Grabenfelder voraus; sonst wird Verteidigung verwendet.
+
+
+  Diese einheitenspezifische Einstellung hat Vorrang vor dem gemeinsamen AIC-Feld. Vanilla lässt das Feld beim
+  Speichern weg und nutzt den nächsten passenden allgemeinen oder Menüstandard. Benötigt aiv-troops-behaviour
+  mit aktivierten Truppeneinstellungen und AIC-Überschreibungen. Nach Änderungen UCP neu starten und eine neue
+  Partie beginnen.
+AIVTroops_Movement_Maceman: >-
+  Bewegung defensiver AIV-Einheitenplätze. Patrouille verwendet DefWallPatrolGroups und
+  DefWallPatrolRallyTime; bei null Gruppen bleiben Einheiten stehen.
+
+
+  Diese einheitenspezifische Einstellung hat Vorrang vor dem gemeinsamen AIC-Feld. Vanilla lässt das Feld beim
+  Speichern weg und nutzt den nächsten passenden allgemeinen oder Menüstandard. Benötigt aiv-troops-behaviour
+  mit aktivierten Truppeneinstellungen und AIC-Überschreibungen. Nach Änderungen UCP neu starten und eine neue
+  Partie beginnen.
+AIVTroops_InitialRole_Swordsman: >-
+  Anfangszuweisung noch unzugeordneter Start- oder Szenariotruppen. Graben setzt tatsächliche Grabefähigkeit
+  und Grabenfelder voraus; sonst wird Verteidigung verwendet.
+
+
+  Diese einheitenspezifische Einstellung hat Vorrang vor dem gemeinsamen AIC-Feld. Vanilla lässt das Feld beim
+  Speichern weg und nutzt den nächsten passenden allgemeinen oder Menüstandard. Benötigt aiv-troops-behaviour
+  mit aktivierten Truppeneinstellungen und AIC-Überschreibungen. Nach Änderungen UCP neu starten und eine neue
+  Partie beginnen.
+AIVTroops_Movement_Swordsman: >-
+  Bewegung defensiver AIV-Einheitenplätze. Patrouille verwendet DefWallPatrolGroups und
+  DefWallPatrolRallyTime; bei null Gruppen bleiben Einheiten stehen.
+
+
+  Diese einheitenspezifische Einstellung hat Vorrang vor dem gemeinsamen AIC-Feld. Vanilla lässt das Feld beim
+  Speichern weg und nutzt den nächsten passenden allgemeinen oder Menüstandard. Benötigt aiv-troops-behaviour
+  mit aktivierten Truppeneinstellungen und AIC-Überschreibungen. Nach Änderungen UCP neu starten und eine neue
+  Partie beginnen.
+AIVTroops_InitialRole_Knight: >-
+  Anfangszuweisung noch unzugeordneter Start- oder Szenariotruppen. Graben setzt tatsächliche Grabefähigkeit
+  und Grabenfelder voraus; sonst wird Verteidigung verwendet.
+
+
+  Diese einheitenspezifische Einstellung hat Vorrang vor dem gemeinsamen AIC-Feld. Vanilla lässt das Feld beim
+  Speichern weg und nutzt den nächsten passenden allgemeinen oder Menüstandard. Benötigt aiv-troops-behaviour
+  mit aktivierten Truppeneinstellungen und AIC-Überschreibungen. Nach Änderungen UCP neu starten und eine neue
+  Partie beginnen.
+AIVTroops_Movement_Knight: >-
+  Bewegung defensiver AIV-Einheitenplätze. Patrouille verwendet DefWallPatrolGroups und
+  DefWallPatrolRallyTime; bei null Gruppen bleiben Einheiten stehen.
+
+
+  Diese einheitenspezifische Einstellung hat Vorrang vor dem gemeinsamen AIC-Feld. Vanilla lässt das Feld beim
+  Speichern weg und nutzt den nächsten passenden allgemeinen oder Menüstandard. Benötigt aiv-troops-behaviour
+  mit aktivierten Truppeneinstellungen und AIC-Überschreibungen. Nach Änderungen UCP neu starten und eine neue
+  Partie beginnen.
+AIVTroops_InitialRole_Slave: >-
+  Anfangszuweisung noch unzugeordneter Start- oder Szenariotruppen. Graben setzt tatsächliche Grabefähigkeit
+  und Grabenfelder voraus; sonst wird Verteidigung verwendet.
+
+
+  Diese einheitenspezifische Einstellung hat Vorrang vor dem gemeinsamen AIC-Feld. Vanilla lässt das Feld beim
+  Speichern weg und nutzt den nächsten passenden allgemeinen oder Menüstandard. Benötigt aiv-troops-behaviour
+  mit aktivierten Truppeneinstellungen und AIC-Überschreibungen. Nach Änderungen UCP neu starten und eine neue
+  Partie beginnen.
+AIVTroops_Movement_Slave: >-
+  Bewegung defensiver AIV-Einheitenplätze. Patrouille verwendet DefWallPatrolGroups und
+  DefWallPatrolRallyTime; bei null Gruppen bleiben Einheiten stehen.
+
+
+  Diese einheitenspezifische Einstellung hat Vorrang vor dem gemeinsamen AIC-Feld. Vanilla lässt das Feld beim
+  Speichern weg und nutzt den nächsten passenden allgemeinen oder Menüstandard. Benötigt aiv-troops-behaviour
+  mit aktivierten Truppeneinstellungen und AIC-Überschreibungen. Nach Änderungen UCP neu starten und eine neue
+  Partie beginnen.
+AIVTroops_InitialRole_Slinger: >-
+  Anfangszuweisung noch unzugeordneter Start- oder Szenariotruppen. Graben setzt tatsächliche Grabefähigkeit
+  und Grabenfelder voraus; sonst wird Verteidigung verwendet.
+
+
+  Diese einheitenspezifische Einstellung hat Vorrang vor dem gemeinsamen AIC-Feld. Vanilla lässt das Feld beim
+  Speichern weg und nutzt den nächsten passenden allgemeinen oder Menüstandard. Benötigt aiv-troops-behaviour
+  mit aktivierten Truppeneinstellungen und AIC-Überschreibungen. Nach Änderungen UCP neu starten und eine neue
+  Partie beginnen.
+AIVTroops_Movement_Slinger: >-
+  Bewegung defensiver AIV-Einheitenplätze. Patrouille verwendet DefWallPatrolGroups und
+  DefWallPatrolRallyTime; bei null Gruppen bleiben Einheiten stehen.
+
+
+  Diese einheitenspezifische Einstellung hat Vorrang vor dem gemeinsamen AIC-Feld. Vanilla lässt das Feld beim
+  Speichern weg und nutzt den nächsten passenden allgemeinen oder Menüstandard. Benötigt aiv-troops-behaviour
+  mit aktivierten Truppeneinstellungen und AIC-Überschreibungen. Nach Änderungen UCP neu starten und eine neue
+  Partie beginnen.
+AIVTroops_InitialRole_Assassin: >-
+  Anfangszuweisung noch unzugeordneter Start- oder Szenariotruppen. Graben setzt tatsächliche Grabefähigkeit
+  und Grabenfelder voraus; sonst wird Verteidigung verwendet.
+
+
+  Diese einheitenspezifische Einstellung hat Vorrang vor dem gemeinsamen AIC-Feld. Vanilla lässt das Feld beim
+  Speichern weg und nutzt den nächsten passenden allgemeinen oder Menüstandard. Benötigt aiv-troops-behaviour
+  mit aktivierten Truppeneinstellungen und AIC-Überschreibungen. Nach Änderungen UCP neu starten und eine neue
+  Partie beginnen.
+AIVTroops_Movement_Assassin: >-
+  Bewegung defensiver AIV-Einheitenplätze. Patrouille verwendet DefWallPatrolGroups und
+  DefWallPatrolRallyTime; bei null Gruppen bleiben Einheiten stehen.
+
+
+  Diese einheitenspezifische Einstellung hat Vorrang vor dem gemeinsamen AIC-Feld. Vanilla lässt das Feld beim
+  Speichern weg und nutzt den nächsten passenden allgemeinen oder Menüstandard. Benötigt aiv-troops-behaviour
+  mit aktivierten Truppeneinstellungen und AIC-Überschreibungen. Nach Änderungen UCP neu starten und eine neue
+  Partie beginnen.
+AIVTroops_InitialRole_ArabianArcher: >-
+  Anfangszuweisung noch unzugeordneter Start- oder Szenariotruppen. Graben setzt tatsächliche Grabefähigkeit
+  und Grabenfelder voraus; sonst wird Verteidigung verwendet.
+
+
+  Diese einheitenspezifische Einstellung hat Vorrang vor dem gemeinsamen AIC-Feld. Vanilla lässt das Feld beim
+  Speichern weg und nutzt den nächsten passenden allgemeinen oder Menüstandard. Benötigt aiv-troops-behaviour
+  mit aktivierten Truppeneinstellungen und AIC-Überschreibungen. Nach Änderungen UCP neu starten und eine neue
+  Partie beginnen.
+AIVTroops_Movement_ArabianArcher: >-
+  Bewegung defensiver AIV-Einheitenplätze. Patrouille verwendet DefWallPatrolGroups und
+  DefWallPatrolRallyTime; bei null Gruppen bleiben Einheiten stehen.
+
+
+  Diese einheitenspezifische Einstellung hat Vorrang vor dem gemeinsamen AIC-Feld. Vanilla lässt das Feld beim
+  Speichern weg und nutzt den nächsten passenden allgemeinen oder Menüstandard. Benötigt aiv-troops-behaviour
+  mit aktivierten Truppeneinstellungen und AIC-Überschreibungen. Nach Änderungen UCP neu starten und eine neue
+  Partie beginnen.
+AIVTroops_InitialRole_HorseArcher: >-
+  Anfangszuweisung noch unzugeordneter Start- oder Szenariotruppen. Graben setzt tatsächliche Grabefähigkeit
+  und Grabenfelder voraus; sonst wird Verteidigung verwendet.
+
+
+  Diese einheitenspezifische Einstellung hat Vorrang vor dem gemeinsamen AIC-Feld. Vanilla lässt das Feld beim
+  Speichern weg und nutzt den nächsten passenden allgemeinen oder Menüstandard. Benötigt aiv-troops-behaviour
+  mit aktivierten Truppeneinstellungen und AIC-Überschreibungen. Nach Änderungen UCP neu starten und eine neue
+  Partie beginnen.
+AIVTroops_Movement_HorseArcher: >-
+  Bewegung defensiver AIV-Einheitenplätze. Patrouille verwendet DefWallPatrolGroups und
+  DefWallPatrolRallyTime; bei null Gruppen bleiben Einheiten stehen.
+
+
+  Diese einheitenspezifische Einstellung hat Vorrang vor dem gemeinsamen AIC-Feld. Vanilla lässt das Feld beim
+  Speichern weg und nutzt den nächsten passenden allgemeinen oder Menüstandard. Benötigt aiv-troops-behaviour
+  mit aktivierten Truppeneinstellungen und AIC-Überschreibungen. Nach Änderungen UCP neu starten und eine neue
+  Partie beginnen.
+AIVTroops_InitialRole_ArabianSwordsman: >-
+  Anfangszuweisung noch unzugeordneter Start- oder Szenariotruppen. Graben setzt tatsächliche Grabefähigkeit
+  und Grabenfelder voraus; sonst wird Verteidigung verwendet.
+
+
+  Diese einheitenspezifische Einstellung hat Vorrang vor dem gemeinsamen AIC-Feld. Vanilla lässt das Feld beim
+  Speichern weg und nutzt den nächsten passenden allgemeinen oder Menüstandard. Benötigt aiv-troops-behaviour
+  mit aktivierten Truppeneinstellungen und AIC-Überschreibungen. Nach Änderungen UCP neu starten und eine neue
+  Partie beginnen.
+AIVTroops_Movement_ArabianSwordsman: >-
+  Bewegung defensiver AIV-Einheitenplätze. Patrouille verwendet DefWallPatrolGroups und
+  DefWallPatrolRallyTime; bei null Gruppen bleiben Einheiten stehen.
+
+
+  Diese einheitenspezifische Einstellung hat Vorrang vor dem gemeinsamen AIC-Feld. Vanilla lässt das Feld beim
+  Speichern weg und nutzt den nächsten passenden allgemeinen oder Menüstandard. Benötigt aiv-troops-behaviour
+  mit aktivierten Truppeneinstellungen und AIC-Überschreibungen. Nach Änderungen UCP neu starten und eine neue
+  Partie beginnen.
+AIVTroops_InitialRole_FireThrower: >-
+  Anfangszuweisung noch unzugeordneter Start- oder Szenariotruppen. Graben setzt tatsächliche Grabefähigkeit
+  und Grabenfelder voraus; sonst wird Verteidigung verwendet.
+
+
+  Diese einheitenspezifische Einstellung hat Vorrang vor dem gemeinsamen AIC-Feld. Vanilla lässt das Feld beim
+  Speichern weg und nutzt den nächsten passenden allgemeinen oder Menüstandard. Benötigt aiv-troops-behaviour
+  mit aktivierten Truppeneinstellungen und AIC-Überschreibungen. Nach Änderungen UCP neu starten und eine neue
+  Partie beginnen.
+AIVTroops_Movement_FireThrower: >-
+  Bewegung defensiver AIV-Einheitenplätze. Patrouille verwendet DefWallPatrolGroups und
+  DefWallPatrolRallyTime; bei null Gruppen bleiben Einheiten stehen.
+
+
+  Diese einheitenspezifische Einstellung hat Vorrang vor dem gemeinsamen AIC-Feld. Vanilla lässt das Feld beim
+  Speichern weg und nutzt den nächsten passenden allgemeinen oder Menüstandard. Benötigt aiv-troops-behaviour
+  mit aktivierten Truppeneinstellungen und AIC-Überschreibungen. Nach Änderungen UCP neu starten und eine neue
+  Partie beginnen.

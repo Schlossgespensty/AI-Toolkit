@@ -1,0 +1,79 @@
+castle_document: 城堡
+character_document: 角色
+experimental_snapshot: 实验快照
+official_release: 正式版本
+native_aiv: 原生 AIV
+step_locked: 建造步骤 {{step}} 已锁定
+step_unlocked: 建造步骤 {{step}} 已解锁
+steps_locked: 已锁定 {{steps}}
+steps_unlocked: 已解锁 {{steps}}
+fill_result: 已用 {{item}} 填充 {{tiles}}
+locked_stay: '{{placements}} 保持原位'
+map_terrain: 已包含地图地形
+flat_terrain: 平坦地形（无地图数据）
+fire_estimate: 火势估算：内部两圈为红色；外围按生命值缩放，从黄色过渡到蓝色，最远 8 格。
+start: 起点 {{number}}
+starting_place: 起始位置
+map_name: ' · 地图：{{name}}'
+map_start: ' · 起点 {{number}}（{{x}}, {{y}}）'
+map_start_place: ' · 起始位置 {{number}}（{{x}}, {{y}}）'
+map_rotation: ' · 已旋转 {{turns}}（游戏值 {{value}}）'
+map_flat: ' · 平坦地形（高度 {{height}}）'
+map_height: ' · 地形高差 {{range}}（高度 {{minimum}} 至 {{maximum}}）'
+space_one: '{{count}} 个储位'
+space_other: '{{count}} 个储位'
+food_one: '{{count}} 份食物'
+food_other: '{{count}} 份食物'
+tile_one: '{{count}} 格'
+tile_other: '{{count}} 格'
+shortfall: 缺少 {{count}}
+free: 空余 {{count}}
+resource: 资源
+maximum: 最大值
+spaces: 储位
+per_space: 每储位 {{count}}；{{source}}
+none_produced: 未配置相关生产。
+none_produced_or_bought: 未配置相关生产或招募。
+stockpiles: '{{count}} 座储料场（含主堡）；每座 4 个储位。预留所有资源上限所需空间。'
+granaries: '{{count}} 座粮仓；每座共享 250 份食物容量。'
+armories: '{{count}} 座军械库；每座 10 个独立储位，每储位 5 件武器。采购量根据招募配置推算。'
+hops: 啤酒花
+fruit: 水果
+wav_speech: WAV 语音
+bink_video: Bink 视频
+workshop: 作坊
+work_unknown: 工作时长未知
+cycle_ticks: 每个参考周期 {{count}} 刻
+cost_table: 建造成本表
+bundled_vanilla: 内置原版数值
+saved_balance: '{{name}} 的已保存快照'
+year_one: '{{count}} 年'
+year_other: '{{count}} 年'
+month_one: '{{count}} 个月'
+month_other: '{{count}} 个月'
+day_one: '{{count}} 天'
+day_other: '{{count}} 天'
+quarry_one: '{{count}} 座采石场'
+quarry_other: '{{count}} 座采石场'
+iron_mine_one: '{{count}} 座铁矿场'
+iron_mine_other: '{{count}} 座铁矿场'
+woodcutter_one: '{{count}} 座伐木场'
+woodcutter_other: '{{count}} 座伐木场'
+farm_one: '{{count}} 座农场'
+farm_other: '{{count}} 座农场'
+pitch_rig_one: '{{count}} 座沥青矿场'
+pitch_rig_other: '{{count}} 座沥青矿场'
+ox_tether_one: '{{count}} 座牛车站'
+ox_tether_other: '{{count}} 座牛车站'
+hop_farms_one: 其中 {{count}} 座农场种植啤酒花。
+hop_farms_other: 其中 {{count}} 座农场种植啤酒花。
+open_character_error: 无法打开角色文件：{{error}}
+save_character_error: 无法保存角色文件：{{error}}
+recipe_bow: 2 木材；单独送回军械库
+recipe_crossbow: 3 木材；单独送回军械库
+recipe_spear: 1 木材；文档仅注明工作时间少于 1 个月
+recipe_pike: 2 木材；交付军械库后领取第一块木板
+recipe_iron: 1 铁；交付军械库后领取下一份原料
+recipe_leather: 每头牛交付 3 次；文档仅注明每次工作时间少于 3 个月
+recipe_bread: 1 面粉；先到粮仓，再到储料场
+recipe_ale: 1 啤酒花；从储料场取料并存放成品
