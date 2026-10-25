@@ -23,3 +23,10 @@ no_window_open_one_from_the_toolbar: Aucune fenêtre — ouvrez-en une dans la b
 add_as_a_tab_here: Ajouter ici comme onglet
 esc_cancels: ' · Échap pour annuler'
 is_missing: ' est absent'
+flat_view: 'Vue à plat'
+lowered_view: 'Vue abaissée'
+refresh_map: "Actualiser la carte"
+refresh_map_hint: "Recharger la carte sélectionnée depuis le disque : {{path}}"
+refreshing_map: "Actualisation de la carte…"
+map_refreshed: "Carte actualisée : {{name}}"
+map_refresh_failed: "Impossible d’actualiser la carte : {{message}}"

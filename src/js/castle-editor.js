@@ -149,6 +149,7 @@
     skins: {},
     customSkinTypes: new Set(),
     skinImages: {},
+    buildingPreviews: {},
     dragFrameIndexes: [],
     buildSelectionAnchor: null,
     renderPending: false,
@@ -376,7 +377,18 @@
   }
 
   function renumberUnits(doc = state.document) {
-    if (state.format === 'aivjson') return;
+    if (state.format === 'aivjson') {
+      // Expanded guarding groups must be contiguous. Only compact groups that
+      // actually use extra slots after an edit; untouched JSON keeps its IDs.
+      const expanded = new Set((doc.miscItems || []).filter(item => item.number >= 10 && item.number < 30
+        && isUnitType(item.itemType) && Number(itemInfo(item.itemType).maxAmount)>10).map(item => item.itemType));
+      for (const type of expanded) {
+        const group = doc.miscItems.filter(item => item.itemType === type).sort((a,b)=>a.number-b.number);
+        if(group.some(item=>item.number>=30))continue;
+        group.forEach((item,number)=>{item.number=number;});
+      }
+      return;
+    }
     const nextNumber = new Map();
     for (const item of doc.miscItems || []) {
       const type = Number(item.itemType);
@@ -489,6 +501,69 @@
 
   function itemRect(type, offset) {
     return geometry.footprintBounds(footprintRects(type, offset));
+  }
+
+  let constructionCache = null;
+  function constructionContext() {
+    const terrain=window.isoView?.analysisTerrain?.();
+    if(!terrain?.buildFlags || !window.castleConstruction)return null;
+    if(!constructionCache || constructionCache.key!==terrain.key || constructionCache.revision!==state.documentRevision || constructionCache.constants!==state.constants) {
+      constructionCache={key:terrain.key,revision:state.documentRevision,constants:state.constants,terrain,positions:new Map(),placements:null};
+    }
+    return constructionCache;
+  }
+
+  function getConstructionWarningAtXY(type,x,y,context=constructionContext()) {
+    if(!context || isUnitType(type))return null;
+    const key=[type,x,y].join(':');
+    if(!context.positions.has(key)) {
+      const rects=footprintRectsAtXY(type,x,y);
+      const warning=window.castleConstruction.evaluate(type,rects,context.terrain,GRID);
+      // Hovering an entire map must not retain unbounded preview history.
+      if(context.positions.size>20000)context.positions.clear();
+      context.positions.set(key,warning ? {type,rects,warning} : null);
+    }
+    return context.positions.get(key);
+  }
+
+  function getConstructionWarnings() {
+    if(state.floorPlan)return [];
+    const context=constructionContext();
+    if(!context)return [];
+    if(!context.placements)context.placements=placementRefs().filter(p=>p.kind!=='unit').flatMap(p=>{
+      const {x,y}=offsetToXY(p.off),warning=getConstructionWarningAtXY(p.type,x,y,context);
+      return warning ? [{...warning,ref:p.ref,fi:p.fi}] : [];
+    });
+    const warnings=context.placements.filter(p=>(!Number.isInteger(state.insertionFrameIndex) || p.fi<=state.insertionFrameIndex)
+      && !(state.gesture==='move' && state.moveStartOffsets?.has(p.ref)));
+    if(state.gesture==='move')for(const [ref,off] of proposedMove() || []) {
+      const {x,y}=offsetToXY(off),warning=getConstructionWarningAtXY(refType(ref),x,y,context);
+      if(warning)warnings.push({...warning,ref});
+    }
+    return warnings;
+  }
+
+  function constructionWarningLabel(warning) {
+    return tr('castle:construction_blocked',{reasons:warning.reasons.map(reason=>tr('castle:construction_'+reason)).join(', ')});
+  }
+
+  function drawConstructionWarnings() {
+    if(state.floorPlan)return;
+    const warnings=getConstructionWarnings();
+    const preview=window.castleEditor?.getPlacementPreview?.();
+    for(const tile of preview?.tiles || []) {
+      const warning=getConstructionWarningAtXY(tile.itemType ?? preview.itemType,tile.x,tile.y);
+      if(warning)warnings.push(warning);
+    }
+    ctx.save();ctx.fillStyle='rgba(255,45,45,.25)';ctx.strokeStyle='#ff4545';ctx.lineWidth=2;
+    for(const placement of warnings)for(const rect of placement.rects) {
+      const r=screenRectForFootprintRect(rect);
+      if(r.x+r.w<0 || r.y+r.h<0 || r.x>state.canvasWidth || r.y>state.canvasHeight)continue;
+      ctx.fillRect(r.x,r.y,r.w,r.h);ctx.strokeRect(r.x,r.y,r.w,r.h);
+      ctx.beginPath();ctx.moveTo(r.x,r.y);ctx.lineTo(r.x+r.w,r.y+r.h);
+      ctx.moveTo(r.x+r.w,r.y);ctx.lineTo(r.x,r.y+r.h);ctx.stroke();
+    }
+    ctx.restore();
   }
 
   function countType(type, ignore = new Set()) {
@@ -1929,7 +2004,7 @@
       const first = JSON.parse(localStorage.getItem('aiv.castleToolShortcuts.v1') || 'null');
       const savedCamera = JSON.parse(localStorage.getItem(CAMERA_STORAGE_KEY) || 'null');
       const cameraKeys = camera.directions.flatMap(direction => savedCamera?.[direction] ? [savedCamera[direction], `shift+${savedCamera[direction]}`] : []);
-      state.toolShortcuts = saved ? validateToolShortcuts(saved)
+      state.toolShortcuts = saved ? validateToolShortcuts(shortcutConfig.upgrade(saved, cameraKeys, false))
         : previous ? shortcutConfig.upgrade(previous, cameraKeys)
         : shortcutConfig.migrate(first);
       // Untouched defaults stay unsaved, so a later change of defaults reaches them.
@@ -2107,6 +2182,7 @@
       : allowsMultiplePerStep(type) ? tr("castle:multiple_per_step") : tr("castle:single_per_step");
     const sizeLabel = type === geometry.KEEP_ITEM_TYPE ? tr('feedback:keep_footprint', {width:w,height:h}) : `${w}×${h}`;
     els.itemInfo.textContent = tr('feedback:placement_info', {name:itemName(type),id:type,kind,size:sizeLabel,overlap:tr('feedback:overlap_'+overlapMode(type),{defaultValue:overlapMode(type)}),maximum:max});
+    if (isUnitType(type) && Number(maximum)>10) els.itemInfo.textContent += ' · '+tr('feedback:extended_rally_points');
   }
 
   function getPaletteGroups() {
@@ -2180,7 +2256,14 @@
       thumb.className = isUnitType(Number(id)) ? 'paletteThumb paletteThumbUnit' : 'paletteThumb';
       const sequence = lineSequence(Number(id));
       const thumbnailType = String(sequence[0] ?? id);
-      if (state.skins[thumbnailType]) {
+      const gamePreview = !state.customSkinTypes.has(thumbnailType) && state.buildingPreviews[thumbnailType];
+      if (gamePreview) {
+        thumb.classList.add('paletteThumbSprite');
+        const img = document.createElement('img');
+        img.src = gamePreview;
+        img.alt = '';
+        thumb.appendChild(img);
+      } else if (state.skins[thumbnailType]) {
         const img = document.createElement('img');
         img.src = state.skins[thumbnailType];
         img.alt = '';
@@ -2210,6 +2293,12 @@
         : Number(id) === geometry.KEEP_ITEM_TYPE
         ? `${size[0]}×${size[1]} + SP`
         : `${size[0]}×${size[1]}`;
+      if (isUnitType(Number(id))) {
+        const count=countType(Number(id));
+        meta.textContent=`${count}/${maxAmount(Number(id))}${count>10?' DE':''}`;
+        if (Number(maxAmount(Number(id)))>10) row.title+=' · '+tr('feedback:extended_rally_points');
+        row.setAttribute('aria-label',row.title);
+      }
       row.append(thumb, name, meta);
       row.addEventListener('click', () => selectItem(Number(id)));
       items.appendChild(row);
@@ -2255,6 +2344,13 @@
 
   function renderBuildList(scrubbing = false) {
     if (!scrubbing) { updatePopulationPanel(); updateCostPanel(); }
+    if(!scrubbing)for(const row of els.palette?.querySelectorAll?.('.paletteItem') || []) {
+      const type=Number(row.dataset.itemType);
+      if(!isUnitType(type))continue;
+      const count=state.document.miscItems.filter(item=>Number(item.itemType)===type).length;
+      const meta=row.querySelector('.paletteItemMeta');
+      if(meta)meta.textContent=`${count}/${maxAmount(type)}${count>10?' DE':''}`;
+    }
     const activeStep = Number.isInteger(state.insertionFrameIndex) && state.insertionFrameIndex >= 0 && state.insertionFrameIndex < frames().length
       ? state.insertionFrameIndex
       : null;
@@ -2265,6 +2361,9 @@
     els.buildSliderValue.textContent = activeStep == null ? tr("interface:no_step_selected") : tr("castle:step_value", { value1: activeStep + 1 });
     const rallypointCount = state.document.miscItems.filter(item => isUnitType(item.itemType)).length;
     els.buildCount.textContent = tr('quantity:build_step',{count:frames().length});
+    const expanded=state.document.miscItems.some(item=>item.number>=10);
+    if(expanded)els.buildCount.textContent+=' · DE';
+    els.buildCount.title=expanded?tr('feedback:extended_rally_points'):'';
     // Scrubbing changes row state, not row content. Preserve the DOM, listeners,
     // scroll position and drag target until the actual document changes.
     if (state.buildListRevision === (state.documentRevision || 0)) {
@@ -2362,18 +2461,60 @@
       row.addEventListener('dragend', () => {
         state.dragFrameIndexes = [];
         for (const candidate of els.buildList.querySelectorAll('.buildStep')) candidate.classList.remove('dragging');
-      });
-      row.addEventListener('dragover', e => { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; });
-      row.addEventListener('drop', e => {
-        e.preventDefault();
-        const dragged = state.dragFrameIndexes.length
-          ? state.dragFrameIndexes
-          : String(e.dataTransfer.getData('text/plain')).split(',').map(Number);
-        moveBuildSteps(dragged, fi);
+        endBuildListDrag();
       });
       els.buildList.appendChild(row);
     });
     window.toolkitI18n.applyTextDirection(els.buildList);
+  }
+
+  // Ziehen in der Schrittliste. Waehrend eines Ziehens kommt kein Mausrad an,
+  // und der eingebaute Rand-Bildlauf ist nur ein paar Punkte breit - bei
+  // langen Listen kam man so kaum ans Ziel. Darum: oben und unten je eine
+  // Zone, die umso schneller rollt, je naeher der Zeiger am Rand ist, und
+  // eine Linie, die zeigt, wo der Block landet (obere oder untere Haelfte
+  // einer Zeile, unter der letzten Zeile ans Ende).
+  const DRAG_SCROLL_ZONE = 56, DRAG_SCROLL_MAX = 22;
+
+  function buildDropGap(event) {
+    const row = event.target.closest?.('.buildStep');
+    if (row && els.buildList.contains(row)) {
+      const rect = row.getBoundingClientRect();
+      return Number(row.dataset.index) + (event.clientY > rect.top + rect.height / 2 ? 1 : 0);
+    }
+    return frames().length;
+  }
+
+  function showBuildDropGap(gap) {
+    if (state.buildDropGap === gap) return;
+    state.buildDropGap = gap;
+    for (const row of els.buildList.querySelectorAll('.dropBefore, .dropAfter')) row.classList.remove('dropBefore', 'dropAfter');
+    if (gap == null) return;
+    const last = frames().length - 1;
+    const row = els.buildList.querySelector(`.buildStep[data-index="${gap < frames().length ? gap : last}"]`);
+    row?.classList.add(gap < frames().length ? 'dropBefore' : 'dropAfter');
+  }
+
+  function dragScrollStep() {
+    if (!state.buildDragScroll) { state.buildDragScrollFrame = null; return; }
+    els.buildList.scrollTop += state.buildDragScroll;
+    state.buildDragScrollFrame = requestAnimationFrame(dragScrollStep);
+  }
+
+  function updateBuildDragScroll(clientY) {
+    const rect = els.buildList.getBoundingClientRect();
+    const zone = Math.min(DRAG_SCROLL_ZONE, rect.height / 4);
+    const fromTop = clientY - rect.top, fromBottom = rect.bottom - clientY;
+    let speed = 0;
+    if (fromTop < zone) speed = -Math.ceil(DRAG_SCROLL_MAX * (1 - Math.max(0, fromTop) / zone));
+    else if (fromBottom < zone) speed = Math.ceil(DRAG_SCROLL_MAX * (1 - Math.max(0, fromBottom) / zone));
+    state.buildDragScroll = speed;
+    if (speed && !state.buildDragScrollFrame) state.buildDragScrollFrame = requestAnimationFrame(dragScrollStep);
+  }
+
+  function endBuildListDrag() {
+    state.buildDragScroll = 0;
+    showBuildDropGap(null);
   }
 
   function scrollToActiveBuildStep(viewport) {
@@ -2439,7 +2580,9 @@
   // Ein gesperrter Bauschritt wird nicht umgehaengt - aber er haelt die anderen
   // auch nicht mehr auf. Wer fuenf waehlt und einen davon gesperrt hat, bewegt
   // vier. Die eine Stelle fuer beide Wege, Pfeile wie Ziehen.
-  function moveBuildSteps(indexes, targetIndex) {
+  // targetIndex: auf diesen Schritt (Pfeile). gap: in diese Luecke, wie die
+  // Einfuegelinie beim Ziehen sie zeigt.
+  function moveBuildSteps(indexes, targetIndex, gap = null) {
     if (!indexes.length) return false;
     const beweglich = unlockedFrameIndexes(indexes);
     if (!beweglich.length) {
@@ -2448,7 +2591,9 @@
     }
     const festgehalten = indexes.length - beweglich.length;
     pushUndo();
-    const result = geometry.moveBuildSteps(frames(), beweglich, targetIndex);
+    const result = gap != null
+      ? geometry.moveBuildStepsToGap(frames(), beweglich, gap)
+      : geometry.moveBuildSteps(frames(), beweglich, targetIndex);
     if (!result.moved) {
       state.undo.pop();
       return false;
@@ -2515,6 +2660,48 @@
     renderPalette();
     updateSelectedItemInfo();
     scheduleDraw();
+    loadBuildingPreviews();
+  }
+
+  // Palette mini previews cut from the connected game's building pictures,
+  // which the 2.5D view has already extracted. Custom skins still win, and
+  // the bundled icons stay the fallback when no game is connected.
+  const BUILDING_PREVIEW_PX = 96;
+  let buildingPreviewRequest = 0;
+  async function loadBuildingPreviews() {
+    const request = ++buildingPreviewRequest;
+    const sources = await Promise.resolve(window.isoView?.buildingPreviews?.()).catch(() => null) || {};
+    const pages = new Map();
+    const page = url => {
+      if (!pages.has(url)) pages.set(url, new Promise((resolve, reject) => {
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.onload = () => resolve(img);
+        img.onerror = reject;
+        img.src = url;
+      }));
+      return pages.get(url);
+    };
+    const previews = {};
+    for (const [type, source] of Object.entries(sources)) {
+      if (isUnitType(Number(type))) continue;
+      try {
+        const img = await page(source.url);
+        const scale = Math.min(1, BUILDING_PREVIEW_PX / Math.max(source.w, source.h));
+        const canvas = document.createElement('canvas');
+        canvas.width = Math.max(1, Math.round(source.w * scale));
+        canvas.height = Math.max(1, Math.round(source.h * scale));
+        const ctx = canvas.getContext('2d');
+        ctx.imageSmoothingQuality = 'high';
+        ctx.drawImage(img, source.x, source.y, source.w, source.h, 0, 0, canvas.width, canvas.height);
+        previews[type] = canvas.toDataURL();
+      } catch (error) {
+        console.warn(`Building preview ${type} unavailable:`, error);
+      }
+      if (request !== buildingPreviewRequest) return;
+    }
+    state.buildingPreviews = previews;
+    if (Object.keys(previews).length) renderPalette();
   }
 
   async function setSkin() {
@@ -2967,6 +3154,7 @@
       }
     }
 
+    drawConstructionWarnings();
     // Draw markers last so stacked sprites cannot cover their numbers or counts.
     if (!workerScene || proposed || getAnalysisOverlay(false).image || getAnalysisOverlay(false).routes.length) drawUnitMarkers(proposed);
 
@@ -2992,12 +3180,27 @@
   }
 
   function itemLabelAtTile(tile) {
+    const placementRef=tile && topmostRefAtTile(tile);
+    if(placementRef) {
+      const {x,y}=offsetToXY(refOffset(placementRef));
+      const blocked=getConstructionWarningAtXY(refType(placementRef),x,y);
+      if(blocked)return itemName(refType(placementRef))+' — '+constructionWarningLabel(blocked.warning);
+    }
+    if(tile && !placementRef && state.currentItemType!=null && isPlacementTool(state.tool)) {
+      const type=lineSequence(state.currentItemType)[0] ?? state.currentItemType;
+      const blocked=getConstructionWarningAtXY(type,tile.x,tile.y);
+      if(blocked)return itemName(type)+' — '+constructionWarningLabel(blocked.warning);
+    }
     if(tile && document.getElementById('castleShowRoutes')?.checked) {
       const routes=analysisCache.routes.filter(r=>r.entry?.x===tile.x && r.entry?.y===tile.y);
       if(routes.length)return routes.map(r=>`${r.name || itemName(r.type)}: ${r.workers} worker(s) - ${r.reason || 'entrance, '+Math.round(r.distance)+tr("castle:tiles_to_delivery_point")}`).join('; ');
     }
     const ref = tile && topmostRefAtTile(tile);
-    const label=ref ? `${itemName(refType(ref))} [${refType(ref)}]` : '';
+    let label=ref ? `${itemName(refType(ref))} [${refType(ref)}]` : '';
+    if(String(ref).startsWith('u:')) {
+      const marker=state.document.miscItems[parseRef(ref).mi];
+      if(marker?.number>=10)label+=` #${unitDisplayNumber(marker.number)} · `+tr('feedback:extended_rally_points');
+    }
     if(tile && document.getElementById('castleShowRoutes')?.checked && analysisCache.walkability) {
       const flags=analysisCache.walkability[tile.y*GRID+tile.x];
       const access=flags===3?tr("castle:ground_passage_and_raised_walkway"):flags===2?tr("castle:raised_walkway"):flags===1?tr("castle:walkable_ground"):tr("castle:blocked_tile");
@@ -3187,7 +3390,9 @@
       const { x, y } = offsetToXY(off);
       const rect = screenRectForXY(stack.top.type, x, y);
       if (rect.x + rect.w < 0 || rect.y + rect.h < 0 || rect.x > state.canvasWidth || rect.y > state.canvasHeight) continue;
-      if (els.showUnitNumbers.checked) drawSkinLabel(`#${unitDisplayNumber(stack.top.number)}`, rect);
+      const extended=stack.top.number>=10;
+      if (els.showUnitNumbers.checked || extended) drawSkinLabel(
+        `${els.showUnitNumbers.checked?'#'+unitDisplayNumber(stack.top.number):''}${extended?' DE':''}`.trim(),rect);
       if (stack.count < 2) continue;
 
       ctx.save();
@@ -3762,6 +3967,7 @@
   // Karte hat mehrere (in "A Friend Indeed" sechs), und erst er sagt, WO auf
   // der Karte das Dorf von 100x100 steht.
   const karteKnopf = document.getElementById('castleIsoMapBtn');
+  const karteAktualisieren = document.getElementById('castleIsoMapRefresh');
   const karteZurueck = document.getElementById('castleIsoMapReset');
   const karteBergfried = document.getElementById('castleIsoMapKeep');
   const karteDialog = document.getElementById('castleIsoMapDialog');
@@ -3770,10 +3976,16 @@
   const karteFehler = document.getElementById('castleIsoMapError');
   const karteAbbruch = document.getElementById('castleIsoMapCancel');
   let karteVorrat = null;   // einmal geholt, dann behalten
+  let mapRefreshRequest = null;
 
   function updateMapControls() {
     const info = window.isoView && window.isoView.gameMapInfo ? window.isoView.gameMapInfo() : null;
     if (karteZurueck) karteZurueck.hidden = !info;
+    if (karteAktualisieren) {
+      karteAktualisieren.disabled = !info?.path || !!mapRefreshRequest;
+      karteAktualisieren.setAttribute('aria-busy',String(!!mapRefreshRequest));
+      karteAktualisieren.title = info?.path ? tr('viewport:refresh_map_hint',{path:info.path}) : tr('viewport:refresh_map');
+    }
     if (!karteBergfried) return;
     // Der Wähler zeigt sich nur, wenn es etwas zu wählen gibt - bei einem
     // einzigen Startplatz gäbe es nichts zu tun.
@@ -3810,11 +4022,6 @@
       if (kachelnLaufen !== request) return;      // inzwischen andere Karte oder neuer Ladevorgang
       if (await window.isoView.setMapTiles(vorrat) === false) return;
       if (kachelnLaufen !== request) return;
-      if (vorrat.nativeError) {
-        kachelnLaufen = null;
-        setStatus(() => tr("castle:map_loaded_rotation_unavailable_value", { nativeError: vorrat.nativeError }));
-        return;
-      }
       setStatus(() => tr("castle:whole_map_value_ready_value_different_tiles", { name: vorrat.name, kacheln: vorrat.kacheln })
                 + (vorrat.fehlend ? ' · ' + tr('feedback:missing_sprites', {count:vorrat.fehlend}) : ''));
     } catch (error) {
@@ -3860,8 +4067,34 @@
   }
 
   let mapSelectionRequest = 0;
+  async function refreshGameMap() {
+    const view = window.isoView, info = view?.gameMapInfo();
+    if (!info?.path || mapRefreshRequest) return false;
+    const request = {selection:++mapSelectionRequest,path:info.path};
+    mapRefreshRequest = request;
+    kachelnLaufen = {path:info.path};
+    updateMapControls();
+    setStatus(() => tr('viewport:refreshing_map'));
+    const current = () => request.selection === mapSelectionRequest && view.gameMapInfo()?.path === request.path;
+    try {
+      const map = await window.electronAPI.loadGameMap(info.path);
+      if (!current()) return false;
+      const tiles = await window.electronAPI.loadMapTiles(info.path);
+      if (!current()) return false;
+      if (await view.setMapTiles(tiles,map) === false || !current()) return false;
+      setStatus(() => tr('viewport:map_refreshed',{name:map.name}));
+      return true;
+    } catch (error) {
+      if (current()) setStatus(() => tr('viewport:map_refresh_failed',{message:error.message}));
+      return false;
+    } finally {
+      if (mapRefreshRequest === request) { mapRefreshRequest = null; updateMapControls(); }
+    }
+  }
+
   async function chooseMap(entry) {
     const selection = ++mapSelectionRequest;
+    mapRefreshRequest = null;
     if (!window.isoView || !karteFehler) return;
     karteFehler.textContent = tr("castle:reading_the_map");
     try {
@@ -3905,6 +4138,7 @@
     if (karteFilter) karteFilter.focus();
   });
   if (karteFilter) karteFilter.addEventListener('input', () => renderMapList(karteFilter.value));
+  if (karteAktualisieren) karteAktualisieren.addEventListener('click', refreshGameMap);
   if (karteAbbruch) karteAbbruch.addEventListener('click', () => karteDialog?.close());
   if (karteBergfried) karteBergfried.addEventListener('change', () => {
     if (!window.isoView) return;
@@ -3919,6 +4153,7 @@
   if (karteZurueck) karteZurueck.addEventListener('click', () => {
     if (!window.isoView) return;
     mapSelectionRequest++;
+    mapRefreshRequest = null;
     window.isoView.setGameMap(null);
     kachelnLaufen = null;
     window.isoView.setMapTiles(null);
@@ -3936,6 +4171,7 @@
   window.addEventListener('DOMContentLoaded', () => {
     updateMapControls();
     ensureMapTiles();
+    loadBuildingPreviews();
   });
 
   document.querySelectorAll('.castleTool').forEach(btn => btn.addEventListener('click', () => setTool(btn.dataset.tool)));
@@ -4142,6 +4378,25 @@
   window.addEventListener('blur', closeBuildContextMenu);
   window.addEventListener('resize', closeBuildContextMenu);
   els.buildList.addEventListener('scroll', closeBuildContextMenu);
+  els.buildList.addEventListener('dragover', event => {
+    if (!state.dragFrameIndexes?.length) return;
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'move';
+    updateBuildDragScroll(event.clientY);
+    showBuildDropGap(buildDropGap(event));
+  });
+  els.buildList.addEventListener('dragleave', event => {
+    if (!els.buildList.contains(event.relatedTarget)) endBuildListDrag();
+  });
+  els.buildList.addEventListener('drop', event => {
+    event.preventDefault();
+    const gap = state.buildDropGap ?? buildDropGap(event);
+    const dragged = state.dragFrameIndexes?.length
+      ? state.dragFrameIndexes
+      : String(event.dataTransfer.getData('text/plain')).split(',').map(Number);
+    endBuildListDrag();
+    moveBuildSteps(dragged, null, gap);
+  });
   els.buildList.addEventListener('scroll', () => {
     const top=els.buildList.scrollTop,height=els.buildList.clientHeight;
     if(state.buildListViewport?.top===top&&state.buildListViewport?.height===height)return;
@@ -4240,8 +4495,13 @@
     if (action === 'deselect') return clearSelectionAndItem();
     if (action === 'overlays') { overlayMenu.open = !overlayMenu.open; return; }
     if (action === 'rotateLeft' || action === 'rotateRight') {
-      const result = window.isoView?.turnView?.(action === 'rotateLeft' ? -1 : 1);
-      if (result === null) setStatus(() => tr("castle:map_rotation_needs_the_game_generated_camera_layers_wait_for_loading_to_"));
+      window.isoView?.turnView?.(action === 'rotateLeft' ? -1 : 1);
+      return;
+    }
+    if (action === 'flatView' || action === 'peekView') {
+      if (!window.isoView?.isMounted?.()) return;
+      if (action === 'flatView') window.isoView.toggleFlatView();
+      else window.isoView.togglePeekView();
       return;
     }
     const id = shortcutConfig.actions.find(([key]) => key === action)?.[3];
@@ -4337,7 +4597,10 @@
     // gehoert der Waehler nachgezogen.
     updateMapControls,
     reloadGameAssets,
+    refreshGameMap,
     getAnalysisOverlay,
+    getConstructionWarnings,
+    getConstructionWarningAtXY,
     isScrubbing: () => !!state.scrubbing,
     chooseBlueprint,
     clearBlueprint,

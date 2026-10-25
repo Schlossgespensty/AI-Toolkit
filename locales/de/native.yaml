@@ -40,6 +40,7 @@ developer_tools: Entwicklerwerkzeuge
 zoom_in: Vergrößern
 zoom_out: Verkleinern
 reset_zoom: Originalgröße
+interface_zoom: Oberflächenzoom
 classic_castle: Klassische AIV-Burg
 choose_castle_format: Wähle das Burgformat für diese Datei.
 add_castle_message: |-

@@ -209,6 +209,16 @@ test('idle draw commands preserve native anchors and identity across visible-ste
   }
 });
 
+test('lowered terrain can shorten wall supports while retaining a building roof height', () => {
+  const support=troops.supports([
+    {itemType:25,gx:0,gy:0,tiles:1},
+    {itemType:144,gx:5,gy:5,tiles:5}
+  ],()=>17,(item,height)=>item.itemType===25?22:height);
+  assert.equal(support(0,0),39,'wall: native height table maps 64+90 to 39');
+  assert.equal(support(7,7),145,'gate: native 128px roof stays above its lowered ground');
+  assert.equal(support(12,12),17);
+});
+
 test('terrain, structures and troop commands share the same stable depth merge', () => {
   const source=fs.readFileSync(require.resolve('../src/js/iso-view.js'),'utf8');
   const context=vm.createContext({geo});

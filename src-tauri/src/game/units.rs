@@ -118,7 +118,7 @@ fn extract_unit_sprites(root: &Path, cache_root: &Path) -> Result<UnitAssets> {
     let graphics = resolve_graphics(root)?;
     let revision = hash(
         format!(
-            "unit-previews-v3:{}:{}",
+            "unit-previews-v4:{}:{}",
             graphics.revision,
             include_str!("unit_poses.rs")
         )
@@ -140,13 +140,21 @@ fn extract_unit_sprites(root: &Path, cache_root: &Path) -> Result<UnitAssets> {
     let mut sprites: BTreeMap<String, UnitSprite> = BTreeMap::new();
     let mut idle_sprites = BTreeMap::new();
     let mut warnings = Vec::new();
-    let sources =
-        SOURCES
-            .iter()
-            .map(|&(id, name, rider)| (id.to_string(), name, rider, Some(0), poses::idle_pose(id)))
-            .chain(poses::LORD_POSES.iter().map(|&(key, name, frame)| {
-                (key.to_owned(), name, None, None, Some((frame, None)))
-            }));
+    let sources = SOURCES
+        .iter()
+        .map(|&(id, name, rider)| {
+            let (thumbnail, idle) = (poses::thumbnail_pose(id), poses::idle_pose(id));
+            (id.to_string(), name, rider, thumbnail, idle)
+        })
+        .chain(
+            poses::LORD_POSES
+                .iter()
+                .map(|&(key, name, frame)| (key.to_owned(), name, None, None, Some((frame, None)))),
+        )
+        .chain(std::iter::once(poses::MONK_POSE).map(|(key, name, frame)| {
+            let pose = Some((frame, None));
+            (key.to_owned(), name, None, pose, pose)
+        }));
     for (key, name, rider, thumbnail, idle_pose) in sources {
         // Thumbnail and idle pose share the same file/palette decode. Mounted
         // troops also share their rider file; never read it once per output.
@@ -166,13 +174,13 @@ fn extract_unit_sprites(root: &Path, cache_root: &Path) -> Result<UnitAssets> {
             }
         };
         for (idle, frame, rider_frame) in thumbnail
-            .map(|frame| (false, frame, rider.map(|_| 0)))
+            .map(|(frame, rider)| (false, frame, rider))
             .into_iter()
             .chain(idle_pose.map(|(frame, rider)| (true, frame, rider)))
         {
-            // Stationary objects can use the same phase as their thumbnail.
+            // Most idle poses already face the viewer and are their thumbnail.
             // Share its native anchor and PNG instead of decoding it twice.
-            if idle && frame == 0 && rider_frame == rider.map(|_| 0) {
+            if idle && thumbnail == Some((frame, rider_frame)) {
                 if let Some(sprite) = sprites.get(&key) {
                     idle_sprites.insert(key.clone(), sprite.clone());
                     continue;
@@ -262,7 +270,8 @@ mod tests {
             bytes[sizes + i * 4..sizes + i * 4 + 4].copy_from_slice(&2u32.to_le_bytes());
             bytes[heads + i * 16..heads + i * 16 + 2].copy_from_slice(&1u16.to_le_bytes());
             bytes[heads + i * 16 + 2..heads + i * 16 + 4].copy_from_slice(&1u16.to_le_bytes());
-            bytes[data_at + i * 2..data_at + i * 2 + 2].copy_from_slice(&[0, i as u8 + 1]);
+            bytes[data_at + i * 2..data_at + i * 2 + 2]
+                .copy_from_slice(&[0, (i as u8).wrapping_add(1)]);
         }
         bytes
     }
@@ -349,6 +358,39 @@ mod tests {
             );
             assert_ne!(expected.rgba, decode(&body, 0).unwrap().rgba);
         }
+        fs::remove_dir_all(root).unwrap();
+    }
+
+    #[test]
+    fn troop_thumbnails_face_the_viewer() {
+        // Direction 0 is the walking sheets' first stride and shows a troop's
+        // back; engines, braziers and flags have no front to hide.
+        for &(id, _, rider) in SOURCES {
+            let (frame, top) = poses::thumbnail_pose(id).unwrap();
+            assert_eq!(top.is_some(), rider.is_some(), "marker {id}");
+            if !matches!(id, 2..=5 | 20 | 21) {
+                assert_ne!(frame, 0, "marker {id}");
+            }
+        }
+        assert_eq!(poses::thumbnail_pose(6), Some((645, None)));
+        assert_eq!(poses::thumbnail_pose(12), Some((260, Some(428))));
+        assert_eq!(poses::thumbnail_pose(17), poses::idle_pose(17));
+    }
+
+    #[test]
+    fn the_monk_has_a_thumbnail_without_an_aiv_marker() {
+        let root = fixture("monk");
+        let (key, name, frame) = poses::MONK_POSE;
+        fs::write(
+            root.join("gm").join(format!("{name}.gm1")),
+            indexed_body(frame + 1),
+        )
+        .unwrap();
+        let assets = load_unit_sprites(&root, &root.join("cache")).unwrap();
+        assert_eq!(assets.sprites.len(), 1);
+        let thumbnail = &assets.sprites[key];
+        assert_eq!((thumbnail.source.as_str(), thumbnail.frame), (name, frame));
+        assert_eq!(&assets.idle_sprites[key], thumbnail, "one decode for both");
         fs::remove_dir_all(root).unwrap();
     }
 

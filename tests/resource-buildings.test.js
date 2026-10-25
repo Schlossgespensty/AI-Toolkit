@@ -13,8 +13,9 @@ const catalogue = JSON.parse(read('assets/aiv/iso/verzeichnis.json'));
 const geometry = require('../src/js/castle-geometry');
 const iso = require('../src/js/iso-geometry');
 const costs = require('../src/js/castle-cost-data');
-// Footprints from Crusader 1.41 getBuildingSizeForCommandBuildingType (0x4FA550).
-const resources = [[56,6,62],[70,9,73],[71,9,75],[72,11,71],[73,10,72],[90,4,64],[91,4,65]];
+// Crusader 1.41 footprints; apples use placeApplefarm's actual 10x10 reservation
+// (0x515740), rather than the command-size lookup's extra clearance tile.
+const resources = [[56,6,62],[70,9,73],[71,9,75],[72,10,71],[73,10,72],[90,4,64],[91,4,65]];
 
 test('resource buildings retain native footprints and anchors through edited AIV saves', async () => {
   const codec = await import('../src/node/aiv-codec.mjs');
@@ -56,6 +57,24 @@ test('farm sprites preserve the full field anchor without stretching the 3x3 bui
     const bottom=iso.isoPoint(item.gx+size-1,item.gy+size-1,view);
     assert.equal(rect.y+rect.h,bottom[1]+16);
   }
+});
+
+test('a saved apple farm uses exactly 100 cells and can touch the dairy farm', async () => {
+  const codec=await import('../src/node/aiv-codec.mjs');
+  const document={pauseDelayAmount:100,miscItems:[],frames:[
+    {itemType:72,tilePositionOfsets:[8070],shouldPause:false},
+    {itemType:73,tilePositionOfsets:[8080],shouldPause:true}
+  ]};
+  const bytes=codec.encodeAiv(document,templates);
+  assert.deepEqual(codec.parseAiv(bytes).frames,document.frames);
+  const sections=codec.internals.readDirectory(bytes).sections;
+  const ids=sections.get(2007),sizes=sections.get(2004);
+  const view=new DataView(ids.buffer,ids.byteOffset,ids.byteLength);
+  const appleCells=Array.from({length:10000},(_,i)=>i).filter(i=>view.getUint16(i*2,true)===71);
+  assert.equal(appleCells.length,100);
+  assert.ok(appleCells.every(i=>sizes[i]===10));
+  assert.equal(view.getUint16((19*100+79)*2,true),71,'apple occupies its tenth column');
+  assert.equal(view.getUint16((19*100+80)*2,true),72,'the next column belongs to the dairy farm');
 });
 
 test('Ctrl/Command-click toggles exactly one placement without beginning a move', () => {

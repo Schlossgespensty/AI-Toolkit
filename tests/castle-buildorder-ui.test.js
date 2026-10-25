@@ -473,8 +473,7 @@ test('reordering a mixed selection moves the open steps and leaves the locked on
   assert.match(require('../src/js/i18n').t('castle:value_locked_and_left_alone_2', { festgehalten: 2 }), /2 locked and left alone/);
 
   // Beide Wege, Pfeile und Ziehen, gehen durch dieselbe Stelle.
-  const liste = functionBody(script, 'renderBuildList');
-  assert.match(liste, /moveBuildSteps\(dragged, fi\)/, 'ziehen');
+  assert.match(script, /moveBuildSteps\(dragged, null, gap\)/, 'ziehen');
   const pfeile = functionBody(script, 'moveBuildSelection');
   assert.match(pfeile, /return moveBuildSteps\(selectedFrames, target\)/, 'pfeile');
   // Das Ziel richtet sich nach den offenen: sonst huepft die Auswahl ueber den
@@ -579,4 +578,22 @@ test('choosing a palette item is only for placement, not replacement', () => {
   assert.doesNotMatch(waehlen, /replace/i);
   assert.match(waehlen, /renderBuildList\(\)/,
     'und die Liste daneben wird neu gezeichnet, statt alt stehen zu bleiben');
+});
+
+test('dragging in the step list scrolls at the edges and shows where the block lands', () => {
+  const script = fs.readFileSync(path.join(root, 'src', 'js', 'castle-editor.js'), 'utf8');
+  const css = fs.readFileSync(path.join(root, 'src', 'css', 'combined.css'), 'utf8');
+  assert.match(functionBody(script, 'updateBuildDragScroll'), /DRAG_SCROLL_ZONE/, 'eine Zone oben und unten');
+  assert.match(functionBody(script, 'dragScrollStep'), /requestAnimationFrame\(dragScrollStep\)/, 'rollt weiter, solange der Zeiger dort bleibt');
+  assert.match(functionBody(script, 'buildDropGap'), /rect\.top \+ rect\.height \/ 2/, 'obere oder untere Haelfte der Zeile');
+  assert.match(script, /els\.buildList\.addEventListener\('dragover'/, 'die ganze Liste nimmt an, auch unter der letzten Zeile');
+  assert.match(css, /\.buildStep\.dropBefore::after/);
+  assert.match(css, /\.buildStep\.dropAfter::after/);
+});
+
+test('the native window leaves drag and drop to the page, so steps can be dragged', () => {
+  // Tauri's own file-drop handler swallows HTML drag events in WebView2 on
+  // Windows: the cursor shows "not allowed" and nothing can be dropped.
+  const config = require(path.join(root, 'src-tauri', 'tauri.conf.json'));
+  assert.equal(config.app.windows[0].dragDropEnabled, false);
 });

@@ -1,7 +1,7 @@
 'use strict';
-// Real Electron rendering on GitHub's Windows runner only. This deliberately
-// refuses local execution so it cannot interrupt an active editing session.
-if (process.env.GITHUB_ACTIONS !== 'true') throw new Error('Run this rendering check on GitHub Actions, not the workstation.');
+// Local reproduction requires an explicit isolated, hidden test window.
+const isolated = process.argv.includes('--isolated');
+if (process.env.GITHUB_ACTIONS !== 'true' && !isolated) throw new Error('Use GitHub Actions or --isolated for this rendering check.');
 const { app, BrowserWindow } = require('electron');
 const fs = require('node:fs');
 const os = require('node:os');
@@ -10,8 +10,18 @@ const assert = require('node:assert/strict');
 const output = path.resolve(__dirname,'../artifacts/render');
 fs.mkdirSync(output,{recursive:true});
 app.setPath('userData',fs.mkdtempSync(path.join(os.tmpdir(),'toolkit-render-')));
+fs.writeFileSync(path.join(app.getPath('userData'),'settings.json'),JSON.stringify({language:'en',theme:'ucp'}));
 app.disableHardwareAcceleration();
+// Release parsing has separate tests; this renderer fixture never needs the
+// public GitHub API or the runner's unauthenticated rate-limit allowance.
+const updates = require('../src/node/release-updates');
+const releaseChecker = updates.createReleaseChecker;
+updates.createReleaseChecker = installed => releaseChecker(installed, async url => {
+  assert.match(new URL(url).pathname, /^\/repos\/Schlossgespensty\/AI-Toolkit\/(forks|releases)$/);
+  return {ok:true,json:async()=>[]};
+});
 const loaded = new Promise(resolve => app.once('browser-window-created',(_event,win) => {
+  if (isolated) { win.setFocusable(false); win.hide(); }
   win.webContents.once('did-finish-load',()=>resolve(win));
 }));
 const timer = setTimeout(()=>{console.error('Renderer smoke check timed out.');app.exit(1);},45000);
@@ -21,7 +31,11 @@ require('../main');
     const win = await loaded;
     const result = await win.webContents.executeJavaScript(`(async()=>{
       const pause=()=>new Promise(resolve=>setTimeout(resolve,50));
+      if(!window.toolkitI18n?.bindText)throw new Error('Renderer translation runtime was not prepared');
+      await window.toolkitI18n.ready;
+      await window.toolkitI18n.changeLanguage('en',{persist:false});
       for(let i=0;i<200&&!window.castleEditor?.extras.state.constants['73'];i++)await pause();
+      if(!window.castleEditor?.extras.state.constants['73'])throw new Error('Castle renderer did not initialize');
       const errors=[];
       window.addEventListener('error',event=>errors.push(event.message));
       window.addEventListener('unhandledrejection',event=>errors.push(String(event.reason)));
@@ -182,11 +196,15 @@ require('../main');
         if(camera>=0)mapDraws.push({camera:camera*2,tile:args[0]/30,x:args[4],y:args[5]});
         return original.call(this,image,...args);
       };
-      window.isoView.setGameMap({name:'Camera fixture',path:'camera-fixture.map',dataUrl:mapAtlas,keeps:[{x:200,y:200,orientation:0}],pathTerrain:{version:3,blocked:encode(new Uint8Array(160000)),heights:encode(new Uint8Array(160000))}});
-      window.isoView.setMapTiles({path:'camera-fixture.map',atlas:mapAtlas,plaetze:encode(locations),spalten:4,kachelBreite:30,kachelHoehe:16});
-      if(window.isoView.turnView(1)!==null)throw new Error('Saved terrain must not masquerade as native directional graphics');
+      const emptyTerrain=encode(new Uint8Array(160000));
+      window.isoView.setGameMap({name:'Camera fixture',path:'camera-fixture.map',dataUrl:mapAtlas,keeps:[{x:200,y:200,orientation:0}],
+        pathTerrain:{version:5,fingerprint:'camera-fixture',blocked:emptyTerrain,hardBlocked:emptyTerrain,
+          heights:emptyTerrain,constructionLift:emptyTerrain,buildFlags:encode(new Uint32Array(160000))}});
+      await window.isoView.setMapTiles({path:'camera-fixture.map',atlas:mapAtlas,plaetze:encode(locations),spalten:4,kachelBreite:30,kachelHoehe:16});
+      if(window.isoView.turnView(1)!==2)throw new Error('Loaded saved terrain must support rotation without camera captures');
+      if(window.isoView.turnView(-1)!==0)throw new Error('Saved terrain rotation did not restore the camera');
       mapDraws.length=0;
-      window.isoView.setMapTiles({path:'camera-fixture.map',nativeRenderer:true,cameras:mapAtlases.map(atlas=>({atlas,plaetze:encode(locations),spalten:4,kachelBreite:30,kachelHoehe:16}))});
+      await window.isoView.setMapTiles({path:'camera-fixture.map',nativeRenderer:true,cameras:mapAtlases.map(atlas=>({atlas,plaetze:encode(locations),spalten:4,kachelBreite:30,kachelHoehe:16}))});
       await pause();
       for(let turn=0;turn<=4;turn++){
         if(turn){mapDraws.length=0;window.isoView.turnView(1);}
@@ -204,7 +222,7 @@ require('../main');
       const style=getComputedStyle(camera);
       return {overlayResult, png,atlasDraws,errors,firstStepStatus,lastStepStatus,cameraFrames,cameraBackground:style.backgroundColor,cameraText:style.color,
         status:document.getElementById('isoDockStatus').textContent};
-    })()`,true);
+    })().catch(error=>{throw new Error(error.stack||String(error));})`,true);
     fs.writeFileSync(path.join(output,'native-building-components.png'),Buffer.from(result.png.split(',')[1],'base64'));
     const screenshot=await win.webContents.capturePage();
     fs.writeFileSync(path.join(output,'camera-controls.png'),screenshot.toPNG());

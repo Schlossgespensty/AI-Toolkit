@@ -15,7 +15,9 @@ test('every configured unit is a capped, freely overlapping rallypoint', () => {
   for (const type of unitIds) {
     assert.equal(constants[String(type)].overlap, 'allow', `unit ${type} overlap`);
     assert.ok(Number.isInteger(constants[String(type)].maxAmount), `unit ${type} maxAmount integer`);
-    assert.ok(constants[String(type)].maxAmount >= 1 && constants[String(type)].maxAmount <= 10,
+    const native=type>9000?type-9000:type;
+    const expanded=(native>=6&&native<=19)||(native>=22&&native<=28);
+    assert.equal(constants[String(type)].maxAmount,expanded?30:type===1?9:10,
       `unit ${type} maxAmount cap`);
   }
 });

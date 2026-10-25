@@ -9,8 +9,6 @@ const target = path.join(root, 'desktop-dist');
 for (const script of ['prepare-renderer.js', 'build-themes.mjs', 'build-locales.js']) {
   if (fs.existsSync(path.join(root, 'scripts', script))) execFileSync(process.execPath, [path.join(root, 'scripts', script)], { cwd: root, stdio: 'inherit' });
 }
-fs.mkdirSync(path.join(root, 'src/vendor/i18next'), { recursive: true });
-fs.copyFileSync(path.join(root,'node_modules/i18next/dist/umd/i18next.min.js'),path.join(root,'src/vendor/i18next/i18next.min.js'));
 if (fs.existsSync(path.join(root, 'src/desktop/api.ts'))) await build({
   entryPoints: [path.join(root, 'src/desktop/api.ts')], outfile: path.join(root, 'src/js/desktop-api.js'),
   bundle: true, platform: 'browser', format: 'iife', target: 'es2022', minify: true,

@@ -23,3 +23,10 @@ no_window_open_one_from_the_toolbar: پنجره‌ای نیست — یکی از 
 add_as_a_tab_here: افزودن به‌عنوان زبانه در اینجا
 esc_cancels: " · Esc لغو می‌کند"
 is_missing: " موجود نیست"
+flat_view: 'نمای تخت'
+lowered_view: 'نمای کم‌ارتفاع'
+refresh_map: "تازه‌سازی نقشه"
+refresh_map_hint: "بارگذاری دوبارهٔ نقشهٔ انتخاب‌شده از دیسک: {{path}}"
+refreshing_map: "در حال تازه‌سازی نقشه…"
+map_refreshed: "نقشه به‌روز شد: {{name}}"
+map_refresh_failed: "تازه‌سازی نقشه انجام نشد: {{message}}"

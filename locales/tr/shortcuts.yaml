@@ -42,3 +42,5 @@ wheelMode: Bir tekerlek modu seçin.
 cameraSpeed: Kamera hızı 1 ile 200 piksel arasında olmalıdır.
 invalidCamera: Geçersiz kamera kısayolu.
 assigned: '{{key}} tuşu zaten atanmış veya ayrılmış.'
+flatView: '2.5D: Düz görünümü aç/kapat'
+peekView: '2.5D: Alçaltılmış görünümü aç/kapat'

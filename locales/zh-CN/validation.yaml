@@ -22,3 +22,5 @@ classic_empty_steps: 经典版 AIV 格式无法保留空建造步骤。
 classic_item: 经典版 AIV 格式不支持 {{name}}。
 classic_pauses: 经典版编辑器中已禁用建造步骤暂停。
 classic_marker: 经典版 AIV 格式无法保留 {{name}}。
+
+classic_extended_spots: "超过10个的部队驻守点无法保存到经典 .aiv。请导出为 DE（.aivjson）以保留全部驻守点。"

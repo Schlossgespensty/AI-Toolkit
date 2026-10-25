@@ -162,6 +162,22 @@ test('selected build steps can move upward as one ordered block', () => {
   assert.deepEqual(moved, { moved: true, startIndex: 0, endIndex: 1 });
 });
 
+test('a dragged block lands exactly in the gap the drop line shows', () => {
+  const order = frames => frames.map(frame => frame.itemType);
+  let frames = [1, 2, 3, 4, 5, 6].map(itemType => ({ itemType }));
+  assert.deepEqual(geometry.moveBuildStepsToGap(frames, [1, 3], 5), { moved: true, startIndex: 3, endIndex: 4 });
+  assert.deepEqual(order(frames), [1, 3, 5, 2, 4, 6], 'vor Schritt 6, aus beiden Richtungen gleich');
+  frames = [1, 2, 3, 4, 5, 6].map(itemType => ({ itemType }));
+  geometry.moveBuildStepsToGap(frames, [4], 0);
+  assert.deepEqual(order(frames), [5, 1, 2, 3, 4, 6], 'ganz nach vorn');
+  frames = [1, 2, 3].map(itemType => ({ itemType }));
+  geometry.moveBuildStepsToGap(frames, [0], 3);
+  assert.deepEqual(order(frames), [2, 3, 1], 'ans Ende');
+  frames = [1, 2, 3].map(itemType => ({ itemType }));
+  assert.equal(geometry.moveBuildStepsToGap(frames, [1], 2).moved, false, 'direkt hinter sich selbst: nichts bewegt');
+  assert.deepEqual(order(frames), [1, 2, 3]);
+});
+
 // ------------------------------------------- Pinselgroesse und Farbeimer
 
 test('a brush of size 1 is one tile, size 3 a square of nine', () => {

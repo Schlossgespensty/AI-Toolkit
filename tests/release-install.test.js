@@ -17,7 +17,11 @@ test('Windows release installation preserves custom files, refuses locks and rec
 test('installer survives Electron exit, replaces files and restarts the installed program', {skip:process.platform!=='win32'},async t=>{
  const fs=require('node:fs');
  const fixture=JSON.parse(execFileSync('powershell.exe',['-NoProfile','-ExecutionPolicy','Bypass','-File',path.join(__dirname,'release-installer-smoke.ps1'),'-Installer',path.resolve(__dirname,'../src/node/release-install.ps1'),'-Handoff'],{encoding:'utf8',windowsHide:true,timeout:60000,env:childEnv}));
- t.after(()=>fs.rmSync(fixture.testRoot,{recursive:true,force:true,maxRetries:10,retryDelay:100}));
+ const cleanupRoot=path.resolve(fixture.testRoot);
+ assert.equal(path.dirname(cleanupRoot),path.resolve(require('node:os').tmpdir()));
+ assert.match(path.basename(cleanupRoot),/^release-install-test-[a-f0-9]+$/);
+ // Let exit/I/O callbacks run while Windows releases the restarted executable.
+ t.after(()=>fs.promises.rm(cleanupRoot,{recursive:true,force:true,maxRetries:10,retryDelay:100}));
  const runner=path.join(fixture.testRoot,'runner.cjs');
  fs.writeFileSync(runner,`const {app}=require('electron'); app.whenReady().then(async()=>{try{await require(${JSON.stringify(path.resolve(__dirname,'../src/node/release-download.js'))}).launchInstaller(${JSON.stringify(fixture)});app.exit(0);}catch(e){console.error(e);app.exit(1);}});`);
  const env=childEnv;

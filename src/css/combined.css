@@ -561,7 +561,8 @@ button:disabled { cursor: default; }
 }
 .characterSearch input,
 #characterWorkspace .field input,
-#characterWorkspace .field select {
+#characterWorkspace .field select,
+#characterWorkspace .characterUnitTile input {
   width: 100%;
   min-width: 0;
   min-height: 32px;
@@ -609,6 +610,57 @@ button:disabled { cursor: default; }
   min-height: 0;
   overflow: auto;
   padding: 14px;
+  container: characterForm / inline-size;
+}
+/* From 1000 px of form width, a section's fields sit in two columns, filled
+   left to right, then down. Long labels wrap instead of dropping a column.
+   A group heading spans the row, and a group break starts on the left. */
+.characterFieldGrid { display: grid; grid-template-columns: minmax(0, 1fr); }
+/* Starting troops: picture tiles with their count below, wrapping to the width. */
+#characterWorkspace .characterFieldGrid.characterUnitTiles {
+  grid-template-columns: repeat(auto-fill, minmax(88px, 1fr));
+  gap: 8px;
+  padding: 10px 12px;
+  background: none;
+}
+.characterUnitTile {
+  display: grid;
+  grid-template-rows: 72px auto auto;
+  gap: 4px;
+  min-width: 0;
+  padding: 4px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--text-main) 6%, transparent);
+  cursor: text;
+}
+.characterUnitTile.characterUnitRowStart { grid-column-start: 1; }
+.characterUnitTile:hover { border-color: var(--line-strong); }
+.characterUnitPicture { display: grid; place-items: center; min-height: 0; overflow: hidden; }
+.characterUnitPicture img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.characterUnitName {
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  text-align: center; color: var(--text-soft); font: 1.1rem/1.2 var(--font-ui);
+}
+#characterWorkspace .characterUnitTile input { width: 100%; min-width: 0; text-align: center; }
+@container characterForm (min-width: 1000px) {
+  /* A thin centre line, drawn behind the rows so every theme's paper shows. */
+  .characterFieldGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 17px;
+    background: linear-gradient(var(--line), var(--line)) center / 1px 100% no-repeat;
+  }
+  .characterFieldGrid > .characterFieldGroup { grid-column: 1 / -1; }
+  .characterFieldGrid > .field.sectionDivider { grid-column-start: 1; }
+  /* Row stripes would form a checkerboard across two columns. */
+  #characterWorkspace .characterForm .characterFieldGrid > .field {
+    grid-template-columns: minmax(0, 1fr) minmax(96px, 170px) 24px;
+    gap: 8px;
+    padding-inline: 8px 4px;
+    background: transparent;
+  }
+  #characterWorkspace .characterForm .characterFieldGrid > .field:hover { background: color-mix(in srgb, var(--accent) 4.5%, transparent); }
+  #characterWorkspace .characterFieldGrid > .field > span { white-space: normal; overflow-wrap: anywhere; }
 }
 #characterWorkspace details {
   width: min(100%, 1040px);
@@ -1196,6 +1248,8 @@ button:disabled { cursor: default; }
    translated name makes the row taller. Building textures still fill their side. */
 .paletteThumbUnit { height: 44px; align-self: center; }
 .paletteThumbUnit img { object-fit: contain; object-position: center bottom; padding: 3px; }
+/* Game building pictures are isometric sprites, not tiles: show them whole. */
+.paletteThumbSprite img { object-fit: contain; object-position: center bottom; padding: 2px; }
 .paletteUnitBadge {
   width: 36px; height: 36px; border-radius: 50%;
   display: grid; place-items: center;
@@ -1401,6 +1455,20 @@ button:disabled { cursor: default; }
 .buildStep.future:hover { color: var(--text-soft); background: var(--surface-2); }
 .buildStep.future.selected { color: var(--text-soft); background: var(--accent-soft); }
 .buildStep.dragging { opacity: .45; }
+/* Where a dragged block will land. Rows paint-contain themselves
+   (content-visibility), so the line sits inside the row's own edge. */
+.buildStep { position: relative; }
+.buildStep:is(.dropBefore, .dropAfter)::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--accent);
+  pointer-events: none;
+}
+.buildStep.dropBefore::after { top: 0; }
+.buildStep.dropAfter::after { bottom: 0; }
 /* Ein gesperrter Bauschritt: sichtbar, aber nicht anzufassen. */
 .buildStep.locked { cursor: default; box-shadow: inset 3px 0 0 var(--text-muted); }
 .buildStep.locked .buildIndex::before { content: '🔒'; font-size: 9px; }
@@ -2011,6 +2079,9 @@ html.dockResizing * { user-select: none !important; }
   background: var(--surface-2);
 }
 #characterWorkspace .characterSidebar summary { font-size: 1.1rem; }
+/* Themes may enlarge the sidebar's text without widening the bar: each card
+   keeps the bar's width, so text wraps and the bar scrolls instead. */
+#characterWorkspace .characterSidebar > * { zoom: var(--component-sidebar-text-zoom); }
 #characterWorkspace .characterSidebar details > summary { border-bottom: 0; }
 #characterWorkspace .characterSidebar details[open] > summary { border-bottom: 1px solid var(--line); }
 #characterWorkspace .characterSidebar details:not([open]) > summary::after { content: '+'; }
@@ -2032,6 +2103,19 @@ html.dockResizing * { user-select: none !important; }
 .workspaceTabs .releaseUpdateButton { flex-shrink: 0; align-self: center; margin-bottom: 5px; padding: 4px 8px; font-size: 11px; border: 1px solid var(--line-strong); border-radius: var(--radius-sm); background: var(--surface-2); color: var(--text-soft); -webkit-app-region: no-drag; }
 .workspaceTabs .releaseUpdateButton.releaseCurrent { background: var(--semantic-status-success-surface); color: var(--semantic-status-on-success); border-color: var(--valid); }
 .workspaceTabs .releaseUpdateButton.releaseAvailable { background: var(--semantic-status-warning-surface); color: var(--semantic-status-on-warning); border-color: var(--accent-strong); }
+/* Interface zoom: a compact "- 100 % +" group beside the update button. */
+.workspaceTabs .uiZoomControls {
+  display: flex; flex-shrink: 0; align-self: center; margin-bottom: 5px;
+  border: 1px solid var(--line-strong); border-radius: var(--radius-sm); overflow: hidden;
+}
+.workspaceTabs .uiZoomControls[hidden] { display: none; }
+.workspaceTabs .uiZoomControls button {
+  min-width: 22px; min-height: 0; padding: 3px 6px; border: 0; border-radius: 0;
+  background: var(--surface-2); color: var(--text-soft); font: 11px/1.2 var(--font-ui);
+  -webkit-app-region: no-drag;
+}
+.workspaceTabs .uiZoomControls .uiZoomValue { min-width: 46px; border-inline: 1px solid var(--line-strong); font-family: var(--font-data); }
+.workspaceTabs .uiZoomControls button:hover { background: var(--surface-3); color: var(--text-main); }
 .workspaceTabs .releaseUpdateButton:hover:not(:disabled) { filter: brightness(1.15); }
 .workspaceTabs .releaseUpdateButton:focus-visible { outline: 2px solid var(--text-main); outline-offset: 2px; }
 

@@ -56,7 +56,7 @@
             1,
             1
         ],
-        "maxAmount": 10,
+        "maxAmount": 30,
         "overlap": "allow"
     },
     "7": {
@@ -66,7 +66,7 @@
             1,
             1
         ],
-        "maxAmount": 10,
+        "maxAmount": 30,
         "overlap": "allow"
     },
     "8": {
@@ -76,7 +76,7 @@
             1,
             1
         ],
-        "maxAmount": 10,
+        "maxAmount": 30,
         "overlap": "allow"
     },
     "9": {
@@ -86,7 +86,7 @@
             1,
             1
         ],
-        "maxAmount": 10,
+        "maxAmount": 30,
         "overlap": "allow"
     },
     "10": {
@@ -96,7 +96,7 @@
             1,
             1
         ],
-        "maxAmount": 10,
+        "maxAmount": 30,
         "overlap": "allow"
     },
     "11": {
@@ -106,7 +106,7 @@
             1,
             1
         ],
-        "maxAmount": 10,
+        "maxAmount": 30,
         "overlap": "allow"
     },
     "12": {
@@ -116,7 +116,7 @@
             1,
             1
         ],
-        "maxAmount": 10,
+        "maxAmount": 30,
         "overlap": "allow"
     },
     "13": {
@@ -126,7 +126,7 @@
             1,
             1
         ],
-        "maxAmount": 10,
+        "maxAmount": 30,
         "overlap": "allow"
     },
     "14": {
@@ -136,7 +136,7 @@
             1,
             1
         ],
-        "maxAmount": 10,
+        "maxAmount": 30,
         "overlap": "allow"
     },
     "15": {
@@ -146,7 +146,7 @@
             1,
             1
         ],
-        "maxAmount": 10,
+        "maxAmount": 30,
         "overlap": "allow"
     },
     "16": {
@@ -156,7 +156,7 @@
             1,
             1
         ],
-        "maxAmount": 10,
+        "maxAmount": 30,
         "overlap": "allow"
     },
     "17": {
@@ -166,7 +166,7 @@
             1,
             1
         ],
-        "maxAmount": 10,
+        "maxAmount": 30,
         "overlap": "allow"
     },
     "18": {
@@ -176,7 +176,7 @@
             1,
             1
         ],
-        "maxAmount": 10,
+        "maxAmount": 30,
         "overlap": "allow"
     },
     "19": {
@@ -186,7 +186,7 @@
             1,
             1
         ],
-        "maxAmount": 10,
+        "maxAmount": 30,
         "overlap": "allow"
     },
     "20": {
@@ -780,8 +780,8 @@
     "72": {
         "name": "Apple Farm",
         "size": [
-            11,
-            11
+            10,
+            10
         ]
     },
     "73": {
@@ -840,7 +840,7 @@
         "kind": "unit",
         "edition": "de",
         "overlap": "allow",
-        "maxAmount": 10
+        "maxAmount": 30
     },
     "9023": {
         "name": "Healer",
@@ -851,7 +851,7 @@
         "kind": "unit",
         "edition": "de",
         "overlap": "allow",
-        "maxAmount": 10
+        "maxAmount": 30
     },
     "9024": {
         "name": "Eunuch",
@@ -862,7 +862,7 @@
         "kind": "unit",
         "edition": "de",
         "overlap": "allow",
-        "maxAmount": 10
+        "maxAmount": 30
     },
     "9025": {
         "name": "Ambusher",
@@ -873,7 +873,7 @@
         "kind": "unit",
         "edition": "de",
         "overlap": "allow",
-        "maxAmount": 10
+        "maxAmount": 30
     },
     "9026": {
         "name": "Skirmisher",
@@ -884,7 +884,7 @@
         "kind": "unit",
         "edition": "de",
         "overlap": "allow",
-        "maxAmount": 10
+        "maxAmount": 30
     },
     "9027": {
         "name": "Heavy Camel",
@@ -895,7 +895,7 @@
         "kind": "unit",
         "edition": "de",
         "overlap": "allow",
-        "maxAmount": 10
+        "maxAmount": 30
     },
     "9028": {
         "name": "Sapper",
@@ -906,7 +906,7 @@
         "kind": "unit",
         "edition": "de",
         "overlap": "allow",
-        "maxAmount": 10
+        "maxAmount": 30
     },
     "9029": {
         "name": "Demolisher",

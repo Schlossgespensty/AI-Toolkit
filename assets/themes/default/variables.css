@@ -89,6 +89,7 @@
   --component-toolbar-command-surface: transparent;
   --component-toolbar-command-hover: transparent;
   --component-toolbar-command-selected: transparent;
+  --component-sidebar-text-zoom: 1; /** Scale of the text inside the character sidebar; the bar keeps its width. */
   --semantic-surface-app: var(--primitive-color-ink);
   --semantic-surface-deep: var(--primitive-color-deep);
   --semantic-surface-panel: var(--primitive-color-slate1);
@@ -160,6 +161,7 @@
   --component-number-stepper-border: var(--semantic-border-normal);
   --component-number-stepper-content: var(--semantic-content-main);
   --component-toolbar-command-border: var(--semantic-border-normal);
+  --component-input-placeholder: var(--component-panel-muted);
   --component-select-chrome-surface: var(--semantic-surface-chrome);
   --component-select-chrome-content: var(--semantic-content-on-chrome);
   --component-select-option-surface: var(--semantic-surface-chrome);

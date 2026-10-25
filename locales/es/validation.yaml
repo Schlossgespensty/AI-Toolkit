@@ -22,3 +22,5 @@ classic_empty_steps: El formato AIV clásico no conserva los pasos de construcci
 classic_item: El formato AIV clásico no admite {{name}}.
 classic_pauses: Las pausas por paso están desactivadas en el editor clásico.
 classic_marker: El formato AIV clásico no puede conservar {{name}}.
+
+classic_extended_spots: "Las posiciones de tropas superiores a 10 no se pueden guardar en .aiv clásico. Exporta DE (.aivjson) para conservarlas todas."

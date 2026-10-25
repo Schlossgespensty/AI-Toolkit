@@ -22,3 +22,5 @@ replacing_character: 'در حال جایگزینی شخصیت {{name}}…'
 opening: 'در حال باز کردن {{name}}…'
 opened: '{{name}} باز شد.'
 with_castle: ' همراه با قلعهٔ {{name}}'
+
+extended_rally_points: "DE: جایگاه‌های ۱۱–۳۰ به SHCDE-Fixes و GuardingSpotsPerUnitType نیاز دارند. با قالب .aivjson ذخیره کنید."

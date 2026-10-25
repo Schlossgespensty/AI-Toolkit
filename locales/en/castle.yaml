@@ -188,3 +188,11 @@ dock: Dock
 groups: Groups
 cut_and_copy: Cut & copy
 deselect: Deselect
+construction_blocked: 'Cannot build here: {{reasons}}'
+construction_rock: 'rocks'
+construction_water: 'water or river'
+construction_marsh: 'marsh'
+construction_moat: 'dug moat'
+construction_outside: 'outside the buildable map'
+construction_height: 'terrain height limit'
+construction_slope: 'terrain too uneven'

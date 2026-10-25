@@ -1,7 +1,7 @@
 # Static idle troop previews: verified research
 
-Status: **implemented for 20 classic marker types and both lord variants**. Palette thumbnails retain
-their separate frame-0 contract; the 2.5D view uses the verified idle frames
+Status: **implemented for 20 classic marker types and both lord variants**. Palette thumbnails face the
+viewer (direction 4; `thumbnail_pose` in `unit_poses.rs`); the 2.5D view uses the verified idle frames
 below. Engineers and DE-specific markers show
 editor-drawn numbered rally markers until their stationary poses are verified.
 No game process is started or attached to, and no Firefly pixels are packaged.

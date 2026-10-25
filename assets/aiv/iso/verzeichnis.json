@@ -210,7 +210,8 @@
      "rand": "ein Nachbar in x -> rand.laengs, einer in y -> rand.quer, keiner -> rand.allein",
      "krone": "immer flach"
     }
-   }
+   },
+   "structureHeight": 90
   },
   "26": {
    "name": "Zinnenmauer hoch",
@@ -597,7 +598,96 @@
      "laengs": "Platz = x & 15",
      "quer": "Platz = y & 15",
      "rand": "ein Nachbar in x -> rand.laengs, einer in y -> rand.quer, keiner -> rand.allein",
-     "krone": "Klotz bei x+y ungerade, sonst Scharte"
+     "krone": "Klotz bei x+y ungerade, sonst Scharte",
+     "form": "Ende 132, Ecken 128-131, schraeg waagrecht 303-310 (y & 7, nur x + y gerade, sonst flach), schraeg senkrecht 312/311 (y & 1) - gemessen in crusaders_mission*.map"
+    },
+    "form": {
+     "ende": {
+      "bild": "mauer_26_ende.png",
+      "breite": 30,
+      "hoehe": 143
+     },
+     "ecken": {
+      "px_my": {
+       "bild": "mauer_26_ecke_px_my.png",
+       "breite": 30,
+       "hoehe": 136
+      },
+      "px_py": {
+       "bild": "mauer_26_ecke_px_py.png",
+       "breite": 30,
+       "hoehe": 132
+      },
+      "mx_py": {
+       "bild": "mauer_26_ecke_mx_py.png",
+       "breite": 30,
+       "hoehe": 135
+      },
+      "mx_my": {
+       "bild": "mauer_26_ecke_mx_my.png",
+       "breite": 30,
+       "hoehe": 136
+      }
+     },
+     "schraeg": [
+      {
+       "bild": "mauer_26_schraeg_0.png",
+       "breite": 30,
+       "hoehe": 147
+      },
+      {
+       "bild": "mauer_26_schraeg_1.png",
+       "breite": 30,
+       "hoehe": 134
+      },
+      {
+       "bild": "mauer_26_schraeg_2.png",
+       "breite": 30,
+       "hoehe": 146
+      },
+      {
+       "bild": "mauer_26_schraeg_3.png",
+       "breite": 30,
+       "hoehe": 132
+      },
+      {
+       "bild": "mauer_26_schraeg_4.png",
+       "breite": 30,
+       "hoehe": 144
+      },
+      {
+       "bild": "mauer_26_schraeg_5.png",
+       "breite": 30,
+       "hoehe": 132
+      },
+      {
+       "bild": "mauer_26_schraeg_6.png",
+       "breite": 30,
+       "hoehe": 145
+      },
+      {
+       "bild": "mauer_26_schraeg_7.png",
+       "breite": 30,
+       "hoehe": 132
+      }
+     ],
+     "steil": [
+      {
+       "bild": "mauer_26_steil_tief.png",
+       "breite": 30,
+       "hoehe": 134
+      },
+      {
+       "bild": "mauer_26_steil_hoch.png",
+       "breite": 30,
+       "hoehe": 144
+      }
+     ],
+     "flach": {
+      "bild": "mauer_26_flach.png",
+      "breite": 30,
+      "hoehe": 116
+     }
     }
    },
    "wechselBild": "mauer_26_ra_scharte.png",
@@ -990,7 +1080,96 @@
      "laengs": "Platz = x & 15",
      "quer": "Platz = y & 15",
      "rand": "ein Nachbar in x -> rand.laengs, einer in y -> rand.quer, keiner -> rand.allein",
-     "krone": "Klotz bei x+y ungerade, sonst Scharte"
+     "krone": "Klotz bei x+y ungerade, sonst Scharte",
+     "form": "Ende 132, Ecken 128-131, schraeg waagrecht 303-310 (y & 7, nur x + y gerade, sonst flach), schraeg senkrecht 312/311 (y & 1) - gemessen in crusaders_mission*.map"
+    },
+    "form": {
+     "ende": {
+      "bild": "mauer_35_ende.png",
+      "breite": 30,
+      "hoehe": 113
+     },
+     "ecken": {
+      "px_my": {
+       "bild": "mauer_35_ecke_px_my.png",
+       "breite": 30,
+       "hoehe": 106
+      },
+      "px_py": {
+       "bild": "mauer_35_ecke_px_py.png",
+       "breite": 30,
+       "hoehe": 102
+      },
+      "mx_py": {
+       "bild": "mauer_35_ecke_mx_py.png",
+       "breite": 30,
+       "hoehe": 105
+      },
+      "mx_my": {
+       "bild": "mauer_35_ecke_mx_my.png",
+       "breite": 30,
+       "hoehe": 106
+      }
+     },
+     "schraeg": [
+      {
+       "bild": "mauer_35_schraeg_0.png",
+       "breite": 30,
+       "hoehe": 117
+      },
+      {
+       "bild": "mauer_35_schraeg_1.png",
+       "breite": 30,
+       "hoehe": 104
+      },
+      {
+       "bild": "mauer_35_schraeg_2.png",
+       "breite": 30,
+       "hoehe": 116
+      },
+      {
+       "bild": "mauer_35_schraeg_3.png",
+       "breite": 30,
+       "hoehe": 102
+      },
+      {
+       "bild": "mauer_35_schraeg_4.png",
+       "breite": 30,
+       "hoehe": 114
+      },
+      {
+       "bild": "mauer_35_schraeg_5.png",
+       "breite": 30,
+       "hoehe": 102
+      },
+      {
+       "bild": "mauer_35_schraeg_6.png",
+       "breite": 30,
+       "hoehe": 115
+      },
+      {
+       "bild": "mauer_35_schraeg_7.png",
+       "breite": 30,
+       "hoehe": 102
+      }
+     ],
+     "steil": [
+      {
+       "bild": "mauer_35_steil_tief.png",
+       "breite": 30,
+       "hoehe": 104
+      },
+      {
+       "bild": "mauer_35_steil_hoch.png",
+       "breite": 30,
+       "hoehe": 114
+      }
+     ],
+     "flach": {
+      "bild": "mauer_35_flach.png",
+      "breite": 30,
+      "hoehe": 86
+     }
     }
    },
    "wechselBild": "mauer_35_ra_scharte.png",
@@ -1206,7 +1385,8 @@
      "rand": "ein Nachbar in x -> rand.laengs, einer in y -> rand.quer, keiner -> rand.allein",
      "krone": "immer flach"
     }
-   }
+   },
+   "structureHeight": 60
   },
   "50": {
    "name": "Bogenmacher",
@@ -1394,7 +1574,12 @@
       "sy": 1
      }
     ]
-   ]
+   ],
+   "anlehnen": true,
+   "flatBuilding": {
+    "building": 12,
+    "group": 2
+   }
   },
   "51": {
    "name": "Holzfaellerhuette",
@@ -1505,7 +1690,11 @@
       "sy": 1
      }
     ]
-   ]
+   ],
+   "flatBuilding": {
+    "building": 3,
+    "group": 3
+   }
   },
   "52": {
    "name": "Lagerplatz",
@@ -1792,7 +1981,11 @@
       "sy": 1
      }
     ]
-   ]
+   ],
+   "flatBuilding": {
+    "building": 10,
+    "group": 1
+   }
   },
   "54": {
    "name": "Huette",
@@ -1980,7 +2173,11 @@
       "sy": 93
      }
     ]
-   ]
+   ],
+   "flatBuilding": {
+    "building": 1,
+    "group": 2
+   }
   },
   "55": {
    "name": "Ochsenkarren",
@@ -2036,7 +2233,11 @@
       "sy": 93
      }
     ]
-   ]
+   ],
+   "flatBuilding": {
+    "building": 4,
+    "group": 2
+   }
   },
   "56": {
    "name": "Steinbruch",
@@ -2444,7 +2645,11 @@
       "sy": 93
      }
     ]
-   ]
+   ],
+   "flatBuilding": {
+    "building": 20,
+    "group": 2
+   }
   },
   "61": {
    "name": "Bergfried",
@@ -3003,7 +3208,11 @@
         "sy": 365
        }
       ]
-     ]
+     ],
+     "flatBuilding": {
+      "building": 55,
+      "group": -1
+     }
     },
     {
      "dx": 7,
@@ -3290,7 +3499,11 @@
         "sy": 1
        }
       ]
-     ]
+     ],
+     "flatBuilding": {
+      "building": 10,
+      "group": 1
+     }
     }
    ],
    "partsLayouts": [
@@ -3835,7 +4048,12 @@
       "sy": 245
      }
     ]
-   ]
+   ],
+   "flatBuilding": {
+    "building": 41,
+    "group": 0
+   },
+   "structureHeight": 92
   },
   "65": {
    "name": "Stall",
@@ -4243,7 +4461,11 @@
       "sy": 461
      }
     ]
-   ]
+   ],
+   "flatBuilding": {
+    "building": 35,
+    "group": 2
+   }
   },
   "70": {
    "name": "Wheat Farm",
@@ -14204,7 +14426,11 @@
       }
      ]
     ]
-   ]
+   ],
+   "flatBuilding": {
+    "building": 30,
+    "group": 3
+   }
   },
   "71": {
    "name": "Hop Farm",
@@ -17875,12 +18101,16 @@
       }
      ]
     ]
-   ]
+   ],
+   "flatBuilding": {
+    "building": 31,
+    "group": 3
+   }
   },
   "72": {
    "name": "Apple Farm",
    "aiv": 71,
-   "kacheln": 11,
+   "kacheln": 10,
    "bild": "farm_72.png",
    "breite": 452,
    "hoehe": 281,
@@ -18272,7 +18502,7 @@
      [
       {
        "gx": 2,
-       "gy": 10,
+       "gy": 9,
        "bild": "building-parts.png",
        "breite": 30,
        "hoehe": 16,
@@ -18283,7 +18513,7 @@
       },
       {
        "gx": 1,
-       "gy": 10,
+       "gy": 9,
        "bild": "building-parts.png",
        "breite": 30,
        "hoehe": 16,
@@ -18294,7 +18524,7 @@
       },
       {
        "gx": 2,
-       "gy": 9,
+       "gy": 8,
        "bild": "building-parts.png",
        "breite": 30,
        "hoehe": 16,
@@ -18305,7 +18535,7 @@
       },
       {
        "gx": 0,
-       "gy": 10,
+       "gy": 9,
        "bild": "building-parts.png",
        "breite": 30,
        "hoehe": 46,
@@ -18316,7 +18546,7 @@
       },
       {
        "gx": 1,
-       "gy": 9,
+       "gy": 8,
        "bild": "building-parts.png",
        "breite": 30,
        "hoehe": 16,
@@ -18327,7 +18557,7 @@
       },
       {
        "gx": 2,
-       "gy": 8,
+       "gy": 7,
        "bild": "building-parts.png",
        "breite": 44,
        "hoehe": 57,
@@ -18338,7 +18568,7 @@
       },
       {
        "gx": 0,
-       "gy": 9,
+       "gy": 8,
        "bild": "building-parts.png",
        "breite": 30,
        "hoehe": 59,
@@ -18349,7 +18579,7 @@
       },
       {
        "gx": 1,
-       "gy": 8,
+       "gy": 7,
        "bild": "building-parts.png",
        "breite": 44,
        "hoehe": 75,
@@ -18360,7 +18590,7 @@
       },
       {
        "gx": 0,
-       "gy": 8,
+       "gy": 7,
        "bild": "building-parts.png",
        "breite": 30,
        "hoehe": 71,
@@ -18371,7 +18601,7 @@
       },
       {
        "gx": 1,
-       "gy": 5,
+       "gy": 4,
        "bild": "building-parts.png",
        "breite": 185,
        "hoehe": 185,
@@ -18382,7 +18612,7 @@
       },
       {
        "gx": 1,
-       "gy": 1,
+       "gy": 0,
        "bild": "building-parts.png",
        "breite": 185,
        "hoehe": 185,
@@ -18393,7 +18623,7 @@
       },
       {
        "gx": 5,
-       "gy": 9,
+       "gy": 8,
        "bild": "building-parts.png",
        "breite": 185,
        "hoehe": 185,
@@ -18404,7 +18634,7 @@
       },
       {
        "gx": 5,
-       "gy": 5,
+       "gy": 4,
        "bild": "building-parts.png",
        "breite": 185,
        "hoehe": 185,
@@ -18415,7 +18645,7 @@
       },
       {
        "gx": 5,
-       "gy": 1,
+       "gy": 0,
        "bild": "building-parts.png",
        "breite": 185,
        "hoehe": 185,
@@ -18426,7 +18656,7 @@
       },
       {
        "gx": 9,
-       "gy": 9,
+       "gy": 8,
        "bild": "building-parts.png",
        "breite": 185,
        "hoehe": 185,
@@ -18437,7 +18667,7 @@
       },
       {
        "gx": 9,
-       "gy": 5,
+       "gy": 4,
        "bild": "building-parts.png",
        "breite": 185,
        "hoehe": 185,
@@ -18448,7 +18678,7 @@
       },
       {
        "gx": 9,
-       "gy": 1,
+       "gy": 0,
        "bild": "building-parts.png",
        "breite": 185,
        "hoehe": 185,
@@ -18462,8 +18692,8 @@
     [
      [
       {
-       "gx": 10,
-       "gy": 10,
+       "gx": 9,
+       "gy": 9,
        "bild": "building-parts.png",
        "breite": 30,
        "hoehe": 16,
@@ -18473,8 +18703,8 @@
        "sy": 3777
       },
       {
-       "gx": 9,
-       "gy": 10,
+       "gx": 8,
+       "gy": 9,
        "bild": "building-parts.png",
        "breite": 30,
        "hoehe": 16,
@@ -18484,8 +18714,8 @@
        "sy": 3777
       },
       {
-       "gx": 10,
-       "gy": 9,
+       "gx": 9,
+       "gy": 8,
        "bild": "building-parts.png",
        "breite": 30,
        "hoehe": 16,
@@ -18495,8 +18725,8 @@
        "sy": 3777
       },
       {
-       "gx": 8,
-       "gy": 10,
+       "gx": 7,
+       "gy": 9,
        "bild": "building-parts.png",
        "breite": 30,
        "hoehe": 46,
@@ -18506,8 +18736,8 @@
        "sy": 3777
       },
       {
-       "gx": 9,
-       "gy": 9,
+       "gx": 8,
+       "gy": 8,
        "bild": "building-parts.png",
        "breite": 30,
        "hoehe": 16,
@@ -18517,8 +18747,8 @@
        "sy": 3777
       },
       {
-       "gx": 10,
-       "gy": 8,
+       "gx": 9,
+       "gy": 7,
        "bild": "building-parts.png",
        "breite": 44,
        "hoehe": 57,
@@ -18528,8 +18758,8 @@
        "sy": 3777
       },
       {
-       "gx": 8,
-       "gy": 9,
+       "gx": 7,
+       "gy": 8,
        "bild": "building-parts.png",
        "breite": 30,
        "hoehe": 59,
@@ -18539,8 +18769,8 @@
        "sy": 3777
       },
       {
-       "gx": 9,
-       "gy": 8,
+       "gx": 8,
+       "gy": 7,
        "bild": "building-parts.png",
        "breite": 44,
        "hoehe": 75,
@@ -18550,8 +18780,8 @@
        "sy": 3777
       },
       {
-       "gx": 8,
-       "gy": 8,
+       "gx": 7,
+       "gy": 7,
        "bild": "building-parts.png",
        "breite": 30,
        "hoehe": 71,
@@ -18561,8 +18791,8 @@
        "sy": 3777
       },
       {
-       "gx": 5,
-       "gy": 9,
+       "gx": 4,
+       "gy": 8,
        "bild": "building-parts.png",
        "breite": 185,
        "hoehe": 185,
@@ -18572,8 +18802,8 @@
        "sy": 3777
       },
       {
-       "gx": 1,
-       "gy": 9,
+       "gx": 0,
+       "gy": 8,
        "bild": "building-parts.png",
        "breite": 185,
        "hoehe": 185,
@@ -18583,8 +18813,8 @@
        "sy": 3777
       },
       {
-       "gx": 9,
-       "gy": 5,
+       "gx": 8,
+       "gy": 4,
        "bild": "building-parts.png",
        "breite": 185,
        "hoehe": 185,
@@ -18594,8 +18824,8 @@
        "sy": 3777
       },
       {
-       "gx": 5,
-       "gy": 5,
+       "gx": 4,
+       "gy": 4,
        "bild": "building-parts.png",
        "breite": 185,
        "hoehe": 185,
@@ -18605,8 +18835,8 @@
        "sy": 3777
       },
       {
-       "gx": 1,
-       "gy": 5,
+       "gx": 0,
+       "gy": 4,
        "bild": "building-parts.png",
        "breite": 185,
        "hoehe": 185,
@@ -18616,8 +18846,8 @@
        "sy": 3777
       },
       {
-       "gx": 9,
-       "gy": 1,
+       "gx": 8,
+       "gy": 0,
        "bild": "building-parts.png",
        "breite": 185,
        "hoehe": 185,
@@ -18627,8 +18857,8 @@
        "sy": 3777
       },
       {
-       "gx": 5,
-       "gy": 1,
+       "gx": 4,
+       "gy": 0,
        "bild": "building-parts.png",
        "breite": 185,
        "hoehe": 185,
@@ -18638,8 +18868,8 @@
        "sy": 3777
       },
       {
-       "gx": 1,
-       "gy": 1,
+       "gx": 0,
+       "gy": 0,
        "bild": "building-parts.png",
        "breite": 185,
        "hoehe": 185,
@@ -18653,7 +18883,7 @@
     [
      [
       {
-       "gx": 10,
+       "gx": 9,
        "gy": 2,
        "bild": "building-parts.png",
        "breite": 30,
@@ -18664,7 +18894,7 @@
        "sy": 3777
       },
       {
-       "gx": 9,
+       "gx": 8,
        "gy": 2,
        "bild": "building-parts.png",
        "breite": 30,
@@ -18675,7 +18905,7 @@
        "sy": 3777
       },
       {
-       "gx": 10,
+       "gx": 9,
        "gy": 1,
        "bild": "building-parts.png",
        "breite": 30,
@@ -18686,7 +18916,7 @@
        "sy": 3777
       },
       {
-       "gx": 8,
+       "gx": 7,
        "gy": 2,
        "bild": "building-parts.png",
        "breite": 30,
@@ -18697,7 +18927,7 @@
        "sy": 3777
       },
       {
-       "gx": 9,
+       "gx": 8,
        "gy": 1,
        "bild": "building-parts.png",
        "breite": 30,
@@ -18708,7 +18938,7 @@
        "sy": 3777
       },
       {
-       "gx": 10,
+       "gx": 9,
        "gy": 0,
        "bild": "building-parts.png",
        "breite": 44,
@@ -18719,7 +18949,7 @@
        "sy": 3777
       },
       {
-       "gx": 8,
+       "gx": 7,
        "gy": 1,
        "bild": "building-parts.png",
        "breite": 30,
@@ -18730,7 +18960,7 @@
        "sy": 3777
       },
       {
-       "gx": 9,
+       "gx": 8,
        "gy": 0,
        "bild": "building-parts.png",
        "breite": 44,
@@ -18741,7 +18971,7 @@
        "sy": 3777
       },
       {
-       "gx": 8,
+       "gx": 7,
        "gy": 0,
        "bild": "building-parts.png",
        "breite": 30,
@@ -18752,7 +18982,7 @@
        "sy": 3777
       },
       {
-       "gx": 9,
+       "gx": 8,
        "gy": 5,
        "bild": "building-parts.png",
        "breite": 185,
@@ -18763,7 +18993,7 @@
        "sy": 3777
       },
       {
-       "gx": 9,
+       "gx": 8,
        "gy": 9,
        "bild": "building-parts.png",
        "breite": 185,
@@ -18774,7 +19004,7 @@
        "sy": 3777
       },
       {
-       "gx": 5,
+       "gx": 4,
        "gy": 1,
        "bild": "building-parts.png",
        "breite": 185,
@@ -18785,7 +19015,7 @@
        "sy": 3777
       },
       {
-       "gx": 5,
+       "gx": 4,
        "gy": 5,
        "bild": "building-parts.png",
        "breite": 185,
@@ -18796,7 +19026,7 @@
        "sy": 3777
       },
       {
-       "gx": 5,
+       "gx": 4,
        "gy": 9,
        "bild": "building-parts.png",
        "breite": 185,
@@ -18807,7 +19037,7 @@
        "sy": 3777
       },
       {
-       "gx": 1,
+       "gx": 0,
        "gy": 1,
        "bild": "building-parts.png",
        "breite": 185,
@@ -18818,7 +19048,7 @@
        "sy": 3777
       },
       {
-       "gx": 1,
+       "gx": 0,
        "gy": 5,
        "bild": "building-parts.png",
        "breite": 185,
@@ -18829,7 +19059,7 @@
        "sy": 3777
       },
       {
-       "gx": 1,
+       "gx": 0,
        "gy": 9,
        "bild": "building-parts.png",
        "breite": 185,
@@ -18841,7 +19071,11 @@
       }
      ]
     ]
-   ]
+   ],
+   "flatBuilding": {
+    "building": 32,
+    "group": 3
+   }
   },
   "73": {
    "name": "Dairy Farm",
@@ -25942,7 +26176,11 @@
       }
      ]
     ]
-   ]
+   ],
+   "flatBuilding": {
+    "building": 33,
+    "group": 3
+   }
   },
   "74": {
    "name": "Muehle",
@@ -26053,7 +26291,11 @@
       "sy": 461
      }
     ]
-   ]
+   ],
+   "flatBuilding": {
+    "building": 34,
+    "group": 2
+   }
   },
   "75": {
    "name": "Baeckerei",
@@ -26241,7 +26483,12 @@
       "sy": 461
      }
     ]
-   ]
+   ],
+   "anlehnen": true,
+   "flatBuilding": {
+    "building": 17,
+    "group": 2
+   }
   },
   "76": {
    "name": "Brauerei",
@@ -26429,7 +26676,12 @@
       "sy": 461
      }
     ]
-   ]
+   ],
+   "anlehnen": true,
+   "flatBuilding": {
+    "building": 18,
+    "group": 2
+   }
   },
   "77": {
    "name": "Marktplatz",
@@ -26716,7 +26968,11 @@
       "sy": 682
      }
     ]
-   ]
+   ],
+   "flatBuilding": {
+    "building": 26,
+    "group": 2
+   }
   },
   "78": {
    "name": "Jaegerhuette",
@@ -26827,7 +27083,11 @@
       "sy": 682
      }
     ]
-   ]
+   ],
+   "flatBuilding": {
+    "building": 7,
+    "group": 3
+   }
   },
   "80": {
    "name": "Kornspeicher",
@@ -27015,7 +27275,11 @@
       "sy": 682
      }
     ]
-   ]
+   ],
+   "flatBuilding": {
+    "building": 19,
+    "group": 2
+   }
   },
   "81": {
    "name": "Waffenlager",
@@ -27203,7 +27467,11 @@
       "sy": 682
      }
     ]
-   ]
+   ],
+   "flatBuilding": {
+    "building": 11,
+    "group": 1
+   }
   },
   "82": {
    "name": "Lanzenmacher",
@@ -27391,7 +27659,12 @@
       "sy": 787
      }
     ]
-   ]
+   ],
+   "anlehnen": true,
+   "flatBuilding": {
+    "building": 14,
+    "group": 2
+   }
   },
   "83": {
    "name": "Schmiede",
@@ -27579,7 +27852,12 @@
       "sy": 787
      }
     ]
-   ]
+   ],
+   "anlehnen": true,
+   "flatBuilding": {
+    "building": 13,
+    "group": 2
+   }
   },
   "84": {
    "name": "Ruestungsschmied",
@@ -27767,7 +28045,12 @@
       "sy": 787
      }
     ]
-   ]
+   ],
+   "anlehnen": true,
+   "flatBuilding": {
+    "building": 15,
+    "group": 2
+   }
   },
   "85": {
    "name": "Gerberei",
@@ -27955,7 +28238,12 @@
       "sy": 787
      }
     ]
-   ]
+   ],
+   "anlehnen": true,
+   "flatBuilding": {
+    "building": 16,
+    "group": 2
+   }
   },
   "86": {
    "name": "Soeldnerposten",
@@ -28250,7 +28538,11 @@
         "sy": 882
        }
       ]
-     ]
+     ],
+     "flatBuilding": {
+      "building": 57,
+      "group": -1
+     }
     },
     {
      "dx": 0,
@@ -28537,7 +28829,11 @@
         "sy": 963
        }
       ]
-     ]
+     ],
+     "flatBuilding": {
+      "building": 58,
+      "group": -1
+     }
     },
     {
      "dx": 5,
@@ -28824,7 +29120,11 @@
         "sy": 963
        }
       ]
-     ]
+     ],
+     "flatBuilding": {
+      "building": 56,
+      "group": -1
+     }
     }
    ],
    "partsLayouts": [
@@ -29105,7 +29405,11 @@
       "sy": 882
      }
     ]
-   ]
+   ],
+   "flatBuilding": {
+    "building": 8,
+    "group": 2
+   }
   },
   "87": {
    "name": "Kaserne",
@@ -29400,7 +29704,11 @@
         "sy": 882
        }
       ]
-     ]
+     ],
+     "flatBuilding": {
+      "building": 57,
+      "group": -1
+     }
     },
     {
      "dx": 0,
@@ -29687,7 +29995,11 @@
         "sy": 963
        }
       ]
-     ]
+     ],
+     "flatBuilding": {
+      "building": 58,
+      "group": -1
+     }
     },
     {
      "dx": 5,
@@ -29974,7 +30286,11 @@
         "sy": 963
        }
       ]
-     ]
+     ],
+     "flatBuilding": {
+      "building": 56,
+      "group": -1
+     }
     }
    ],
    "partsLayouts": [
@@ -30255,7 +30571,11 @@
       "sy": 1061
      }
     ]
-   ]
+   ],
+   "flatBuilding": {
+    "building": 9,
+    "group": 1
+   }
   },
   "88": {
    "name": "Ingenieursgilde",
@@ -30550,7 +30870,11 @@
         "sy": 1061
        }
       ]
-     ]
+     ],
+     "flatBuilding": {
+      "building": 53,
+      "group": -1
+     }
     }
    ],
    "partsLayouts": [
@@ -30831,7 +31155,11 @@
       "sy": 1061
      }
     ]
-   ]
+   ],
+   "flatBuilding": {
+    "building": 24,
+    "group": 1
+   }
   },
   "89": {
    "name": "Tunnelgraebergilde",
@@ -31126,7 +31454,11 @@
         "sy": 1158
        }
       ]
-     ]
+     ],
+     "flatBuilding": {
+      "building": 59,
+      "group": -1
+     }
     }
    ],
    "partsLayouts": [
@@ -31407,7 +31739,11 @@
       "sy": 1158
      }
     ]
-   ]
+   ],
+   "flatBuilding": {
+    "building": 25,
+    "group": 1
+   }
   },
   "90": {
    "name": "Eisenmine",
@@ -31595,7 +31931,11 @@
       "sy": 1158
      }
     ]
-   ]
+   ],
+   "flatBuilding": {
+    "building": 5,
+    "group": 2
+   }
   },
   "91": {
    "name": "Pechgraeber",
@@ -31783,7 +32123,11 @@
       "sy": 1243
      }
     ]
-   ]
+   ],
+   "flatBuilding": {
+    "building": 6,
+    "group": 2
+   }
   },
   "92": {
    "name": "Wirtshaus",
@@ -32070,7 +32414,11 @@
       "sy": 1243
      }
     ]
-   ]
+   ],
+   "flatBuilding": {
+    "building": 22,
+    "group": 2
+   }
   },
   "93": {
    "name": "Apotheke",
@@ -32478,7 +32826,11 @@
       "sy": 1373
      }
     ]
-   ]
+   ],
+   "flatBuilding": {
+    "building": 23,
+    "group": 2
+   }
   },
   "95": {
    "name": "Kapelle",
@@ -32886,7 +33238,11 @@
       "sy": 1373
      }
     ]
-   ]
+   ],
+   "flatBuilding": {
+    "building": 36,
+    "group": 1
+   }
   },
   "96": {
    "name": "Kirche",
@@ -33789,7 +34145,11 @@
       "sy": 1639
      }
     ]
-   ]
+   ],
+   "flatBuilding": {
+    "building": 37,
+    "group": 1
+   }
   },
   "97": {
    "name": "Kathedrale",
@@ -35660,7 +36020,11 @@
       "sy": 1986
      }
     ]
-   ]
+   ],
+   "flatBuilding": {
+    "building": 38,
+    "group": 1
+   }
   },
   "98": {
    "name": "Fallgrube",
@@ -35668,7 +36032,46 @@
    "kacheln": 1,
    "bild": "killing_pits_0.png",
    "breite": 30,
-   "hoehe": 16
+   "hoehe": 16,
+   "flatBuilding": {
+    "building": 67,
+    "group": -1
+   },
+   "nativePit": 8,
+   "pitVariants": [
+    {
+     "bild": "native-pit:8",
+     "nativePit": 8
+    },
+    {
+     "bild": "native-pit:9",
+     "nativePit": 9
+    },
+    {
+     "bild": "native-pit:10",
+     "nativePit": 10
+    },
+    {
+     "bild": "native-pit:11",
+     "nativePit": 11
+    },
+    {
+     "bild": "native-pit:12",
+     "nativePit": 12
+    },
+    {
+     "bild": "native-pit:13",
+     "nativePit": 13
+    },
+    {
+     "bild": "native-pit:14",
+     "nativePit": 14
+    },
+    {
+     "bild": "native-pit:15",
+     "nativePit": 15
+    }
+   ]
   },
   "99": {
    "name": "Pechgraben",
@@ -35676,7 +36079,11 @@
    "kacheln": 1,
    "bild": "pitch_ditches_3.png",
    "breite": 30,
-   "hoehe": 16
+   "hoehe": 16,
+   "flatBuilding": {
+    "building": 68,
+    "group": -1
+   }
   },
   "105": {
    "name": "Zugbruecke",
@@ -37259,7 +37666,11 @@
      "breite": 186,
      "hoehe": 173
     }
-   ]
+   ],
+   "flatBuilding": {
+    "building": 49,
+    "group": 1
+   }
   },
   "106": {
    "name": "Wassergraben d",
@@ -37548,7 +37959,12 @@
       "sy": 2212
      }
     ]
-   ]
+   ],
+   "flatBuilding": {
+    "building": 74,
+    "group": 2
+   },
+   "structureHeight": 296
   },
   "111": {
    "name": "Verteidigungsturm",
@@ -37736,7 +38152,12 @@
       "sy": 2212
      }
     ]
-   ]
+   ],
+   "flatBuilding": {
+    "building": 75,
+    "group": 0
+   },
+   "structureHeight": 148
   },
   "112": {
    "name": "Geschuetzturm",
@@ -38023,7 +38444,12 @@
       "sy": 2544
      }
     ]
-   ]
+   ],
+   "flatBuilding": {
+    "building": 76,
+    "group": 0
+   },
+   "structureHeight": 180
   },
   "113": {
    "name": "Eckiger Turm",
@@ -38431,7 +38857,12 @@
       "sy": 2544
      }
     ]
-   ]
+   ],
+   "flatBuilding": {
+    "building": 77,
+    "group": 0
+   },
+   "structureHeight": 192
   },
   "114": {
    "name": "Runder Turm",
@@ -38839,7 +39270,12 @@
       "sy": 2770
      }
     ]
-   ]
+   ],
+   "flatBuilding": {
+    "building": 78,
+    "group": 0
+   },
+   "structureHeight": 192
   },
   "144": {
    "name": "Kleines Torhaus (Durchfahrt N-S)",
@@ -39126,7 +39562,12 @@
       "sy": 2770
      }
     ]
-   ]
+   ],
+   "flatBuilding": {
+    "building": 46,
+    "group": 0
+   },
+   "structureHeight": 128
   },
   "145": {
    "name": "Kleines Torhaus (Durchfahrt O-W)",
@@ -39413,7 +39854,12 @@
       "sy": 3019
      }
     ]
-   ]
+   ],
+   "flatBuilding": {
+    "building": 46,
+    "group": 0
+   },
+   "structureHeight": 128
   },
   "146": {
    "name": "Grosses Torhaus (Durchfahrt N-S)",
@@ -39964,7 +40410,12 @@
       "sy": 3190
      }
     ]
-   ]
+   ],
+   "flatBuilding": {
+    "building": 45,
+    "group": 0
+   },
+   "structureHeight": 128
   },
   "147": {
    "name": "Grosses Torhaus (Durchfahrt O-W)",
@@ -40515,7 +40966,12 @@
       "sy": 3190
      }
     ]
-   ]
+   ],
+   "flatBuilding": {
+    "building": 45,
+    "group": 0
+   },
+   "structureHeight": 128
   },
   "166": {
    "name": "Garten",
@@ -40626,7 +41082,11 @@
       "sy": 3360
      }
     ]
-   ]
+   ],
+   "flatBuilding": {
+    "building": 66,
+    "group": -1
+   }
   },
   "169": {
    "name": "Stadtgarten",
@@ -40814,7 +41274,11 @@
       "sy": 3360
      }
     ]
-   ]
+   ],
+   "flatBuilding": {
+    "building": 66,
+    "group": -1
+   }
   },
   "175": {
    "name": "Maibaum",
@@ -40925,7 +41389,11 @@
       "sy": 3360
      }
     ]
-   ]
+   ],
+   "flatBuilding": {
+    "building": 65,
+    "group": 2
+   }
   },
   "176": {
    "name": "Galgen",
@@ -40981,7 +41449,11 @@
       "sy": 3360
      }
     ]
-   ]
+   ],
+   "flatBuilding": {
+    "building": 62,
+    "group": 2
+   }
   },
   "177": {
    "name": "Pranger",
@@ -41092,7 +41564,11 @@
       "sy": 3360
      }
     ]
-   ]
+   ],
+   "flatBuilding": {
+    "building": 63,
+    "group": 2
+   }
   },
   "180": {
    "name": "Oelbrennerei",
@@ -41288,7 +41764,11 @@
         "sy": 3487
        }
       ]
-     ]
+     ],
+     "flatBuilding": {
+      "building": 51,
+      "group": -1
+     }
     }
    ],
    "partsLayouts": [
@@ -41470,7 +41950,11 @@
       "sy": 3360
      }
     ]
-   ]
+   ],
+   "flatBuilding": {
+    "building": 28,
+    "group": 2
+   }
   },
   "181": {
    "name": "Treppe 1",
@@ -41513,7 +41997,8 @@
      "ohne": "kein hoeherer Nachbar -> allein (tile_land3#104, das flache Podest)",
      "quelle": "updateGfxLayer 0x00509180, Richtung 0/2/4/6 -> #134/#135/#136/#133"
     }
-   }
+   },
+   "structureHeight": 80
   },
   "182": {
    "name": "Treppe 2",
@@ -41556,7 +42041,8 @@
      "ohne": "kein hoeherer Nachbar -> allein (tile_land3#104, das flache Podest)",
      "quelle": "updateGfxLayer 0x00509180, Richtung 0/2/4/6 -> #134/#135/#136/#133"
     }
-   }
+   },
+   "structureHeight": 64
   },
   "183": {
    "name": "Treppe 3",
@@ -41599,7 +42085,8 @@
      "ohne": "kein hoeherer Nachbar -> allein (tile_land3#104, das flache Podest)",
      "quelle": "updateGfxLayer 0x00509180, Richtung 0/2/4/6 -> #134/#135/#136/#133"
     }
-   }
+   },
+   "structureHeight": 48
   },
   "184": {
    "name": "Treppe 4",
@@ -41642,7 +42129,8 @@
      "ohne": "kein hoeherer Nachbar -> allein (tile_land3#104, das flache Podest)",
      "quelle": "updateGfxLayer 0x00509180, Richtung 0/2/4/6 -> #134/#135/#136/#133"
     }
-   }
+   },
+   "structureHeight": 32
   },
   "185": {
    "name": "Treppe 5",
@@ -41685,7 +42173,8 @@
      "ohne": "kein hoeherer Nachbar -> allein (tile_land3#104, das flache Podest)",
      "quelle": "updateGfxLayer 0x00509180, Richtung 0/2/4/6 -> #134/#135/#136/#133"
     }
-   }
+   },
+   "structureHeight": 16
   },
   "186": {
    "name": "Treppe 6",
@@ -41708,7 +42197,8 @@
      "ohne": "kein hoeherer Nachbar -> allein (tile_land3#104, das flache Podest)",
      "quelle": "updateGfxLayer 0x00509180, Richtung 0/2/4/6 -> #134/#135/#136/#133"
     }
-   }
+   },
+   "structureHeight": 0
   },
   "301": {
    "name": "Jauchegrube",
@@ -41995,7 +42485,11 @@
       "sy": 3487
      }
     ]
-   ]
+   ],
+   "flatBuilding": {
+    "building": 91,
+    "group": -1
+   }
   },
   "305": {
    "name": "Scheiterhaufen",
@@ -42106,7 +42600,11 @@
       "sy": 3487
      }
     ]
-   ]
+   ],
+   "flatBuilding": {
+    "building": 92,
+    "group": 2
+   }
   },
   "306": {
    "name": "Haengekaefig",
@@ -42162,7 +42660,11 @@
       "sy": 3487
      }
     ]
-   ]
+   ],
+   "flatBuilding": {
+    "building": 93,
+    "group": 2
+   }
   },
   "307": {
    "name": "Verlies",
@@ -42449,7 +42951,11 @@
       "sy": 3614
      }
     ]
-   ]
+   ],
+   "flatBuilding": {
+    "building": 94,
+    "group": 1
+   }
   },
   "308": {
    "name": "Streckbank",
@@ -42560,7 +43066,11 @@
       "sy": 3614
      }
     ]
-   ]
+   ],
+   "flatBuilding": {
+    "building": 95,
+    "group": 2
+   }
   },
   "310": {
    "name": "Richtblock",
@@ -42671,7 +43181,11 @@
       "sy": 3614
      }
     ]
-   ]
+   ],
+   "flatBuilding": {
+    "building": 97,
+    "group": 2
+   }
   },
   "311": {
    "name": "Tauchstuhl",
@@ -42958,7 +43472,11 @@
       "sy": 3693
      }
     ]
-   ]
+   ],
+   "flatBuilding": {
+    "building": 98,
+    "group": 2
+   }
   },
   "312": {
    "name": "Hundezwinger",
@@ -43069,7 +43587,11 @@
       "sy": 3693
      }
     ]
-   ]
+   ],
+   "flatBuilding": {
+    "building": 99,
+    "group": 1
+   }
   },
   "313": {
    "name": "Statue",
@@ -43125,7 +43647,11 @@
       "sy": 3693
      }
     ]
-   ]
+   ],
+   "flatBuilding": {
+    "building": 100,
+    "group": 1
+   }
   },
   "318": {
    "name": "Schrein",
@@ -43181,7 +43707,11 @@
       "sy": 3693
      }
     ]
-   ]
+   ],
+   "flatBuilding": {
+    "building": 101,
+    "group": 1
+   }
   },
   "324": {
    "name": "Tanzbaer",
@@ -43468,7 +43998,11 @@
       "sy": 882
      }
     ]
-   ]
+   ],
+   "flatBuilding": {
+    "building": 103,
+    "group": 2
+   }
   },
   "327": {
    "name": "Grosser Teich",
@@ -43755,7 +44289,11 @@
       "sy": 3693
      }
     ]
-   ]
+   ],
+   "flatBuilding": {
+    "building": 104,
+    "group": -1
+   }
   },
   "330": {
    "name": "Brunnen",
@@ -43866,7 +44404,11 @@
       "sy": 3693
      }
     ]
-   ]
+   ],
+   "flatBuilding": {
+    "building": 27,
+    "group": 1
+   }
   },
   "342": {
    "name": "Wasserfass",
@@ -44054,7 +44596,434 @@
       "sy": 3777
      }
     ]
-   ]
+   ],
+   "flatBuilding": {
+    "building": 70,
+    "group": 0
+   }
   }
- }
+ },
+ "mauerSchraegen": {
+  "quelle": "anim_castle.gm1; Auswahl updateGfxLayer 0x00509180, Platz renderMap 0x004e8cf0",
+  "bilder": {
+   "45": {
+    "bild": "schraege_45.png",
+    "breite": 15,
+    "hoehe": 17
+   },
+   "46": {
+    "bild": "schraege_46.png",
+    "breite": 30,
+    "hoehe": 10
+   },
+   "47": {
+    "bild": "schraege_47.png",
+    "breite": 15,
+    "hoehe": 17
+   },
+   "48": {
+    "bild": "schraege_48.png",
+    "breite": 32,
+    "hoehe": 99
+   },
+   "49": {
+    "bild": "schraege_49.png",
+    "breite": 32,
+    "hoehe": 99
+   },
+   "50": {
+    "bild": "schraege_50.png",
+    "breite": 32,
+    "hoehe": 99
+   },
+   "51": {
+    "bild": "schraege_51.png",
+    "breite": 32,
+    "hoehe": 99
+   },
+   "52": {
+    "bild": "schraege_52.png",
+    "breite": 32,
+    "hoehe": 99
+   },
+   "53": {
+    "bild": "schraege_53.png",
+    "breite": 32,
+    "hoehe": 99
+   },
+   "54": {
+    "bild": "schraege_54.png",
+    "breite": 32,
+    "hoehe": 100
+   },
+   "55": {
+    "bild": "schraege_55.png",
+    "breite": 32,
+    "hoehe": 99
+   },
+   "56": {
+    "bild": "schraege_56.png",
+    "breite": 32,
+    "hoehe": 99
+   },
+   "57": {
+    "bild": "schraege_57.png",
+    "breite": 32,
+    "hoehe": 99
+   },
+   "58": {
+    "bild": "schraege_58.png",
+    "breite": 32,
+    "hoehe": 99
+   },
+   "59": {
+    "bild": "schraege_59.png",
+    "breite": 32,
+    "hoehe": 99
+   },
+   "60": {
+    "bild": "schraege_60.png",
+    "breite": 32,
+    "hoehe": 99
+   },
+   "61": {
+    "bild": "schraege_61.png",
+    "breite": 32,
+    "hoehe": 99
+   },
+   "62": {
+    "bild": "schraege_62.png",
+    "breite": 32,
+    "hoehe": 130
+   },
+   "63": {
+    "bild": "schraege_63.png",
+    "breite": 32,
+    "hoehe": 130
+   },
+   "64": {
+    "bild": "schraege_64.png",
+    "breite": 32,
+    "hoehe": 130
+   },
+   "65": {
+    "bild": "schraege_65.png",
+    "breite": 32,
+    "hoehe": 130
+   },
+   "66": {
+    "bild": "schraege_66.png",
+    "breite": 32,
+    "hoehe": 130
+   },
+   "67": {
+    "bild": "schraege_67.png",
+    "breite": 32,
+    "hoehe": 130
+   },
+   "68": {
+    "bild": "schraege_68.png",
+    "breite": 31,
+    "hoehe": 130
+   },
+   "69": {
+    "bild": "schraege_69.png",
+    "breite": 31,
+    "hoehe": 117
+   },
+   "70": {
+    "bild": "schraege_70.png",
+    "breite": 31,
+    "hoehe": 130
+   },
+   "71": {
+    "bild": "schraege_71.png",
+    "breite": 31,
+    "hoehe": 117
+   },
+   "72": {
+    "bild": "schraege_72.png",
+    "breite": 32,
+    "hoehe": 130
+   },
+   "73": {
+    "bild": "schraege_73.png",
+    "breite": 31,
+    "hoehe": 117
+   },
+   "74": {
+    "bild": "schraege_74.png",
+    "breite": 31,
+    "hoehe": 130
+   },
+   "75": {
+    "bild": "schraege_75.png",
+    "breite": 34,
+    "hoehe": 117
+   }
+  }
+ },
+ "flatTiles": [
+  {
+   "bild": "native-flat:0"
+  },
+  {
+   "bild": "native-flat:1"
+  },
+  {
+   "bild": "native-flat:2"
+  },
+  {
+   "bild": "native-flat:3"
+  },
+  {
+   "bild": "native-flat:4"
+  },
+  {
+   "bild": "native-flat:5"
+  },
+  {
+   "bild": "native-flat:6"
+  },
+  {
+   "bild": "native-flat:7"
+  },
+  {
+   "bild": "native-flat:8"
+  },
+  {
+   "bild": "native-flat:9"
+  },
+  {
+   "bild": "native-flat:10"
+  },
+  {
+   "bild": "native-flat:11"
+  },
+  {
+   "bild": "native-flat:12"
+  },
+  {
+   "bild": "native-flat:13"
+  },
+  {
+   "bild": "native-flat:14"
+  },
+  {
+   "bild": "native-flat:15"
+  },
+  {
+   "bild": "native-flat:16"
+  },
+  {
+   "bild": "native-flat:17"
+  },
+  {
+   "bild": "native-flat:18"
+  },
+  {
+   "bild": "native-flat:19"
+  },
+  {
+   "bild": "native-flat:20"
+  },
+  {
+   "bild": "native-flat:21"
+  },
+  {
+   "bild": "native-flat:22"
+  },
+  {
+   "bild": "native-flat:23"
+  },
+  {
+   "bild": "native-flat:24"
+  },
+  {
+   "bild": "native-flat:25"
+  },
+  {
+   "bild": "native-flat:26"
+  },
+  {
+   "bild": "native-flat:27"
+  },
+  {
+   "bild": "native-flat:28"
+  },
+  {
+   "bild": "native-flat:29"
+  },
+  {
+   "bild": "native-flat:30"
+  },
+  {
+   "bild": "native-flat:31"
+  },
+  {
+   "bild": "native-flat:32"
+  },
+  {
+   "bild": "native-flat:33"
+  },
+  {
+   "bild": "native-flat:34"
+  },
+  {
+   "bild": "native-flat:35"
+  },
+  {
+   "bild": "native-flat:36"
+  },
+  {
+   "bild": "native-flat:37"
+  },
+  {
+   "bild": "native-flat:38"
+  },
+  {
+   "bild": "native-flat:39"
+  },
+  {
+   "bild": "native-flat:40"
+  },
+  {
+   "bild": "native-flat:41"
+  },
+  {
+   "bild": "native-flat:42"
+  },
+  {
+   "bild": "native-flat:43"
+  },
+  {
+   "bild": "native-flat:44"
+  },
+  {
+   "bild": "native-flat:45"
+  }
+ ],
+ "flatViewSource": {
+  "exeSHA256": "0d3d0d0be90a41d0c07d02cb41e6edc3e399288d16039db5b666392660fbda34",
+  "groups": "0x00B44220",
+  "selection": "0x004E9845 / 0x004EBBC4"
+ },
+ "flatViewGroups": [
+  0,
+  2,
+  2,
+  3,
+  2,
+  2,
+  2,
+  3,
+  2,
+  1,
+  1,
+  1,
+  2,
+  2,
+  2,
+  2,
+  2,
+  2,
+  2,
+  2,
+  2,
+  1,
+  2,
+  2,
+  1,
+  1,
+  2,
+  1,
+  2,
+  2,
+  3,
+  3,
+  3,
+  3,
+  2,
+  2,
+  1,
+  1,
+  1,
+  1,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  2,
+  2,
+  1,
+  2,
+  -1,
+  2,
+  -1,
+  2,
+  -1,
+  -1,
+  -1,
+  -1,
+  -1,
+  1,
+  1,
+  2,
+  2,
+  2,
+  2,
+  -1,
+  -1,
+  -1,
+  -1,
+  0,
+  0,
+  0,
+  0,
+  2,
+  0,
+  0,
+  0,
+  0,
+  0,
+  2,
+  2,
+  2,
+  2,
+  2,
+  2,
+  0,
+  0,
+  0,
+  0,
+  -1,
+  -1,
+  2,
+  2,
+  1,
+  2,
+  2,
+  2,
+  2,
+  1,
+  1,
+  1,
+  2,
+  2,
+  -1,
+  1,
+  1,
+  2,
+  1,
+  1
+ ],
+ "flatRockPictures": [
+  532,
+  536,
+  540,
+  464
+ ]
 }

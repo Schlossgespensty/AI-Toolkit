@@ -188,3 +188,11 @@ dock: Andocken
 groups: Gruppen
 cut_and_copy: Ausschneiden & kopieren
 deselect: Auswahl aufheben
+construction_blocked: 'Hier nicht baubar: {{reasons}}'
+construction_rock: 'Felsen'
+construction_water: 'Wasser oder Fluss'
+construction_marsh: 'Sumpf'
+construction_moat: 'ausgehobener Burggraben'
+construction_outside: 'außerhalb der bebaubaren Karte'
+construction_height: 'Geländehöhenlimit'
+construction_slope: 'Gelände zu uneben'

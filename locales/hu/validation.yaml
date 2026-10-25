@@ -22,3 +22,5 @@ classic_empty_steps: Az üres építési lépések nem őrizhetők meg klassziku
 classic_item: 'A klasszikus AIV nem támogatja ezt: {{name}}.'
 classic_pauses: Az építési lépések szünetei le vannak tiltva a klasszikus szerkesztőben.
 classic_marker: 'Klasszikus AIV formátumban nem őrizhető meg: {{name}}.'
+
+classic_extended_spots: "A 10 feletti csapathelyek nem menthetők klasszikus .aiv fájlba. Az összes hely megőrzéséhez exportálj DE (.aivjson) formátumban."

@@ -23,3 +23,10 @@ no_window_open_one_from_the_toolbar: 没有窗口 — 请从工具栏打开
 add_as_a_tab_here: 在此添加为标签页
 esc_cancels: ' · Esc 取消'
 is_missing: ' 缺失'
+flat_view: '平面视图'
+lowered_view: '压低视图'
+refresh_map: "刷新地图"
+refresh_map_hint: "从磁盘重新加载所选地图：{{path}}"
+refreshing_map: "正在刷新地图…"
+map_refreshed: "地图已更新：{{name}}"
+map_refresh_failed: "无法刷新地图：{{message}}"

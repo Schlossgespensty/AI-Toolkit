@@ -20,6 +20,15 @@
   const HALF_W = 16;          // half a tile in game points
   const HALF_H = 8;
 
+  // Crusader updateShowHiLayerOrResetChangedLayer (0x00501A20), lowered target:
+  // every native height h tends to (h >> 2) + 1. Flat view uses an 8px datum.
+  // Only elevations change; the 32x16 footprint and sprite pixels do not.
+  function viewHeight(height, flat = false, lowered = false) {
+    if (flat) return 8;
+    const value = Math.max(0, Number(height) || 0);
+    return lowered ? Math.floor(value / 4) + 1 : value;
+  }
+
   // GM1 ground is 30x16; the village grid is 32x16. Scaling both axes by
   // 32/30 made the ground drift vertically relative to sprites and picking.
   function groundTextureScale(zoom, width = 30, height = 16) {
@@ -232,16 +241,73 @@
     return { ...gewaehlt, kacheln: sprite.kacheln };
   }
 
-  function variantFor(sprite, gx, gy, mauerAn, hoeheAn) {
+  // Zinnen, nachgemessen am 28.09.2026 in den Kreuzzug-Karten des Spiels
+  // (crusaders_mission*.map: Ebene 1001 haelt das gemalte Bild, 1003 die
+  // Logik) - 780 Zinnenfelder:
+  //
+  //  - In einer Reihe: Klotz (tile_land3 120-127), wo x + y DER KARTE
+  //    ungerade ist, sonst Scharte (112-119) - 346 von 348 Feldern. Das
+  //    Schachbrett haengt am Kartenfeld, nicht an der Ansicht: mit C gedreht
+  //    bleibt jede Zinne, wie sie war.
+  //  - Gelesen in updateGfxLayer (0x00509180): eine gerade Reihe hat je Achse
+  //    eigene Bilder (laengs 120-123/112-115, quer 124-127/116-119, dazu eine
+  //    Zufallsvariante & 3 - siehe config/iso-wall-sources.json). Zaehlt eine
+  //    Zinne nur Zinnen als Nachbarn (L_CRENEL 0x200), keine Mauern.
+  //  - Ein Ende, eine T-Kreuzung, alles ausser Reihe und Ecke ist der hohe
+  //    Endklotz (132), eine Ecke eines der vier Eckstuecke (128-131).
+  //  - Schraeg und auf dem Schirm waagrecht (Nachbar bei x+1,y-1): Zinnen von
+  //    vorn gesehen (303-310, Nummer 303 + (y & 7)), wo x + y gerade ist,
+  //    sonst nur der Wehrgang - so in den Karten des Spiels. Die Brustwehr davor
+  //    traegt die Abschraegung (mauerSchraegen).
+  //  - Schraeg und senkrecht (x+1,y+1): die Winkelzinnen, 311 bei ungeradem
+  //    y, sonst 312.
+  //
+  // lageAn(gx, gy) liefert das Kartenfeld { x, y }. Ohne Karte gilt das Feld
+  // des Bauplans in Editor-Zaehlung - dieselbe Phase wie bisher.
+  function editorLage(gx, gy) {
+    return { x: gx, y: (GRID - 1) - gy };
+  }
+
+  const achtel = v => ((v % 8) + 8) % 8;
+
+  // Nur Stuecke, die das Spiel geliefert hat (sx aus dem Atlas), werden
+  // benutzt; fehlt eines, bleibt es beim alten Bild.
+  const nutzbar = teil => (teil && Number.isFinite(teil.sx)) ? teil : null;
+
+  function zinnenForm(mauer, gx, gy, mauerAn, lage) {
+    const form = mauer.form;
+    const zinne = (dx, dy) => {
+      const nachbar = mauerAn(gx + dx, gy + dy);
+      return !!(nachbar && (nachbar.zinne || nachbar.torhaus));
+    };
+    const mx = zinne(-1, 0), px = zinne(1, 0), my = zinne(0, -1), py = zinne(0, 1);
+    const zahl = mx + px + my + py;
+    if (zahl === 2 && ((mx && px) || (my && py))) return null;
+    if (zahl === 2) return nutzbar(form.ecken && form.ecken[(px ? 'px' : 'mx') + '_' + (py ? 'py' : 'my')]);
+    if (zahl > 0) return nutzbar(form.ende);
+    if (zinne(1, -1) || zinne(-1, 1)) {
+      if ((lage.x + lage.y) % 2 !== 0) return nutzbar(form.flach);
+      return nutzbar(form.schraeg && form.schraeg[achtel(lage.y)]);
+    }
+    if (zinne(1, 1) || zinne(-1, -1)) return nutzbar(form.steil && form.steil[achtel(lage.y) % 2]);
+    return nutzbar(form.ende);
+  }
+
+  function variantFor(sprite, gx, gy, mauerAn, hoeheAn, lageAn) {
     if (!sprite) return sprite;
     if (sprite.treppe) return treppenFassung(sprite, gx, gy, hoeheAn);
-    const y = (GRID - 1) - gy;
-    const klotz = (((gx + y) % 2) + 2) % 2 === 1;
+    const lage = typeof lageAn === 'function' ? lageAn(gx, gy) : editorLage(gx, gy);
+    const klotz = (((lage.x + lage.y) % 2) + 2) % 2 === 1;
+    const y = lage.y;
     const mauer = sprite.mauer;
     if (!mauer) {
       if (!sprite.wechselBild || klotz) return sprite;
       return { bild: sprite.wechselBild, breite: sprite.wechselBreite,
                hoehe: sprite.wechselHoehe, kacheln: sprite.kacheln };
+    }
+    if (mauer.zinne && mauer.form && typeof mauerAn === 'function') {
+      const form = zinnenForm(mauer, gx, gy, mauerAn, lage);
+      if (form) return { ...form, kacheln: sprite.kacheln };
     }
     const welche = (klotz || !mauer.rand.allein.scharte) ? 'klotz' : 'scharte';
     let gewaehlt = mauer.rand.allein[welche];
@@ -267,14 +333,125 @@
 
   // Nachschlagewerk fuer die Regel oben: welches Feld traegt eine Mauer.
   // Aus den Gegenstaenden, die ohnehin schon eingesammelt sind.
+  //
+  // Wer im Spiel als Mauernachbar zaehlt, entscheidet allein der Logik-
+  // Layer: isWallConnectionHeightValid (0x004f8840) verlangt L_WALL (0x100),
+  // nicht 0x2, und hoechstens 16 Punkte weniger Hoehe. L_WALL setzen
+  // placeDefensiveStructureTile (0x005034a0) auf jedes Mauer-, Zinnen- und
+  // Treppenfeld - Treppen mit ihrer Stufenhoehe 80 bis 0 - und
+  // placeGatehouseSmall/Large (0x00507420/0x00507560) auf jedes Feld eines
+  // Torhauses, 90 hoch. Tuerme NICHT: placeTower (0x00507130) setzt nur
+  // 0x400 und 0x10000000. Eine Mauer laeuft also in ein Torhaus hinein, endet
+  // vor einem Turm aber mit ihrem Pfeiler. AIV-Nummern der Torhaeuser: 40-43.
+  const TORHAEUSER = new Set([40, 41, 42, 43]);
+  const TORHAUS = Object.freeze({ torhaus: true, hoehe: 90 });
+
   function wallLookup(items, extra) {
     const felder = new Map();
-    const eintragen = (gx, gy, entry) => {
-      if (entry && entry.mauer) felder.set(gx + ':' + gy, entry.mauer);
+    const eintragen = (item) => {
+      const entry = item.entry;
+      if (!entry) return;
+      if (entry.mauer) { felder.set(item.gx + ':' + item.gy, entry.mauer); return; }
+      if (entry.treppe) {
+        const schluessel = item.gx + ':' + item.gy;
+        if (!felder.has(schluessel)) felder.set(schluessel, { treppe: true, hoehe: entry.treppe.hoehe });
+        return;
+      }
+      if (!TORHAEUSER.has(entry.aiv)) return;
+      const n = item.tiles || entry.kacheln || 1;
+      for (let dx = 0; dx < n; dx++) for (let dy = 0; dy < n; dy++) {
+        const schluessel = (item.gx + dx) + ':' + (item.gy + dy);
+        if (!felder.has(schluessel)) felder.set(schluessel, TORHAUS);
+      }
     };
-    for (const item of items || []) eintragen(item.gx, item.gy, item.entry);
-    for (const item of extra || []) eintragen(item.gx, item.gy, item.entry);
+    for (const item of items || []) eintragen(item);
+    for (const item of extra || []) eintragen(item);
     return (gx, gy) => felder.get(gx + ':' + gy) || null;
+  }
+
+  // Die Abschraegung schraeger Mauern - so, wie das Spiel sie macht
+  // (Stronghold Crusader 1.41, gelesen am 01.10.2026):
+  //
+  // updateGfxLayer (0x00509180), fuer jedes LEERE Feld: eine Maske der acht
+  // Nachbarn mit L_WALL (0x100, ohne 0x2) - Mauern, Zinnen, Treppen,
+  // Torhaeuser. Genau zwei rechtwinklige gerade Nachbarn ergeben eine
+  // Richtung; sind dazu bestimmte Diagonalen voll, oder liegt eine Treppe
+  // (0x800) daneben, keine. Hoehe ist das Minimum der beiden Nachbarn und der
+  // Diagonale zwischen ihnen. Die Richtung ist ein Bild aus anim_castle.gm1:
+  //
+  //   Mauern bei -x und -y (vorn)    eine ganze Wand mit Giebel, 48-61; liegt
+  //                                  die naechste Abschraegung derselben Linie
+  //                                  links UND rechts: 61 - (y & 7), sonst die
+  //                                  Enden 50-53 bzw. 48/49. Sind beide
+  //                                  Nachbarn Zinnen, die Wand mit Zinnen +14.
+  //   Mauern bei +y und +x (hinten)  nur das Dreieck auf dem Wehrgang, 46
+  //   Mauern bei -x und +y (links)   das halbe Dreieck, 45
+  //   Mauern bei +x und -y (rechts)  das halbe Dreieck, 47
+  //
+  // renderMap (0x004e8cf0) setzt sie am Feld ab: x vom linken Rand der
+  // Kachel, y von ihrer Nordecke am Boden, minus der Hoehe; die Wand endet
+  // 98 Punkte unter ihrem Giebel, das hintere Dreieck sitzt 7 tiefer, das
+  // linke 1 hoeher, das rechte 16 weiter rechts.
+  //
+  // Das Spiel rechnet im Raster der Ansicht (die Bildnummer folgt der
+  // Drehung), diese Ansicht ebenso; Paritaeten zaehlen auf dem Kartenfeld.
+  const SCHRAEG_NACHBARN = [[-1, -1, 0x01], [-1, 0, 0x02], [-1, 1, 0x04], [0, 1, 0x08],
+                            [1, 1, 0x10], [1, 0, 0x20], [1, -1, 0x40], [0, -1, 0x80]];
+  const SCHRAEG_RICHTUNG = {
+    0x28: { art: 'hinten', felder: [[1, 0], [0, 1], [1, 1]], voll: 0x54 },
+    0x0a: { art: 'links', felder: [[-1, 0], [0, 1], [-1, 1]], voll: 0x15 },
+    0x82: { art: 'vorn', felder: [[-1, 0], [0, -1], [-1, -1]], voll: 0x45 },
+    0xa0: { art: 'rechts', felder: [[1, 0], [0, -1], [1, -1]], voll: 0 }
+  };
+
+  function mauerSchraegen(items, mauerAn, lageAn, bilder) {
+    const schraegen = [];
+    if (typeof mauerAn !== 'function' || !bilder) return schraegen;
+    const belegt = new Set();
+    for (const item of items || []) {
+      const n = item.tiles || 1;
+      for (let dx = 0; dx < n; dx++) for (let dy = 0; dy < n; dy++) belegt.add((item.gx + dx) + ':' + (item.gy + dy));
+    }
+    const lage = typeof lageAn === 'function' ? lageAn : editorLage;
+    const kandidaten = new Map();
+    for (const item of items || []) {
+      if (!mauerAn(item.gx, item.gy)) continue;
+      for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
+        const gx = item.gx + dx, gy = item.gy + dy, schluessel = gx + ':' + gy;
+        if (belegt.has(schluessel) || kandidaten.has(schluessel)) continue;
+        let maske = 0, treppe = false;
+        for (const [nx, ny, bit] of SCHRAEG_NACHBARN) {
+          const nachbar = mauerAn(gx + nx, gy + ny);
+          if (!nachbar) continue;
+          maske |= bit;
+          if (nachbar.treppe && nachbar.hoehe > 0) treppe = true;
+        }
+        const richtung = SCHRAEG_RICHTUNG[maske & 0xaa];
+        if (!richtung || treppe || (richtung.voll && (maske & richtung.voll) === richtung.voll)) continue;
+        const [a, b, c] = richtung.felder.map(([fx, fy]) => mauerAn(gx + fx, gy + fy));
+        const hoehe = Math.min(a.hoehe, b.hoehe, c ? c.hoehe : b.hoehe);
+        if (!(hoehe > 0) || !Number.isFinite(hoehe)) continue;
+        kandidaten.set(schluessel, { gx, gy, art: richtung.art, hoehe, zinnen: !!(a.zinne && b.zinne) });
+      }
+    }
+    const vorn = (gx, gy) => kandidaten.get(gx + ':' + gy)?.art === 'vorn';
+    for (const s of kandidaten.values()) {
+      let nummer = { hinten: 46, links: 45, rechts: 47 }[s.art];
+      let dx = s.art === 'rechts' ? 16 : 0;
+      let dy = s.art === 'hinten' ? 7 : s.art === 'links' ? -1 : 0;
+      if (s.art === 'vorn') {
+        const { x, y } = lage(s.gx, s.gy);
+        const p = (x ^ y) & 1;
+        const links = vorn(s.gx - 1, s.gy + 1), rechts = vorn(s.gx + 1, s.gy - 1);
+        nummer = links && rechts ? 61 - achtel(y) : links ? 52 + p : rechts ? 50 + p : 48 + p;
+        if (s.zinnen) nummer += 14;
+      }
+      const bild = nutzbar(bilder[nummer]);
+      if (!bild) continue;
+      if (s.art === 'vorn') dy = 98 - bild.hoehe;
+      schraegen.push({ gx: s.gx, gy: s.gy, tiles: 1, art: s.art, bild, dx, dy: dy - s.hoehe });
+    }
+    return schraegen;
   }
 
   // Wie hoch ein Feld ist und was darauf steht - fuer die Treppenregel oben.
@@ -403,11 +580,92 @@
     });
   }
 
+  // Werkstaetten mit Pultdach. Steht eine Werkstatt mit einer ganzen Seite an
+  // einer Mauer, lehnt das Spiel ihr Dach dagegen - nachgelesen in
+  // determineBuildingPlacementRotation (0x004fa000): je Seite werden die vier
+  // Nachbarfelder gezaehlt, die L_WALL (0x100) tragen und weder 0x800 noch
+  // 0x2. Das sind Mauern, Zinnen, Torhaeuser und von den Treppen nur Stufe 6:
+  // Stufe 1 bis 5 bekommen in placeDefensiveStructureTile zusaetzlich 0x800,
+  // Tuerme haben gar kein L_WALL (siehe wallLookup). Nur volle Seiten
+  // zaehlen, zwei volle Seiten ueber Eck gehen vor einer einzelnen:
+  //   -y und -x -> 7, -y und +x -> 1, +y und -x -> 5, +y und +x -> 3,
+  //   sonst -y -> 0, +x -> 2, +y -> 4, -x -> 6, und ohne Mauer 8 (das Dach).
+  // Das Bild ist Richtung minus Blickdrehung (updateBuildingGraphicsLayer);
+  // diese Ansicht rechnet ohnehin im gedrehten Raster, also gilt die Richtung
+  // hier direkt.
+  const lehntAn = entry => !!(entry.mauer || entry.treppe?.hoehe === 0 || TORHAEUSER.has(entry.aiv));
+
+  function anlehnFelder(items) {
+    const felder = new Set();
+    for (const item of items || []) {
+      const entry = item.entry;
+      if (!entry || !lehntAn(entry)) continue;
+      const n = item.tiles || entry.kacheln || 1;
+      for (let dx = 0; dx < n; dx++) for (let dy = 0; dy < n; dy++) felder.add((item.gx + dx) + ':' + (item.gy + dy));
+    }
+    return felder;
+  }
+
+  function anlehnRichtung(item, felder) {
+    const n = item.tiles || item.entry?.kacheln || 4;
+    const voll = (feld) => {
+      for (let i = 0; i < n; i++) if (!felder.has(feld(i))) return false;
+      return true;
+    };
+    const my = voll(i => (item.gx + i) + ':' + (item.gy - 1));
+    const px = voll(i => (item.gx + n) + ':' + (item.gy + i));
+    const py = voll(i => (item.gx + i) + ':' + (item.gy + n));
+    const mx = voll(i => (item.gx - 1) + ':' + (item.gy + i));
+    if (my && mx) return 7;
+    if (my && px) return 1;
+    if (py && mx) return 5;
+    if (py && px) return 3;
+    if (my) return 0;
+    if (px) return 2;
+    if (py) return 4;
+    if (mx) return 6;
+    return null;
+  }
+
   function buildingParts(item) {
+    const anlehnung = Number.isInteger(item.anlehnung) ? item.entry?.anlehnLayouts?.[item.anlehnung] : null;
+    if (anlehnung?.length) return anlehnung.map(part => ({ ...part, gx: item.gx + part.gx, gy: item.gy + part.gy, tiles: 1 }));
     const layouts = item.entry?.partsLayouts;
     if (!layouts?.length) return null;
     const parts = layouts[(item.layoutIndex || 0) % layouts.length];
     return parts.map(part => ({ ...part, gx: item.gx + part.gx, gy: item.gy + part.gy, tiles: 1 }));
+  }
+
+  // renderMap 0x4e98c7..0x4e9956: native type -> texture group, instance
+  // parity -> one of two banks, RandomLayer low bits -> tile variation.
+  function flatTileIndex(building, random, instance = 0, symbol = false) {
+    if (!building || building.group < 0) return null;
+    if (building.group === 3) {
+      const first = ({3:24,7:26,33:28})[building.building] ?? 30;
+      return first + Number(symbol);
+    }
+    return building.group * 8 + (instance & 1) * 4 + (random & 3);
+  }
+
+  function flatBuildingParts(item, tiles, randomAt) {
+    const native = buildingParts(item);
+    const positions = native || Array.from({length:item.tiles*item.tiles},(_,i)=>({
+      gx:item.gx+i%item.tiles,gy:item.gy+Math.floor(i/item.tiles)
+    }));
+    const hut = positions.filter(part => !part.flatField);
+    const centreX = Math.floor((Math.min(...hut.map(p=>p.gx))+Math.max(...hut.map(p=>p.gx)))/2);
+    const centreY = Math.floor((Math.min(...hut.map(p=>p.gy))+Math.max(...hut.map(p=>p.gy)))/2);
+    return positions.flatMap(part => {
+      // Crop/fence cells share their farm's BuildingLayer ID and flat ground.
+      // Keep their sparse layout; orchard positions use the apple stump.
+      if (part.flatField) return [{...(part.flatSprite || part),gx:part.gx,gy:part.gy,tiles:1}];
+      const random = randomAt(part.gx,part.gy);
+      const index = flatTileIndex(item.entry?.flatBuilding, random, (item.frameIndex||0)+(item.offsetIndex||0)+1,
+        part.gx===centreX && part.gy===centreY);
+      const sprite = tiles?.[index];
+      if (!sprite?.bild || index === null) return [];
+      return [{...sprite,gx:part.gx,gy:part.gy,tiles:1}];
+    });
   }
 
   // updateGfxLayer 0x509180, TerrainDefinedData+0x1d64 (7 byte pairs).
@@ -798,8 +1056,9 @@
   return { GRID, HALF_W, HALF_H, MAP_PREVIEW_EDGE, KEEP_TILE,
            gridFromOffset, offsetFromGrid, isoPoint,
            tileFromPoint, editorTileFromPoint,
-           depth, byDepth, renderOrder, spriteRect, groundTextureScale, variantFor, wallLookup, hoehenLookup,
-           collectItems, collectPlates, troopAnchors, attachDrawbridges, buildingParts, moatPicture, resolveMoats, marqueeOutline, fitView,
+           depth, byDepth, renderOrder, spriteRect, groundTextureScale, viewHeight, variantFor, wallLookup, hoehenLookup,
+           mauerSchraegen, anlehnFelder, anlehnRichtung,
+           collectItems, collectPlates, troopAnchors, attachDrawbridges, buildingParts, flatTileIndex, flatBuildingParts, moatPicture, resolveMoats, marqueeOutline, fitView,
            rotateGrid, unrotateGrid, keepOrientation, turnCameraView, cameraCanvasTransform,
            mapTileForGrid, mapTileForView, viewTileForMap,
            mapTileHeight, keepAnchor, previewPointForMapTile, centreKeep,

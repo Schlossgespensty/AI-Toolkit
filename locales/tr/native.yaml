@@ -40,6 +40,7 @@ developer_tools: Geliştirici araçları
 zoom_in: Yakınlaştır
 zoom_out: Uzaklaştır
 reset_zoom: Gerçek boyut
+interface_zoom: Arayüz yakınlaştırma
 classic_castle: Klasik AIV kalesi
 choose_castle_format: Kale dosyasının biçimini seçin.
 add_castle_message: |-

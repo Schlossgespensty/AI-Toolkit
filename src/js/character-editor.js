@@ -361,6 +361,62 @@ if (val !== input.value) {
   return div;
 }
 
+// Starting troops as tiles: the unit's picture with its count below, so a
+// whole army fits on screen (Monsterfish, issue #6). Pictures are the same
+// as in the castle palette: game sprites, else the letter badge.
+const START_TROOP_UNITS = {
+  ArabArcher: 16, Slave: 13, Slinger: 14, Assassin: 15, HorseArcher: 17, ArabSwordsman: 18, FireThrower: 19,
+  EuropArcher: 6, Spearman: 8, Maceman: 10, Crossbowman: 7, Pikeman: 9, Swordsman: 11, Knight: 12, Engineer: 1,
+  // No AIV marker: the monk's picture is extracted under its own key.
+  Monk: 'unit-monk'
+};
+let unitSkinRequest = null;
+function unitSkins() {
+  unitSkinRequest ||= Promise.resolve(window.electronAPI?.loadAivSkins?.())
+    .then(loaded => loaded?.skins || {})
+    .catch(error => { console.warn('Unit pictures unavailable:', error); return {}; });
+  return unitSkinRequest;
+}
+function paintUnitTile(picture, type, skins) {
+  picture.replaceChildren();
+  const badge = type ? window.castlePalette?.unitBadge?.(type) : null;
+  if (type && skins[type]) {
+    const img = document.createElement("img");
+    img.src = skins[type];
+    img.alt = "";
+    picture.appendChild(img);
+  } else {
+    const disc = document.createElement("span");
+    disc.className = "paletteUnitBadge";
+    disc.textContent = badge?.text || picture.dataset.fallback;
+    disc.style.background = badge?.fill || "#6b5a3e";
+    disc.style.color = badge?.ink || "#ffffff";
+    picture.appendChild(disc);
+  }
+}
+function createUnitTile(key, value, parent) {
+  const field = createField(key, value, parent);
+  if (!field) return null;
+  const input = field.querySelector("input");
+  if (!input) return field;
+  const name = field.querySelector("span");
+  const tile = document.createElement("label");
+  tile.className = "characterUnitTile";
+  // European troops start their own row, after the Arabian ones.
+  if (key === "EuropArcher") tile.classList.add("characterUnitRowStart");
+  tile.title = name.textContent;
+  const picture = document.createElement("span");
+  picture.className = "characterUnitPicture";
+  picture.dataset.fallback = name.textContent.slice(0, 3);
+  const type = START_TROOP_UNITS[key];
+  paintUnitTile(picture, type, {});
+  unitSkins().then(skins => paintUnitTile(picture, type, skins));
+  name.className = "characterUnitName";
+  input.setAttribute("aria-label", name.textContent);
+  tile.append(picture, name, input);
+  return tile;
+}
+
 function sectionHeading(title) {
   const sum = document.createElement("summary");
   const text = document.createElement('span');
@@ -426,6 +482,11 @@ function buildForm(obj, container) {
     sec.open = !!searchQuery;
 
     sec.appendChild(sectionHeading(title));
+    // Fields fill a grid row by row; the stylesheet decides on one or two
+    // columns from the width of the form.
+    sec.fields = document.createElement("div");
+    sec.fields.className = "characterFieldGrid";
+    sec.appendChild(sec.fields);
     container.appendChild(sec);
 
     return sec;
@@ -446,7 +507,8 @@ function buildForm(obj, container) {
       currentSection.dataset.name = sectionName;
     }
 
-    const field = createField(key, value, parent);
+    const field = currentSection && path.startsWith("startTroops.")
+      ? createUnitTile(key, value, parent) : createField(key, value, parent);
     if (!field) return;
 
     if (activeGroupBreaks.includes(key)) {
@@ -460,9 +522,12 @@ function buildForm(obj, container) {
         const heading = document.createElement('h3');
         heading.className = 'characterFieldGroup'; heading.textContent = troopGroup;
         heading.dataset.i18n = key.startsWith('AIVTroops_InitialRole_') ? 'character:initial_roles' : 'character:movement';
-        currentSection.appendChild(heading); lastTroopGroup = troopGroup;
+        currentSection.fields.appendChild(heading); lastTroopGroup = troopGroup;
       }
-      currentSection.appendChild(field);
+      if (field.classList.contains("characterUnitTile")) {
+        currentSection.fields.classList.add("characterUnitTiles");
+      }
+      currentSection.fields.appendChild(field);
     } else {
       container.appendChild(field);
     }

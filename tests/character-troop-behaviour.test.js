@@ -40,3 +40,41 @@ test('troop plugin defaults on and remembers explicit per-file opt-out',()=>{
  vm.runInContext('saveTroopPluginPreference("C:/AI/A/character.json",true)',context);
  assert.equal(vm.runInContext('loadTroopPluginPreference("C:/AI/A/character.json")',context),true);
 });
+
+test('starting troops show as picture tiles with their count, game sprite or letter badge',async()=>{
+ const source=fs.readFileSync(path.join(__dirname,'../src/js/character-editor.js'),'utf8');
+ const el=tag=>{const e={tagName:tag.toUpperCase(),children:[],dataset:{},style:{},attributes:{},classes:new Set(),textContent:'',
+  get className(){return [...e.classes].join(' ');},set className(v){e.classes=new Set(String(v).split(/\s+/).filter(Boolean));},
+  classList:{add:n=>e.classes.add(n),contains:n=>e.classes.has(n)},
+  appendChild(c){e.children.push(c);return c;},append(...c){e.children.push(...c);},replaceChildren(){e.children=[];},
+  setAttribute(k,v){e.attributes[k]=v;},querySelector:t=>e.children.find(c=>c.tagName===t.toUpperCase())||null};return e;};
+ let resolveSkins;
+ const context=vm.createContext({document:{createElement:el},console,Promise,
+  window:{electronAPI:{loadAivSkins:()=>new Promise(r=>{resolveSkins=r;})},
+   castlePalette:{unitBadge:t=>t===6?{text:'Arc',fill:'#3d6fb6',ink:'#fff'}:null}},
+  createField:(key,value)=>{const f=el('div');const s=el('span');s.textContent=key;const i=el('input');i.value=value;f.append(s,i);return f;}});
+ vm.runInContext(source.slice(source.indexOf('const START_TROOP_UNITS'),source.indexOf('function sectionHeading(')),context);
+ const tile=vm.runInContext('createUnitTile("EuropArcher",5,{})',context);
+ assert.equal(tile.tagName,'LABEL');
+ assert.ok(tile.classList.contains('characterUnitTile')&&tile.classList.contains('characterUnitRowStart'));
+ const [picture,name,input]=tile.children;
+ assert.equal(input.value,5);assert.equal(input.attributes['aria-label'],'EuropArcher');
+ assert.equal(picture.children[0].textContent,'Arc','letter badge until game art arrives');
+ resolveSkins({skins:{6:'asset://units/archer.png','unit-monk':'asset://units/monk.png'}});await new Promise(r=>setTimeout(r,0));
+ assert.equal(picture.children[0].tagName,'IMG');assert.equal(picture.children[0].src,'asset://units/archer.png');
+ const monk=vm.runInContext('createUnitTile("Monk",0,{})',context);
+ assert.equal(monk.children[0].children[0].textContent,'Mon','without art or badge the name shows first');
+ await new Promise(r=>setTimeout(r,0));
+ assert.equal(monk.children[0].children[0].src,'asset://units/monk.png','the monk has no marker, only its own key');
+ assert.ok(!monk.classList.contains('characterUnitRowStart'));
+});
+
+test('character sections use two columns only from 1000 px of form width',()=>{
+ const css=fs.readFileSync(path.join(__dirname,'../src/css/combined.css'),'utf8');
+ assert.match(css,/\.characterForm \{[^}]*container: characterForm \/ inline-size;/);
+ const block=css.slice(css.indexOf('@container characterForm (min-width: 1000px)'));
+ assert.ok(block.length<css.length,'two-column container query exists');
+ assert.match(block.slice(0,block.indexOf('\n}\n')),/grid-template-columns: repeat\(2, minmax\(0, 1fr\)\)/);
+ const source=fs.readFileSync(path.join(__dirname,'../src/js/character-editor.js'),'utf8');
+ assert.match(source,/sec\.fields\.className = "characterFieldGrid"/);
+});

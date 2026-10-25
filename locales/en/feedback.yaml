@@ -22,3 +22,5 @@ replacing_character: 'Replacing {{name}}''s Character…'
 opening: 'Opening {{name}}…'
 opened: '{{name}} opened.'
 with_castle: ' with {{name}}'
+
+extended_rally_points: "DE: spots 11–30 require SHCDE-Fixes and GuardingSpotsPerUnitType. Save as .aivjson."

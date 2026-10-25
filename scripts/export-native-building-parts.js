@@ -91,6 +91,8 @@ for (const [type, first, variants, table, count, stride] of definitions) {
   const layouts = [];
   const cameraLayouts = [[], [], [], []];
   const entry = catalogue.gegenstaende[type];
+  // placeApplefarm (0x515740) reserves 10x10, like the dairy farm.
+  if (type === 72) entry.kacheln = 10;
   const rotate = (x, y, n, orientation) => require('../src/js/iso-geometry').rotateGrid(x, y, n, orientation, entry.kacheln);
   // getRubbleGraphicStageForDamageLevel (0x4fa460), used by the game's
   // dairy-fence renderer. Each camera direction selects its own corner art.

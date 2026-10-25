@@ -7,16 +7,17 @@ const catalogue = require('../assets/aiv/iso/verzeichnis.json').gegenstaende;
 const source = fs.readFileSync(require.resolve('../src/js/iso-view'), 'utf8');
 
 function loader() {
-  const images = [], state = {}; let selected = {path:'map'}, refreshes = 0;
+  const images = [], state = {gameMap:{path:'map'}}, saved = []; let refreshes = 0;
   class Image {
     constructor() { images.push(this); this.promise = new Promise((resolve,reject)=>{this.resolve=resolve;this.reject=reject;}); }
     decode() { return this.promise; }
   }
   const context = vm.createContext({state, Image, Uint16Array, Uint8Array, Map, Promise,
-    gameMap:()=>selected, releaseMapImages(){}, refresh(){refreshes++;},
+    gameMap:()=>state.gameMap, releaseMapImages(){}, refresh(){refreshes++;},rememberGameMap:()=>saved.push(state.gameMap),
+    window:{localStorage:{setItem(){}},castleEditor:{extras:{scheduleDraw(){}}}},MAP_POSITION_KEY:'position',routeTerrainCache:null,terrainRequest:null,
     ausBase64:()=>new Uint16Array([1]), KARTE_FELDER:400, handDrehung:0, mapTilesRequest:0});
   vm.runInContext(source.slice(source.indexOf('  async function setMapTiles('), source.indexOf('  function hasMapTiles(')),context);
-  return {context,state,images,select(map){selected=map;},get refreshes(){return refreshes;}};
+  return {context,state,images,saved,select(map){state.gameMap=map;},get refreshes(){return refreshes;}};
 }
 const payload = () => ({path:'map',atlas:'same-url',plaetze:'AA==',upper:{dataUrl:'upper-url'}});
 test('map commit waits for every atlas; reloading the same URL decodes fresh images',async()=>{
@@ -43,6 +44,46 @@ test('failed atlas decode is reported and a later retry can succeed',async()=>{
  s.images[0].reject(new Error('bad PNG'));s.images[1].resolve();
  await assert.rejects(failed,/bad PNG/);assert.equal(s.state.kachelVorrat,undefined);
  const retry=s.context.setMapTiles(payload());s.images[2].resolve();s.images[3].resolve();assert.equal(await retry,true);
+});
+
+test('initial terrain uses its saved camera while refresh preserves the chosen camera',async()=>{
+ const s=loader(),pending=s.context.setMapTiles({...payload(),savedOrientation:4});
+ assert.equal(s.context.handDrehung,0,'camera commits with decoded pixels');
+ s.images.forEach(image=>image.resolve());assert.equal(await pending,true);
+ assert.equal(s.context.handDrehung,4);
+ s.context.handDrehung=6;
+ const refresh=s.context.setMapTiles({...payload(),savedOrientation:2});
+ s.images.forEach(image=>image.resolve());await refresh;
+ assert.equal(s.context.handDrehung,6);
+});
+
+test('all four Space camera atlases commit atomically and follow camera selection',async()=>{
+ const s=loader(),pending=s.context.setMapTiles({...payload(),savedOrientation:4,flatCameras:[0,2,4,6].map(camera=>({atlas:'flat-'+camera,plaetze:'AA=='}))});
+ s.images.slice(0,-1).forEach(image=>image.resolve());await Promise.resolve();
+ assert.equal(s.state.kachelVorrat,undefined);
+ s.images.at(-1).resolve();await pending;
+ s.state.flatView=true;s.context.viewRotation=()=>s.context.handDrehung;
+ vm.runInContext(source.slice(source.indexOf('  function vorrat()'),source.indexOf('  function releaseMapImages()')),s.context);
+ for(const orientation of [0,2,4,6]) {
+  s.context.handDrehung=orientation;
+  assert.equal(s.context.vorrat().bild.src,'flat-'+orientation);
+ }
+});
+
+test('refresh commits metadata with decoded tiles and preserves the selected player after reordered starts',async()=>{
+ const s=loader();s.state.gameMap={path:'map',keeps:[{player:1,x:10,y:10},{player:2,x:20,y:20}],keepIndex:1};
+ s.state.view={panX:123,panY:456,zoom:2};s.state.peekView=true;s.state.hoehenSpanne={key:'stale'};
+ const previous=s.state.gameMap, map={name:'updated',keeps:[{player:2,x:25,y:25},{player:1,x:10,y:10}],pathTerrain:{fingerprint:'new'}};
+ const pending=s.context.setMapTiles(payload(),map);
+ assert.equal(s.state.gameMap,previous);
+ s.images[0].resolve();s.images[1].resolve();assert.equal(await pending,true);
+ assert.equal(s.state.gameMap.keepIndex,0);assert.equal(s.state.gameMap.keeps[0].x,25);
+ assert.equal(s.state.gameMap.pathTerrain.fingerprint,'new');assert.equal(s.state.hoehenSpanne,null);
+ assert.deepEqual(s.state.view,{panX:123,panY:456,zoom:2});assert.equal(s.state.peekView,true);
+ assert.equal(s.saved.length,1);
+ const failed=s.context.setMapTiles(payload(),{...map,name:'failed'});const current=s.state.gameMap;
+ s.images[2].reject(new Error('bad PNG'));s.images[3].resolve();await assert.rejects(failed,/bad PNG/);
+ assert.equal(s.state.gameMap,current);
 });
 const directions=[[0,-1],[1,-1],[1,0],[1,1],[0,1],[-1,1],[-1,0],[-1,-1]];
 test('moat variants match the native seven-entry edge/corner lookup, using the unshadowed bank',()=>{

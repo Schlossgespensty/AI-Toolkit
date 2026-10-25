@@ -40,6 +40,7 @@ developer_tools: 开发者工具
 zoom_in: 放大
 zoom_out: 缩小
 reset_zoom: 实际大小
+interface_zoom: 界面缩放
 classic_castle: 经典版 AIV 城堡
 choose_castle_format: 请选择此文件使用的城堡格式。
 add_castle_message: |-

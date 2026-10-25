@@ -63,7 +63,7 @@ html[data-themed-controls="true"] .castleToolbar > .toolbarGroup + .toolbarGroup
 
 /* UCP's bevelled commands use an actual 8px border, so the frame cannot paint
    over the label. Flat menu/list/icon controls deliberately have another role. */
-html[data-themed-controls="true"] :is(button, .castleToolbar summary):not(:where(.paletteCategoryButton, .paletteItem, .ucpAiListItem, .titlebarMenus button, .castlePieMenu button, .workspaceTab, .windowControl, .releaseUpdateButton, .buildStepControls button, .areaTabs button, .isoViewControls button, #isoWindowDockBtn, .infoButton, .helpButton, .helpBtn, .castleOverviewInfoButton, .editorCardToggle, #castleBrushMinus, #castleBrushPlus)) {
+html[data-themed-controls="true"] :is(button, .castleToolbar summary):not(:where(.paletteCategoryButton, .paletteItem, .ucpAiListItem, .titlebarMenus button, .castlePieMenu button, .workspaceTab, .windowControl, .releaseUpdateButton, .uiZoomControls button, .buildStepControls button, .areaTabs button, .isoViewControls button, #isoWindowDockBtn, .infoButton, .helpButton, .helpBtn, .castleOverviewInfoButton, .editorCardToggle, #castleBrushMinus, #castleBrushPlus)) {
 
   border: var(--texture-control-width) solid transparent;
   border-image: var(--texture-control) var(--texture-control-slice) / var(--texture-control-width) / 0 stretch;
@@ -231,8 +231,16 @@ html[data-themed-fields="true"] select option {
   background: var(--component-select-option-surface);
   color: var(--component-select-option-content);
 }
-html[data-themed-fields="true"] :is(input, textarea)::placeholder { color: var(--component-panel-muted); opacity: 1; }
+html[data-themed-fields="true"] :is(input, textarea)::placeholder { color: var(--component-input-placeholder); opacity: 1; }
 html[data-themed-fields="true"] select:disabled { opacity: .55; }
+
+/* Serif bold reads heavy on buttons (Monsterfish, #6). A pack with regular
+   control weight keeps bold for the workspace tabs and for headings only;
+   headings inside a button, like an AI's name in the library, keep theirs. */
+html[data-control-weight="regular"] :is(button, select, input, textarea, .toolbarMenu > summary, .metricRow strong,
+  .populationBreakdown strong, .castleSaveNotice, .castleGroupsDialog, #castleSelectModeLabel, .compactToggle):not(.workspaceTab) {
+  font-weight: 400;
+}
 
 /* Categories retain their domain colours; hover must never replace the face
    while retaining category-colour text (white on beige was unreadable). */

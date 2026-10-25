@@ -188,3 +188,11 @@ castle_actions: Acciones del castillo
 no_item_categories_configured: No hay categorías de elementos configuradas.
 dock: Acoplar
 cut_and_copy: Cortar y copiar
+construction_blocked: 'No se puede construir aquí: {{reasons}}'
+construction_rock: 'rocas'
+construction_water: 'agua o río'
+construction_marsh: 'pantano'
+construction_moat: 'foso excavado'
+construction_outside: 'fuera del mapa edificable'
+construction_height: 'límite de altura del terreno'
+construction_slope: 'terreno demasiado irregular'

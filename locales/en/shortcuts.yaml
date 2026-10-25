@@ -42,3 +42,5 @@ wheelMode: Choose a wheel mode.
 cameraSpeed: Camera speed must be between 1 and 200 pixels.
 invalidCamera: Invalid camera shortcut.
 assigned: The key {{key}} is already assigned or reserved.
+flatView: '2.5D: Toggle flat view'
+peekView: '2.5D: Toggle lowered view'

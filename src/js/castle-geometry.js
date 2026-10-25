@@ -238,6 +238,30 @@
     };
   }
 
+  // Dieselbe Bewegung, aber auf eine Luecke gezielt: gap ist die Stelle VOR
+  // Schritt gap, frames.length heisst ans Ende. So zeigt es die Einfuegelinie
+  // beim Ziehen - der Block landet genau dort, egal aus welcher Richtung er
+  // kommt.
+  function moveBuildStepsToGap(frames, selectedIndices, gap) {
+    if (!Array.isArray(frames) || !Array.isArray(selectedIndices)) {
+      throw new TypeError('Build steps and selected indexes must be arrays.');
+    }
+    const indexes = [...new Set(selectedIndices)]
+      .filter(index => Number.isInteger(index) && index >= 0 && index < frames.length)
+      .sort((one, two) => one - two);
+    if (!indexes.length || !Number.isInteger(gap) || gap < 0 || gap > frames.length) {
+      return { moved: false, startIndex: -1, endIndex: -1 };
+    }
+    const selected = new Set(indexes);
+    const moving = indexes.map(index => frames[index]);
+    const startIndex = gap - indexes.filter(index => index < gap).length;
+    const remaining = frames.filter((_frame, index) => !selected.has(index));
+    remaining.splice(startIndex, 0, ...moving);
+    const moved = remaining.some((frame, index) => frame !== frames[index]);
+    if (moved) frames.splice(0, frames.length, ...remaining);
+    return { moved, startIndex, endIndex: startIndex + moving.length - 1 };
+  }
+
   // Die Felder eines Pinsels. Groesse 1 ist ein Feld, 3 ein Quadrat von drei
   // mal drei um die Mitte herum. Gerade Groessen legen die Mitte nach links
   // unten - anders geht es nicht, ohne den Zeiger zwischen zwei Felder zu
@@ -482,6 +506,7 @@
     limitedLineTiles,
     routedLineTiles,
     insertBuildSteps,
-    moveBuildSteps
+    moveBuildSteps,
+    moveBuildStepsToGap
   };
 });

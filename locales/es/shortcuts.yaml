@@ -42,3 +42,5 @@ wheelMode: Elige un modo para la rueda.
 cameraSpeed: La velocidad de la cámara debe estar entre 1 y 200 píxeles.
 invalidCamera: Atajo de cámara no válido.
 assigned: La tecla {{key}} ya está asignada o reservada.
+flatView: '2.5D: Alternar vista plana'
+peekView: '2.5D: Alternar vista rebajada'

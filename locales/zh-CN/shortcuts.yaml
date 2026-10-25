@@ -42,3 +42,5 @@ wheelMode: 请选择滚轮模式。
 cameraSpeed: 相机速度必须介于 1 到 200 像素之间。
 invalidCamera: 相机快捷键无效。
 assigned: 按键 {{key}} 已被分配或保留。
+flatView: '2.5D：切换平面视图'
+peekView: '2.5D：切换压低视图'

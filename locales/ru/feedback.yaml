@@ -22,3 +22,5 @@ replacing_character: 'Замена персонажа ИИ {{name}}…'
 opening: 'Открытие {{name}}…'
 opened: '{{name}} открыт.'
 with_castle: ' с замком {{name}}'
+
+extended_rally_points: "DE: для позиций 11–30 нужны SHCDE-Fixes и GuardingSpotsPerUnitType. Сохраняйте в .aivjson."

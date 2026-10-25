@@ -22,3 +22,5 @@ replacing_character: '{{name}} karakteri değiştiriliyor…'
 opening: '{{name}} açılıyor…'
 opened: '{{name}} açıldı.'
 with_castle: ' — {{name}}'
+
+extended_rally_points: "DE: 11–30. noktalar SHCDE-Fixes ve GuardingSpotsPerUnitType gerektirir. .aivjson olarak kaydedin."

@@ -22,3 +22,5 @@ classic_empty_steps: Leere Bauschritte können im klassischen AIV-Format nicht e
 classic_item: '{{name}} wird vom klassischen AIV-Format nicht unterstützt.'
 classic_pauses: Bauschrittpausen sind im klassischen Editor deaktiviert.
 classic_marker: '{{name}} kann im klassischen AIV-Format nicht erhalten bleiben.'
+
+classic_extended_spots: "Truppenplätze über 10 können nicht als klassisches .aiv gespeichert werden. DE (.aivjson) exportieren, um alle Plätze zu erhalten."

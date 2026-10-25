@@ -6,10 +6,27 @@ import { rpc, tr, state, dispatch } from './runtime';
 import { desktopShortcut, type ViewAction } from './shortcuts';
 export function createMenus() {
   let popup: Menu | null = null;
-  let zoom = 1;
-  const setZoom = (next: number) => {
-    zoom = Math.max(0.5, Math.min(2, next));
-    return getCurrentWebview().setZoom(zoom);
+  // Interface zoom, like a browser's: the webview scales the whole page, so
+  // canvases follow devicePixelRatio and stay sharp. Remembered across starts.
+  const ZOOM_KEY = 'toolkit.uiZoom';
+  let zoom = (() => {
+    try {
+      const stored = Number(localStorage.getItem(ZOOM_KEY));
+      return stored >= 0.5 && stored <= 2 ? stored : 1;
+    } catch {
+      return 1;
+    }
+  })();
+  if (zoom !== 1) void getCurrentWebview().setZoom(zoom).catch(console.error);
+  const setZoom = async (next: number) => {
+    zoom = Math.round(Math.max(0.5, Math.min(2, next)) * 10) / 10;
+    try {
+      localStorage.setItem(ZOOM_KEY, String(zoom));
+    } catch {
+      // Zoom still applies to this window without storage.
+    }
+    await getCurrentWebview().setZoom(zoom);
+    window.dispatchEvent(new CustomEvent('toolkit-ui-zoom', { detail: zoom }));
   };
   async function performViewAction(action: ViewAction) {
     switch (action) {
@@ -226,5 +243,5 @@ export function createMenus() {
     }
   });
 
-  return { showMenu };
+  return { showMenu, uiZoom: () => zoom, setUiZoom: setZoom };
 }

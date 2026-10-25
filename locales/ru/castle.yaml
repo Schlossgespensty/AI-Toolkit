@@ -188,3 +188,11 @@ dock: Прикрепить
 groups: Группы
 cut_and_copy: Вырезать и скопировать
 deselect: Снять выделение
+construction_blocked: 'Здесь нельзя строить: {{reasons}}'
+construction_rock: 'скалы'
+construction_water: 'вода или река'
+construction_marsh: 'болото'
+construction_moat: 'вырытый ров'
+construction_outside: 'вне доступной для строительства карты'
+construction_height: 'предел высоты местности'
+construction_slope: 'слишком неровный рельеф'

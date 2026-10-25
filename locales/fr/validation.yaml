@@ -22,3 +22,5 @@ classic_empty_steps: Les étapes de construction vides ne peuvent pas être cons
 classic_item: '{{name}} n’est pas pris en charge au format AIV classique.'
 classic_pauses: Les pauses de construction sont désactivées dans l’éditeur classique.
 classic_marker: '{{name}} ne peut pas être conservé au format AIV classique.'
+
+classic_extended_spots: "Les positions de troupe au-delà de 10 ne peuvent pas être enregistrées en .aiv classique. Exportez en DE (.aivjson) pour toutes les conserver."

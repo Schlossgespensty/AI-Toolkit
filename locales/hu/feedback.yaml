@@ -22,3 +22,5 @@ replacing_character: '{{name}} karakterének lecserélése…'
 opening: '{{name}} megnyitása…'
 opened: '{{name}} megnyitva.'
 with_castle: ' – vár: {{name}}'
+
+extended_rally_points: "DE: a 11–30. helyhez SHCDE-Fixes és GuardingSpotsPerUnitType szükséges. Mentés .aivjson formátumban."

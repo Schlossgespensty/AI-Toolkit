@@ -35,18 +35,20 @@
   --primitive-radius-normal: 7px;
   --primitive-radius-large: 11px;
   --semantic-surface-chrome: #212529;
-  --component-input-surface: #e5d3b1;
+  --component-input-surface: #9c6528;
+  --component-input-content: #fbf5e1;
+  --component-input-placeholder: #e2cfa6;
   --component-panel-surface: #e4dbc3;
   --component-panel-heading: #d8ceb5;
-  --component-panel-content: #292720;
-  --component-panel-soft: #464238;
-  --component-panel-muted: #625b4c;
+  --component-panel-content: #1f1d18;
+  --component-panel-soft: #36322a;
+  --component-panel-muted: #4b4538;
   --component-panel-border: #b1a080;
   --component-panel-accent: #755324;
   --component-panel-selected: #806022;
   --component-panel-success: #32653c;
   --component-panel-danger: #9b2924;
-  --component-value-color-scheme: light;
+  --component-value-color-scheme: dark;
   --component-toolbar-image: none;
   --component-toolbar-shadow: none;
   --component-toolbar-min-height: 38px;
@@ -104,6 +106,7 @@
   --component-toolbar-command-frame: none;
   --component-toolbar-command-hover: #30383b;
   --component-toolbar-command-selected: #39372b;
+  --component-sidebar-text-zoom: 1.15; /** Scale of the text inside the character sidebar; the bar keeps its width. */
   --semantic-surface-app: var(--primitive-color-ink);
   --semantic-surface-deep: var(--primitive-color-deep);
   --semantic-surface-panel: var(--primitive-color-slate1);
@@ -137,11 +140,11 @@
   --component-button-surface: var(--primitive-color-button);
   --component-button-hover: var(--primitive-color-button-hover);
   --component-button-radius: var(--primitive-radius-small);
-  --component-input-content: var(--component-panel-content);
   --component-input-radius: var(--primitive-radius-small);
   --component-panel-radius: var(--primitive-radius-normal);
   --component-palette-surface: var(--semantic-surface-chrome);
   --component-value-surface: var(--component-input-surface);
+  --component-value-content: var(--component-input-content);
   --component-toolbar-surface: var(--semantic-surface-chrome);
   --component-select-chrome-surface: var(--semantic-surface-chrome);
   --component-select-option-surface: var(--semantic-surface-chrome);
@@ -156,7 +159,6 @@
   --component-menu-surface: var(--semantic-surface-section);
   --component-menu-content: var(--semantic-content-main);
   --component-palette-content: var(--semantic-content-main);
-  --component-value-content: var(--component-input-content);
   --component-toolbar-border: var(--semantic-border-normal);
   --component-toolbar-group-border: var(--semantic-border-strong);
   --component-toolbar-command-border: var(--semantic-border-normal);

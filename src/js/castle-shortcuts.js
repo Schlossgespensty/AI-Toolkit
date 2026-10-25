@@ -23,6 +23,7 @@
     ['fire', "shortcuts:fire", 'f', 'castleShowFire'],
     ['gameMap', "shortcuts:gameMap", 'ctrl+m', 'castleIsoMapBtn'], ['resetMap', "shortcuts:resetMap", 'ctrl+shift+m', 'castleIsoMapReset'],
     ['rotateLeft', "shortcuts:rotateLeft", 'c'], ['rotateRight', "shortcuts:rotateRight", 'x'],
+    ['flatView', "shortcuts:flatView", 'space', 'castleIsoFlatBtn'], ['peekView', "shortcuts:peekView", 'v', 'castleIsoPeekBtn'],
     ['saveAs', "shortcuts:saveAs", 'ctrl+shift+s'], ['undo', "shortcuts:undo", 'ctrl+z'], ['redo', "shortcuts:redo", 'ctrl+y'],
     ['copy', "shortcuts:copy", 'ctrl+c'], ['cut', "shortcuts:cut", 'ctrl+x'],
     ['exportDe', "shortcuts:exportDe", 'ctrl+shift+e', 'castleExportDeBtn'],
@@ -75,13 +76,13 @@
     return validate(result);
   }
   // Add formerly unassigned defaults without taking a user's existing key.
-  function upgrade(saved, cameraKeys = []) {
+  function upgrade(saved, cameraKeys = [], fillCleared = true) {
     const result = Object.fromEntries(actions.map(([id]) => [id, saved?.[id] || ['']]));
     const checked = validate(result);
     const used = new Set([...Object.values(checked).flat(), ...cameraKeys].filter(Boolean));
     for (const [id] of actions) {
       const key = defaults[id][0];
-      if (!checked[id][0] && key && !used.has(key)) { checked[id] = [key]; used.add(key); }
+      if ((fillCleared || !Object.hasOwn(saved || {}, id)) && !checked[id][0] && key && !used.has(key)) { checked[id] = [key]; used.add(key); }
     }
     return checked;
   }

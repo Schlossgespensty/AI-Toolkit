@@ -1,83 +1,83 @@
 # AI Toolkit
 
-AI Toolkit is a Windows desktop editor for Stronghold Crusader AI projects. It
-combines four workspaces in one Electron application:
+Edit Stronghold Crusader AI behavior, design castles, and manage UCP AI projects
+in one desktop app.
 
-- **UCP AI Library** discovers installed AI plugins and creates or updates AIs
-  managed by the toolkit.
-- **Character** edits `character.json` using the schemas in `config/`.
-- **Castle** reads and writes native `.aiv` files and provides 2D and 2.5D
-  editing, build-order tools, cost information, groups, and copy/paste.
-- **AI Content** edits `lines.json`, portraits, speech, and mapped video files.
+[Windows preview downloads](https://github.com/Krarilotus/AI-Toolkit/releases) ·
+[Official releases](https://github.com/Schlossgespensty/AI-Toolkit/releases) ·
+[Report a bug](https://github.com/Schlossgespensty/AI-Toolkit/issues/new)
 
-## Requirements
+![Castle editor with a 2.5D castle on a game map, build order, population and building palette](docs/screenshots/castle-editor.webp)
 
-- Windows 10 or newer
-- Node.js 22.12 or newer and npm for development
-- A Stronghold Crusader Extreme installation with UCP only for the UCP Library,
-  game-map backgrounds, and rendered game terrain
+## What you can do
 
-The Character editor and direct AIV editing do not require an installed game.
+| Workspace | Tools |
+| --- | --- |
+| UCP AI Library | Browse installed AIs, create or clone projects, and assign castle slots. |
+| Character | Tune the economy, recruitment and starting troops. Check population, storage and fear factor. |
+| Castle | Edit in 2D and 2.5D, reorder build steps, copy building groups, and inspect costs and terrain conflicts. Path and fire overlays provide planning estimates. |
+| AI Content | Edit dialogue and portraits, preview or replace speech, and open mapped videos. |
 
-## Development
+Rotate with **X/C**, toggle flat view with **Space**, or lower structures with
+**V**. The app has Default and UCP themes and nine interface languages.
+[Controls](docs/castle-editing-controls.md) · [Analysis limits](docs/castle-analysis.md)
+
+## Supported files
+
+- Classic Crusader `.aiv` castles and UCP JSON files.
+- Experimental DE `.aivjson` and `.aijson` editing. DE graphics and in-game
+  compatibility remain unverified. See [DE support](docs/definitive-edition-integration.md).
+- [Up to 30 troop spots](docs/expanded-troop-spots.md) for supported types.
+  Extra spots require DE with SHCDE-Fixes and its per-AI setting. Classic export
+  remains limited to ten.
+
+## Get started
+
+1. On 64-bit Windows 10 or newer, get the setup EXE or portable ZIP from
+   **Windows preview downloads** above for this branch's features.
+2. Run the installer, or extract the entire ZIP and open `AI Toolkit.exe`.
+   The app downloads Microsoft WebView2 if it is missing.
+3. In UCP AI Library, choose your classic Crusader game folder and open an AI.
+   Use **Clone to My AIs** to make a separate variant before editing.
+
+Character and castle file editing work without a game installed. The Library
+needs UCP; maps and game artwork need a local classic Crusader installation.
+
+<details>
+<summary>More screenshots</summary>
+
+### UCP AI Library
+
+![AI Library with installed projects and options to open or clone an AI](docs/screenshots/ai-library.webp)
+
+### Character
+
+![Character editor with starting troop settings, plugin options and population planning](docs/screenshots/character-editor.webp)
+
+### AI Content
+
+![AI Content editor with dialogue fields, portraits and playable speech files](docs/screenshots/ai-content.webp)
+
+Screenshots use the UCP theme. [Capture details and credits](docs/screenshots/README.md).
+
+</details>
+
+## Contribute
+
+Send bug reports and pull requests, or help with translations and themes. For
+bugs, include your build, steps to reproduce, and an example file when possible.
+
+To run from source on Windows, install Node.js 22.12 or newer, stable Rust and
+the Microsoft C++ build tools, then run:
 
 ```powershell
 npm ci
 npm start
 ```
 
-Validation and packaging:
+Before a pull request, run `npm run check` and `npm run check:locales`. For Rust
+changes, also run `cargo test --locked --manifest-path src-tauri/Cargo.toml`.
+See [native setup and packaging](docs/native-packaging.md) and the
+[theme guide](docs/editor-themes.md).
 
-```powershell
-npm run check
-npm run package
-npm run dist
-```
-
-`npm run check` checks every application JavaScript module and runs the
-self-contained Node test suite. No example tree, private AIV collection, UCP
-module source, web-build source, or installed game is needed for validation.
-
-Real-game integration checks run separately against your own classic Crusader
-installation (including the stock maps and AIVs):
-
-```powershell
-$env:AI_TOOLKIT_TEST_GAME_ROOT = 'D:\Games\Stronghold Crusader'
-npm run test:game
-```
-
-These checks read installed files without launching the game or modifying them.
-Missing configuration or required fixtures fails explicitly; the suite does not
-silently skip. `npm run check` remains self-contained for CI. Windows installer
-checks run on Windows and are intentionally skipped on other operating systems.
-
-## Castle editor notes
-
-- Native `.aiv` data is read and written by the bundled JavaScript codec.
-- Build-step locks are deliberately session-only. They are cleared when a castle
-  is loaded and are never written into the AIV or a sidecar file.
-- Named groups, cross-castle clipboard data, panel layout, shortcuts, and cost
-  balance selections are local UI preferences stored by Electron.
-- Real map terrain is generated from the selected game installation on demand.
-
-## Project structure
-
-- `main.js` — Electron lifecycle, application menus, IPC, and filesystem access
-- `preload.js` — isolated renderer bridge
-- `src/js/` — workspace controllers, castle geometry, 2.5D view, and panels
-- `src/node/` — AIV codec, UCP filesystem operations, images, and map parsing
-- `config/` — Character and AIV schemas and templates
-- `assets/aiv/` — bundled castle artwork
-- `tests/` — self-contained Node tests
-
-## Security
-
-The renderer uses context isolation, Electron sandboxing, a restrictive Content
-Security Policy, and blocked external navigation. Filesystem operations remain
-in the main process and are exposed through the preload bridge.
-
-## Licensing and bundled assets
-
-No project license has been selected yet. A maintainer must choose one before
-granting reuse rights. See [ASSETS.md](ASSETS.md) for the separate provenance
-work required for bundled artwork.
+No project license has been selected yet. See [bundled asset status](ASSETS.md).

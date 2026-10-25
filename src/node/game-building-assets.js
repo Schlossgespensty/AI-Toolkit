@@ -13,7 +13,7 @@ function gameBuildingAssets(root, cacheRoot) {
   if(!root)return null;
   const graphics=resolveGameGraphics(root);
   const catalogue=JSON.parse(fs.readFileSync(cataloguePath,'utf8'));
-  const revision=require('node:crypto').createHash('sha256').update('5:'+graphics.revision+JSON.stringify(sourceParts)+JSON.stringify(wallSources)+JSON.stringify(catalogue)).digest('hex');
+  const revision=require('node:crypto').createHash('sha256').update('8:'+graphics.revision+JSON.stringify(sourceParts)+JSON.stringify(wallSources)+JSON.stringify(catalogue)).digest('hex');
   fs.mkdirSync(cacheRoot,{recursive:true});
   const cache=path.join(cacheRoot,`${revision}.json`),png=path.join(cacheRoot,`${revision}.png`);
   if(fs.existsSync(cache)&&fs.existsSync(png))return JSON.parse(fs.readFileSync(cache,'utf8'));
@@ -32,6 +32,12 @@ function gameBuildingAssets(root, cacheRoot) {
     return read(fallback);
   }
   function decode(source) {
+    if (source.sprite === true) {
+      // Plain pictures (anim_castle: the bevels of diagonal walls) keep their own origin.
+      const file = stock(source.file, source.index), entry = file.pictures[source.index];
+      const raw = file.buffer.subarray(file.picturesAt + entry.offset, file.picturesAt + entry.offset + entry.size);
+      return {width: entry.width, height: entry.height, dx: 0, dy: 0, rgba: gm.tgxToRgba(raw, entry.width, entry.height, null)};
+    }
     const top = gm.decodePart(stock(source.file, source.index), source.index, source.palette ?? null);
     if (source.pillar === undefined) return top;
     const pillar = gm.pillarPicture(stock('tile_walls', source.pillar), source.pillar, source.lift);
@@ -43,11 +49,22 @@ function gameBuildingAssets(root, cacheRoot) {
   }
   function visit(value) {
     if (!value || typeof value !== 'object') return;
-    const key = Number.isInteger(value.nativeMoat) ? `moat:${value.nativeMoat}` : value.bild === 'building-parts.png' ? `${value.sx},${value.sy}` : value.bild;
+    const key = Number.isInteger(value.nativePit) ? `pit:${value.nativePit}` : Number.isInteger(value.nativeMoat) ? `moat:${value.nativeMoat}` : value.bild === 'building-parts.png' ? `${value.sx},${value.sy}` : value.bild;
     let source = value.bild === 'building-parts.png' ? sourceParts[key] : wallSources[key];
     const single = /^(killing_pits|pitch_ditches)_(\d+)\.png$/.exec(value.bild || '');
     if (Number.isInteger(value.nativeMoat)) source = {file:'tile_sea8', index:value.nativeMoat};
+    const flat = /^native-flat:(\d+)$/.exec(value.bild || '');
+    if (flat) source = {file:'tile_flatties', index:Number(flat[1])};
+    const appleStump = /^native-apple-stump:(\d+)$/.exec(value.bild || '');
+    if (appleStump) source = {file:'tree_apple', index:100, palette:Number(appleStump[1])};
+    if (source?.file === 'tile_farmland' || source?.file === 'tree_apple') value.flatField = true;
+    // Native farm placement gives crop and fence cells the parent building ID.
+    // They use plain farm/dairy ground in Space; the hut alone has a symbol.
+    if (source?.file === 'tile_farmland' && source.index <= 60) value.flatSprite = {bild:`native-flat:${source.index >= 55 ? 28 : 30}`};
+    if (source?.file === 'tree_apple' && !appleStump) value.flatSprite = {bild:`native-apple-stump:${source.palette ?? 0}`};
+    if (source?.file === 'tile_land3') value.flatStair = [134,136].includes(source.index) ? 42 : 40;
     if (single) source = {file: single[1], index: Number(single[2])};
+    if (Number.isInteger(value.nativePit)) source = {file:'killing_pits',index:value.nativePit};
     if (source) {
       let record = parts.get(key);
       if (!record) {

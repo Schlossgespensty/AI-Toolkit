@@ -40,6 +40,7 @@ developer_tools: Outils de développement
 zoom_in: Agrandir
 zoom_out: Réduire
 reset_zoom: Taille réelle
+interface_zoom: "Zoom de l'interface"
 classic_castle: Château AIV classique
 choose_castle_format: Choisissez le format de château pour ce fichier.
 add_castle_message: |-

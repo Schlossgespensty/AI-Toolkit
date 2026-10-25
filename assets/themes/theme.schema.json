@@ -44,6 +44,13 @@
         "light"
       ]
     },
+    "controlWeight": {
+      "description": "Weight of button and field text. \"regular\" keeps bold only for the workspace tabs and headings, which suits serif fonts. Default: \"bold\".",
+      "enum": [
+        "bold",
+        "regular"
+      ]
+    },
     "textures": {
       "type": "object",
       "additionalProperties": false,

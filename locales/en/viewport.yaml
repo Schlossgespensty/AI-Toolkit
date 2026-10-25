@@ -23,3 +23,10 @@ no_window_open_one_from_the_toolbar: no window — open one from the toolbar
 add_as_a_tab_here: Add as a tab here
 esc_cancels: ' · Esc cancels'
 is_missing: ' is missing'
+flat_view: 'Flat view'
+lowered_view: 'Lowered view'
+refresh_map: "Refresh map"
+refresh_map_hint: "Reload the selected map from disk: {{path}}"
+refreshing_map: "Refreshing map…"
+map_refreshed: "Map updated: {{name}}"
+map_refresh_failed: "Could not refresh map: {{message}}"

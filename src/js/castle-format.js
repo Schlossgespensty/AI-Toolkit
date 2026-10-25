@@ -40,6 +40,7 @@
       if (frame?.shouldPause) issues.add(tr('validation:classic_pauses'));
     }
     for (const item of document.miscItems || []) {
+      if (Number(item.number) >= 10) { issues.add(tr('validation:classic_extended_spots')); continue; }
       if (!Number.isInteger(item.itemType) || item.itemType < 0 || item.itemType >= 24 || item.number < 0 || item.number >= 10) {
         issues.add(tr('validation:classic_marker', {name:itemName(constants,item.itemType)}));
       }

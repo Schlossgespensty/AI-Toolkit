@@ -43,6 +43,11 @@
       <option value="Schlossgespensty/AI-Toolkit" data-i18n="interface:official_releases">Official releases</option>
     </select>
     <button id="releaseUpdateButton" class="releaseUpdateButton" type="button" aria-live="polite" title="Check official releases" data-i18n-attrs="title=interface:check_official_releases" data-i18n="interface:check_updates">Check updates</button>
+    <div id="uiZoomControls" class="uiZoomControls" role="group" aria-label="Interface zoom" data-i18n-attrs="aria-label=native:interface_zoom" hidden>
+      <button type="button" data-ui-zoom="-1" title="Zoom out" aria-label="Zoom out" data-i18n-attrs="title=native:zoom_out;aria-label=native:zoom_out">&minus;</button>
+      <button type="button" data-ui-zoom="0" class="uiZoomValue" title="Actual size" data-i18n-attrs="title=native:reset_zoom">100&nbsp;%</button>
+      <button type="button" data-ui-zoom="1" title="Zoom in" aria-label="Zoom in" data-i18n-attrs="title=native:zoom_in;aria-label=native:zoom_in">+</button>
+    </div>
     <span id="workspaceStatus" class="workspaceStatus" data-i18n="interface:ucp_ai_library">UCP AI Library</span>
     <span class="appIdentity" aria-hidden="true"><span>AI</span> Toolkit</span>
     <div id="windowControls" class="windowControls" role="group" aria-label="Window controls" data-i18n-attrs="aria-label=shell:window_controls" hidden>
@@ -307,8 +312,11 @@
             </div>
             <div id="castleIsoControls" class="isoViewControls" role="toolbar" aria-label="2.5D view controls" data-i18n-attrs="aria-label=interface:2_5d_view_controls">
               <button id="castleIsoMapBtn" type="button" title="Lay a map of the game under the slanted view - to scale, one field of the map on one field of the editor" data-i18n-attrs="title=interface:lay_a_map_of_the_game_under_the_slanted_view_to_scale_one_field_of_the_map_o" data-i18n="interface:game_map">Game map</button>
+              <button id="castleIsoMapRefresh" class="isoViewReset" type="button" disabled aria-label="Refresh map" data-i18n-attrs="aria-label=viewport:refresh_map"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 7v5h-5M20 12a8 8 0 1 0-2 5"/></svg></button>
               <select id="castleIsoMapKeep" title="Which starting place of the map the castle is built on" aria-label="Map starting place" hidden data-i18n-attrs="title=interface:which_starting_place_of_the_map_the_castle_is_built_on;aria-label=interface:map_starting_place"></select>
               <button id="castleIsoMapReset" class="isoViewReset" type="button" title="Take the map of the game away" aria-label="Remove game map" hidden data-i18n-attrs="title=interface:take_the_map_of_the_game_away;aria-label=interface:remove_game_map">&times;</button>
+              <button id="castleIsoFlatBtn" type="button" aria-pressed="false" data-i18n="viewport:flat_view" data-i18n-attrs="title=shortcuts:flatView">Flat view</button>
+              <button id="castleIsoPeekBtn" type="button" aria-pressed="false" data-i18n="viewport:lowered_view" data-i18n-attrs="title=shortcuts:peekView">Lowered view</button>
             </div>
             <div id="castleMapWindow" class="viewWindow" data-window="map">
               <div id="castleCanvasHost" class="castleCanvasHost">
@@ -675,6 +683,8 @@
 <script src="js/titlebar.js"></script>
 <script src="js/release-updates.js"></script>
 <script src="js/castle-geometry.js"></script>
+<script src="js/castle-construction-data.js"></script>
+<script src="js/castle-construction.js"></script>
 <script src="js/castle-troops.js"></script>
 <script src="js/castle-shortcuts.js"></script>
 <script src="js/castle-camera.js"></script>

@@ -102,7 +102,7 @@ prerequisite for these explicitly labelled estimates.
 
 ## Resource-building plan artwork
 
-Wheat (9x9), hops (9x9), apples (11x11), dairy (10x10), quarry (6x6), iron (4x4)
+Wheat (9x9), hops (9x9), apples (10x10), dairy (10x10), quarry (6x6), iron (4x4)
 and pitch (4x4) plan skins are assembled from the original Gremium village
 editor's `gm/colour tiles.gm1`, with one 32x32 source tile per AIV tile. The
 food/industry corners, edges and centres retain their native scale; the old

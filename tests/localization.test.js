@@ -11,6 +11,16 @@ const { build, registry, flatten } = require('../scripts/build-locales');
 const { checkReferences } = require('../scripts/check-locale-references');
 const root = path.join(__dirname, '..');
 const source = fs.readFileSync(path.join(root, 'src/js/i18n.js'), 'utf8');
+test('prepared browser translation scripts initialize without the native desktop build', async () => {
+  const context = vm.createContext({console, setTimeout, clearTimeout});
+  for (const name of ['src/vendor/i18next/i18next.min.js', 'src/locales/english.js', 'src/js/i18n.js']) {
+    vm.runInContext(fs.readFileSync(path.join(root, name), 'utf8'), context, {filename:name});
+  }
+  await context.toolkitI18n.ready;
+  assert.equal(typeof context.toolkitI18n.bindText, 'function');
+  assert.equal(context.toolkitI18n.t('common:actions.close'), 'Close');
+});
+
 function element(key, value = '', tagName = 'SPAN') {
   return {
     tagName,

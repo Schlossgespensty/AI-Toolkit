@@ -6,6 +6,7 @@
   "extends": "default",
   "variables": "variables.css",
   "colorScheme": "dark",
+  "controlWeight": "regular",
   "textures": {
     "control": {
       "file": "textures/button_ucp.png",
@@ -62,17 +63,17 @@
       "fill": true
     },
     "input": {
-      "file": "textures/searchfield.png",
+      "file": "textures/field_ucp.png",
       "mode": "frame",
-      "slice": 4,
-      "width": 4,
+      "slice": 5,
+      "width": 5,
       "fill": true
     },
     "value": {
-      "file": "textures/searchfield.png",
+      "file": "textures/field_ucp.png",
       "mode": "frame",
-      "slice": 4,
-      "width": 4,
+      "slice": 5,
+      "width": 5,
       "fill": true
     },
     "dropdown": {

@@ -65,6 +65,13 @@ if ('__TAURI_INTERNALS__' in window) {
     quickSaveFile: save,
     showTitlebarMenu: async (request: { menu: string; x: number; y: number }) =>
       menus.showMenu(request),
+    getUiZoom: () => menus.uiZoom(),
+    setUiZoom: (value: number) => menus.setUiZoom(value),
+    onUiZoomChanged: (fn: (zoom: number) => void) => {
+      const listener = (event: Event) => fn((event as CustomEvent<number>).detail);
+      window.addEventListener('toolkit-ui-zoom', listener);
+      return () => window.removeEventListener('toolkit-ui-zoom', listener);
+    },
     setDialogProject: async (root: string | null) => {
       state.projectRoot = root;
     },

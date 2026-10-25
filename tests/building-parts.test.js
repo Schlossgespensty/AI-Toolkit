@@ -60,6 +60,16 @@ test('farms contain their native field objects as well as all nine hut tiles', (
     entries[73].partsLayouts[1].map(p => [p.gx, p.gy]));
 });
 
+test('apple farms reserve 10x10 and keep all eight trees inside each rotated footprint', () => {
+  const apple=entries[72];
+  assert.equal(apple.kacheln,10);
+  assert.equal(apple.kacheln,entries[73].kacheln);
+  assert.deepEqual(apple.partsLayouts[0].slice(9).map(p=>[p.gx,p.gy]),
+    [[5,1],[9,1],[1,5],[5,5],[9,5],[1,9],[5,9],[9,9]]);
+  for(const layouts of apple.cameraPartsLayouts) for(const part of layouts[0])
+    assert.ok(part.gx>=0&&part.gx<10&&part.gy>=0&&part.gy<10,'native anchors stay inside the placement footprint');
+});
+
 test('native components retain their pixel dimensions and every referenced image is packaged', () => {
   const all = Object.values(entries).flatMap(e => [e, ...(e.platten || []), ...(e.directions || [])]);
   for (const entry of all) for (const layout of entry.partsLayouts || []) for (const part of layout) {

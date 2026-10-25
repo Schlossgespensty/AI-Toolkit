@@ -23,3 +23,10 @@ no_window_open_one_from_the_toolbar: sin ventana; abre una desde la barra de her
 add_as_a_tab_here: Añadir aquí como pestaña
 esc_cancels: ' · Esc cancela'
 is_missing: ' falta'
+flat_view: 'Vista plana'
+lowered_view: 'Vista rebajada'
+refresh_map: "Actualizar mapa"
+refresh_map_hint: "Volver a cargar el mapa seleccionado desde el disco: {{path}}"
+refreshing_map: "Actualizando mapa…"
+map_refreshed: "Mapa actualizado: {{name}}"
+map_refresh_failed: "No se pudo actualizar el mapa: {{message}}"

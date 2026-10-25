@@ -188,3 +188,11 @@ dock: 停靠
 groups: 分组
 cut_and_copy: 剪切并复制
 deselect: 取消选择
+construction_blocked: '此处无法建造：{{reasons}}'
+construction_rock: '岩石'
+construction_water: '水域或河流'
+construction_marsh: '沼泽'
+construction_moat: '已挖掘的护城河'
+construction_outside: '超出可建造地图范围'
+construction_height: '地形高度限制'
+construction_slope: '地形过于不平整'

@@ -42,3 +42,5 @@ wheelMode: Válasszon görgőmódot.
 cameraSpeed: A kamera sebessége 1 és 200 képpont közötti lehet.
 invalidCamera: Érvénytelen kameragyorsbillentyű.
 assigned: A(z) {{key}} billentyű már hozzá van rendelve, vagy fenntartott.
+flatView: '2.5D: Lapos nézet váltása'
+peekView: '2.5D: Süllyesztett nézet váltása'

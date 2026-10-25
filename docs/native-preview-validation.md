@@ -1,7 +1,194 @@
 # Native preview validation
 
-Windows x64, 23 September 2026. Native compilation/tests now also pass on
+Windows x64, updated 20 October 2026. Native compilation/tests also pass on
 Linux/macOS; their OS GUI and updater integration remain untested.
+
+## Map refresh, anchored V and complete flat scenery: 84fd8a8b
+
+Source `84fd8a8b7b2f303cac49a5ca266dbe9a3dc961ea` adds a compact refresh-arrow
+button next to Game map. Its tooltip identifies the exact file. Reload commits
+metadata and both terrain atlases after image decoding, preserves the selected
+player/start, camera and view modes, and keeps the old map on failure.
+
+V now leaves the map and camera anchored while shortening wall, stair, tower,
+gate and keep columns above their original ground. Space uses a separate saved-map
+flat atlas, including the preplaced dungeon and native flat rock pictures. Each
+woodcutter/hunter/farm hut gets one centre symbol. Farm fields stay flat and moats
+retain their native water/edge artwork.
+
+**636 JavaScript tests and 74 Rust tests pass**, with the game-data integration
+fixture intentionally ignored. Strict locale checks pass for all nine catalogues
+at 1,749 messages each; TypeScript, package policy and Rust formatting pass. The
+isolated renderer smoke passes without stderr or renderer errors.
+
+Packaged native checks used an owned map copy: replacing GreekSea with A Friend
+Indeed at the same path changed the loaded starts, retained player 2, zoom, pan,
+camera direction and Space/V state, and left the castle unchanged. An invalid
+file retained the prior map/tiles, re-enabled refresh, and succeeded after retry.
+The test used a separate game folder/profile and left the live map files untouched.
+
+Gatekeeper/Kratoloros's 998-step castle was checked in normal, V, rotated V,
+Space and rotated Space modes. V's pan/zoom are identical to normal. Normal and
+restored viewport PNGs remain byte-identical (SHA-256
+`b75501dc941d9a954bf299cf5ab8f08a425aee1a3b6c32b777cb04f9e9b4a893`).
+Node and Rust's 320,000-byte flat tile rasters match (SHA-256
+`acbdc2b4fb1ee7289bcfe06327eac0ec8c1c7e0449c3489ae69f062a98f1db39`).
+The native rules flatten all 25 dungeon tiles and 3,447 rocky tiles in GreekSea.
+All six hut/farm types produce exactly one marker. Both isolated native runs
+reported no renderer errors and exited with code 0.
+
+Portable: **7,435,528 bytes**; Setup: **6,772,065 bytes**. All **123 packaged
+images** retain their original bytes. Portable SHA-256:
+`71b1b4a9deef74c0936fec5eb2022867a2645c14671b834c241834af7fa3168a`.
+
+## CI consolidation and fixture repair
+
+The automatic Native CI workflow now runs shared editor tests, translations,
+package policy, bridge types and the renderer smoke check once, followed by
+native tests/builds on Windows, Linux and macOS. The separate CI workflow was
+removed. Fork preview pushes rely on the upstream PR checks, avoiding duplicate
+push/PR runs; Markdown-only changes are excluded. Native preview packaging and
+publishing remain manual.
+
+The failing hover fixtures now provide construction-warning context, and the
+synthetic graphics fixture includes all 46 flat tiles. Rust formatting is clean.
+The Windows installer test yields during cleanup while the restarted fixture
+executable releases its files, and verifies the temporary cleanup path.
+
+The renderer follow-up moves i18next preparation into the shared postinstall
+path, rather than depending on a prior native build. Its isolated smoke fixture
+uses English explicitly, supplies offline release responses, awaits atlas loads
+and checks the current saved-map rotation contract. The hidden local smoke run
+passes with no stderr or renderer errors, 3,605 component atlas draws, seven
+reachable worker routes and four native camera directions plus restoration.
+A browser bootstrap regression check covers the prepared translation scripts.
+
+Local validation: **631 JavaScript tests pass; 74 Rust tests pass**, with the
+game-data integration fixture intentionally ignored. Strict locales, desktop
+TypeScript, package policy, workflow YAML and Rust formatting checks pass.
+
+## Native flat-view artwork: snapshot-native-44a269c2
+
+Snapshot source `44a269ca788ce1145a1f04cab17b11ab0d413654` replaces the
+generated Space footprint diamonds with the selected game's native flat tiles,
+including sparse farm parts, stairs and wall roofs. Placement/move previews
+use the same parts. Terrain and troops share the native 8-pixel flat datum.
+See [mapping provenance and runtime variant limits](iso-view-modes.md).
+
+**115 focused JavaScript checks and four Rust map-reader checks pass.** Node and
+the packaged native app decode all 46 flat tiles with matching dimensions and
+no missing-art warnings. Their 320,000-byte GreekSea RandomLayer rasters match
+byte-for-byte (SHA-256
+`f33487c669d90f06de02656694b039908f073e7ac52dbe9191cae66f084c28d5`).
+
+Packaged visual checks used the unchanged 998-step Gatekeeper/Kratoloros castle
+on GreekSea in normal, V, rotated V, Space and rotated Space modes. Space uses
+textured tile parts; V preserves native artwork proportions. Normal and restored
+viewport PNGs match byte-for-byte (SHA-256
+`b75501dc941d9a954bf299cf5ab8f08a425aee1a3b6c32b777cb04f9e9b4a893`).
+The castle document stayed unchanged, renderer error collection was empty and
+the isolated app exited cleanly. A separate packaged check confirmed V repeat,
+keyup/blur/remount/detach/dock persistence, second-press and button deactivation.
+The live app and profile were not changed.
+
+Portable: **7,430,371 bytes**; Setup: **6,769,743 bytes**. All **123 packaged
+images** retain their original bytes and all nine language catalogues are
+complete. Portable SHA-256:
+`295b20e131b19175009930575f475d0a071ffbf64c730a2be0572015ebe0715a`.
+Published asset digests match the tagged portable and Setup copies in
+`D:\Downloads`. An isolated previous native build offers **Install
+snapshot-native-44a269c2** through **Experimental snapshot: Krarilotus**.
+Full suites and benchmarks were not rerun.
+
+## Lowered-view height and footprint correction: 70723269
+
+Snapshot source `707232695a52934851afdc4c964319f5abde76cb` replaces the
+whole-image 20% vertical scaling with the native quarter-height table. Ground
+and roof diamonds retain their shape, cliff/wall columns shorten, and troops
+follow the visible supports. See [height provenance](iso-view-modes.md).
+
+**111 focused rendering, geometry, shortcut and troop checks pass.** Packaged
+native comparison loaded the unchanged 998-step Gatekeeper/Kratoloros castle
+on GreekSea in normal, lowered, rotated and flat modes. Normal and restored
+viewport PNGs match the previous build byte-for-byte (SHA-256
+`d68bb8c88f79dcb73dc51ca933a63da629efb271c9fdd720a9017601e5260eab`).
+Lowered view no longer squashes complete tile/part images. V persistence,
+second-press/button deactivation, remount/detach/dock, unchanged castle contents,
+empty renderer-error collection and clean exit 0 were checked separately.
+
+Portable: **7,429,184 bytes**; Setup: **6,766,951 bytes**. All **123 packaged
+images** retain their original bytes. Portable SHA-256:
+`62d8b644529018965a62c5d25fe9172a49a47c243a61ddd2d25f8f4e4b4dfba1`.
+Full suites and performance benchmarks were not rerun.
+
+## Screenshot-friendly lowered-view toggle: 03a097db
+
+Published `snapshot-native-03a097db` changes V to a toggle and adds a pressed
+Lowered view button. Key release, focus loss, closing/reopening and
+docking/detaching retain the mode. This changes the interaction; the existing
+compressed-sprite rendering still needs comparison with the game's view.
+
+**19 focused shortcut/view-mode checks and strict locale checks pass.** A fresh
+packaged native profile loaded GreekSea and confirmed single activation despite
+key repeat, persistence after keyup/blur/remount/detach/dock, second-press and
+button deactivation, unchanged castle contents, no renderer errors and exit 0.
+The screenshot was captured after releasing V and dispatching focus loss.
+
+Portable: **7,429,011 bytes**; Setup: **6,767,616 bytes**. All **123 packaged
+images** retain their original bytes and all nine language catalogues are complete.
+Portable SHA-256:
+`a99e56a718d275284665833dfa3d184f23818a54f7f2fae49e08eb3b9d87d8c2`.
+Published asset digests match both tagged `D:\Downloads` copies. An isolated
+previous native build offered **Install snapshot-native-03a097db** through the
+Krarilotus fork source. Full suites and performance benchmarks were not rerun.
+
+## Permanent terrain construction warnings: ac357d88
+
+Published `snapshot-native-ac357d88` adds red footprint fills, outlines and
+crosses for permanent construction conflicts in both views and placement
+previews. Hover text explains the reason. Trees, bushes, animals and saved
+structures are excluded from the permanent mask. Per-building height rules,
+resource-building allowances and AI rock-clearance exceptions are documented in
+[construction warnings](construction-warnings.md).
+
+**129 focused JavaScript checks and four native map-reader checks pass.** A fresh
+packaged native profile loaded GreekSea terrain metadata version 5. Rust's full
+construction flag grid matched Node's byte-for-byte. Two Fletcher placements on
+river and rocky/uneven ground were marked; a third valid placement stayed clear.
+Hover explanations identified water and rock/height conflicts. Warnings were
+stable through camera rotation, Space and V, and hidden for future build steps.
+The document was unchanged, renderer error collection was empty, and the isolated
+app closed with exit code 0. The user's live profile was not changed.
+
+Portable: **7,428,866 bytes**; Setup: **6,767,184 bytes**. All **123 original
+packaged images** and all nine complete language catalogues passed packaging.
+Portable SHA-256:
+`b32df4f750ad752d0f3e120b71f6299bbfe0c261cb12f2220f0ba92c9ed4649e`.
+The published digest matches the tagged `D:\Downloads` copy. Full suites and
+performance benchmarks were not rerun. The changed map reader passes its direct
+rustfmt check; the broader repository formatting check still reports existing
+differences in `game/buildings.rs` and `game/units.rs` from the preview base.
+
+## Saved-map rotation and Space/V camera modes: c45391d1
+
+Published `snapshot-native-c45391d1`, built from
+`c45391d12e9dbef5543363639965d4f292c0271e` on the latest preview branch.
+X/C now use a loaded saved-map atlas without requiring historical engine camera
+captures. Space toggles flat building footprints and terrain; holding V provides
+a temporary lowered-scenery view. See [behavior and artwork limits](iso-view-modes.md).
+
+All **101 focused tests** pass. Canvas/GPU visual checks used GreekSea in all
+four directions. A fresh packaged native profile also loaded GreekSea with
+**zero camera captures** and accepted the atlas; dispatched Space/V/X/C,
+auto-repeat and shifted key release; retained the castle document byte-for-byte
+as JSON; reported no renderer errors; and closed cleanly. The live user profile
+was not changed. Full suites and performance benchmarks were not rerun.
+
+Portable: **7,424,766 bytes**; Setup: **6,765,128 bytes**. Packaging retained all
+**123 original images** byte-for-byte, and nine complete language catalogues.
+Portable SHA-256:
+`639c0532ec1f8e19783ae6df53dd134619dc1a20adbcbb00a681b4305e2dfbc9`.
+The published asset digest and the tagged copy in `D:\Downloads` match.
 
 ## Gate roofs, unit proportions and UCP toolbar polish: 6f18150b
 

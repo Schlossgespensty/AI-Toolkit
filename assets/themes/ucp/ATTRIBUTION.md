@@ -9,6 +9,8 @@ Source: `UCP3-GUI/src/assets/ucp3/`. These are editor UI assets, not files from
 the GUI's separate `game-assets` directory. Original image bytes are preserved.
 The corrected `scroll_bar_bottom_hook.png` comes from the UCP website's
 `UnofficialCrusaderPatch.github.io/assets/ucp3/` collection by the same designer.
+`field_ucp.png` is drawn by AI Toolkit after the text fields of the UCP3 GUI
+(warm brown box, light rim, rounded corners); it contains no copied pixels.
 No game sprites or third-party fonts are included by this theme.
 
 The pack manifest preserves attribution alongside the artwork so that copying

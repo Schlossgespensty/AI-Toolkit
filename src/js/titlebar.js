@@ -44,6 +44,22 @@
     });
   }
 
+  // Interface zoom as a visible control: Ctrl+scroll pans the maps, so
+  // nobody finds the browser-style zoom otherwise. Ctrl +/-/0 still work.
+  const zoomControls = document.getElementById('uiZoomControls');
+  if (zoomControls && api.setUiZoom && api.getUiZoom) {
+    const value = zoomControls.querySelector('.uiZoomValue');
+    const show = zoom => { value.textContent = `${Math.round(zoom * 100)} %`; };
+    show(api.getUiZoom());
+    api.onUiZoomChanged?.(show);
+    zoomControls.addEventListener('click', event => {
+      const step = Number(event.target.closest('[data-ui-zoom]')?.dataset.uiZoom);
+      if (Number.isNaN(step)) return;
+      api.setUiZoom(step ? api.getUiZoom() + step / 10 : 1).catch(console.error);
+    });
+    zoomControls.hidden = false;
+  }
+
   api.onFocusTitlebarMenu?.(request => {
     if (group.hidden || document.querySelector('dialog[open]')) return;
     const button = buttons.find(item => item.dataset.appMenu === request?.menu);

@@ -54,8 +54,9 @@ UCP launch configuration, process locks and process management.
 
 Existing four-camera captures are read-only compatibility data. Their request,
 map, executable/assets fingerprint and layer lengths are still validated.
-Missing, stale or corrupt captures fall back to the saved map's GM1 terrain;
-rotation is unavailable for that map without valid four-camera data. No game
+Missing, stale or corrupt captures fall back to the saved map's GM1 terrain,
+initially viewed from its saved camera (section 1044). X/C can rotate that
+fallback, but reuse its directional artwork. No game
 installation or helper directory is created or changed by this reader.
 
 The bundled Lua files remain only to validate historical capture fingerprints
@@ -84,7 +85,8 @@ Original Crusader 1.41 calls used by the helper:
 The existing GM1 decoder and atlas builder convert the game's resulting
 layers. There is no second bank/cliff terrain-generation algorithm. The saved
 map atlas remains available when cached layers are missing or invalid, with a
-visible status message; camera rotation requires all four validated layers.
+visible status message. Valid captures provide four separate normal and Space
+atlases, selected together with the camera.
 
 Starting stockpile platforms can change height during the game's map load.
 The reader compares the unchanged default ground layer (map section 1045)

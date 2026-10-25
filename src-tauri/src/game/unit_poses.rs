@@ -11,6 +11,25 @@ pub const LORD_POSES: &[(&str, &str, usize)] = &[
     ("lord-arab", "body_saladin", 40),
 ];
 
+// Monks have no AIV marker either; the character's starting troops show one.
+// body_fighting_monk 384-415 is the standing loop facing the viewer, and 400
+// shows the cross on the chest. Picked from the frames, not yet checked
+// against the game's update routine.
+pub const MONK_POSE: (&str, &str, usize) = ("unit-monk", "body_fighting_monk", 400);
+
+// Palette thumbnails face the viewer. Direction 0 turns a troop's back to the
+// camera; direction 4 faces down-left like the classic editor icons. Walking
+// sheets store `phase * 8 + direction`, so frame 4 is the first such stride.
+pub fn thumbnail_pose(marker: u16) -> Option<(usize, Option<usize>)> {
+    match marker {
+        1 | 14 => Some((4, None)), // Walking, direction 4; slinger idle sits
+        2..=5 | 20 | 21 => Some((0, None)), // Engines and objects read from any side
+        6 => Some((645, None)),    // Archer idle: 0x280 + 1*4 + 4/2 - 1
+        12 => Some((260, Some(428))), // Knight idle body and rider, direction 4
+        _ => idle_pose(marker),    // Single-facing idle tables look down-left
+    }
+}
+
 pub fn idle_pose(marker: u16) -> Option<(usize, Option<usize>)> {
     let frame = match marker {
         2 => 0,     // UpdateMangonel: direction + 1 - 1

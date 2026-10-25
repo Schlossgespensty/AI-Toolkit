@@ -452,6 +452,7 @@ export function encodeAiv(document, templates, options = {}) {
   for (const item of Array.isArray(document?.miscItems) ? document.miscItems : []) {
     const unitType = Number(item.itemType);
     const number = Number(item.number);
+    if (Number.isInteger(number) && number >= 10) throw new Error('Classic AIV cannot store troop spots above 10. Export .aivjson to preserve all spots.');
     if (!Number.isInteger(unitType) || unitType < 0 || unitType >= 24 || !Number.isInteger(number) || number < 0 || number >= 10) continue;
     const originalOffset = reverseTranslateOffset(Number(item.positionOfset), invertX, invertY);
     tarr[unitType * 10 + number] = originalOffset;

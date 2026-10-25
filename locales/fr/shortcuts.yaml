@@ -42,3 +42,5 @@ replace: Remplacer
 delete: Supprimer
 undo: Annuler
 redo: R?tablir
+flatView: '2.5D : Basculer la vue à plat'
+peekView: '2.5D : Basculer la vue abaissée'

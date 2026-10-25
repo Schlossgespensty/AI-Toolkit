@@ -133,6 +133,21 @@ test('native theme changes and detached windows share the same pack', async () =
   assert.match(links[0].href, /\/src\/css\/theme-detached.css$/);
 });
 
+test('UCP keeps bold for the workspace tabs and headings only', async () => {
+  const env = environment(); const theme = createController(env); await theme.init();
+  assert.equal(env.document.documentElement.dataset.controlWeight, 'bold');
+  await env.callbacks.theme('ucp');
+  assert.equal(manifest('ucp').controlWeight, 'regular');
+  assert.equal(env.document.documentElement.dataset.controlWeight, 'regular');
+  const css = fs.readFileSync(path.join(__dirname, '../src/css/theme-components.css'), 'utf8');
+  const rule = css.match(/html\[data-control-weight="regular"\] :is\(([^{]*)\{\s*font-weight: 400;/);
+  assert.ok(rule, 'regular-weight rule exists');
+  assert.match(rule[1], /\bbutton\b/);
+  assert.match(rule[1], /:not\(\.workspaceTab\)/);
+  // A toolbar dropdown's summary is a button; section summaries are headings.
+  assert.doesNotMatch(rule[1].replace('.toolbarMenu > summary', ''), /\bsummary\b|\bh[1-6]\b/, 'headings stay bold');
+});
+
 test('optional role art never hides functional controls in a minimal custom-style pack', async () => {
   const env = environment(), originalFetch = env.fetch;
   env.fetch = async url => {
@@ -189,9 +204,12 @@ test('UCP keeps dark shell tokens distinct from framed paper and original reorde
   const pack = JSON.parse(fs.readFileSync(path.join(directory, 'ucp/tokens.json'), 'utf8'));
   assert.equal(pack.primitive.color.ink.$value.hex, '#212529');
   assert.equal(pack.component.panel.surface.$value.hex, '#e4dbc3');
-  assert.equal(pack.component.panel.content.$value.hex, '#292720');
-  assert.equal(pack.component.input.content.$value, '{component.panel.content}');
-  // Numbers wear the same light field as text on paper, not a dark inlay.
+  // Darker ink on the paper for contrast (Monsterfish, issue #6).
+  assert.equal(pack.component.panel.content.$value.hex, '#1f1d18');
+  // Fields follow the UCP3 GUI: a warm brown box with light text on the paper.
+  assert.equal(pack.component.input.surface.$value, '#9c6528');
+  assert.equal(pack.component.input.content.$value, '#fbf5e1');
+  // Numbers wear the same field as text, not a different inlay.
   assert.equal(pack.component.value.content.$value, '{component.input.content}');
   assert.equal(pack.component.value.surface.$value, '{component.input.surface}');
   assert.equal(manifest('ucp').textures.value.file, manifest('ucp').textures.input.file);

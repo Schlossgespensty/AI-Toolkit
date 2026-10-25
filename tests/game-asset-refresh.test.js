@@ -38,3 +38,26 @@ test('a late previous installation response cannot replace the selected game spr
   assert.equal(h.decodes, 1);
   assert.equal(h.buildingLoads, 2);
 });
+
+test('palette building previews are cut from the game pictures at a bounded size', async () => {
+  const h = harness();
+  const draws = [];
+  let renders = 0;
+  Object.assign(h.context, {
+    isUnitType: type => type === 6,
+    renderPalette: () => renders++,
+    Image: class { set src(url) { this.url = url; queueMicrotask(() => this.onload()); } },
+    document: { createElement: () => ({
+      getContext: () => ({ drawImage: (...args) => draws.push(args) }),
+      toDataURL() { return `data:${this.width}x${this.height}`; }
+    }) }
+  });
+  h.context.window.isoView.buildingPreviews = async () => ({
+    32: { url: 'asset://page0.png', x: 10, y: 20, w: 192, h: 96 },
+    6: { url: 'asset://page0.png', x: 0, y: 0, w: 10, h: 10 }
+  });
+  await h.context.loadBuildingPreviews();
+  assert.deepEqual(JSON.parse(JSON.stringify(h.state.buildingPreviews)), { 32: 'data:96x48' });
+  assert.deepEqual(draws[0].slice(1), [10, 20, 192, 96, 0, 0, 96, 48]);
+  assert.equal(renders, 1);
+});

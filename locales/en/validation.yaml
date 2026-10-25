@@ -22,3 +22,5 @@ classic_empty_steps: Empty build steps cannot be preserved in classic AIV.
 classic_item: '{{name}} is not supported by classic AIV.'
 classic_pauses: Build-step pauses are disabled in the classic editor.
 classic_marker: '{{name}} cannot be preserved in classic AIV.'
+
+classic_extended_spots: "Troop spots above 10 cannot be saved in classic .aiv. Export DE (.aivjson) to keep all spots."

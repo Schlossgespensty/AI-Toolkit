@@ -25,3 +25,5 @@ replacing_character: Charakter von {{name}} wird ersetzt…
 opening: '{{name}} wird geöffnet…'
 opened: '{{name}} geöffnet.'
 with_castle: ' mit {{name}}'
+
+extended_rally_points: "DE: Plätze 11–30 benötigen SHCDE-Fixes und GuardingSpotsPerUnitType. Als .aivjson speichern."

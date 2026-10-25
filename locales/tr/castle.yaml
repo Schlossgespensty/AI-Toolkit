@@ -188,3 +188,11 @@ castle_actions: Kale eylemleri
 no_item_categories_configured: Öğe kategorileri yapılandırılmadı.
 dock: Yerleştir
 cut_and_copy: Kes ve kopyala
+construction_blocked: 'Buraya inşa edilemez: {{reasons}}'
+construction_rock: 'kayalar'
+construction_water: 'su veya nehir'
+construction_marsh: 'bataklık'
+construction_moat: 'kazılmış hendek'
+construction_outside: 'inşa edilebilir haritanın dışında'
+construction_height: 'arazi yüksekliği sınırı'
+construction_slope: 'fazla engebeli arazi'

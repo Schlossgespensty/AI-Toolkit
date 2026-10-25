@@ -388,7 +388,21 @@ function installedPictureStock(gameRoot, overrides = true) {
   return pictureStock(files, overrides ? 'installed' : 'capture');
 }
 
-function choosePictureStock(gfx, candidates, validPicture) {
+function shoreLayoutErrors(stock, gfx, logic, misc, logic2) {
+  if (logic?.length !== MAP_TILES*4 || misc?.length !== MAP_TILES*2 || logic2?.length !== MAP_TILES) return null;
+  let checked=0, errors=0;
+  for(let tile=0;tile<MAP_TILES;tile++) {
+    // updateGfxLayer 0x50CDBF: undecorated sea uses one of eight plain
+    // pictures in each 246-picture lighting bank, never a bank/corner tile.
+    if (!(logic.readUInt32LE(tile*4)&1) || (misc.readUInt16LE(tile*2)&0x3c0) || (logic2[tile]&8)) continue;
+    const picture=pictureForValue(stock,gfx.readUInt16LE(tile*2));
+    checked++;
+    if(picture?.name!=='tile_sea_new_01' || picture.index>=1476 || picture.index%246>=8) errors++;
+  }
+  return checked ? errors : null;
+}
+
+function choosePictureStock(gfx, candidates, validPicture, layers = {}) {
   const values = new Set();
   for (let at=0;at<gfx.length;at+=2) if (gfx.readUInt16LE(at)) values.add(gfx.readUInt16LE(at));
   const checked = candidates.map(stock => ({stock, invalid:[...values].filter(value => {
@@ -397,10 +411,15 @@ function choosePictureStock(gfx, candidates, validPicture) {
   }).length}));
   // Switch only on a fully valid alternative. In ambiguous/unsupported maps
   // preserve classic compatibility, rather than silently selecting a partial fit.
-  return checked.find(candidate => candidate.invalid === 0)?.stock || candidates[0];
+  const valid=checked.filter(candidate=>candidate.invalid===0);
+  // Some saved maps use the installed counter after GM slot 149; both
+  // layouts can point into valid terrain files. Check native sea semantics
+  // before falling back to the historical compatibility preference.
+  return valid.find(({stock})=>shoreLayoutErrors(stock,gfx,layers.logic,layers.misc,layers.logic2)===0)?.stock
+    || valid[0]?.stock || candidates[0];
 }
 
-function savedPictureStock(gameRoot, gfx) {
+function savedPictureStock(gameRoot, gfx, layers = {}) {
   const headers = new Map();
   return choosePictureStock(gfx, [readPictureStock(gameRoot), installedPictureStock(gameRoot)], picture => {
     if (!headers.has(picture.name)) {
@@ -409,7 +428,7 @@ function savedPictureStock(gameRoot, gfx) {
     }
     const header=headers.get(picture.name);
     return header.type === 3 && picture.index < header.count;
-  });
+  }, layers);
 }
 
 // Bildnummer aus dem GfxLayer -> Datei und Nummer darin. renderGM greift auf
@@ -462,6 +481,18 @@ function cactusPicture(type, rng) {
     case 19: return Math.min((rng & 3) + 7, 9);      // 7 bis 9
     default: return 0;
   }
+}
+
+// The native tree updaters select picture 148 for timber trees in Space
+// (0x004F260A), hide shrubs, and retain cactus pictures. The editor keeps
+// orchard positions visible with the original apple stump (picture 101).
+function treeViewPicture(tree, flat = false) {
+  if (flat) {
+    if (tree.type >= 1 && tree.type <= 4) return 148;
+    if (tree.type === 15) return 101;
+    if (tree.type >= 5 && tree.type <= 10) return 0;
+  }
+  return tree.picture;
 }
 
 // Die Baumliste, Abschnitt 1014. Nur die Felder, die zum Zeichnen noetig sind.
@@ -562,6 +593,8 @@ function pathTerrain(buffer, directory) {
   const heights = readSection(buffer, directory, 1045) || readSection(buffer, directory, HEIGHT_SECTION);
   if (!logic || logic.length !== MAP_TILES*4) return null;
   const blocked = Buffer.alloc(400*400, 1), hardBlocked = Buffer.alloc(400*400,1), ground = Buffer.alloc(400*400), constructionLift = Buffer.alloc(400*400);
+  const buildFlags=Buffer.alloc(400*400*4);
+  for(let i=0;i<400*400;i++)buildFlags.writeUInt32LE(16,i*4);
   for(let y=0;y<400;y++) for(let x=0;x<400;x++) {
     const [left,right]=rowRange(y); if(x<left || x>right) continue;
     const tile=tileIndex(x,y);
@@ -569,10 +602,13 @@ function pathTerrain(buffer, directory) {
     const access=pathTileFlags(flags, organisms?.readUInt16LE(tile*2) || 0);
     blocked[y*400+x]=access.blocked;
     hardBlocked[y*400+x]=access.hardBlocked;
+    // Construction is independent of walking: omit vegetation, animals and
+    // saved structures, but retain water, marsh, rock, resources and borders.
+    buildFlags.writeUInt32LE((flags & 0xe03a00b1) >>> 0,(y*400+x)*4);
     ground[y*400+x]=heights?.[tile] || 0;
     constructionLift[y*400+x]=(flags & 8)?4:0;
   }
-  return {version:4,constructionLift:constructionLift.toString('base64'),fingerprint:nativeRendererInternals.sha(buffer),blocked:blocked.toString('base64'),hardBlocked:hardBlocked.toString('base64'),heights:ground.toString('base64')};
+  return {version:5,buildFlags:buildFlags.toString('base64'),constructionLift:constructionLift.toString('base64'),fingerprint:nativeRendererInternals.sha(buffer),blocked:blocked.toString('base64'),hardBlocked:hardBlocked.toString('base64'),heights:ground.toString('base64')};
 }
 
 function readGameMap(filePath, gameRoot) {
@@ -650,6 +686,8 @@ function buildTileAtlas(gfx, gameRoot, layers = {}) {
       if (entry && gm1.buffer.readUInt32LE(20) === 3) {
         const raw = gm1.buffer.subarray(gm1.picturesAt + entry.offset, gm1.picturesAt + entry.offset + entry.size);
         bild = diamondToRgba(raw.subarray(0, 512));
+        // Flat substitutions happen before decoding. The selected tile keeps
+        // its native upper pixels, including the extended shoreline banks.
         upperPictures[platz] = upperTilePicture(entry, raw);
       }
     } catch { bild = null; }
@@ -721,13 +759,15 @@ function buildTileAtlas(gfx, gameRoot, layers = {}) {
       for (let mx = from; mx <= to; mx++) {
         const id = organisms.readUInt16LE(tileIndex(mx, my) * 2);
         const tree = id > 0 && id < FIRST_ROCK ? trees[id] : null;
-        if (!tree || !tree.alive || !tree.picture) continue;
+        if (!tree || !tree.alive) continue;
+        const pictureNumber = treeViewPicture(tree, layers.flat);
+        if (!pictureNumber) continue;
         const file = stock.byGmId.get(tree.gmId);
-        if (!file || tree.picture > file.count) continue;
-        const key = `${file.name}/${tree.picture}/${tree.palette}`;
+        if (!file || pictureNumber > file.count) continue;
+        const key = `${file.name}/${pictureNumber}/${tree.palette}`;
         let index = treePictures.get(key);
         if (index === undefined) {
-          const picture = treePicture(gameRoot, file.name, tree);
+          const picture = treePicture(gameRoot, file.name, {...tree,picture:pictureNumber});
           if (!picture) continue;
           index = upperPictures.length;
           upperPictures.push(picture);
@@ -808,14 +848,50 @@ function readMapSource(filePath, gameRoot) {
   if (!gfx || gfx.length !== MAP_TILES * 2) throw new Error('This map carries no terrain layer (section 1001).');
   let heights = null;
   try { heights = readSection(buffer, directory, HEIGHT_SECTION); } catch { heights = null; }
-  let organisms = null, trees = null, pillars = null;
+  let organisms = null, trees = null, pillars = null, random = null;
+  try { random = readSection(buffer, directory, 1008); } catch { random = null; }
   try { pillars = readSection(buffer, directory, PILLAR_SECTION); } catch { pillars = null; }
   try {
     organisms = readSection(buffer, directory, ORGANISM_SECTION);
     trees = readTrees(readSection(buffer, directory, TREES_SECTION));
   } catch { organisms = null; trees = null; }
-  return { known, root, buffer, directory, gfx, heights, organisms, trees, pillars,
+  return { known, root, buffer, directory, gfx, heights, organisms, trees, pillars, random,
     keeps: findKeeps(readSection(buffer, directory, BUILDING_SECTION)) };
+}
+
+function flatMapGraphics(source, stock) {
+  const rules = require('../../assets/aiv/iso/verzeichnis.json');
+  const layer = number => { try { return readSection(source.buffer,source.directory,number); } catch { return null; } };
+  const types=layer(1049),ids=layer(1012),records=layer(1013),logic=layer(1003),misc=layer(1007),random=source.random;
+  const runtimeTypes=ids?.length===MAP_TILES*2 && records?.length>=BUILDING_STRIDE && records.length%BUILDING_STRIDE===0;
+  const result=Buffer.from(source.gfx), flat=stock.files.find(f=>f.name==='tile_flatties');
+  if (!flat || (!types && !runtimeTypes) || !logic) return result;
+  for(let tile=0;tile<MAP_TILES;tile++) {
+    const id=ids?.readUInt16LE(tile*2)||0;
+    // renderMap 0x4E98C7 reads Buildings[BuildingLayer[tile]].buildingType.
+    // BuildingWasLayer omits keep doors and some scenario decorations, and
+    // stores the parent type on linked training grounds.
+    const type=runtimeTypes ? (id>0&&(id+1)*BUILDING_STRIDE<=records.length ? records.readUInt16LE(id*BUILDING_STRIDE+BUILDING_TYPE_AT) : 0) : types?.[tile]||0;
+    const flags=logic.readUInt32LE(tile*4),rng=random?.readUInt16LE(tile*2)||0;
+    let index=null, file=flat;
+    if(type>0 && !(flags&0x40000000)) {
+      const group=rules.flatViewGroups[type];
+      if(group===3) {
+        index=(({3:24,7:26,33:28})[type]??30)+Number(!!((misc?.readUInt16LE(tile*2)||0)&4));
+      }
+      else if(group>=0) index=group*8+(id&1)*4+(rng&3);
+    } else if(flags&0x100) {
+      if(flags&0x800) {const source=pictureForValue(stock,result.readUInt16LE(tile*2));index=source?.name==='tile_land3'&&[134,136].includes(source.index)?42:40;}
+      else if(flags&0x200) index=36+(rng&3);
+    } else if(flags&0x80) {
+      const picture=pictureForValue(stock,result.readUInt16LE(tile*2));
+      const candidate=stock.files.find(f=>f.name===picture?.name);
+      index=rules.flatRockPictures[rng&3];
+      file=candidate?.count>index?candidate:stock.files.find(f=>f.name==='tile_rocks8');
+    }
+    if(index!==null && file?.count>index) result.writeUInt16LE(file.from+index+1,tile*2);
+  }
+  return result;
 }
 
 function buildMapTiles(source, nativeLayers = null) {
@@ -834,7 +910,9 @@ function buildMapTiles(source, nativeLayers = null) {
   }
   // Resolve the desert tile through the executable's GM table, not a global
   // sprite number. tile_land8 picture 0 is a plain desert diamond.
-  const stock = nativeLayers ? installedPictureStock(root, false) : savedPictureStock(root, gfx);
+  const stock = nativeLayers ? installedPictureStock(root, false) : savedPictureStock(root, gfx, {
+    logic:readSection(buffer,directory,1003), misc:readSection(buffer,directory,1007), logic2:readSection(buffer,directory,1037)
+  });
   const desert = stock.files.find(file => file.name === 'tile_land8' && file.count);
   if (keeps.length && !desert) throw new Error('The game desert terrain graphics are missing.');
   const groundOnly = layer => replaceMapKeeps(layer, keeps, (desert?.from || 0) + 1);
@@ -844,11 +922,25 @@ function buildMapTiles(source, nativeLayers = null) {
     hoehen: heightRaster
   }));
   const vorrat = cameras?.[0] || buildTileAtlas(groundOnly(gfx), root, { stock, organisms, trees, pillars, heights });
+  const flatFor = layer => buildTileAtlas(flatMapGraphics({...source,gfx:layer},stock),root,{stock,flat:true,organisms,trees});
+  const flatCameras = nativeLayers?.cameras.map(layer=>flatFor(layer.gfx));
+  const flat = flatCameras?.[0] || flatFor(gfx);
+  const savedCamera=readSection(buffer,directory,1044);
+  const orientation=savedCamera?.length===4 ? savedCamera.readUInt32LE(0) : 0;
+  const flatRandom = Buffer.alloc(400*400*2);
+  if (source.random?.length === MAP_TILES*2) for(let y=0;y<400;y++) {
+    const [low,high]=rowRange(y),start=tileIndex(low,y)*2;
+    source.random.copy(flatRandom,(y*400+low)*2,start,start+(high-low+1)*2);
+  }
   return {
     name: known.name,
     path: known.path,
     pictureLayout: stock.layout,
     ...vorrat,
+    flat,
+    ...(flatCameras ? {flatCameras} : {}),
+    savedOrientation:[0,2,4,6].includes(orientation)?orientation:0,
+    flatRandom: flatRandom.toString('base64'),
     ...(cameras ? { cameras, nativeRenderer: true } : {}),
     // Hoehen in derselben Zaehlung wie die Plaetze: volles 400x400-Raster.
     hoehen: heightRaster
@@ -896,7 +988,7 @@ async function readNativeMapTiles(filePath, gameRoot, cacheRoot) {
     const layerHash = nativeRendererInternals.sha(Buffer.concat([
       layers.heights, layers.baseHeights, ...layers.cameras.flatMap(camera => [camera.gfx, camera.pillars])
     ]));
-    return cachedAtlas(cacheRoot, [parsed.root, parsed.known.path, layers.mapHash, layers.sourceHash, layerHash, graphics.revision],
+    return cachedAtlas(cacheRoot, ['flat-view-7', parsed.root, parsed.known.path, layers.mapHash, layers.sourceHash, layerHash, graphics.revision],
       () => buildMapTiles(parsed, layers));
   });
 }
@@ -908,10 +1000,10 @@ module.exports = {
   readMapTiles,
   readNativeMapTiles,
   // fuer die Tests und fuer Werkzeuge, die eine Karte ohne Electron lesen
-  internals: { readMapSource, buildMapTiles, resolveNativeMapTiles, replaceMapKeeps, pathTileFlags, readPreview, previewPng, findDirectory, readSection, findKeeps, nameKeeps, keepOrientation,
+  internals: { readMapSource, buildMapTiles, flatMapGraphics, resolveNativeMapTiles, replaceMapKeeps, pathTileFlags, readPreview, previewPng, findDirectory, readSection, findKeeps, nameKeeps, keepOrientation,
                rowBase, rowRange, tileIndex,
                readPictureStock, pictureForValue, choosePictureStock, pictureStock, readGm1, tgxToRgba, virtualToFile,
-               readTrees, cactusPicture, TREE_STRIDE, FIRST_ROCK,
+               readTrees, cactusPicture, treeViewPicture, TREE_STRIDE, FIRST_ROCK,
                buildTileAtlas, diamondToRgba, upperTilePicture, packMapPictures, heldGm1, ATLAS_SPALTEN,
                PREVIEW_EDGE, MAP_TILES, BUILDING_SECTION, BUILDINGS_SECTION, STONE_KEEP, KEEP_EDGE,
                TILE_W, TILE_H, GFX_SECTION, ORGANISM_SECTION, TREES_SECTION,

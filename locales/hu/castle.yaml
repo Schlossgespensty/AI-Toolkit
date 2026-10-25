@@ -188,3 +188,11 @@ dock: Dokkolás
 groups: Csoportok
 cut_and_copy: Kivágás és másolás
 deselect: Kijelölés megszüntetése
+construction_blocked: 'Itt nem lehet építeni: {{reasons}}'
+construction_rock: 'sziklák'
+construction_water: 'víz vagy folyó'
+construction_marsh: 'mocsár'
+construction_moat: 'kiásott várárok'
+construction_outside: 'az építhető térképen kívül'
+construction_height: 'terepmagasság korlátja'
+construction_slope: 'túl egyenetlen terep'

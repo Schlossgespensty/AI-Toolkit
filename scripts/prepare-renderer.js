@@ -3,6 +3,9 @@ const fs = require("node:fs");
 const path = require("node:path");
 const { buildSync } = require("esbuild");
 const root = path.resolve(__dirname, "..");
+const translations = path.join(root, "src/vendor/i18next");
+fs.mkdirSync(translations, { recursive: true });
+fs.copyFileSync(path.join(root, "node_modules/i18next/dist/umd/i18next.min.js"), path.join(translations, "i18next.min.js"));
 const target = path.join(root, "src/vendor/pixi");
 fs.mkdirSync(target, { recursive: true });
 // Keep the worker's public Pixi API and its CSP adapter in one tree-shaken

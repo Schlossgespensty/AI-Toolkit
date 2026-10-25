@@ -188,3 +188,11 @@ dock: بازگرداندن به پنل
 groups: گروه‌ها
 cut_and_copy: برش و کپی
 deselect: لغو انتخاب
+construction_blocked: 'ساخت‌وساز در اینجا ممکن نیست: {{reasons}}'
+construction_rock: 'صخره‌ها'
+construction_water: 'آب یا رودخانه'
+construction_marsh: 'مرداب'
+construction_moat: 'خندق حفرشده'
+construction_outside: 'خارج از محدوده قابل ساخت نقشه'
+construction_height: 'محدودیت ارتفاع زمین'
+construction_slope: 'زمین بیش از حد ناهموار'

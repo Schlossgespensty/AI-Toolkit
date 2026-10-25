@@ -23,3 +23,10 @@ no_window_open_one_from_the_toolbar: нет окна — откройте его
 add_as_a_tab_here: Добавить сюда как вкладку
 esc_cancels: " · Esc: отмена"
 is_missing: " отсутствует"
+flat_view: 'Плоский вид'
+lowered_view: 'Сниженная высота'
+refresh_map: "Обновить карту"
+refresh_map_hint: "Заново загрузить выбранную карту с диска: {{path}}"
+refreshing_map: "Обновление карты…"
+map_refreshed: "Карта обновлена: {{name}}"
+map_refresh_failed: "Не удалось обновить карту: {{message}}"

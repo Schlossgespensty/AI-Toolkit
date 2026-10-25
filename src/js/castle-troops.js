@@ -121,13 +121,13 @@
 
   // Build-step-sensitive support map. Call only when scene content changes,
   // using visible placements; never use the complete future castle topology.
-  function supports(items, terrainHeight) {
+  function supports(items, terrainHeight, roofHeight = (_item, height) => height) {
     const surface = new Map();
     for (const item of items) {
       const height = geometry.structureHeight(item.itemType);
       if (height === null) continue;
       const size = item.tiles || 1;
-      const elevation = terrainHeight(item.gx+size-1, item.gy+size-1) + height;
+      const elevation = terrainHeight(item.gx+size-1, item.gy+size-1) + roofHeight(item, height);
       for (let y=item.gy;y<item.gy+size;y++) for(let x=item.gx;x<item.gx+size;x++) {
         const key=y*geometry.GRID_SIZE+x;
         surface.set(key, Math.max(surface.get(key) ?? -Infinity, elevation));

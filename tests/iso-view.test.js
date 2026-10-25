@@ -320,6 +320,166 @@ test('a free-standing crenel is always the single merlon, a row keeps the checke
   assert.equal(bild(10, 90), 'ra_klotz', 'x + y ungerade');
 });
 
+// Gemessen in den Kreuzzug-Karten des Spiels, siehe geo.variantFor.
+function zinnenMitForm() {
+  const b = (name, sx = 0) => ({ bild: name, breite: 30, hoehe: 135, sx, sy: 0 });
+  const paar = name => ({ klotz: b(name + '_klotz'), scharte: b(name + '_scharte') });
+  const reihe = name => ({ klotz: Array.from({length: 16}, () => b(name + '_klotz')), scharte: Array.from({length: 16}, () => b(name + '_scharte')) });
+  return { kacheln: 1, mauer: { hoehe: 98, zinne: true, laengs: reihe('l'), quer: reihe('q'),
+    rand: { laengs: paar('rl'), quer: paar('rq'), allein: paar('ra') },
+    form: { ende: b('ende'), ecken: { px_my: b('e128'), px_py: b('e129'), mx_py: b('e130'), mx_my: b('e131') },
+      schraeg: Array.from({length: 8}, (_, i) => b('s' + (303 + i))), steil: [b('s312'), b('s311')], flach: b('flach') } } };
+}
+
+test('crenels follow the game: ends, corners and both diagonals get their own pieces', () => {
+  const zinne = zinnenMitForm();
+  const felder = new Set();
+  const mauerAn = (gx, gy) => felder.has(gx + ':' + gy) ? zinne.mauer : null;
+  // Kartenfeld = Ansichtsfeld, damit die Zahlen mit der Messung uebereinstimmen.
+  const lage = (gx, gy) => ({ x: gx, y: gy });
+  const bild = (gx, gy) => geometry.variantFor(zinne, gx, gy, mauerAn, null, lage).bild;
+  for (const gx of [165, 166, 167, 168]) felder.add(gx + ':187');
+  assert.equal(bild(165, 187), 'ende', 'das Ende einer Reihe ist der hohe Endklotz');
+  assert.equal(bild(166, 187), 'l_klotz', 'x + y ungerade: Klotz');
+  assert.equal(bild(167, 187), 'l_scharte', 'x + y gerade: Scharte');
+  felder.clear(); ['10:10', '11:10', '10:9'].forEach(f => felder.add(f));
+  assert.equal(bild(10, 10), 'e128', 'Ecke mit Nachbarn bei x+1 und y-1');
+  felder.add('9:10');
+  assert.equal(bild(10, 10), 'ende', 'eine T-Kreuzung ist der hohe Klotz');
+  // Eine Mauer neben der Reihe zaehlt nicht mit (nur L_CRENEL) - und sie
+  // darf die Zaehlung nicht verderben (frueher NaN, dann ueberall der Klotz).
+  felder.clear(); for (const gx of [165, 166, 167, 168]) felder.add(gx + ':187');
+  const wand = { hoehe: 90, zinne: false };
+  const mitWand = (gx, gy) => felder.has(gx + ':' + gy) ? zinne.mauer : gy === 188 ? wand : null;
+  assert.equal(geometry.variantFor(zinne, 166, 187, mitWand, null, lage).bild, 'l_klotz');
+  assert.equal(geometry.variantFor(zinne, 167, 187, mitWand, null, lage).bild, 'l_scharte');
+  // Waagrecht schraeg (x+1, y-1), x + y = 352: Zinnen von vorn, 303 + (y & 7).
+  felder.clear(); for (let i = 0; i < 4; i++) felder.add((160 + i) + ':' + (192 - i));
+  assert.equal(bild(160, 192), 's303');
+  assert.equal(bild(161, 191), 's310');
+  felder.clear(); for (let i = 0; i < 3; i++) felder.add((160 + i) + ':' + (193 - i));
+  assert.equal(bild(161, 192), 'flach', 'x + y ungerade: nur der Wehrgang, wie in den Karten');
+  // Senkrecht schraeg (x+1, y+1): Winkelzinnen nach y.
+  felder.clear(); for (let i = 0; i < 3; i++) felder.add((20 + i) + ':' + (30 + i));
+  assert.equal(bild(21, 31), 's311', 'y ungerade');
+  assert.equal(bild(22, 32), 's312', 'y gerade');
+});
+
+test('crenel pieces the game did not supply fall back to the old pictures', () => {
+  const zinne = zinnenMitForm();
+  zinne.mauer.form.ende = { bild: 'ende', breite: 30, hoehe: 143 };
+  const felder = new Set(['10:89', '11:89']);
+  const mauerAn = (gx, gy) => felder.has(gx + ':' + gy) ? zinne.mauer : null;
+  assert.notEqual(geometry.variantFor(zinne, 10, 89, mauerAn).bild, 'ende', 'ohne Atlasplatz kein neues Stueck');
+});
+
+test('the crenel checkerboard belongs to the map tile, not to the turned view', () => {
+  const zinne = zinnenMitForm();
+  const felder = new Set();
+  const mauerAn = (gx, gy) => felder.has(gx + ':' + gy) ? zinne.mauer : null;
+  for (const gx of [9, 10, 11, 12]) felder.add(gx + ':50');
+  // Dieselbe Karte, zwei Drehungen der Ansicht: das Feld (10,50) der Ansicht
+  // ist einmal das Kartenfeld (10,50) und einmal (49,10).
+  const bild = lage => geometry.variantFor(zinne, 10, 50, mauerAn, null, lage).bild;
+  assert.equal(bild(() => ({ x: 11, y: 50 })), 'l_klotz');
+  assert.equal(bild(() => ({ x: 10, y: 50 })), 'l_scharte');
+});
+
+test('gatehouses and stairs carry a wall through, towers and other buildings do not', () => {
+  const b = name => ({ bild: name, breite: 30, hoehe: 108 });
+  const reihe = name => ({ klotz: Array.from({length: 16}, () => b(name)) });
+  const mauer = { hoehe: 90, laengs: reihe('laengs'), quer: reihe('quer'),
+    rand: { laengs: { klotz: b('rl') }, quer: { klotz: b('rq') }, allein: { klotz: b('ra') } } };
+  const wand = { kacheln: 1, mauer };
+  const torhaus = { aiv: 40, kacheln: 5 }, turm = { aiv: 30, kacheln: 3 }, haus = { aiv: 61, kacheln: 3 };
+  const items = [{ gx: 10, gy: 10, entry: wand, tiles: 1 }, { gx: 11, gy: 10, entry: wand, tiles: 1 }];
+  const mit = (entry, tiles = entry.kacheln) => geometry.wallLookup([...items, { gx: 12, gy: 9, entry, tiles }]);
+  assert.equal(geometry.variantFor(wand, 11, 10, mit(torhaus)).bild, 'laengs', 'die Mauer laeuft ins Torhaus');
+  assert.equal(geometry.variantFor(wand, 11, 10, mit(turm)).bild, 'ra', 'Tuerme tragen kein L_WALL: dort endet sie');
+  assert.equal(geometry.variantFor(wand, 11, 10, mit(haus)).bild, 'ra', 'am Haus auch');
+  const stufe = hoehe => ({ kacheln: 1, treppe: { hoehe } });
+  const treppe = hoehe => geometry.wallLookup([...items, { gx: 12, gy: 10, entry: stufe(hoehe), tiles: 1 }]);
+  assert.equal(geometry.variantFor(wand, 11, 10, treppe(80)).bild, 'laengs', 'die oberste Stufe traegt die Mauer weiter');
+  assert.equal(geometry.variantFor(wand, 11, 10, treppe(48)).bild, 'ra', 'mehr als 16 tiefer nicht');
+});
+
+test('a workshop with a whole side against a wall gets the lean-to roof the game picks', () => {
+  const wand = { kacheln: 1, mauer: { hoehe: 90 } };
+  const treppe = { kacheln: 1, treppe: { hoehe: 0 } };
+  const torhaus = { aiv: 40, kacheln: 5 };
+  const lean = Array.from({ length: 8 }, (_, k) => [{ gx: 0, gy: 0, bild: 'dach' + k }]);
+  const werkstatt = { gx: 10, gy: 10, tiles: 4, entry: { kacheln: 4, anlehnLayouts: lean, partsLayouts: [[{ gx: 0, gy: 0, bild: 'normal' }]] } };
+  const reihe = (entry, punkte) => punkte.map(([gx, gy]) => ({ gx, gy, tiles: 1, entry }));
+  const seite = { my: [0, 1, 2, 3].map(i => [10 + i, 9]), px: [0, 1, 2, 3].map(i => [14, 10 + i]),
+                  py: [0, 1, 2, 3].map(i => [10 + i, 14]), mx: [0, 1, 2, 3].map(i => [9, 10 + i]) };
+  const richtung = (...items) => geometry.anlehnRichtung(werkstatt, geometry.anlehnFelder(items.flat()));
+  assert.equal(richtung(), null, 'frei stehend: das normale Dach');
+  assert.equal(richtung(reihe(wand, seite.my)), 0);
+  assert.equal(richtung(reihe(wand, seite.px)), 2);
+  assert.equal(richtung(reihe(wand, seite.py)), 4);
+  assert.equal(richtung(reihe(wand, seite.mx)), 6);
+  assert.equal(richtung(reihe(wand, seite.my), reihe(wand, seite.mx)), 7, 'ueber Eck geht vor');
+  assert.equal(richtung(reihe(wand, seite.py), reihe(wand, seite.px)), 3);
+  assert.equal(richtung(reihe(wand, seite.my.slice(0, 3))), null, 'nur volle Seiten zaehlen');
+  assert.equal(richtung(reihe(wand, seite.my.slice(0, 3)), reihe(treppe, seite.my.slice(3))), 0, 'Treppe und Mauer zusammen');
+  assert.equal(richtung({ gx: 10, gy: 5, tiles: 5, entry: torhaus }), 0, 'ein Torhaus traegt L_WALL und zaehlt');
+  assert.equal(richtung({ gx: 10, gy: 5, tiles: 5, entry: { aiv: 31, kacheln: 5 } }), null, 'ein Turm nicht');
+  assert.equal(richtung(reihe(wand, seite.my.slice(0, 3)), reihe({ kacheln: 1, treppe: { hoehe: 16 } }, seite.my.slice(3))), null,
+    'Stufe 1 bis 5 tragen 0x800 und zaehlen nicht');
+  assert.equal(geometry.buildingParts({ ...werkstatt, anlehnung: 2 })[0].bild, 'dach2');
+  assert.equal(geometry.buildingParts({ ...werkstatt, anlehnung: null })[0].bild, 'normal');
+});
+
+test('diagonal walls get the game bevels: a gabled wall in front, triangles elsewhere', () => {
+  // updateGfxLayer (0x00509180) und renderMap (0x004e8cf0), siehe geo.mauerSchraegen.
+  const bilder = {};
+  for (let i = 45; i <= 75; i++) bilder[i] = { bild: 'b' + i, breite: i < 48 ? 15 : 32, hoehe: i < 48 ? 17 : i < 62 ? 99 : 130, sx: 0, sy: 0 };
+  const wand = { kacheln: 1, mauer: { hoehe: 90 } };
+  const zinne = { kacheln: 1, mauer: { hoehe: 98, zinne: true } };
+  const felder = (entry, ...liste) => liste.map(([gx, gy]) => ({ gx, gy, tiles: 1, entry }));
+  const lage = (gx, gy) => ({ x: gx, y: gy });
+  const schraegen = items => geometry.mauerSchraegen(items, geometry.wallLookup(items), lage, bilder);
+  const art = items => schraegen(items).map(s => `${s.gx},${s.gy},${s.art},${s.bild.bild}`).sort();
+  // Waagrecht schraeg: vorn die Wand mit Giebel, hinten das Dreieck 46.
+  assert.deepEqual(art(felder(wand, [10, 10], [11, 9])), ['10,9,hinten,b46', '11,10,vorn,b49'], 'Paritaet (x ^ y) & 1 = 1');
+  // Senkrecht schraeg: links 45 und rechts 47, keine Wand.
+  assert.deepEqual(art(felder(wand, [10, 10], [11, 11])), ['10,11,rechts,b47', '11,10,links,b45']);
+  // Eine Linie: in der Mitte 61 - (y & 7), an den Enden 52/53 bzw. 50/51
+  // (+ Paritaet); die Luecken vorn liegen bei (11,10), (12,9), (13,8).
+  const linie = felder(wand, [10, 10], [11, 9], [12, 8], [13, 7]);
+  const vorn = schraegen(linie).filter(s => s.art === 'vorn').sort((a, b) => a.gx - b.gx).map(s => s.bild.bild);
+  assert.deepEqual(vorn, ['b51', 'b60', 'b53']);
+  // Vor Zinnen die Wand mit Brustwehr (+14).
+  assert.equal(schraegen(felder(zinne, [10, 10], [11, 9])).find(s => s.art === 'vorn').bild.bild, 'b63');
+  // Platz: die Wand endet 98 unter ihrem Giebel, der auf der Mauerhoehe sitzt.
+  const front = schraegen(felder(wand, [10, 10], [11, 9])).find(s => s.art === 'vorn');
+  assert.deepEqual([front.dx, front.dy], [0, 98 - 99 - 90]);
+  // Auch eine Innenecke wird abgeschraegt - wie im Spiel; nur wenn die
+  // Diagonalen dahinter voll sind, nicht.
+  assert.deepEqual(art(felder(wand, [10, 10], [11, 10], [11, 11])), ['10,11,rechts,b47'], 'Innenecke');
+  const voll = felder(wand, [11, 10], [10, 11], [9, 11], [11, 11], [11, 9]);
+  assert.deepEqual(art(voll).filter(a => a.startsWith('10,10,')), [], 'Diagonalen voll');
+  // Keine neben einer Treppe oder neben einem Turm.
+  const turm = { gx: 11, gy: 11, tiles: 1, entry: { aiv: 30, kacheln: 1 } };
+  assert.deepEqual(art([...felder(wand, [10, 10]), turm]), []);
+  const stufe = { gx: 9, gy: 9, tiles: 1, entry: { kacheln: 1, treppe: { hoehe: 48 } } };
+  assert.deepEqual(art([...felder(wand, [10, 10], [11, 9]), stufe]).filter(a => a.startsWith('10,9')), [], 'Treppe daneben');
+  // Ohne Spielbilder nichts.
+  assert.deepEqual(geometry.mauerSchraegen(felder(wand, [10, 10], [11, 9]), geometry.wallLookup(felder(wand, [10, 10], [11, 9])), lage, null), []);
+});
+
+test('the catalogue maps every bevel to anim_castle and each run axis to its own crenels', () => {
+  const quellen = require(path.join(root, 'config', 'iso-wall-sources.json'));
+  for (let i = 45; i <= 75; i++) assert.deepEqual(quellen[`schraege_${i}.png`], { file: 'anim_castle', index: i, sprite: true });
+  // updateGfxLayer: laengs 120-123 / 112-115, quer 124-127 / 116-119.
+  assert.equal(quellen['mauer_26_l05_klotz.png'].index, 121);
+  assert.equal(quellen['mauer_26_l05_scharte.png'].index, 113);
+  assert.equal(quellen['mauer_26_q05_klotz.png'].index, 125);
+  assert.equal(quellen['mauer_26_q05_scharte.png'].index, 117);
+  const katalog = require(path.join(root, 'assets', 'aiv', 'iso', 'verzeichnis.json'));
+  assert.equal(katalog.mauerSchraegen.bilder[61].bild, 'schraege_61.png');
+});
+
 test('every drawn item carries the key the editor uses for its selection', () => {
   const dokument = { frames: [
     { itemType: 20, tilePositionOfsets: [2030, 2031] },
@@ -354,7 +514,7 @@ test('a crenellated wall alternates merlon and embrasure, tile by tile', () => {
   // Und das Zeichnen benutzt die gewaehlte Fassung, nicht mehr den Eintrag.
   const script = fs.readFileSync(path.join(root, 'src', 'js', 'iso-view.js'), 'utf8');
   const malen = script.slice(script.indexOf('function drawSprite'), script.indexOf('function drawDiamond'));
-  assert.match(malen, /const variant = geo\.variantFor\(sprite, gx, gy, mauerAn, hoeheAn\)/);
+  assert.match(malen, /geo\.variantFor\(sprite, gx, gy, mauerAn, hoeheAn, state\.lageAn\)/);
   assert.match(malen, /image\(variant\.bild\)/);
   assert.match(malen, /geo\.spriteRect\(variant, gx, gy/);
 });
@@ -956,7 +1116,30 @@ test('die Hoehe kommt aus derselben Quelle wie der Boden', () => {
   // sein Bild sitzt (spriteRect).
   const bau = iso.slice(iso.indexOf('function bauHoehe'), iso.indexOf('function drawDiamond'));
   assert.match(bau, /bodenHoehe\(gx \+ \(tiles \|\| 1\) - 1, gy \+ \(tiles \|\| 1\) - 1\)/);
-  assert.match(bau, /geo\.spriteRect\(variant, gx, gy, tiles, state\.view, bauHoehe\(gx, gy, tiles\)\)/);
+  assert.match(bau, /const hebung = bauHoehe\(gx, gy, tiles\);[\s\S]*geo\.spriteRect\(variant, gx, gy, tiles, state\.view, hebung\)/);
   // Und die Maus rechnet die Hoehe zurueck, sonst klickt man daneben.
   assert.match(iso, /geo\.tileFromPoint\(px, py, state\.view, bodenHoehe\)/);
+});
+
+test('a wall on raised ground reaches down to the ground in front, and not further', () => {
+  const script = fs.readFileSync(path.join(root, 'src', 'js', 'iso-view.js'), 'utf8');
+  const start = script.indexOf('  function drawWallFoot(');
+  const quelle = script.slice(start, script.indexOf('// Eine Abschraegung schraeger Mauern', start));
+  const drawWallFoot = new Function(`${quelle}; return drawWallFoot;`)();
+  const draws = [];
+  const ctx = { drawImage: (...args) => draws.push(args) };
+  const bild = { sx: 0, sy: 0, breite: 30, hoehe: 108 };
+  drawWallFoot(ctx, {}, bild, 100, 50, 1, [0, 0], 66);
+  assert.equal(draws.length, 0, 'auf flachem Grund nichts');
+  // Links 100 Punkte tiefer, rechts 40: links zwei Stuecke, rechts eins.
+  drawWallFoot(ctx, {}, bild, 100, 50, 1, [100, 40], 66);
+  const links = draws.filter(d => d[1] === 0), rechts = draws.filter(d => d[1] === 15);
+  assert.equal(links.length, 2);
+  assert.equal(rechts.length, 1);
+  // Das letzte Stueck endet genau auf dem Boden: Fuss bei 108 + Tiefe.
+  const unten = d => d[6] + d[8] - 50;
+  assert.equal(Math.max(...links.map(unten)), 108 + 100);
+  assert.equal(Math.max(...rechts.map(unten)), 108 + 40);
+  assert.match(script, /if \(sprite\.mauer\) drawWallFoot\([^;]*wallFootDepth\(gx, gy\)/, 'jede Mauer');
+  assert.match(script, /if \(schraege\.art === 'vorn'\) drawWallFoot\(/, 'und die Wand vor einer Schraege');
 });

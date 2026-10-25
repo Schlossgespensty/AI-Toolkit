@@ -153,7 +153,7 @@ routes and staged fire calculations are still in development.
 
 Resource-building and selection fixes (2026-09-12)
 
-The native codec already mapped farms and resource buildings, but editor constants and save templates omitted mapper IDs 56, 70–73, 90 and 91. These now use the game's placement footprints from getBuildingSizeForCommandBuildingType (0x004FA550): quarry 6, wheat/hop 9, apple 11, dairy 10, iron/pitch 4 tiles per side. AIV IDs are 62, 73, 75, 71, 72, 64 and 65 respectively. Names, palette membership, worker counts and executable-derived building prices are included.
+The native codec already mapped farms and resource buildings, but editor constants and save templates omitted mapper IDs 56, 70–73, 90 and 91. These now use the game's placement footprints: quarry 6, wheat/hop 9, apple/dairy 10, iron/pitch 4 tiles per side. Apple placement reserves 10x10 in `placeApplefarm` (0x00515740); its save template, plan skin and camera layouts use the same boundary. AIV IDs are 62, 73, 75, 71, 72, 64 and 65 respectively. Names, palette membership, worker counts and executable-derived building prices are included.
 
 Farm 2.5D previews now assemble the original hut and field/fence/tree components.
 See [Native building components](farm-graphics.md). The native field dimensions

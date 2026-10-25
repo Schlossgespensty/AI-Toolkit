@@ -29,9 +29,9 @@ function scene(fire = false, clearable = false) {
   const state = {view: {zoom: 1, panX: 0, panY: 0}, catalogue: {}};
   const mask = raster(size);
   const context = vm.createContext({state, document: {getElementById: () => ({checked: fire}), createElement: () => ({width: 0, height: 0, getContext: () => mask})}, window: {castleGameData: {flammability: {Hovel: 1}}, castleCostData: {buildings: {54: {balance: 'Hovel'}}}, castleEditor: {getActiveBuildStep: () => 1}},
-    currentDocument: () => null, turnedTiles: value => value,
+    currentDocument: () => null, turnedTiles: value => value, zinnenLage: () => null, drawSchraege() {},
     geo: {GRID: 100, collectItems: () => items, attachDrawbridges: value => value,
-      collectPlates: () => [], wallLookup: value => value.length, hoehenLookup: () => null,
+      collectPlates: () => [], wallLookup: value => value.length, hoehenLookup: () => null, mauerSchraegen: () => [], anlehnFelder: () => new Set(), anlehnRichtung: () => null,
       buildingParts: () => null, isoPoint: (x, y) => [x, y],
       renderOrder: (a, b) => a.gy - b.gy || a.gx - b.gx || (a.layer ?? 2) - (b.layer ?? 2)},
     paintMapTiles() {

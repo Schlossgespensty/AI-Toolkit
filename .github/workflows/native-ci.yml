@@ -2,8 +2,11 @@ name: Native CI
 
 on:
   push:
-    branches: [main, 'experiment/**']
+    # Fork preview branches are checked by their upstream pull request.
+    branches: [main]
+    paths-ignore: ['**/*.md']
   pull_request:
+    paths-ignore: ['**/*.md']
   workflow_dispatch:
 
 permissions:
@@ -14,8 +17,40 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  shared:
+    name: Shared editor checks
+    runs-on: windows-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12
+          cache: npm
+      - run: npm ci
+      - name: Validate translations, package policy and native bridge types
+        run: |
+          npm run check:locales
+          node scripts/package-policy.mjs
+          npx tsc --project tsconfig.desktop.json --noEmit
+      - name: Check shared editor syntax and behavior
+        run: npm run check
+      - name: Render the shared editor in the existing smoke-test host
+        run: npx electron scripts/render-smoke.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: renderer-check
+          path: artifacts/render
+          if-no-files-found: ignore
+          retention-days: 14
+
   check:
     name: Native (${{ matrix.os }})
+    needs: shared
     strategy:
       fail-fast: false
       matrix:
@@ -26,8 +61,8 @@ jobs:
       run:
         shell: bash
     env:
-      # The existing CI job owns Electron integration tests. Native checks need
-      # its npm dependencies, but never the downloaded Chromium executable.
+      # The shared job owns renderer checks. Native compilation needs the npm
+      # dependencies, but never the downloaded Chromium executable.
       ELECTRON_SKIP_BINARY_DOWNLOAD: '1'
       CARGO_BUILD_JOBS: '2'
       CARGO_PROFILE_DEV_DEBUG: '0'
@@ -62,17 +97,10 @@ jobs:
           key: native-ci-${{ runner.os }}-${{ runner.arch }}-${{ steps.rust.outputs.version }}-${{ hashFiles('src-tauri/Cargo.lock') }}
           restore-keys: native-ci-${{ runner.os }}-${{ runner.arch }}-${{ steps.rust.outputs.version }}-
       - run: npm ci
-      - name: Validate translations and the shared package policy
-        run: |
-          npm run check:locales
-          node scripts/package-policy.mjs
-      - name: Check native bridge types and portable frontend behavior
-        run: |
-          npx tsc --project tsconfig.desktop.json --noEmit
-          node --test tests/desktop-bridge.test.js tests/native-package.test.js tests/native-viewport-close.test.js
       - name: Build the embedded frontend
         run: node scripts/build-desktop.mjs
       - name: Check Rust formatting
+        if: runner.os == 'Windows'
         run: cargo fmt --manifest-path src-tauri/Cargo.toml --check
       - name: Test native logic and generated IPC contracts
         # The game parity fixture remains opt-in: no copyrighted game data or

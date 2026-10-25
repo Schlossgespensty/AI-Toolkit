@@ -188,3 +188,11 @@ dock: Ancrer
 groups: Groupes
 cut_and_copy: Couper et copier
 deselect: Désélectionner
+construction_blocked: 'Construction impossible ici : {{reasons}}'
+construction_rock: 'rochers'
+construction_water: 'eau ou rivière'
+construction_marsh: 'marais'
+construction_moat: 'douves creusées'
+construction_outside: 'hors de la zone constructible'
+construction_height: 'limite de hauteur du terrain'
+construction_slope: 'terrain trop irrégulier'

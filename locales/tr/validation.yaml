@@ -22,3 +22,5 @@ classic_empty_steps: Boş inşa adımları klasik AIV biçiminde korunamaz.
 classic_item: '{{name}}, klasik AIV biçiminde desteklenmez.'
 classic_pauses: İnşa adımı duraklamaları klasik editörde devre dışıdır.
 classic_marker: '{{name}}, klasik AIV biçiminde korunamaz.'
+
+classic_extended_spots: "10 üzerindeki birlik noktaları klasik .aiv olarak kaydedilemez. Tüm noktaları korumak için DE (.aivjson) olarak dışa aktarın."

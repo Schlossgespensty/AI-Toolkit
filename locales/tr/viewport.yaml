@@ -23,3 +23,10 @@ no_window_open_one_from_the_toolbar: pencere yok; araç çubuğundan bir tane a�
 add_as_a_tab_here: Buraya sekme olarak ekle
 esc_cancels: ' · Esc iptal eder'
 is_missing: ' eksik'
+flat_view: 'Düz görünüm'
+lowered_view: 'Alçaltılmış görünüm'
+refresh_map: "Haritayı yenile"
+refresh_map_hint: "Seçili haritayı diskten yeniden yükle: {{path}}"
+refreshing_map: "Harita yenileniyor…"
+map_refreshed: "Harita yenilendi: {{name}}"
+map_refresh_failed: "Harita yenilenemedi: {{message}}"

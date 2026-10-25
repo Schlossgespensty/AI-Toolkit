@@ -23,3 +23,10 @@ no_window_open_one_from_the_toolbar: Kein Fenster – über die Werkzeugleiste �
 add_as_a_tab_here: Hier als Registerkarte hinzufügen
 esc_cancels: " · Esc bricht ab"
 is_missing: " fehlt"
+flat_view: 'Flache Ansicht'
+lowered_view: 'Abgesenkte Ansicht'
+refresh_map: "Karte aktualisieren"
+refresh_map_hint: "Die gewählte Karte neu von der Festplatte laden: {{path}}"
+refreshing_map: "Karte wird aktualisiert…"
+map_refreshed: "Karte aktualisiert: {{name}}"
+map_refresh_failed: "Karte konnte nicht aktualisiert werden: {{message}}"

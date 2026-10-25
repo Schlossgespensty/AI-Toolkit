@@ -18,8 +18,8 @@
   /** Validate the intentionally small manifest; token interpretation belongs to Style Dictionary. */
   function validateManifest(value, expectedId) {
     if (!value || typeof value !== 'object' || Array.isArray(value) || value.schemaVersion !== 1 || !IDENTIFIER.test(value.id) || (expectedId && value.id !== expectedId)) throw new Error('Invalid theme manifest identity');
-    const keys = ['schemaVersion', 'id', 'name', 'version', 'extends', 'variables', 'colorScheme', 'textures', 'attribution'];
-    if (Object.keys(value).some(key => !keys.includes(key)) || (value.extends && value.extends !== 'default') || value.variables !== 'variables.css' || !['dark', 'light'].includes(value.colorScheme)) throw new Error('Unsupported theme manifest');
+    const keys = ['schemaVersion', 'id', 'name', 'version', 'extends', 'variables', 'colorScheme', 'controlWeight', 'textures', 'attribution'];
+    if (Object.keys(value).some(key => !keys.includes(key)) || (value.extends && value.extends !== 'default') || value.variables !== 'variables.css' || !['dark', 'light'].includes(value.colorScheme) || ![undefined, 'bold', 'regular'].includes(value.controlWeight)) throw new Error('Unsupported theme manifest');
     if (typeof value.name !== 'string' || !value.name || value.name.length > 80 || typeof value.version !== 'string' || !value.version || value.version.length > 40) throw new Error('Invalid theme metadata');
     if (!Array.isArray(value.attribution) || value.attribution.some(entry => !entry || ['author', 'scope', 'permission'].some(key => typeof entry[key] !== 'string'))) throw new Error('Missing theme attribution');
     if (!value.textures || typeof value.textures !== 'object' || Array.isArray(value.textures)) throw new Error('Invalid theme textures');
@@ -124,6 +124,7 @@
         element.style.setProperty(name + '-size', texture?.mode === 'tile' ? 'auto' : texture?.mode === 'cover' ? 'cover' : 'contain');
       }
       element.dataset.theme = pack.id;
+      element.dataset.controlWeight = pack.controlWeight || 'bold';
       element.dataset.themedControls = pack.textures.control ? 'true' : 'false';
       element.dataset.themedCheckboxes = pack.textures.checkbox && pack.textures.checkboxChecked ? 'true' : 'false';
       // Optional artwork changes paint only for roles that have a complete set.

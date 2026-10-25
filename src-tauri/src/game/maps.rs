@@ -267,6 +267,7 @@ impl MapFile {
         let mut hard = blocked.clone();
         let mut ground = vec![0; EDGE * EDGE];
         let mut lift = ground.clone();
+        let mut build_flags = vec![16u32; EDGE * EDGE];
         for y in 0..400 {
             let (a, b) = row_range(y);
             for x in a..=b {
@@ -281,6 +282,9 @@ impl MapFile {
                 blocked[target] =
                     (h || f & (128 | 4096 | 8192 | 131072 | 524288) != 0 || organism != 0) as u8;
                 hard[target] = h as u8;
+                // Permanent construction flags, excluding units, vegetation
+                // and pre-existing structures supplied by the AIV itself.
+                build_flags[target] = f & 0xe03a00b1;
                 ground[target] = heights
                     .as_ref()
                     .and_then(|v| v.get(i))
@@ -290,7 +294,7 @@ impl MapFile {
             }
         }
         Ok(
-            json!({"version":4,"constructionLift":b64(&lift),"fingerprint":hash(&self.bytes),"blocked":b64(&blocked),"hardBlocked":b64(&hard),"heights":b64(&ground)}),
+            json!({"version":5,"buildFlags":b64(&build_flags.iter().flat_map(|v|v.to_le_bytes()).collect::<Vec<_>>()),"constructionLift":b64(&lift),"fingerprint":hash(&self.bytes),"blocked":b64(&blocked),"hardBlocked":b64(&hard),"heights":b64(&ground)}),
         )
     }
 }
@@ -384,7 +388,42 @@ impl Files {
         Ok(&self.files[name])
     }
 }
-fn stock(gfx: &[u8], files: &mut Files, resources: &Path) -> Result<Stock> {
+fn shore_layout_errors(
+    stock: &Stock,
+    gfx: &[u8],
+    logic: &[u8],
+    misc: &[u8],
+    logic2: &[u8],
+) -> Option<usize> {
+    if gfx.len() != TILES * 2
+        || logic.len() != TILES * 4
+        || misc.len() != TILES * 2
+        || logic2.len() != TILES
+    {
+        return None;
+    }
+    let (mut checked, mut errors) = (0, 0);
+    for tile in 0..TILES {
+        // updateGfxLayer 0x50CDBF: eight plain sea pictures per lighting bank.
+        if u32le(logic, tile * 4).ok()? & 1 == 0
+            || u16le(misc, tile * 2).ok()? & 0x3c0 != 0
+            || logic2[tile] & 8 != 0
+        {
+            continue;
+        }
+        checked += 1;
+        if !stock
+            .picture(u16le(gfx, tile * 2).ok()?)
+            .is_some_and(|(name, index)| {
+                name == "tile_sea_new_01" && index < 1476 && index % 246 < 8
+            })
+        {
+            errors += 1;
+        }
+    }
+    (checked > 0).then_some(errors)
+}
+fn stock(gfx: &[u8], files: &mut Files, resources: &Path, map: &MapFile) -> Result<Stock> {
     let layout: Value =
         serde_json::from_slice(&read(&resources.join("config/map-picture-layout.json"))?)
             .map_err(|e| e.to_string())?;
@@ -420,7 +459,13 @@ fn stock(gfx: &[u8], files: &mut Files, resources: &Path) -> Result<Stock> {
             })
         })
     };
-    if valid(&original, files) {
+    let original_valid = valid(&original, files);
+    let logic = map.section(1003)?.unwrap_or_default();
+    let misc = map.section(1007)?.unwrap_or_default();
+    let logic2 = map.section(1037)?.unwrap_or_default();
+    if original_valid
+        && shore_layout_errors(&original, gfx, &logic, &misc, &logic2).unwrap_or(0) == 0
+    {
         return Ok(original);
     }
     let mut total = 0;
@@ -428,7 +473,12 @@ fn stock(gfx: &[u8], files: &mut Files, resources: &Path) -> Result<Stock> {
         .into_iter()
         .map(|mut e| {
             e.from = total;
-            e.count = files.file(&e.name).map_or(0, |g| g.entries.len());
+            let mut header = [0; 24];
+            e.count = fs::File::open(files.graphics.file(&e.name))
+                .and_then(|mut file| file.read_exact(&mut header))
+                .ok()
+                .and_then(|_| u32le(&header, 12).ok())
+                .unwrap_or(0) as usize;
             total += e.count;
             e
         })
@@ -437,7 +487,10 @@ fn stock(gfx: &[u8], files: &mut Files, resources: &Path) -> Result<Stock> {
         entries,
         layout: "installed",
     };
-    if valid(&installed, files) {
+    if valid(&installed, files)
+        && (!original_valid
+            || shore_layout_errors(&installed, gfx, &logic, &misc, &logic2) == Some(0))
+    {
         Ok(installed)
     } else {
         Ok(original)
@@ -446,11 +499,24 @@ fn stock(gfx: &[u8], files: &mut Files, resources: &Path) -> Result<Stock> {
 #[derive(Clone)]
 struct Tree {
     picture: usize,
+    typ: u16,
     gm_id: i32,
     palette: i32,
     x: i32,
     y: i32,
     alive: bool,
+}
+impl Tree {
+    fn view_picture(&self, flat: bool) -> usize {
+        // Native timber/shrub rules; editor orchards retain their positions
+        // using the original apple stump (picture 101).
+        match (flat, self.typ) {
+            (true, 1..=4) => 148,
+            (true, 5..=10) => 0,
+            (true, 15) => 101,
+            _ => self.picture,
+        }
+    }
 }
 fn trees(bytes: Option<Vec<u8>>) -> Result<Vec<Tree>> {
     let Some(bytes) = bytes else {
@@ -478,6 +544,7 @@ fn trees(bytes: Option<Vec<u8>>) -> Result<Vec<Tree>> {
             };
             Ok(Tree {
                 picture: picture as usize,
+                typ,
                 gm_id: u16le(b, 4)? as i16 as i32,
                 palette: u32le(b, 8)? as i32,
                 x: u16le(b, 0xc)? as i16 as i32,
@@ -516,6 +583,100 @@ fn replace_keeps(gfx: &mut [u8], keeps: &[Value], desert: u16) {
         }
     }
 }
+fn flat_graphics(map: &MapFile, gfx: &[u8], stock: &Stock, rules: &Value) -> Result<Vec<u8>> {
+    let mut result = gfx.to_vec();
+    let Some(flat) = stock.entries.iter().find(|e| e.name == "tile_flatties") else {
+        return Ok(result);
+    };
+    let types = map.section(1049)?.filter(|v| v.len() == TILES);
+    let Some(logic) = map.section(1003)?.filter(|v| v.len() == TILES * 4) else {
+        return Ok(result);
+    };
+    let ids = map.section(1012)?.filter(|v| v.len() == TILES * 2);
+    let records = map
+        .section(1013)?
+        .filter(|v| v.len() >= 812 && v.len() % 812 == 0);
+    if types.is_none() && (ids.is_none() || records.is_none()) {
+        return Ok(result);
+    }
+    let misc = map.section(1007)?.filter(|v| v.len() == TILES * 2);
+    let random = map.section(1008)?.filter(|v| v.len() == TILES * 2);
+    for tile in 0..TILES {
+        let flags = u32le(&logic, tile * 4)?;
+        let id = ids.as_ref().map_or(0, |v| u16le(v, tile * 2).unwrap_or(0)) as usize;
+        // Native renderMap uses BuildingLayer -> Buildings[id].buildingType.
+        // BuildingWasLayer can be zero for doors/decorations or name a parent.
+        let typ = if let (Some(_), Some(records)) = (&ids, &records) {
+            if id > 0 && (id + 1) * 812 <= records.len() {
+                u16le(records, id * 812 + 210)? as usize
+            } else {
+                0
+            }
+        } else {
+            types.as_ref().map_or(0, |v| v[tile] as usize)
+        };
+        let rng = random
+            .as_ref()
+            .map_or(0, |v| u16le(v, tile * 2).unwrap_or(0)) as usize;
+        let mut index = None;
+        let mut file = flat;
+        if typ > 0 && flags & 0x40000000 == 0 {
+            match rules["flatViewGroups"][typ].as_i64() {
+                Some(3) => {
+                    let first = match typ {
+                        3 => 24,
+                        7 => 26,
+                        33 => 28,
+                        _ => 30,
+                    };
+                    let symbol =
+                        misc.as_ref().map_or(0, |v| u16le(v, tile * 2).unwrap_or(0)) & 4 != 0;
+                    index = Some(first + usize::from(symbol));
+                }
+                Some(group) if group >= 0 => {
+                    index = Some(group as usize * 8 + (id & 1) * 4 + (rng & 3));
+                }
+                _ => {}
+            }
+        } else if flags & 0x100 != 0 {
+            if flags & 0x800 != 0 {
+                let source = stock.picture(u16le(gfx, tile * 2)?);
+                index = Some(if matches!(source, Some(("tile_land3", 134 | 136))) {
+                    42
+                } else {
+                    40
+                });
+            } else if flags & 0x200 != 0 {
+                index = Some(36 + (rng & 3));
+            }
+        } else if flags & 0x80 != 0 {
+            if let Some(picture) = rules["flatRockPictures"][rng & 3].as_u64() {
+                let picture = picture as usize;
+                let source = stock.picture(u16le(gfx, tile * 2)?).map(|p| p.0);
+                if let Some(rock) = stock
+                    .entries
+                    .iter()
+                    .find(|e| Some(e.name.as_str()) == source && e.count > picture)
+                    .or_else(|| {
+                        stock
+                            .entries
+                            .iter()
+                            .find(|e| e.name == "tile_rocks8" && e.count > picture)
+                    })
+                {
+                    file = rock;
+                    index = Some(picture);
+                }
+            }
+        }
+        if let Some(index) = index.filter(|i| *i < file.count) {
+            let value = (file.from + index + 1) as u16;
+            result[tile * 2..tile * 2 + 2].copy_from_slice(&value.to_le_bytes());
+        }
+    }
+    Ok(result)
+}
+
 fn build_atlas(
     gfx: &[u8],
     height: Option<&[u8]>,
@@ -525,6 +686,7 @@ fn build_atlas(
     stock: &Stock,
     files: &mut Files,
     atlas_cache: &Path,
+    flat: bool,
 ) -> Result<Value> {
     let mut slots = HashMap::new();
     let mut values = Vec::new();
@@ -547,7 +709,10 @@ fn build_atlas(
                 return None;
             }
             let (e, raw) = gm.raw(index).ok()?;
-            Some((diamond(raw).ok()?, upper(e, raw).ok()?))
+            // The native renderer retains the selected tile's TGX upper in
+            // Space too; restricting this to tile_sea8 drops newer shore banks.
+            let up = upper(e, raw).ok()?;
+            Some((diamond(raw).ok()?, up))
         });
         if let Some((p, up)) = picture {
             composite(
@@ -634,28 +799,32 @@ fn build_atlas(
                 if id == 0 || id >= 2000 {
                     continue;
                 }
-                let Some(t) = trees.get(id).filter(|t| t.alive && t.picture > 0) else {
+                let Some(t) = trees.get(id).filter(|t| t.alive) else {
                     continue;
                 };
+                let picture = t.view_picture(flat);
+                if picture == 0 {
+                    continue;
+                }
                 let Some(file) = stock
                     .entries
                     .iter()
-                    .find(|f| f.gm_id == t.gm_id && t.picture <= f.count)
+                    .find(|f| f.gm_id == t.gm_id && picture <= f.count)
                 else {
                     continue;
                 };
-                let key = format!("{}/{}/{}", file.name, t.picture, t.palette);
+                let key = format!("{}/{}/{}", file.name, picture, t.palette);
                 let index = if let Some(index) = tree_indices.get(&key) {
                     *index
                 } else {
                     let gm = files.file(&file.name)?;
-                    let entry = &gm.entries[t.picture - 1];
+                    let entry = &gm.entries[picture - 1];
                     let palette = if (0..10).contains(&t.palette) {
                         t.palette as usize
                     } else {
                         entry.palette
                     };
-                    let picture = gm.sprite(t.picture - 1, Some(palette))?;
+                    let picture = gm.sprite(picture - 1, Some(palette))?;
                     let i = uppers.len();
                     uppers.push(Some(picture));
                     tree_indices.insert(key, i);
@@ -705,7 +874,7 @@ fn extract_map_tiles(
             map.section(1045).ok().flatten().as_deref() == Some(capture.base_heights.as_slice())
         });
     let identity = format!(
-        "rust-map-atlas-4:{}:{}:{}",
+        "rust-map-atlas-11:{}:{}:{}",
         hash(&map.bytes),
         graphics.revision,
         capture.as_ref().map_or("saved", |c| c.revision.as_str())
@@ -736,7 +905,7 @@ fn extract_map_tiles(
         graphics,
         files: HashMap::new(),
     };
-    let mut stock = stock(&gfx, &mut files, resource_root)?;
+    let mut stock = stock(&gfx, &mut files, resource_root, &map)?;
     if capture.is_some() {
         let mut total = 0;
         for entry in &mut stock.entries {
@@ -758,6 +927,14 @@ fn extract_map_tiles(
         .find(|e| e.name == "tile_land8" && e.count > 0)
         .ok_or("Game desert terrain graphics missing")?;
     let desert = (desert.from + 1) as u16;
+    let flat_base = gfx.clone();
+    let flat_bases = capture.as_ref().map(|capture| {
+        capture
+            .cameras
+            .iter()
+            .map(|(gfx, _)| gfx.clone())
+            .collect::<Vec<_>>()
+    });
     let mut value = if let Some(capture) = capture {
         let mut cameras = Vec::new();
         for (mut camera, pillars) in capture.cameras {
@@ -771,6 +948,7 @@ fn extract_map_tiles(
                 &stock,
                 &mut files,
                 &atlas_cache,
+                false,
             )?);
         }
         let mut value = cameras[0].clone();
@@ -788,9 +966,58 @@ fn extract_map_tiles(
             &stock,
             &mut files,
             &atlas_cache,
+            false,
         )?
     };
+    let rules: Value = serde_json::from_slice(&read(
+        &resource_root.join("assets/aiv/iso/verzeichnis.json"),
+    )?)
+    .map_err(|e| e.to_string())?;
+    let mut flat_cameras = Vec::new();
+    for base in flat_bases
+        .as_deref()
+        .unwrap_or(std::slice::from_ref(&flat_base))
+    {
+        let flat = flat_graphics(&map, base, &stock, &rules)?;
+        flat_cameras.push(build_atlas(
+            &flat,
+            None,
+            None,
+            organisms.as_deref(),
+            &trees,
+            &stock,
+            &mut files,
+            &atlas_cache,
+            true,
+        )?);
+    }
+    value["flat"] = flat_cameras[0].clone();
+    if flat_bases.is_some() {
+        value["flatCameras"] = json!(flat_cameras);
+    }
+    let orientation = map
+        .section(1044)?
+        .and_then(|bytes| {
+            if bytes.len() == 4 {
+                u32le(&bytes, 0).ok()
+            } else {
+                None
+            }
+        })
+        .filter(|v| [0, 2, 4, 6].contains(v))
+        .unwrap_or(0);
+    value["savedOrientation"] = json!(orientation);
     value = with_map_identity(value, &known, path);
+    let mut flat_random = vec![0u16; EDGE * EDGE];
+    if let Some(random) = map.section(1008)?.filter(|v| v.len() == TILES * 2) {
+        for y in 0..400 {
+            let (a, b) = row_range(y);
+            for x in a..=b {
+                flat_random[(y * 400 + x) as usize] = u16le(&random, tile_index(x, y) * 2)?;
+            }
+        }
+    }
+    value["flatRandom"] = json!(b64(&u16_bytes(&flat_random)));
     value["pictureLayout"] = json!(stock.layout);
     value["assetRevision"] = json!(files.graphics.revision);
     // Saved-map decoding is a complete independent path, never a request to
@@ -808,6 +1035,134 @@ fn extract_map_tiles(
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn flat_buildings_follow_records_for_doors_grounds_and_partial_decorations() {
+        let mut types = vec![0; TILES];
+        let mut ids = vec![0; TILES * 2];
+        let mut records = vec![0; 6 * 812];
+        let mut gfx = vec![0; TILES * 2];
+        let mut random = vec![0; TILES * 2];
+        for t in 0..7 {
+            gfx[t * 2..t * 2 + 2].copy_from_slice(&(700 + t as u16).to_le_bytes());
+            random[t * 2..t * 2 + 2].copy_from_slice(&2u16.to_le_bytes());
+        }
+        for id in 1..=3 {
+            ids[(id - 1) * 2..id * 2].copy_from_slice(&(id as u16).to_le_bytes());
+            records[id * 812 + 210..id * 812 + 212]
+                .copy_from_slice(&(70 + id as u16).to_le_bytes());
+        }
+        ids[6..8].copy_from_slice(&4u16.to_le_bytes());
+        types[3] = 9;
+        records[4 * 812 + 210..4 * 812 + 212].copy_from_slice(&57u16.to_le_bytes());
+        ids[8..10].copy_from_slice(&5u16.to_le_bytes());
+        ids[10..12].copy_from_slice(&5u16.to_le_bytes());
+        records[5 * 812 + 210..5 * 812 + 212].copy_from_slice(&101u16.to_le_bytes());
+        types[6] = 9;
+        let sections = [
+            (1049, types),
+            (1012, ids),
+            (1013, records),
+            (1003, vec![0; TILES * 4]),
+            (1008, random),
+        ];
+        let mut bytes = vec![0; 3036];
+        let mut offset = 0u32;
+        for (i, (id, data)) in sections.iter().enumerate() {
+            for (at, value) in [
+                (632 + i * 4, data.len() as u32),
+                (1232 + i * 4, *id),
+                (2432 + i * 4, offset),
+            ] {
+                bytes[at..at + 4].copy_from_slice(&value.to_le_bytes());
+            }
+            bytes.extend(data);
+            offset += data.len() as u32;
+        }
+        let map = MapFile {
+            bytes,
+            directory: 0,
+            count: sections.len(),
+            preview: Vec::new(),
+        };
+        let stock = Stock {
+            entries: vec![StockEntry {
+                gm_id: 157,
+                name: "tile_flatties".into(),
+                from: 1000,
+                count: 46,
+            }],
+            layout: "test",
+        };
+        let mut groups = vec![0; 110];
+        groups[57] = -1;
+        groups[101] = 1;
+        let flat = flat_graphics(&map, &gfx, &stock, &json!({"flatViewGroups":groups})).unwrap();
+        let values = (0..7)
+            .map(|t| u16le(&flat, t * 2).unwrap())
+            .collect::<Vec<_>>();
+        assert_eq!(values, [1007, 1003, 1007, 703, 1015, 1015, 706]);
+        assert_eq!(u16le(&gfx, 0).unwrap(), 700);
+    }
+    #[test]
+    fn plain_sea_disambiguates_shifted_picture_counters() {
+        let make = |from| Stock {
+            entries: vec![StockEntry {
+                gm_id: 166,
+                name: "tile_sea_new_01".into(),
+                count: 1536,
+                from,
+            }],
+            layout: "test",
+        };
+        let mut gfx = vec![0; TILES * 2];
+        let mut logic = vec![0; TILES * 4];
+        let misc = vec![0; TILES * 2];
+        let logic2 = vec![0; TILES];
+        gfx[..2].copy_from_slice(&22u16.to_le_bytes());
+        logic[..4].copy_from_slice(&1u32.to_le_bytes());
+        assert_eq!(
+            shore_layout_errors(&make(0), &gfx, &logic, &misc, &logic2),
+            Some(1)
+        );
+        assert_eq!(
+            shore_layout_errors(&make(21), &gfx, &logic, &misc, &logic2),
+            Some(0)
+        );
+        gfx[..2].copy_from_slice(&1u16.to_le_bytes());
+        assert_eq!(
+            shore_layout_errors(&make(0), &gfx, &logic, &misc, &logic2),
+            Some(0)
+        );
+        assert_eq!(
+            shore_layout_errors(&make(21), &gfx, &logic, &misc, &logic2),
+            Some(1)
+        );
+        assert_eq!(
+            shore_layout_errors(&make(0), &gfx, &[], &misc, &logic2),
+            None
+        );
+    }
+    #[test]
+    fn flat_trees_use_native_stumps_without_altering_saved_frames() {
+        let mut bytes = vec![0; 20 * 156];
+        for typ in 0..20u16 {
+            let tree = &mut bytes[typ as usize * 156..(typ as usize + 1) * 156];
+            tree[..4].copy_from_slice(&12u32.to_le_bytes());
+            tree[0x46..0x48].copy_from_slice(&typ.to_le_bytes());
+        }
+        let trees = trees(Some(bytes)).unwrap();
+        for tree in &trees {
+            assert_eq!(tree.view_picture(false), 12);
+            let expected = match tree.typ {
+                1..=4 => 148,
+                5..=10 => 0,
+                15 => 101,
+                _ => 12,
+            };
+            assert_eq!(tree.view_picture(true), expected);
+            assert_eq!(tree.picture, 12);
+        }
+    }
     #[test]
     fn diamond_has_exactly_80400_tiles() {
         let mut seen = vec![false; TILES];

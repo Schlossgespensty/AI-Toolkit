@@ -40,6 +40,7 @@ developer_tools: Herramientas de desarrollo
 zoom_in: Acercar
 zoom_out: Alejar
 reset_zoom: Tamaño real
+interface_zoom: Zoom de la interfaz
 classic_castle: Castillo AIV clásico
 choose_castle_format: Elige el formato del archivo de castillo.
 add_castle_message: |-

@@ -133,6 +133,11 @@ are present inside the patched converter executable.
 
 ## Remaining verification
 
+Expanded guarding markers are now editable for the classes supported by
+SHCDE-Fixes. Spots 11–30 are labeled DE and require its per-AI capacity setting.
+See [the format contract and verified source](expanded-troop-spots.md).
+This does not add a classic game runtime extension or prove DE game execution.
+
 1. **Acquire fixtures and define the contract.** AIVE 0.9.6 is acquired. Obtain a DE game
    export and an AIVE GUI save of the same asymmetric castle. Include rotated gates,
    a displaced keep, a multi-tile wall step, all new unit types, marker numbering,
