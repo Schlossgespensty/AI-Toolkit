@@ -30,3 +30,6 @@ positive_negative: Pozitív / negatív
 net_buildings: Épületek egyenlege
 population_groups_of_16: Népesség / 16 fős csoportok
 movement: Mozgás
+module_setting: Module setting
+inherit_starting_troops: Alapértelmezett
+optional_override: Ürítsd ki a mezőt a telepített modul alapértékének használatához. A megadott érték erre a karakterre érvényes.

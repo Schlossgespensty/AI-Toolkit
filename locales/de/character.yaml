@@ -30,3 +30,6 @@ positive_negative: Positiv / negativ
 net_buildings: Gebäudebilanz
 population_groups_of_16: Bevölkerung / angefangene 16er-Gruppen
 movement: Bewegung
+module_setting: Module setting
+inherit_starting_troops: Standard
+optional_override: Feld leeren, um den Standard des installierten Moduls zu verwenden. Ein gesetzter Wert gilt für diesen Charakter.

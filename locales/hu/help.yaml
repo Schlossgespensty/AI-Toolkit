@@ -548,17 +548,13 @@ TargetChoice: >-
 
   Játékos: először mindig emberi játékost céloz. Emberi ellenség hiányában a legközelebbit választja.
 AIOxTethers_DisableInitialOxTether: "False: eredeti működés. True: ne építsen ökörkarámot minden kőfejtő építésekor vagy újjáépítésekor."
-AIOxTethers_Logic: |-
-  Az alkalmazott működési szabály.
-  False: eredeti; True: dinamikus.
+AIOxTethers_Logic: A dinamikus mód mindkét összesített korlátot és a kapcsolt ökörkarámok szabályait alkalmazza. Az AI Ox Tethers modulban engedélyezd az AIC használatát. AIC-visszaállítás után az üres mező a modul rögzített alapértékét használja.
 AIOxTethers_MaxOxTethers: Az MI ökörkarámjainak teljes száma sosem haladja meg ezt az értéket.
 AIOxTethers_DynamicMaxOxTethers: Az MI ökörkarámjainak teljes száma sosem haladja meg ezt az értéket a kőfejtők számával megszorozva.
 AIOxTethers_MinimumOxTethersPerQuarry: Ha ennél kevesebb kapcsolt ökörkarám szállít követ a kőfejtőből, új ökörkarám épül hozzá.
 AIOxTethers_MaximumOxTethersPerQuarry: Ha a kőfejtőhöz kapcsolt ökörkarámok száma meghaladja ezt az értéket, nem épül hozzá újabb.
 AIOxTethers_ThresholdStoneLoad: Ha a kőfejtő „kövek / kapcsolt ökörkarámok” aránya meghaladja ezt az értéket, újabb ökörkarám épül hozzá.
-RunningUnits_Macemen: >-
-  True esetén a(z) buzogányosok mindig futnak, lassabb egységekkel egy csoportban is. False esetén a csoport
-  leglassabb egységéhez igazítják a sebességüket, mint az eredetiben.
+RunningUnits_Macemen: A Futás és a Gyaloglás rögzíti a mozgást. A játék szerinti és az üres érték a modul szabályát követi, amely minden MI-re is előírhat egy mozgást.
 RunningUnits_Spearmen: >-
   True esetén a(z) lándzsások mindig futnak, lassabb egységekkel egy csoportban is. False esetén a csoport
   leglassabb egységéhez igazítják a sebességüket, mint az eredetiben.
@@ -856,3 +852,20 @@ AIVTroops_Movement_FireThrower: >-
   ezt a mezőt a mentett karakterből, és a következő alkalmazható közös vagy menübeli alapértéket használja. Az
   aiv-troops-behaviour bővítményben a Troop settings és Use AIC overrides legyen bekapcsolva. Módosítás után
   indítsa újra az UCP-t és kezdjen új mérkőzést.
+BuildingRepairInterval: Másodpercek az ellenőrzések között. A Smarter Buildings MI-javításának bekapcsolásakor érvényes.
+BuildingRepairMinimumGold: Az MI akkor javít, ha a kincstár eléri ezt az összeget.
+RecruitPolicy: Súlyozott szerepeknél a védelem, portya, támadás és kitörés összege minden erőszinten 100 legyen.
+RecruitConditions: 'Legfeljebb nyolc szabályt írj JSON-tömbbe. Minden szabályban legyen When és négy, összesen 100-at adó súly. Példa: [{"When":{"HomeUnderThreat":true},"Defense":70,"Raid":0,"Attack":20,"Sortie":10}]. Súlyozott szerepek szükségesek.'
+DefRecruitComposition: Súlyozott szerepeknél a védőhelyek megőrzése megtartja a megadott egységösszetételt.
+RecruitInitialDefenseMonths: Súlyozott szerepeknél a nulla kihagyja a kezdeti védelmi időt. Üresen a játék vagy a Legacy időzítője érvényes.
+RaidTargetPolicy: A csapatok, a célpontok, a kockázat vagy az ellenfelek beállításához válassz a játékétól eltérő szabályt.
+RaidFocus: Adj meg Any, Food, Industry vagy HighValue értéket, esetleg JSON-objektumot, például {"Food":60,"HighValue":20}. Az összeg legfeljebb 100. A NearestReachable csak Any értékkel működik.
+SafeSiegePlacement: Elérhető építési helyeket választ. A nyersanyagfizetéshez, az összehangolt tűzhöz és a nagyobb ostromsereghez szükséges.
+AttackTargetPolicy: Adj meg Inherit, InheritPerAttack, LowestPopulation, FewestTroops, LowestCombatPower, Random vagy LastAggressor értéket. JSON-objektumban a Choice mellé UntilDefeated, illetve LastAggressor esetén Provocation is írható.
+ProvocationRules: Adj meg JSON-objektumot ThreatPower és LossPower (1–100000), WindowTicks (32–9600, 32 többszöröse) és CombatTicks (1–WindowTicks) mezőkkel. AfterProvocation, LastAggressor vagy HomeUnderThreat feltétel szükséges.
+AICTactics_LordHuntSwitchPercent: Támadás közben a sereg ekkora részének életben kell maradnia a célvár váltásához.
+AICTactics_LordHuntSplitShare: A főseregnek a teljes ostromot elkerülő várhoz küldött része.
+Tunneler: Az AI Swapperben ez a karakter legyen a kezdőcsapatok forrása. Az érték 0–2499. Ha a karakter és az indító sem ad meg létszámot, alagútásó nem jelenik meg.
+AICTactics_PatrolOrders: Minden járőr kaphat támadási parancsot, az elsőn túli csoportok is.
+AICTactics_PatrolFormation: A szárny az első csoport mellett halad, a tükörkép a túloldalról érkezik, a külön útvonalak pedig más megközelítéseket használnak.
+AICTactics_PatrolSpacing: A szomszédos járőrök távolsága szárny- és tüköralakzatban.

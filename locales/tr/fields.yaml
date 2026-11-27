@@ -230,3 +230,55 @@ AIVTroops_InitialRole_ArabianSwordsman: 'Arap kılıçlı: ilk rol'
 AIVTroops_Movement_ArabianSwordsman: 'Arap kılıçlı: hareket'
 AIVTroops_InitialRole_FireThrower: 'Ateş atıcı: ilk rol'
 AIVTroops_Movement_FireThrower: 'Ateş atıcı: hareket'
+AICTactics_PatrolOrders: 'AIC Tactics: Devriye grubu emirleri'
+AICTactics_PatrolFormation: 'AIC Tactics: Devriye düzeni'
+AICTactics_PatrolSpacing: 'AIC Tactics: Devriye aralığı'
+BuildingRepairInterval: Bina onarım aralığı (sn)
+BuildingRepairMinimumGold: Bina onarımı için asgari altın
+RecruitPolicy: Asker toplama kuralı
+RecruitProbSortieDefault: Huruç payı, normal güç (%)
+RecruitProbSortieWeak: Huruç payı, düşük güç (%)
+RecruitProbSortieStrong: Huruç payı, yüksek güç (%)
+RecruitConditions: Koşullu asker toplama ağırlıkları
+DefRecruitComposition: Savunma birliği bileşimi
+RecruitInitialDefenseMonths: İlk savunma süresi (ay)
+RaidTargetPolicy: Akın hedefi seçimi
+RaidGroupCount: Akın grubu sayısı
+RaidMinGroupSize: En küçük akın grubu
+RaidFocus: Akın hedefi öncelikleri
+RaidRiskTolerance: Akında risk toleransı
+RaidEnemyScope: Akın yapılabilecek düşmanlar
+SafeSiegePlacement: Güvenli kuşatma aracı yerleşimi
+ActualSiegeResourcePayment: Kuşatma araçlarının kaynak bedelini öde
+CoordinatedSiegeHarassment: Eşgüdümlü kuşatma tacizi
+SiegeHarassMinEngines: Taciz için gereken en az araç
+LargerSiegeForces: Daha büyük kuşatma kuvveti
+SiegeForceMax: Taarruzda azami kuşatma aracı
+AICTactics_SiegeTowerCrew: Kuşatma kulesi mürettebatı
+AICTactics_PatrolExtraGroups: Ek saldırı devriyeleri
+AICTactics_PatrolMinSize: En küçük devriye grubu
+AICTactics_PatrolRadius: Devriye yarıçapı (kare)
+AICTactics_SiegeScreen: Kuşatma eskortu emirleri
+AICTactics_SiegeScreenForward: Kuşatma eskortu ön mesafesi (kare)
+AICTactics_SiegeScreenExtraGroups: Ek kuşatma eskort grupları
+AttackPreparation: Saldırı hazırlığı
+AttackTargetPolicy: Saldırı hedefi seçimi
+AttackTargetCommitment: Saldırı hedefini koruma
+AttackActivation: Saldırı başlangıcı
+ProvocationRules: Kışkırtma eşikleri
+AICTactics_LordHuntRetarget: Kaçan lordu takip et
+AICTactics_LordHuntSiege: Takipte kuşatma hedefi
+AICTactics_LordHuntSwitchPercent: Takip hedefini değiştirme eşiği (%)
+AICTactics_LordHuntShare: Kaçan lordu kovalayan birlikler (%)
+AICTactics_LordHuntSplitShare: Takip müfrezesinin payı (%)
+AICTactics_AllyRelief: Müttefiklere birlik gönder
+AICTactics_AllyGoods: Müttefiklere malzeme gönder
+AICTactics_AllyGoldKeep: Müttefik desteğinde altın rezervi
+AICTactics_AllyRecruitGoldBuffer: Asker toplamak için istenecek ek altın
+AICTactics_AllyGoldSharePercent: Fazla altından müttefiklere ayrılan pay (%)
+AICTactics_AllyMonthlyGivePercent: Aylık yardım bütçesi (%)
+AICTactics_AllyArmySharePercent: Müttefik desteğine ayrılan ordu payı (%)
+AICTactics_AllyReliefGates: Destek birlikleri için müttefik kapılarını aç
+AICTactics_AllyReliefKeep: Destek birliklerini müttefik iç kalelerine yerleştir
+AICTactics_AllyReliefMinMonths: Desteğin asgari kalış süresi (ay)
+Tunneler: Tünelci

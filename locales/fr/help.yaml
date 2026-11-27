@@ -527,17 +527,13 @@ TargetChoice: |-
 AIOxTethers_DisableInitialOxTether: >-
   « Non » conserve le comportement vanilla. « Oui » empêche la construction automatique d'une attache à bœufs
   à chaque (re)construction de carrière.
-AIOxTethers_Logic: |-
-  Logique appliquée.
-  Non = vanilla, Oui = dynamique.
+AIOxTethers_Logic: Le mode dynamique applique les deux plafonds globaux et les règles d’attache à la carrière. Activez l’utilisation de l’AIC dans AI Ox Tethers. Après une réinitialisation AIC, un champ vide utilise la valeur fixe du module.
 AIOxTethers_MaxOxTethers: Le total d'attaches à bœufs de cette IA ne dépasse jamais cette valeur.
 AIOxTethers_DynamicMaxOxTethers: Le total d'attaches à bœufs ne dépasse jamais cette valeur multipliée par le nombre de carrières.
 AIOxTethers_MinimumOxTethersPerQuarry: Si moins de ce nombre d'attaches liées transportent la pierre d'une carrière, une autre y est construite.
 AIOxTethers_MaximumOxTethersPerQuarry: Si le nombre d'attaches liées à une carrière dépasse cette valeur, aucune autre n'y est construite.
 AIOxTethers_ThresholdStoneLoad: Si pierres / attaches liées dépasse cette valeur pour une carrière, une autre attache y est construite.
-RunningUnits_Macemen: >-
-  Avec « Oui », les massiers courent toujours, même dans un groupe plus lent. Avec « Non », leur vitesse suit
-  l'unité la plus lente du groupe, comme en vanilla.
+RunningUnits_Macemen: Courir et Marcher imposent l’allure. Le choix du jeu ou un champ vide suit la règle du module, qui peut imposer une allure à toutes les IA.
 RunningUnits_Spearmen: >-
   Avec « Oui », les lanciers courent toujours, même dans un groupe plus lent. Avec « Non », leur vitesse suit
   l'unité la plus lente du groupe, comme en vanilla.
@@ -803,3 +799,20 @@ AIVTroops_Movement_FireThrower: >-
   Ce réglage propre à l'unité prime sur le champ AIC commun. Vanilla omet le champ à l'enregistrement et
   utilise le prochain réglage commun/menu applicable. Exige aiv-troops-behaviour avec réglages des troupes et
   remplacements AIC activés. Redémarrez UCP et lancez une nouvelle partie après modification.
+BuildingRepairInterval: Secondes entre les vérifications. S’applique si la réparation par l’IA est activée dans Smarter Buildings.
+BuildingRepairMinimumGold: L’IA attend que le trésor atteigne ce montant avant de réparer.
+RecruitPolicy: Avec les rôles pondérés, défense, raid, attaque et sortie doivent totaliser 100 pour chaque niveau de force.
+RecruitConditions: 'Saisissez un tableau JSON de huit règles au plus. Chaque règle contient When et quatre poids dont la somme vaut 100. Exemple : [{"When":{"HomeUnderThreat":true},"Defense":70,"Raid":0,"Attack":20,"Sortie":10}]. Requiert les rôles pondérés.'
+DefRecruitComposition: Avec les rôles pondérés, préservez les postes pour conserver la composition prévue des défenseurs.
+RecruitInitialDefenseMonths: Avec les rôles pondérés, zéro supprime l’attente initiale. Laissez vide pour suivre la durée du jeu ou de Legacy.
+RaidTargetPolicy: Choisissez une autre règle que celle du jeu pour régler les groupes, les priorités, le risque ou les ennemis.
+RaidFocus: Saisissez Any, Food, Industry, HighValue ou un objet JSON comme {"Food":60,"HighValue":20}. Total maximal de 100. NearestReachable exige Any.
+SafeSiegePlacement: Choisit des emplacements accessibles. Cette option est nécessaire au paiement en ressources, au harcèlement coordonné et aux forces renforcées.
+AttackTargetPolicy: Saisissez Inherit, InheritPerAttack, LowestPopulation, FewestTroops, LowestCombatPower, Random ou LastAggressor. Un objet JSON peut associer Choice à UntilDefeated ou à Provocation avec LastAggressor.
+ProvocationRules: Saisissez un objet JSON avec ThreatPower et LossPower (1–100000), WindowTicks (32–9600, multiple de 32) et CombatTicks (1–WindowTicks). Requiert AfterProvocation, LastAggressor ou une condition HomeUnderThreat.
+AICTactics_LordHuntSwitchPercent: Pendant l’attaque, cette part de l’armée doit subsister pour changer de château cible.
+AICTactics_LordHuntSplitShare: Part de l’armée principale détachée vers le château qui ne subit pas le siège complet.
+Tunneler: Requiert AI Swapper et ce personnage comme source des troupes de départ. Saisissez 0–2499. Sans nombre dans le personnage ni dans le lanceur, aucun tunnelier n’apparaît.
+AICTactics_PatrolOrders: Toutes les patrouilles peuvent recevoir des ordres d’attaque, y compris celles au-delà de la première.
+AICTactics_PatrolFormation: En aile, une patrouille longe le groupe de tête. En miroir, elle approche par l’autre côté. Les itinéraires distincts répartissent les groupes entre les accès.
+AICTactics_PatrolSpacing: Distance entre patrouilles voisines en formations d’aile et en miroir.

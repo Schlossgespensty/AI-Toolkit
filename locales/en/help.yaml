@@ -661,9 +661,7 @@ TargetChoice: >-
 
   Player: Always targets a human player first. If no human players are enemies, it defaults to Closest.
 AIOxTethers_DisableInitialOxTether: '''False'' means vanilla behavior, ''True'' means do not build an ox tether every time a quarry is (re)built.'
-AIOxTethers_Logic: |-
-  Set the logic to apply.
-  False means vanilla, True means dynamic
+AIOxTethers_Logic: Dynamic uses both total caps and the linked-tether rules. Enable Use AIC in AI Ox Tethers for these fields to apply. After an AIC reset, blank follows the module’s fixed default for the field.
 AIOxTethers_MaxOxTethers: The total amount of ox tethers for this AI will never go above this value.
 AIOxTethers_DynamicMaxOxTethers: >-
   The total amount of ox tethers for this AI will never go above this value multiplied by the amount of
@@ -677,9 +675,7 @@ AIOxTethers_MaximumOxTethersPerQuarry: >-
 AIOxTethers_ThresholdStoneLoad: >-
   If `stones/linked ox tethers` goes above this value for a quarry, another ox tether is built for that
   quarry.
-RunningUnits_Macemen: |-
-  If true, maceman will always run, even when grouped with slower units.
-  If false they will match the speed of the slowest unit in their group (like Vanilla)
+RunningUnits_Macemen: Run and Walk force the movement. Native and a blank field follow the module rule, which can also force all AIs to run or walk.
 RunningUnits_Spearmen: |-
   If true, spearman will always run, even when grouped with slower units.
   If false they will match the speed of the slowest unit in their group (like Vanilla).
@@ -945,3 +941,20 @@ AIVTroops_Movement_FireThrower: >-
   Troop-specific override takes priority over the common AIC field. Vanilla omits this field from the saved
   character and uses the next applicable common/menu default. Requires aiv-troops-behaviour with Troop
   settings and Use AIC overrides enabled. Restart UCP and start a new match after changes.
+BuildingRepairInterval: Seconds between repair checks. Applies when Smarter Buildings enables AI repair.
+BuildingRepairMinimumGold: AI repair waits until the treasury reaches this amount.
+RecruitPolicy: Weighted roles uses the four recruitment shares. Defence, raid, attack and sortie must total 100 for each strength.
+RecruitConditions: 'Enter a JSON array of up to eight rows. Each row has When and four weights totalling 100. Example: [{"When":{"HomeUnderThreat":true},"Defense":70,"Raid":0,"Attack":20,"Sortie":10}]. Requires weighted roles.'
+DefRecruitComposition: With weighted roles, preserve defender slots to keep the authored mix of defensive troop types.
+RecruitInitialDefenseMonths: With weighted roles, zero skips the initial defence timer. Leaving this blank uses the game or Legacy timer.
+RaidTargetPolicy: Choose a rule other than Native to set raid group count, group size, priorities, risk or eligible enemies.
+RaidFocus: Use Any, Food, Industry, HighValue or a JSON object like {"Food":60,"HighValue":20}. Weights can total up to 100. NearestReachable requires Any.
+SafeSiegePlacement: Choose reachable build sites. Payment, coordinated harassment and larger siege forces require safe placement.
+AttackTargetPolicy: Enter Inherit, InheritPerAttack, LowestPopulation, FewestTroops, LowestCombatPower, Random or LastAggressor. A JSON object can also combine Choice with UntilDefeated or, for LastAggressor, Provocation.
+ProvocationRules: Enter a JSON object with ThreatPower and LossPower (1–100000), WindowTicks (32–9600, multiple of 32), and CombatTicks (1–WindowTicks). Requires AfterProvocation, LastAggressor or a HomeUnderThreat recruitment condition.
+AICTactics_LordHuntSwitchPercent: During an attack, this much of the army must remain to change castles.
+AICTactics_LordHuntSplitShare: Share of the main army sent to the castle that does not receive the full siege.
+Tunneler: Requires AI Swapper with this character selected for Starting troops. Enter 0–2499. With no count in the character or launcher override, no tunnelers spawn.
+AICTactics_PatrolOrders: All groups can receive attack orders, including patrol groups beyond the first.
+AICTactics_PatrolFormation: Wing stays beside the lead group, Mirror approaches from the other side, and Independent routes splits groups across approaches.
+AICTactics_PatrolSpacing: Distance between neighbouring patrol groups in Wing and Mirror formations.

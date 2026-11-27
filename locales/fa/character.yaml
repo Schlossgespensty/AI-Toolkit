@@ -30,3 +30,6 @@ positive_negative: مثبت / منفی
 net_buildings: خالص ساختمان‌ها
 population_groups_of_16: جمعیت / گروه‌های ۱۶تایی
 movement: حرکت
+module_setting: Module setting
+inherit_starting_troops: پیش‌فرض
+optional_override: برای استفاده از پیش‌فرض ماژول نصب‌شده، کادر را خالی بگذارید. مقدار تعیین‌شده برای همین شخصیت اعمال می‌شود.

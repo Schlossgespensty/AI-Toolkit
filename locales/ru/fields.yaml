@@ -230,3 +230,55 @@ AIVTroops_InitialRole_ArabianSwordsman: "Арабский мечник: нача
 AIVTroops_Movement_ArabianSwordsman: "Арабский мечник: передвижение"
 AIVTroops_InitialRole_FireThrower: "Огнеметатель: начальная роль"
 AIVTroops_Movement_FireThrower: "Огнеметатель: передвижение"
+AICTactics_PatrolOrders: 'AIC Tactics: приказы группам патруля'
+AICTactics_PatrolFormation: 'AIC Tactics: построение патруля'
+AICTactics_PatrolSpacing: 'AIC Tactics: интервал патрулей'
+BuildingRepairInterval: Интервал ремонта зданий (с)
+BuildingRepairMinimumGold: Минимум золота для ремонта зданий
+RecruitPolicy: Правило набора войск
+RecruitProbSortieDefault: Доля вылазок, обычная сила (%)
+RecruitProbSortieWeak: Доля вылазок, слабая сила (%)
+RecruitProbSortieStrong: Доля вылазок, высокая сила (%)
+RecruitConditions: Условные веса набора
+DefRecruitComposition: Состав оборонительных войск
+RecruitInitialDefenseMonths: Начальная оборона (месяцы)
+RaidTargetPolicy: Выбор целей для набегов
+RaidGroupCount: Группы для набегов
+RaidMinGroupSize: Минимальный размер группы набега
+RaidFocus: Приоритеты целей набега
+RaidRiskTolerance: Допустимый риск набегов
+RaidEnemyScope: Допустимые противники для набегов
+SafeSiegePlacement: Безопасное размещение осадных орудий
+ActualSiegeResourcePayment: Расходовать ресурсы на осадные орудия
+CoordinatedSiegeHarassment: Согласованный осадный обстрел
+SiegeHarassMinEngines: Минимум орудий для обстрела
+LargerSiegeForces: Увеличенные осадные силы
+SiegeForceMax: Максимум осадных орудий в штурме
+AICTactics_SiegeTowerCrew: Расчёт осадной башни
+AICTactics_PatrolExtraGroups: Дополнительные ударные патрули
+AICTactics_PatrolMinSize: Минимальный размер патруля
+AICTactics_PatrolRadius: Радиус патруля (клетки)
+AICTactics_SiegeScreen: Приказы осадному прикрытию
+AICTactics_SiegeScreenForward: Отрыв осадного прикрытия (клетки)
+AICTactics_SiegeScreenExtraGroups: Дополнительные группы осадного прикрытия
+AttackPreparation: Подготовка атаки
+AttackTargetPolicy: Выбор целей для атаки
+AttackTargetCommitment: Удержание цели атаки
+AttackActivation: Момент начала атаки
+ProvocationRules: Пороги провокации
+AICTactics_LordHuntRetarget: Преследовать бегущего лорда
+AICTactics_LordHuntSiege: Цель осады при преследовании
+AICTactics_LordHuntSwitchPercent: Порог смены цели преследования (%)
+AICTactics_LordHuntShare: Доля войск для погони за лордом (%)
+AICTactics_LordHuntSplitShare: Доля отряда преследования (%)
+AICTactics_AllyRelief: Посылать войска на помощь союзникам
+AICTactics_AllyGoods: Снабжать союзников товарами
+AICTactics_AllyGoldKeep: Запас золота при помощи союзникам
+AICTactics_AllyRecruitGoldBuffer: Дополнительное золото для набора
+AICTactics_AllyGoldSharePercent: Доля свободного золота для союзников (%)
+AICTactics_AllyMonthlyGivePercent: Месячный бюджет помощи (%)
+AICTactics_AllyArmySharePercent: Доля армии для помощи союзникам (%)
+AICTactics_AllyReliefGates: Открывать союзные ворота для подкреплений
+AICTactics_AllyReliefKeep: Размещать подкрепления на цитаделях союзников
+AICTactics_AllyReliefMinMonths: Минимальный срок пребывания подкреплений (месяцы)
+Tunneler: Туннелепроходчик

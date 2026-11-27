@@ -238,6 +238,8 @@ save_png: Save PNG
 picture_size: "Size"
 full_resolution: "Full resolution"
 floor_plan_100x100_1_px_per_tile: "Floor plan 100×100 (1 px per tile)"
+uniform_building_colours: "One colour per building (floor plan)"
+uniform_building_colours_hint: "One flat colour per building and forecourt for eyedropper and magic-wand selection, close to its original colour. Buildings of one type differ by one brightness level; types sharing a colour are 10 levels apart."
 merge_placements_by_item_type: Merge placements by item type
 merge: Merge
 replace_selected_items: Replace selected items

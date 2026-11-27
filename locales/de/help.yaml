@@ -538,9 +538,7 @@ TargetChoice: |-
 AIOxTethers_DisableInitialOxTether: >-
   „Nein“ verwendet Vanilla-Verhalten. „Ja“ verhindert, dass bei jedem (Wieder-)Bau eines Steinbruchs
   automatisch ein Ochsenjoch gebaut wird.
-AIOxTethers_Logic: |-
-  Angewandte Logik.
-  Nein = Vanilla, Ja = dynamisch.
+AIOxTethers_Logic: Dynamisch nutzt beide Gesamtgrenzen und die Regeln für zugeordnete Ochsenjoche. In AI Ox Tethers AIC verwenden aktivieren. Nach einem AIC-Reset gilt bei leeren Feldern der feste Modulstandard.
 AIOxTethers_MaxOxTethers: Die Gesamtzahl der Ochsenjoche dieser KI überschreitet diesen Wert nie.
 AIOxTethers_DynamicMaxOxTethers: Die Gesamtzahl der Ochsenjoche überschreitet diesen Wert multipliziert mit der Anzahl der Steinbrüche nie.
 AIOxTethers_MinimumOxTethersPerQuarry: >-
@@ -550,9 +548,7 @@ AIOxTethers_MaximumOxTethersPerQuarry: Wenn mehr als diese Anzahl Ochsenjoche ei
 AIOxTethers_ThresholdStoneLoad: >-
   Wenn Steinmenge / zugeordnete Ochsenjoche diesen Wert für einen Steinbruch übersteigt, wird dort ein
   weiteres Ochsenjoch gebaut.
-RunningUnits_Macemen: >-
-  Bei „Ja“ laufen Keulenkämpfer immer, auch mit langsameren Einheiten in der Gruppe. Bei „Nein“ passen sie
-  sich wie in Vanilla an die langsamste Einheit ihrer Gruppe an.
+RunningUnits_Macemen: Rennen und Gehen erzwingen die Bewegung. Spielverhalten und ein leeres Feld folgen der Modulregel, die auch alle KI zum Rennen oder Gehen zwingen kann.
 RunningUnits_Spearmen: >-
   Bei „Ja“ laufen Lanzenträger immer, auch mit langsameren Einheiten in der Gruppe. Bei „Nein“ passen sie sich
   wie in Vanilla an die langsamste Einheit ihrer Gruppe an.
@@ -850,3 +846,20 @@ AIVTroops_Movement_FireThrower: >-
   Speichern weg und nutzt den nächsten passenden allgemeinen oder Menüstandard. Benötigt aiv-troops-behaviour
   mit aktivierten Truppeneinstellungen und AIC-Überschreibungen. Nach Änderungen UCP neu starten und eine neue
   Partie beginnen.
+BuildingRepairInterval: Sekunden zwischen Reparaturprüfungen. Gilt bei aktivierter KI-Reparatur in Smarter Buildings.
+BuildingRepairMinimumGold: Die KI wartet mit Reparaturen, bis die Schatzkammer diesen Betrag enthält.
+RecruitPolicy: Bei gewichteten Rollen müssen Verteidigung, Überfall, Angriff und Ausfall für jede Stärke zusammen 100 ergeben.
+RecruitConditions: 'JSON-Liste mit bis zu acht Regeln. Jede Regel enthält When und vier Gewichte mit der Summe 100. Beispiel: [{"When":{"HomeUnderThreat":true},"Defense":70,"Raid":0,"Attack":20,"Sortie":10}]. Erfordert gewichtete Rollen.'
+DefRecruitComposition: Mit gewichteten Rollen bleibt bei Erhalt der Verteidigerpositionen die vorgesehene Mischung der Truppentypen bestehen.
+RecruitInitialDefenseMonths: Bei gewichteten Rollen überspringt null die anfängliche Verteidigungszeit. Leer gilt die Zeit aus dem Spiel oder aus Legacy.
+RaidTargetPolicy: Für Gruppenanzahl, Gruppengröße, Prioritäten, Risiko oder Gegner eine andere Regel als das Spielverhalten wählen.
+RaidFocus: Any, Food, Industry, HighValue oder ein JSON-Objekt wie {"Food":60,"HighValue":20} eingeben. Summe höchstens 100. NearestReachable erfordert Any.
+SafeSiegePlacement: Wählt erreichbare Bauplätze. Rohstoffzahlung, koordinierter Beschuss und größere Belagerungstrupps setzen diese Aufstellung voraus.
+AttackTargetPolicy: Inherit, InheritPerAttack, LowestPopulation, FewestTroops, LowestCombatPower, Random oder LastAggressor eingeben. Ein JSON-Objekt kann Choice mit UntilDefeated oder bei LastAggressor mit Provocation kombinieren.
+ProvocationRules: JSON-Objekt mit ThreatPower und LossPower (1–100000), WindowTicks (32–9600, Vielfaches von 32) und CombatTicks (1–WindowTicks). Erfordert AfterProvocation, LastAggressor oder eine Rekrutierungsregel mit HomeUnderThreat.
+AICTactics_LordHuntSwitchPercent: Beim Angriff muss dieser Anteil des Heers übrig sein, damit das Belagerungsziel wechselt.
+AICTactics_LordHuntSplitShare: Anteil des Hauptheers für die Burg ohne vollständige Belagerung.
+Tunneler: Erfordert AI Swapper mit diesem Charakter als Quelle der Starttruppen. 0–2499 eingeben. Ohne Anzahl im Charakter oder im Launcher erscheinen keine Tunnelgräber.
+AICTactics_PatrolOrders: Alle Gruppen können Angriffsbefehle erhalten, auch Patrouillen nach der ersten.
+AICTactics_PatrolFormation: Flügel bleibt neben der ersten Gruppe. Spiegel nähert sich von der Gegenseite. Getrennte Wege verteilen die Gruppen auf mehrere Zugänge.
+AICTactics_PatrolSpacing: Abstand zwischen benachbarten Patrouillen in Flügel- und Spiegelformation.

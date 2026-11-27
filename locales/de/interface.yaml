@@ -244,6 +244,8 @@ save_png: PNG speichern
 picture_size: "Größe"
 full_resolution: "Volle Auflösung"
 floor_plan_100x100_1_px_per_tile: "Grundriss 100×100 (1 px je Feld)"
+uniform_building_colours: "Eine Farbe je Gebäude (Grundriss)"
+uniform_building_colours_hint: "Jedes Gebäude und jeder Vorhof bekommt eine einheitliche Farbe nahe der Originalfarbe, für Pipette und Zauberstab. Gebäude desselben Typs unterscheiden sich um eine Helligkeitsstufe, Typen mit gleicher Farbe um 10 Stufen."
 merge_placements_by_item_type: Platzierungen nach Elementtyp zusammenführen
 replace_selected_items: Gewählte Elemente ersetzen
 choose_a_replacement_for_each_item_type_inside_the_box: Wähle einen Ersatz für jeden Elementtyp innerhalb des Rahmens.

@@ -230,3 +230,55 @@ AIVTroops_InitialRole_ArabianSwordsman: AIVTroops Initial Role Arabian Swordsman
 AIVTroops_Movement_ArabianSwordsman: AIVTroops Movement Arabian Swordsman
 AIVTroops_InitialRole_FireThrower: AIVTroops Initial Role Fire Thrower
 AIVTroops_Movement_FireThrower: AIVTroops Movement Fire Thrower
+AICTactics_PatrolOrders: 'AIC Tactics: Patrol group orders'
+AICTactics_PatrolFormation: 'AIC Tactics: Patrol formation'
+AICTactics_PatrolSpacing: 'AIC Tactics: Patrol spacing'
+BuildingRepairInterval: Building repair interval (s)
+BuildingRepairMinimumGold: Minimum gold for building repair
+RecruitPolicy: Recruitment policy
+RecruitProbSortieDefault: Sortie share, default strength (%)
+RecruitProbSortieWeak: Sortie share, weak (%)
+RecruitProbSortieStrong: Sortie share, strong (%)
+RecruitConditions: Conditional recruitment weights
+DefRecruitComposition: Defensive recruitment composition
+RecruitInitialDefenseMonths: Initial defence (months)
+RaidTargetPolicy: Raid targeting rule
+RaidGroupCount: Raid groups
+RaidMinGroupSize: Minimum raid group size
+RaidFocus: Raid target priorities
+RaidRiskTolerance: Raid risk tolerance
+RaidEnemyScope: Enemies eligible for raids
+SafeSiegePlacement: Safe siege placement
+ActualSiegeResourcePayment: Pay siege resource costs
+CoordinatedSiegeHarassment: Coordinated siege harassment
+SiegeHarassMinEngines: Minimum engines for harassment
+LargerSiegeForces: Larger siege forces
+SiegeForceMax: Maximum assault siege engines
+AICTactics_SiegeTowerCrew: Siege tower crew
+AICTactics_PatrolExtraGroups: Additional attack patrol groups
+AICTactics_PatrolMinSize: Minimum patrol group size
+AICTactics_PatrolRadius: Patrol radius (tiles)
+AICTactics_SiegeScreen: Siege escort orders
+AICTactics_SiegeScreenForward: Siege escort lead (tiles)
+AICTactics_SiegeScreenExtraGroups: Additional siege escort groups
+AttackPreparation: Attack preparation
+AttackTargetPolicy: Attack targeting rule
+AttackTargetCommitment: Attack target retention
+AttackActivation: When to attack
+ProvocationRules: Provocation thresholds
+AICTactics_LordHuntRetarget: Pursue a fleeing lord
+AICTactics_LordHuntSiege: Siege target during pursuit
+AICTactics_LordHuntSwitchPercent: Pursuit retarget threshold (%)
+AICTactics_LordHuntShare: Troops sent after fleeing lord (%)
+AICTactics_LordHuntSplitShare: Pursuit detachment share (%)
+AICTactics_AllyRelief: Send troops to help allies
+AICTactics_AllyGoods: Supply allies with goods
+AICTactics_AllyGoldKeep: Gold reserve when helping allies
+AICTactics_AllyRecruitGoldBuffer: Extra gold to request for recruiting
+AICTactics_AllyGoldSharePercent: Share of spare gold for allies (%)
+AICTactics_AllyMonthlyGivePercent: Monthly aid budget (%)
+AICTactics_AllyArmySharePercent: Army share for allied relief (%)
+AICTactics_AllyReliefGates: Open allied gates for relief troops
+AICTactics_AllyReliefKeep: Station relief on allied keeps
+AICTactics_AllyReliefMinMonths: Minimum relief stay (months)
+Tunneler: Tunneler

@@ -238,6 +238,8 @@ save_png: ذخیرهٔ PNG
 picture_size: "اندازه"
 full_resolution: "وضوح کامل"
 floor_plan_100x100_1_px_per_tile: "نقشهٔ کف ۱۰۰×۱۰۰ (۱ پیکسل برای هر خانه)"
+uniform_building_colours: "یک رنگ برای هر ساختمان (نقشهٔ کف)"
+uniform_building_colours_hint: "هر ساختمان و حیاط جلوی آن یک رنگ یکدست نزدیک به رنگ اصلی می‌گیرد تا با قطره‌چکان و عصای جادویی انتخاب شود. ساختمان‌های هم‌نوع یک درجهٔ روشنایی و انواع هم‌رنگ ۱۰ درجه با هم فرق دارند."
 merge_placements_by_item_type: ادغام موارد بر اساس نوع
 merge: ادغام
 replace_selected_items: جایگزینی موارد انتخاب‌شده

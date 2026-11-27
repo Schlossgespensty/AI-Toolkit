@@ -197,5 +197,6 @@ test('floor plan export averages exactly each tile\'s own block of the full pict
   assert.deepEqual(at(5, 5), [255, 0, 0, 128], 'coverage becomes opacity, the colour stays');
   assert.deepEqual(at(6, 5), [100, 100, 100, 255], 'both halves of one tile are combined');
   assert.match(html, /<select id="castleSnapshotSize">[\s\S]*value="plan"/);
-  assert.match(source, /renderCastlePicture\(\{ floorPlan: document\.getElementById\('castleSnapshotSize'\)\.value === 'plan' \}\)/);
+  assert.match(html, /<input id="castleSnapshotUniform" type="checkbox" checked>/, 'uniform building colours are on by default');
+  assert.ok(source.includes("renderCastlePicture({ floorPlan: snapshotSize.value === 'plan', uniformColours: snapshotUniform.checked })"));
 });

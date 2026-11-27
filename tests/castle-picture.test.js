@@ -17,6 +17,7 @@ function setup(fail = false) {
     rebuildStaticCache: (target, future) => rendered.push({width: target.width, height: target.height, futureWidth:future.width, cell:state.cell, x:state.panX, y:state.panY,
       labels: state.snapshotLabels, plan: state.floorPlan, names: els.showNames.checked, selected: state.selected.size}),
     floorPlanPixels: (picture, cell) => ({toDataURL: () => `plan ${picture.width}/${cell}`}),
+    uniformFloorPlanPixels: (picture, cell) => ({toDataURL: () => `uniform ${picture.width}/${cell}`}),
     drawUnitMarkers() { rendered.push('units'); }, drawCompatibilityOriginMarker() {}, els
   });
   vm.runInContext(source.slice(start,end), context);
@@ -41,6 +42,39 @@ test('floor plans sample the full-resolution picture without names, selection or
   assert.deepEqual(r.state,r.original);
   assert.equal(r.context.els.showNames.checked,true,'the name overlay is switched back on');
   assert.equal(r.context.ctx,'screen');
+});
+test('uniform floor plans use the flat-colour renderer', () => {
+  const r=setup();
+  assert.equal(r.context.renderCastlePicture({floorPlan:true, uniformColours:true}),'uniform 4000/40');
+  assert.equal(r.context.renderCastlePicture({uniformColours:true}),'png','full pictures ignore the floor plan option');
+  assert.deepEqual(r.state,r.original);
+});
+test('uniform floor plans fill whole footprints with one colour per building', () => {
+  const first = source.indexOf('  function uniformFloorPlanPixels('), last = source.indexOf('  function renderCastlePicture(', first);
+  const out = {data: new Uint8ClampedArray(100 * 100 * 4)};
+  // Sprites cover only the top-left pixel of each tile; the rest is transparent ground.
+  const source2d = {getImageData: (x, y, w, h) => {
+    const data = new Uint8ClampedArray(w * h * 4);
+    for (let i = 0; i < data.length; i += 8) data.set([100, 80, 60, 255], i);
+    return {data};
+  }};
+  const plan = {getContext: () => ({createImageData: () => out, putImageData() {}})};
+  const rect = (left, bottom, right, top) => ({left, bottom, right, top});
+  const context = vm.createContext({GRID: 100, document: {createElement: () => plan}, geometry: {KEEP_ITEM_TYPE: 1},
+    window: {castleFloorPlan: require('../src/js/castle-floor-plan.js')},
+    placementRefs: () => [{kind: 'frame', type: 32, off: 0}, {kind: 'frame', type: 32, off: 1}, {kind: 'frame', type: 25, off: 2}, {kind: 'frame', type: 25, off: 3}, {kind: 'unit', type: 900, off: 4}],
+    footprintRects: (type, off) => [[rect(0, 98, 1, 99)], [rect(2, 98, 3, 99)], [rect(10, 10, 10, 10)], [rect(11, 10, 11, 10)]][off],
+    itemSize: type => type === 25 ? [1, 1] : [2, 2]});
+  vm.runInContext(source.slice(first, last), context);
+  context.uniformFloorPlanPixels({getContext: () => source2d}, 4);
+  const pixel = (x, y) => Array.from(out.data.slice(((99 - y) * 100 + x) * 4, ((99 - y) * 100 + x) * 4 + 4));
+  const first32 = pixel(0, 99), second32 = pixel(2, 99);
+  for (const [x, y] of [[0, 98], [1, 98], [1, 99]]) assert.deepEqual(pixel(x, y), first32, 'the whole footprint shares one colour');
+  assert.equal(first32[3], 255);
+  assert.deepEqual(second32.map((value, i) => value - first32[i]), [1, 1, 1, 0], 'neighbouring instances differ by one level');
+  assert.deepEqual(pixel(10, 10), pixel(11, 10), 'single-tile pieces share their type colour');
+  assert.ok(Math.max(...[0, 1, 2].map(c => Math.abs(pixel(10, 10)[c] - first32[c]))) >= 10, 'types sharing a colour stay apart');
+  assert.deepEqual(pixel(50, 50), [0, 0, 0, 0], 'empty ground stays transparent');
 });
 test('floor plans draw every building on transparent ground without troops or overlays', () => {
   const first = source.indexOf('  function clearCacheContext('), last = source.indexOf('\n  let analysisCache', first);

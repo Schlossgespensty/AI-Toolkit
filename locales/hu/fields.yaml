@@ -230,3 +230,55 @@ AIVTroops_InitialRole_ArabianSwordsman: "Arab kardforgató: kezdeti szerep"
 AIVTroops_Movement_ArabianSwordsman: "Arab kardforgató: mozgás"
 AIVTroops_InitialRole_FireThrower: "Tűzhajító: kezdeti szerep"
 AIVTroops_Movement_FireThrower: "Tűzhajító: mozgás"
+AICTactics_PatrolOrders: 'AIC Tactics: járőrcsoportok parancsai'
+AICTactics_PatrolFormation: 'AIC Tactics: járőralakzat'
+AICTactics_PatrolSpacing: 'AIC Tactics: járőrtávolság'
+BuildingRepairInterval: Épületjavítási időköz (mp)
+BuildingRepairMinimumGold: Épületjavításhoz szükséges arany
+RecruitPolicy: Toborzási szabály
+RecruitProbSortieDefault: Kitörési arány, normál erő (%)
+RecruitProbSortieWeak: Kitörési arány, gyenge erő (%)
+RecruitProbSortieStrong: Kitörési arány, nagy erő (%)
+RecruitConditions: Feltételes toborzási súlyok
+DefRecruitComposition: A védelem toborzási összetétele
+RecruitInitialDefenseMonths: Kezdeti védelem (hónap)
+RaidTargetPolicy: Portyacél kiválasztása
+RaidGroupCount: Portyázó csapatok
+RaidMinGroupSize: Portyázó csapat minimális létszáma
+RaidFocus: Portyacélpontok sorrendje
+RaidRiskTolerance: Portyázás kockázattűrése
+RaidEnemyScope: Portyázható ellenfelek
+SafeSiegePlacement: Ostromgépek biztonságos elhelyezése
+ActualSiegeResourcePayment: Ostromgépek nyersanyagköltségének fizetése
+CoordinatedSiegeHarassment: Összehangolt ostromtűz
+SiegeHarassMinEngines: Zaklató ostromgépek minimális száma
+LargerSiegeForces: Nagyobb ostromsereg
+SiegeForceMax: Rohamozó ostromgépek legnagyobb száma
+AICTactics_SiegeTowerCrew: Ostromtorony legénysége
+AICTactics_PatrolExtraGroups: További támadó járőrök
+AICTactics_PatrolMinSize: Járőr minimális létszáma
+AICTactics_PatrolRadius: Járőrözési sugár (mező)
+AICTactics_SiegeScreen: Ostromkíséret parancsai
+AICTactics_SiegeScreenForward: Ostromkíséret előretartása (mező)
+AICTactics_SiegeScreenExtraGroups: További ostromkísérő csapatok
+AttackPreparation: Támadás előkészítése
+AttackTargetPolicy: Támadási cél kiválasztása
+AttackTargetCommitment: Támadási cél megtartása
+AttackActivation: Támadás indítása
+ProvocationRules: Provokációs küszöbök
+AICTactics_LordHuntRetarget: Menekülő lord üldözése
+AICTactics_LordHuntSiege: Ostromcél üldözéskor
+AICTactics_LordHuntSwitchPercent: Üldözési célváltási küszöb (%)
+AICTactics_LordHuntShare: A lordot üldöző csapatok aránya (%)
+AICTactics_LordHuntSplitShare: Az üldöző különítmény aránya (%)
+AICTactics_AllyRelief: Csapatok küldése a szövetségeseknek
+AICTactics_AllyGoods: Áruk küldése a szövetségeseknek
+AICTactics_AllyGoldKeep: Szövetségesek segítésekor megtartott arany
+AICTactics_AllyRecruitGoldBuffer: Toborzáshoz kérhető többletarany
+AICTactics_AllyGoldSharePercent: Fölös aranyból a szövetségesek része (%)
+AICTactics_AllyMonthlyGivePercent: Havi segélykeret (%)
+AICTactics_AllyArmySharePercent: Szövetségeseknek küldött seregrész (%)
+AICTactics_AllyReliefGates: Szövetséges kapuk megnyitása a segítségnek
+AICTactics_AllyReliefKeep: Segítség állomásoztatása a szövetséges vártornyokon
+AICTactics_AllyReliefMinMonths: A segítség legrövidebb tartózkodása (hónap)
+Tunneler: Alagútásó

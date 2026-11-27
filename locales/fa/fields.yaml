@@ -230,3 +230,55 @@ AIVTroops_InitialRole_ArabianSwordsman: نقش آغازین شمشیرزن عر�
 AIVTroops_Movement_ArabianSwordsman: حرکت شمشیرزن عرب
 AIVTroops_InitialRole_FireThrower: نقش آغازین آتش‌انداز
 AIVTroops_Movement_FireThrower: حرکت آتش‌انداز
+AICTactics_PatrolOrders: 'AIC Tactics: فرمان گروه‌های گشت'
+AICTactics_PatrolFormation: 'AIC Tactics: آرایش گشت'
+AICTactics_PatrolSpacing: 'AIC Tactics: فاصلهٔ گروه‌های گشت'
+BuildingRepairInterval: فاصلهٔ تعمیر ساختمان (ثانیه)
+BuildingRepairMinimumGold: حداقل طلا برای تعمیر ساختمان
+RecruitPolicy: قاعدهٔ سربازگیری
+RecruitProbSortieDefault: سهم یورش از قلعه، قدرت عادی (٪)
+RecruitProbSortieWeak: سهم یورش از قلعه، قدرت کم (٪)
+RecruitProbSortieStrong: سهم یورش از قلعه، قدرت زیاد (٪)
+RecruitConditions: وزن‌های سربازگیری مشروط
+DefRecruitComposition: ترکیب سربازگیری دفاعی
+RecruitInitialDefenseMonths: دفاع اولیه (ماه)
+RaidTargetPolicy: قاعدهٔ انتخاب هدف تاخت‌وتاز
+RaidGroupCount: گروه‌های تاخت‌وتاز
+RaidMinGroupSize: حداقل نفرات گروه تاخت‌وتاز
+RaidFocus: اولویت هدف‌های تاخت‌وتاز
+RaidRiskTolerance: ریسک‌پذیری در تاخت‌وتاز
+RaidEnemyScope: دشمنان قابل هدف در تاخت‌وتاز
+SafeSiegePlacement: استقرار ایمن ادوات محاصره
+ActualSiegeResourcePayment: پرداخت هزینهٔ منابع ادوات محاصره
+CoordinatedSiegeHarassment: آتش ایذایی هماهنگ محاصره
+SiegeHarassMinEngines: حداقل ادوات برای آتش ایذایی
+LargerSiegeForces: نیروهای محاصرهٔ بزرگ‌تر
+SiegeForceMax: حداکثر ادوات محاصره در حمله
+AICTactics_SiegeTowerCrew: خدمهٔ برج محاصره
+AICTactics_PatrolExtraGroups: گروه‌های گشت تهاجمی اضافی
+AICTactics_PatrolMinSize: حداقل نفرات گشت
+AICTactics_PatrolRadius: شعاع گشت (خانه)
+AICTactics_SiegeScreen: دستورهای اسکورت محاصره
+AICTactics_SiegeScreenForward: فاصلهٔ پیشروی اسکورت محاصره (خانه)
+AICTactics_SiegeScreenExtraGroups: گروه‌های اسکورت محاصرهٔ اضافی
+AttackPreparation: آماده‌سازی حمله
+AttackTargetPolicy: قاعدهٔ انتخاب هدف حمله
+AttackTargetCommitment: حفظ هدف حمله
+AttackActivation: زمان آغاز حمله
+ProvocationRules: آستانه‌های تحریک
+AICTactics_LordHuntRetarget: تعقیب لرد فراری
+AICTactics_LordHuntSiege: هدف محاصره هنگام تعقیب
+AICTactics_LordHuntSwitchPercent: آستانهٔ تغییر هدف در تعقیب (٪)
+AICTactics_LordHuntShare: سهم نیروهای اعزامی به تعقیب لرد (٪)
+AICTactics_LordHuntSplitShare: سهم دستهٔ تعقیب (٪)
+AICTactics_AllyRelief: فرستادن نیرو برای کمک به متحدان
+AICTactics_AllyGoods: تأمین کالا برای متحدان
+AICTactics_AllyGoldKeep: ذخیرهٔ طلا هنگام کمک به متحدان
+AICTactics_AllyRecruitGoldBuffer: طلای اضافی درخواستی برای سربازگیری
+AICTactics_AllyGoldSharePercent: سهم متحدان از طلای مازاد (٪)
+AICTactics_AllyMonthlyGivePercent: بودجهٔ ماهانهٔ کمک (٪)
+AICTactics_AllyArmySharePercent: سهم ارتش برای پشتیبانی از متحدان (٪)
+AICTactics_AllyReliefGates: باز کردن دروازه‌های متحدان برای نیروهای کمکی
+AICTactics_AllyReliefKeep: استقرار نیروهای کمکی روی دژهای متحدان
+AICTactics_AllyReliefMinMonths: حداقل مدت استقرار نیروهای کمکی (ماه)
+Tunneler: تونل‌کن

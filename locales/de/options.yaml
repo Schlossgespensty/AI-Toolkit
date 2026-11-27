@@ -62,3 +62,30 @@ defend: Verteidigen
 dig: Graben
 hold: Stellung halten
 patrol: Patrouillieren
+Native: Original
+AllGroups: Alle Gruppen
+Wing: Flügel
+Mirror: Gespiegelt
+Routes: Getrennte Wege
+EngineApproach: Vor den Belagerungsgeräten
+HidingCastle: Zufluchtsburg
+HomeCastle: Heimatburg
+WeightedRoles: Gewichtete Rollen
+PreserveSlots: Verteidigerpositionen erhalten
+NearestReachable: Nächstes erreichbares Ziel
+Opportunistic: Nach Gelegenheit
+RandomNearby: Zufälliges Ziel in der Nähe
+Low: Niedrig
+Medium: Mittel
+High: Hoch
+PrimeTarget: Hauptziel
+AnyEnemy: Beliebiger Gegner
+DuringAttack: Während des Angriffs
+Default: Standard
+PerAttack: Für einen Angriff
+UntilDefeated: Bis zur Niederlage
+Immediate: Sofort
+AfterProvocation: Nach Provokation
+Dynamic: Dynamisch
+Run: Rennen
+Walk: Gehen

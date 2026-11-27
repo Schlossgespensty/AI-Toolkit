@@ -16,7 +16,7 @@ test('character readiness waits for every config, including legacy names, before
   const ready=vm.runInContext('characterReady',context);
   assert.equal(rendered,false); assert.equal(loaded.length,0);
   release(); await ready;
-  assert.equal(rendered,true); assert.equal(loaded.length,10);
+  assert.equal(rendered,true); assert.equal(loaded.length,9);
   assert.ok(!loaded.includes('helpTexts.json'), 'help is supplied by the central locale catalog');
   assert.equal(vm.runInContext('legacyKeyMap.old',context),'lord');
   const library=fs.readFileSync(path.join(__dirname,'../src/js/ucp-library.js'),'utf8');

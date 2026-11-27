@@ -30,3 +30,6 @@ positive_negative: 正面 / 负面
 net_buildings: 净建筑数
 population_groups_of_16: 人口 / 每 16 人一组
 movement: 移动方式
+module_setting: Module setting
+inherit_starting_troops: 默认
+optional_override: 清空字段即可使用已安装模块的默认值。明确填写的值仅适用于此角色。

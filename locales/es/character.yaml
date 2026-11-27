@@ -30,3 +30,6 @@ positive_negative: Positivos / negativos
 net_buildings: Edificios netos
 population_groups_of_16: Población / grupos de 16
 movement: Movimiento
+module_setting: Module setting
+inherit_starting_troops: Predeterminado
+optional_override: Vacía el campo para usar el valor predeterminado del módulo instalado. El valor indicado se aplica a este personaje.

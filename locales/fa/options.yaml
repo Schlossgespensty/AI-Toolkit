@@ -62,3 +62,30 @@ defend: دفاع
 dig: حفاری
 hold: حفظ موضع
 patrol: گشت‌زنی
+Native: اصلی
+AllGroups: همه گروه‌ها
+Wing: جناح
+Mirror: قرینه
+Routes: مسیرهای جداگانه
+EngineApproach: پیشاپیش ادوات محاصره
+HidingCastle: قلعهٔ پناهگاه
+HomeCastle: قلعهٔ خود لرد
+WeightedRoles: نقش‌های وزن‌دار
+PreserveSlots: حفظ جایگاه‌های دفاعی
+NearestReachable: نزدیک‌ترین هدف دسترس‌پذیر
+Opportunistic: بنا به فرصت
+RandomNearby: هدف تصادفی نزدیک
+Low: کم
+Medium: متوسط
+High: زیاد
+PrimeTarget: هدف اصلی
+AnyEnemy: هر دشمنی
+DuringAttack: حین حمله
+Default: پیش‌فرض
+PerAttack: برای یک حمله
+UntilDefeated: تا شکست هدف
+Immediate: فوری
+AfterProvocation: پس از تحریک
+Dynamic: پویا
+Run: دویدن
+Walk: راه رفتن

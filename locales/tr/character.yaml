@@ -30,3 +30,6 @@ positive_negative: Olumlu / olumsuz
 net_buildings: Net bina sayısı
 population_groups_of_16: Nüfus / 16 kişilik gruplar
 movement: Hareket
+module_setting: Module setting
+inherit_starting_troops: Varsayılan
+optional_override: Kurulu modülün varsayılanını kullanmak için alanı boş bırak. Girilen değer bu karaktere uygulanır.

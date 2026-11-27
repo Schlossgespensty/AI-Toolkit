@@ -30,3 +30,6 @@ positive_negative: Positive / negative
 net_buildings: Net buildings
 population_groups_of_16: Population / groups of 16
 movement: Movement
+module_setting: Module setting
+inherit_starting_troops: Default
+optional_override: Clear this field to use the installed module’s default. Explicit values apply to this character.

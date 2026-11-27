@@ -62,3 +62,30 @@ defend: védelem
 dig: ásás
 hold: helyben maradás
 patrol: járőrözés
+Native: Eredeti
+AllGroups: Minden csoport
+Wing: Szárny
+Mirror: Tükrözött
+Routes: Külön útvonalak
+EngineApproach: Az ostromgépek előtt
+HidingCastle: Menedékvár
+HomeCastle: Saját vár
+WeightedRoles: Súlyozott szerepek
+PreserveSlots: Védőhelyek megőrzése
+NearestReachable: Legközelebbi elérhető cél
+Opportunistic: Alkalom szerint
+RandomNearby: Véletlen közeli cél
+Low: Alacsony
+Medium: Közepes
+High: Magas
+PrimeTarget: Elsődleges cél
+AnyEnemy: Bármely ellenfél
+DuringAttack: Támadás közben
+Default: Alapértelmezett
+PerAttack: Egy támadásra
+UntilDefeated: Legyőzésig
+Immediate: Azonnali
+AfterProvocation: Provokáció után
+Dynamic: Dinamikus
+Run: Futás
+Walk: Gyaloglás

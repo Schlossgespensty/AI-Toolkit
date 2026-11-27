@@ -241,6 +241,8 @@ save_png: PNG mentése
 picture_size: "Méret"
 full_resolution: "Teljes felbontás"
 floor_plan_100x100_1_px_per_tile: "Alaprajz 100×100 (mezőnként 1 px)"
+uniform_building_colours: "Épületenként egy szín (alaprajz)"
+uniform_building_colours_hint: "Minden épület és előudvar egyetlen, az eredetihez közeli színt kap pipettás és varázspálcás kijelöléshez. Az azonos típusú épületek egy fényerőszinttel, az azonos színű típusok 10 szinttel térnek el."
 merge_placements_by_item_type: Elhelyezések egyesítése elemtípus szerint
 merge: Egyesítés
 replace_selected_items: Kijelölt elemek cseréje

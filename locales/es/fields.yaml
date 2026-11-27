@@ -230,3 +230,55 @@ AIVTroops_InitialRole_ArabianSwordsman: 'Espadachín árabe: función inicial'
 AIVTroops_Movement_ArabianSwordsman: 'Espadachín árabe: movimiento'
 AIVTroops_InitialRole_FireThrower: 'Lanzafuego: función inicial'
 AIVTroops_Movement_FireThrower: 'Lanzafuego: movimiento'
+AICTactics_PatrolOrders: 'AIC Tactics: órdenes de grupos de patrulla'
+AICTactics_PatrolFormation: 'AIC Tactics: formación de patrulla'
+AICTactics_PatrolSpacing: 'AIC Tactics: separación de patrullas'
+BuildingRepairInterval: Intervalo de reparación de edificios (s)
+BuildingRepairMinimumGold: Oro mínimo para reparar edificios
+RecruitPolicy: Regla de reclutamiento
+RecruitProbSortieDefault: Cuota de salidas, fuerza normal (%)
+RecruitProbSortieWeak: Cuota de salidas, fuerza baja (%)
+RecruitProbSortieStrong: Cuota de salidas, fuerza alta (%)
+RecruitConditions: Pesos de reclutamiento condicionales
+DefRecruitComposition: Composición del reclutamiento defensivo
+RecruitInitialDefenseMonths: Defensa inicial (meses)
+RaidTargetPolicy: Regla de objetivos de incursión
+RaidGroupCount: Grupos de incursión
+RaidMinGroupSize: Tamaño mínimo del grupo de incursión
+RaidFocus: Prioridades de objetivos de incursión
+RaidRiskTolerance: Tolerancia al riesgo en incursiones
+RaidEnemyScope: Enemigos aptos para incursiones
+SafeSiegePlacement: Colocación segura de máquinas de asedio
+ActualSiegeResourcePayment: Pagar el coste de asedio en recursos
+CoordinatedSiegeHarassment: Hostigamiento de asedio coordinado
+SiegeHarassMinEngines: Mínimo de máquinas para hostigar
+LargerSiegeForces: Fuerzas de asedio ampliadas
+SiegeForceMax: Máximo de máquinas de asedio en el asalto
+AICTactics_SiegeTowerCrew: Dotación de la torre de asedio
+AICTactics_PatrolExtraGroups: Patrullas de ataque adicionales
+AICTactics_PatrolMinSize: Tamaño mínimo de patrulla
+AICTactics_PatrolRadius: Radio de patrulla (casillas)
+AICTactics_SiegeScreen: Órdenes de escolta de asedio
+AICTactics_SiegeScreenForward: Adelanto de la escolta de asedio (casillas)
+AICTactics_SiegeScreenExtraGroups: Grupos adicionales de escolta de asedio
+AttackPreparation: Preparación del ataque
+AttackTargetPolicy: Regla de objetivos de ataque
+AttackTargetCommitment: Retención del objetivo de ataque
+AttackActivation: Momento de iniciar el ataque
+ProvocationRules: Umbrales de provocación
+AICTactics_LordHuntRetarget: Perseguir al señor que huye
+AICTactics_LordHuntSiege: Objetivo de asedio durante la persecución
+AICTactics_LordHuntSwitchPercent: Umbral de cambio de objetivo en persecución (%)
+AICTactics_LordHuntShare: Tropas enviadas tras el señor fugitivo (%)
+AICTactics_LordHuntSplitShare: Cuota del destacamento de persecución (%)
+AICTactics_AllyRelief: Enviar tropas para ayudar a aliados
+AICTactics_AllyGoods: Suministrar bienes a los aliados
+AICTactics_AllyGoldKeep: Reserva de oro al ayudar a aliados
+AICTactics_AllyRecruitGoldBuffer: Oro adicional que pedir para reclutar
+AICTactics_AllyGoldSharePercent: Parte del oro sobrante para aliados (%)
+AICTactics_AllyMonthlyGivePercent: Presupuesto mensual de ayuda (%)
+AICTactics_AllyArmySharePercent: Parte del ejército para socorrer a aliados (%)
+AICTactics_AllyReliefGates: Abrir puertas aliadas a los refuerzos
+AICTactics_AllyReliefKeep: Apostar refuerzos en las torres del homenaje aliadas
+AICTactics_AllyReliefMinMonths: Estancia mínima de los refuerzos (meses)
+Tunneler: Zapador

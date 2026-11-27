@@ -30,3 +30,6 @@ positive_negative: Положительные / отрицательные
 net_buildings: Разница построек
 population_groups_of_16: Население / группы по 16
 movement: Передвижение
+module_setting: Module setting
+inherit_starting_troops: По умолчанию
+optional_override: Очистите поле, чтобы использовать значение установленного модуля. Заданный параметр применяется к этому персонажу.

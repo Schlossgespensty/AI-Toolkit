@@ -446,7 +446,7 @@ TargetChoice: >-
 AIOxTethers_DisableInitialOxTether: >-
   False orijinal davranışı korur; True her taş ocağı kurulduğunda veya yeniden yapıldığında bir öküz bağı
   kurulmasını önler.
-AIOxTethers_Logic: 'Uygulanan mantık: False orijinal, True dinamik mantığı kullanır.'
+AIOxTethers_Logic: Dinamik mod iki toplam sınırı ve bağlı öküz bağı kurallarını kullanır. AI Ox Tethers modülünde AIC kullanımını aç. AIC sıfırlanınca boş alan modülün sabit varsayılanını kullanır.
 AIOxTethers_MaxOxTethers: Bu yapay zekânın toplam öküz bağı sayısı bu değeri aşmaz.
 AIOxTethers_DynamicMaxOxTethers: Toplam öküz bağı sayısı, bu değerin taş ocağı sayısıyla çarpımını aşmaz.
 AIOxTethers_MinimumOxTethersPerQuarry: Bu taş ocağından taş taşıyan bağlı öküz bağı sayısı bu değerden azsa ocak için yeni bir bağ kurulur.
@@ -454,9 +454,7 @@ AIOxTethers_MaximumOxTethersPerQuarry: Bir taş ocağına bağlı öküz bağı 
 AIOxTethers_ThresholdStoneLoad: >-
   Bir taş ocağındaki taş miktarının bağlı öküz bağı sayısına bölümü bu değeri aşarsa ocak için yeni bir bağ
   kurulur.
-RunningUnits_Macemen: >-
-  Açıksa topuzcular, daha yavaş birimlerle aynı grupta olsalar bile daima koşar. Kapalıysa orijinal oyundaki
-  gibi grubun en yavaş biriminin hızına uyarlar.
+RunningUnits_Macemen: Koş ve Yürü hareketi zorunlu kılar. Oyunun kuralı ve boş alan modül ayarını izler. Modül tüm yapay zekâlar için koşmayı veya yürümeyi zorunlu kılabilir.
 RunningUnits_Spearmen: >-
   Açıksa mızrakçılar, daha yavaş birimlerle aynı grupta olsalar bile daima koşar. Kapalıysa orijinal oyundaki
   gibi grubun en yavaş biriminin hızına uyarlar.
@@ -722,3 +720,20 @@ AIVTroops_Movement_FireThrower: >-
   Bu askere özel ayar, ortak AIC alanından önceliklidir. Vanilla seçeneği bu alanı karakter kaydına yazmaz ve
   geçerli sıradaki ortak veya menü varsayılanını kullanır. aiv-troops-behaviour eklentisinde «Asker ayarları»
   ve «AIC ayarlarını kullan» etkin olmalıdır. Değişikliklerden sonra UCP'yi yeniden başlatıp yeni oyun açın.
+BuildingRepairInterval: Onarım kontrolleri arasındaki saniye. Smarter Buildings yapay zekâ onarımı açıkken geçerlidir.
+BuildingRepairMinimumGold: Yapay zekâ, hazine bu tutara ulaşana dek onarımı bekletir.
+RecruitPolicy: Ağırlıklı rollerde savunma, akın, saldırı ve huruç payları her güç düzeyinde toplam 100 olmalıdır.
+RecruitConditions: 'En çok sekiz kuraldan oluşan bir JSON dizisi gir. Her kuralda When ve toplamı 100 olan dört ağırlık bulunur. Örnek: [{"When":{"HomeUnderThreat":true},"Defense":70,"Raid":0,"Attack":20,"Sortie":10}]. Ağırlıklı roller gerekir.'
+DefRecruitComposition: Ağırlıklı rollerde, savunma noktalarını korumak belirlenen birlik karışımını sürdürür.
+RecruitInitialDefenseMonths: Ağırlıklı rollerde sıfır, ilk savunma süresini atlar. Boş bırakırsan oyunun veya Legacy’nin süresi geçerli olur.
+RaidTargetPolicy: Grup sayısı, büyüklük, öncelik, risk veya düşmanları ayarlamak için oyunun kuralı dışında bir seçim yap.
+RaidFocus: Any, Food, Industry, HighValue veya {"Food":60,"HighValue":20} gibi bir JSON nesnesi gir. Toplam en çok 100 olabilir. NearestReachable için Any gerekir.
+SafeSiegePlacement: Erişilebilir yapım noktalarını seçer. Kaynak bedeli, eşgüdümlü taciz ve büyük kuşatma kuvvetleri için gereklidir.
+AttackTargetPolicy: Inherit, InheritPerAttack, LowestPopulation, FewestTroops, LowestCombatPower, Random veya LastAggressor gir. JSON nesnesinde Choice ile UntilDefeated ya da LastAggressor için Provocation birleştirilebilir.
+ProvocationRules: ThreatPower ve LossPower (1–100000), WindowTicks (32–9600, 32’nin katı) ve CombatTicks (1–WindowTicks) içeren bir JSON nesnesi gir. AfterProvocation, LastAggressor veya HomeUnderThreat koşulu gerekir.
+AICTactics_LordHuntSwitchPercent: Saldırı sırasında hedef kaleyi değiştirmek için ordunun bu kadarı ayakta kalmalıdır.
+AICTactics_LordHuntSplitShare: Ana ordunun tam kuşatma yapılmayan kaleye gönderilen payı.
+Tunneler: AI Swapper’da başlangıç birliklerinin kaynağı bu karakter olmalıdır. 0–2499 gir. Karakterde veya başlatıcıda sayı ayarlanmazsa tünelci çıkmaz.
+AICTactics_PatrolOrders: İlkinden sonraki devriyeler de dahil olmak üzere tüm gruplar saldırı emri alabilir.
+AICTactics_PatrolFormation: Kanat öncü grubun yanında kalır, ayna karşı taraftan yaklaşır, ayrı rotalar grupları farklı yaklaşımlara dağıtır.
+AICTactics_PatrolSpacing: Kanat ve ayna düzeninde komşu devriye grupları arasındaki mesafe.

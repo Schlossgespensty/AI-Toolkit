@@ -62,3 +62,30 @@ defend: защищать
 dig: копать
 hold: держать позицию
 patrol: патрулировать
+Native: Как в игре
+AllGroups: Все группы
+Wing: Фланг
+Mirror: Зеркально
+Routes: Разные маршруты
+EngineApproach: Впереди осадных орудий
+HidingCastle: Замок-убежище
+HomeCastle: Родной замок
+WeightedRoles: Роли с весами
+PreserveSlots: Сохранять места защитников
+NearestReachable: Ближайшая доступная цель
+Opportunistic: По обстановке
+RandomNearby: Случайная цель поблизости
+Low: Низкая
+Medium: Средняя
+High: Высокая
+PrimeTarget: Основная цель
+AnyEnemy: Любой противник
+DuringAttack: Во время атаки
+Default: По умолчанию
+PerAttack: На одну атаку
+UntilDefeated: До поражения цели
+Immediate: Сразу
+AfterProvocation: После провокации
+Dynamic: Динамический
+Run: Бежать
+Walk: Идти шагом

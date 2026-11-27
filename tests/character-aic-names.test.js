@@ -33,3 +33,41 @@ test('a character written with UnknownNNN names loads without warnings under the
   assert.deepEqual(JSON.parse(JSON.stringify(context.renameKeysPreserveOrder(character))),
     {aic: {AIRequestDelay: 3000, RaidRetargetDelay: 900, Unknown001: 1, TaxesMin: 2, Mystery: 1}});
 });
+
+test('holiday overrides appear in both layouts and retain their JSON types on export', () => {
+  const enabled = {checked: true};
+  const context = vm.createContext({legacyKeyMap, toggleOx: enabled, toggleRun: enabled, document: {getElementById: () => enabled}});
+  function loadFunctions(first, last) {
+    const start = source.indexOf(first);
+    vm.runInContext(source.slice(start, source.indexOf(last, start)), context);
+  }
+  loadFunctions('function flattenObject(', 'function buildForm(');
+  loadFunctions('function renameKeysPreserveOrder(', 'function characterSnapshot(');
+  for (const file of ['template.json', 'templateOrdered.json']) {
+    context.activeTemplate = JSON.parse(read('config/' + file));
+    context.data = {
+      startTroops: {crusader: {Tunneler: 0}},
+      aic: {
+        AICTactics_PatrolOrders: 'Native', AICTactics_PatrolFormation: 'Routes',
+        AICTactics_AllyGoods: false, BuildingRepairMinimumGold: 0,
+        AIOxTethers_DynamicMaxOxTethers: 2.5, RunningUnits_Spearmen: 2,
+        RecruitConditions: [{When: {HomeUnderThreat: true}, Defense: 70, Raid: 0, Attack: 20, Sortie: 10}]
+      }
+    };
+    const original = context.data;
+    const result = vm.runInContext(`
+      if (findUnknownKeys(activeTemplate, data).length) throw Error("Unexpected unknown fields");
+      data = applyTemplateOrder(activeTemplate, renameKeysPreserveOrder(data));
+      var rows = placeOptionalCharacterFields(flattenObject(data));
+      ({ rows: rows.map(row => row.path), output: prepareOutputData() })
+    `, context);
+    for (const key of Object.keys(original.aic)) {
+      assert.equal(result.rows.filter(row => row === 'aic.' + key).length, 1, key);
+      assert.deepEqual(JSON.parse(JSON.stringify(result.output.aic[key])), original.aic[key], key);
+    }
+    assert.equal(result.output.startTroops.crusader.Tunneler, 0);
+    assert.equal('Tunneler' in result.output.startTroops.normal, false);
+    assert.equal('AICTactics_PatrolSpacing' in result.output.aic, false);
+    assert.equal('AIOxTethers_MaxOxTethers' in result.output.aic, false);
+  }
+});

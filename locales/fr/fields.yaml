@@ -230,3 +230,55 @@ AIVTroops_InitialRole_ArabianSwordsman: 'Épéiste arabe : rôle initial'
 AIVTroops_Movement_ArabianSwordsman: 'Épéiste arabe : déplacement'
 AIVTroops_InitialRole_FireThrower: 'Lanceur de feu : rôle initial'
 AIVTroops_Movement_FireThrower: 'Lanceur de feu : déplacement'
+AICTactics_PatrolOrders: 'AIC Tactics : ordres des groupes de patrouille'
+AICTactics_PatrolFormation: 'AIC Tactics : formation de patrouille'
+AICTactics_PatrolSpacing: 'AIC Tactics : espacement des patrouilles'
+BuildingRepairInterval: Intervalle de réparation des bâtiments (s)
+BuildingRepairMinimumGold: Or minimal pour réparer les bâtiments
+RecruitPolicy: Règle de recrutement
+RecruitProbSortieDefault: Part des sorties, force normale (%)
+RecruitProbSortieWeak: Part des sorties, force faible (%)
+RecruitProbSortieStrong: Part des sorties, force élevée (%)
+RecruitConditions: Pondérations de recrutement conditionnelles
+DefRecruitComposition: Composition du recrutement défensif
+RecruitInitialDefenseMonths: Défense initiale (mois)
+RaidTargetPolicy: Règle de ciblage des raids
+RaidGroupCount: Groupes de raid
+RaidMinGroupSize: Taille minimale d’un groupe de raid
+RaidFocus: Priorités de ciblage des raids
+RaidRiskTolerance: Tolérance au risque des raids
+RaidEnemyScope: Ennemis pouvant être ciblés par les raids
+SafeSiegePlacement: Placement sûr des engins de siège
+ActualSiegeResourcePayment: Payer les engins de siège en ressources
+CoordinatedSiegeHarassment: Tirs de harcèlement coordonnés
+SiegeHarassMinEngines: Nombre minimal d’engins de harcèlement
+LargerSiegeForces: Forces de siège renforcées
+SiegeForceMax: Maximum d’engins de siège à l’assaut
+AICTactics_SiegeTowerCrew: Équipage de tour de siège
+AICTactics_PatrolExtraGroups: Patrouilles d’attaque supplémentaires
+AICTactics_PatrolMinSize: Taille minimale d’une patrouille
+AICTactics_PatrolRadius: Rayon de patrouille (cases)
+AICTactics_SiegeScreen: Ordres de l’escorte de siège
+AICTactics_SiegeScreenForward: Avance de l’escorte de siège (cases)
+AICTactics_SiegeScreenExtraGroups: Groupes d’escorte de siège supplémentaires
+AttackPreparation: Préparation de l’attaque
+AttackTargetPolicy: Règle de ciblage des attaques
+AttackTargetCommitment: Maintien de la cible d’attaque
+AttackActivation: Déclenchement de l’attaque
+ProvocationRules: Seuils de provocation
+AICTactics_LordHuntRetarget: Poursuivre le seigneur en fuite
+AICTactics_LordHuntSiege: Cible du siège pendant la poursuite
+AICTactics_LordHuntSwitchPercent: Seuil de changement de cible en poursuite (%)
+AICTactics_LordHuntShare: Troupes envoyées poursuivre le seigneur (%)
+AICTactics_LordHuntSplitShare: Part du détachement de poursuite (%)
+AICTactics_AllyRelief: Envoyer des troupes aider les alliés
+AICTactics_AllyGoods: Fournir des marchandises aux alliés
+AICTactics_AllyGoldKeep: Réserve d’or pour l’aide aux alliés
+AICTactics_AllyRecruitGoldBuffer: Or supplémentaire à demander pour le recrutement
+AICTactics_AllyGoldSharePercent: Part de l’or disponible pour les alliés (%)
+AICTactics_AllyMonthlyGivePercent: Budget mensuel d’aide (%)
+AICTactics_AllyArmySharePercent: Part de l’armée envoyée en renfort (%)
+AICTactics_AllyReliefGates: Ouvrir les portes alliées aux renforts
+AICTactics_AllyReliefKeep: Poster les renforts sur les donjons alliés
+AICTactics_AllyReliefMinMonths: Durée minimale du renfort (mois)
+Tunneler: Tunnelier

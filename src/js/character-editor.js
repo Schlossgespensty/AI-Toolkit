@@ -11,7 +11,6 @@ async function loadConfig(name) {
 let helpTexts;
 let fieldPools;
 let optionPools;
-let numericBooleanFields;
 let legacyKeyMap;
 
 let template;
@@ -38,7 +37,6 @@ async function init() {
     fieldPools = await loadConfig("fieldPools.json");
     optionPools = await loadConfig("optionPools.json");
     groupBreaks = await loadConfig("groupBreaks.json");
-    numericBooleanFields = await loadConfig("numericBooleanFields.json");
     legacyKeyMap = await loadConfig("legacyKeyMap.json");
     sections = await loadConfig("sections.json");
     templateOrdered = await loadConfig("templateOrdered.json");
@@ -216,7 +214,10 @@ function createField(key, value, parent) {
 
   let input;
 
-if (key.startsWith("AIVTroops_") && fieldPools[key]) {
+if (Object.hasOwn(optionalCharacterFields, key)) {
+  input = createOptionalCharacterInput(key, value, parent);
+}
+else if (key.startsWith("AIVTroops_") && fieldPools[key]) {
   input = document.createElement("select");
   input.dataset.aicField = key;
   const choices = optionPools[fieldPools[key]];
@@ -231,29 +232,6 @@ if (key.startsWith("AIVTroops_") && fieldPools[key]) {
   });
   input.onchange = () => { parent[key] = input.value; updateHeaderInfo(); };
 }
-else if (numericBooleanFields.includes(key)) {
-  input = document.createElement("select");
-
-  ["True", "False"].forEach(v => {
-    const o = document.createElement("option");
-    o.value = v;
-    o.text = trCharacter(`options:${v}`, { defaultValue: v });
-    o.dataset.i18n = `options:${v}`;
-
-    if ((value === 1 && v === "True") || (value === 0 && v === "False")) {
-      o.selected = true;
-    }
-
-    input.appendChild(o);
-  });
-
-  input.onchange = () => {
-    parent[key] = (input.value === "True") ? 1 : 0;
-    updateHeaderInfo();
-  };
-}
-
-
 else if (typeof value === "number") {
   input = document.createElement("input");
   input.type = "text";
@@ -351,14 +329,24 @@ if (val !== input.value) {
 
   div.appendChild(input);
 
+  appendCharacterHelp(div, key);
+  return div;
+}
+
+function appendCharacterHelp(container, key) {
   const help = document.createElement("div");
   help.className = "helpBtn";
   help.textContent = "?";
-  help.onclick = () => showHelp(helpTexts.includes(key) ? trCharacter(`help:${key}`) : trCharacter("character:no_description_yet"));
+  const helpKey = key.startsWith("RunningUnits_") ? "RunningUnits_Macemen" : key;
+  help.onclick = () => {
+    const messages = [];
+    if (helpTexts.includes(helpKey)) messages.push(trCharacter(`help:${helpKey}`));
+    const field = Object.hasOwn(optionalCharacterFields, key) && optionalCharacterFields[key];
+    if (field && key !== "Tunneler") messages.push(trCharacter("character:optional_override"));
+    showHelp(messages.join("<br><br>") || trCharacter("character:no_description_yet"));
+  };
 
-  div.appendChild(help);
-
-  return div;
+  container.appendChild(help);
 }
 
 // Starting troops as tiles: the unit's picture with its count below, so a
@@ -414,6 +402,7 @@ function createUnitTile(key, value, parent) {
   name.className = "characterUnitName";
   input.setAttribute("aria-label", name.textContent);
   tile.append(picture, name, input);
+  if (key === "Tunneler") tile.appendChild(field.querySelector(".helpBtn"));
   return tile;
 }
 
@@ -447,6 +436,7 @@ function flattenObject(obj, result = [], parent = null, path = "") {
     const value = obj[key];
     const currentPath = path ? `${path}.${key}` : key;
 
+    if (isOptionalCharacterPath(currentPath, key)) continue;
     if (typeof value === "object" && value !== null) {
       flattenObject(value, result, value, currentPath);
     } else {
@@ -467,7 +457,7 @@ function flattenObject(obj, result = [], parent = null, path = "") {
 }
 
 function buildForm(obj, container) {
-  const flat = flattenObject(obj);
+  const flat = placeOptionalCharacterFields(flattenObject(obj));
   const troopFields = flat.filter(field => field.key.startsWith('AIVTroops_'));
   const troopOrder = key => key === 'AIVTroops_InitialRole' ? 0 : key === 'AIVTroops_Movement' ? 1 : key.startsWith('AIVTroops_InitialRole_') ? 2 : 3;
   troopFields.sort((a, b) => troopOrder(a.key) - troopOrder(b.key));
@@ -669,7 +659,7 @@ function renameKeysPreserveOrder(obj) {
 
     let value = obj[key];
 
-    if (typeof value === "object" && value !== null) {
+    if (typeof value === "object" && value !== null && !Array.isArray(value)) {
       value = renameKeysPreserveOrder(value);
     }
 
@@ -719,6 +709,7 @@ function findUnknownKeys(activeTemplate, data, path = "") {
 
   for (const key of Object.keys(data)) {
     const currentPath = path ? `${path}.${key}` : key;
+    if (isOptionalCharacterPath(currentPath, key)) continue;
 
     const isInTemplate = activeTemplate && key in activeTemplate;
     const isLegacyKey = key in legacyKeyMap;
@@ -737,6 +728,200 @@ function findUnknownKeys(activeTemplate, data, path = "") {
   }
 
   return unknown;
+}
+
+const targetChoices = ["Inherit", "LowestPopulation", "FewestTroops", "LowestCombatPower", "Random", "LastAggressor"];
+const raidFocusCategories = ["Food", "Industry", "HighValue"];
+const provocationDefaults = { ThreatPower: 100, CombatTicks: 200, LossPower: 100, WindowTicks: 800 };
+const integerInRange = (value, min, max) => Number.isInteger(value) && value >= min && value <= max;
+const isRecord = value => value !== null && typeof value === "object" && !Array.isArray(value);
+
+function validProvocationRules(rules) {
+  return isRecord(rules) && Object.keys(rules).length === 4
+    && integerInRange(rules.ThreatPower, 1, 100000) && integerInRange(rules.LossPower, 1, 100000)
+    && integerInRange(rules.WindowTicks, 32, 9600) && rules.WindowTicks % 32 === 0
+    && integerInRange(rules.CombatTicks, 1, rules.WindowTicks);
+}
+
+function validTargetPolicy(value) {
+  if (typeof value === "string") return value === "InheritPerAttack" || targetChoices.includes(value);
+  return isRecord(value) && targetChoices.includes(value.Choice)
+    && Object.keys(value).every(key => ["Choice", "UntilDefeated", "Provocation"].includes(key))
+    && (!Object.hasOwn(value, "UntilDefeated") || typeof value.UntilDefeated === "boolean")
+    && (!Object.hasOwn(value, "Provocation") || value.Choice === "LastAggressor"
+      && isRecord(value.Provocation) && validProvocationRules({ ...provocationDefaults, ...value.Provocation }));
+}
+
+function validRecruitConditions(value) {
+  const roles = ["Defense", "Raid", "Attack", "Sortie"];
+  const facts = ["HomeUnderThreat", "AttackActive", "DefenseIncomplete", "EquipmentSurplus"];
+  return Array.isArray(value) && value.length <= 8 && value.every(row =>
+    isRecord(row) && Object.keys(row).length === 5 && isRecord(row.When)
+    && Object.entries(row.When).every(([key, fact]) => key === "Strength"
+      ? ["Default", "Weak", "Strong"].includes(fact) : facts.includes(key) && typeof fact === "boolean")
+    && roles.every(key => integerInRange(row[key], 0, 100))
+    && roles.reduce((total, key) => total + row[key], 0) === 100);
+}
+
+function validRaidFocus(value) {
+  if (typeof value === "string") return value === "Any" || raidFocusCategories.includes(value);
+  return isRecord(value) && Object.keys(value).every(key => raidFocusCategories.includes(key))
+    && Object.values(value).every(weight => integerInRange(weight, 0, 100))
+    && Object.values(value).reduce((total, weight) => total + weight, 0) <= 100;
+}
+
+// Optional fields are displayed beside a stock field and stay out of the
+// templates so that an absent override stays absent in new and loaded AIs.
+const optionalCharacterFields = {
+  BuildingRepairInterval: { after: "BuildInterval", min: 1, max: 53687091 },
+  BuildingRepairMinimumGold: { after: "BuildInterval", min: 0, max: 2147483647 },
+  RecruitPolicy: { after: "RecruitProbAttackStrong", values: ["Native", "WeightedRoles"] },
+  RecruitProbSortieDefault: { after: "RecruitProbAttackStrong", min: 0, max: 100 },
+  RecruitProbSortieWeak: { after: "RecruitProbAttackStrong", min: 0, max: 100 },
+  RecruitProbSortieStrong: { after: "RecruitProbAttackStrong", min: 0, max: 100 },
+  RecruitConditions: { after: "RecruitProbAttackStrong", validate: validRecruitConditions },
+  DefRecruitComposition: { after: "RecruitProbAttackStrong", values: ["Native", "PreserveSlots"] },
+  RecruitInitialDefenseMonths: { after: "RecruitProbAttackStrong", min: 0, max: 30 },
+  RaidTargetPolicy: { after: "RaidUnitsBase", values: ["Native", "NearestReachable", "Opportunistic", "RandomNearby"] },
+  RaidGroupCount: { after: "RaidUnitsBase", min: 1, max: 4 },
+  RaidMinGroupSize: { after: "RaidUnitsBase", min: 1, max: 256 },
+  RaidFocus: { after: "RaidUnitsBase", validate: validRaidFocus },
+  RaidRiskTolerance: { after: "RaidUnitsBase", values: ["Low", "Medium", "High"] },
+  RaidEnemyScope: { after: "RaidUnitsBase", values: ["PrimeTarget", "AnyEnemy"] },
+  SafeSiegePlacement: { after: "SiegeEngine8", values: [true, false] },
+  ActualSiegeResourcePayment: { after: "SiegeEngine8", values: [true, false] },
+  CoordinatedSiegeHarassment: { after: "SiegeEngine8", values: [true, false] },
+  SiegeHarassMinEngines: { after: "SiegeEngine8", min: 0, max: 20 },
+  LargerSiegeForces: { after: "SiegeEngine8", values: [true, false] },
+  SiegeForceMax: { after: "SiegeEngine8", min: 0, max: 64 },
+  AICTactics_SiegeTowerCrew: { after: "SiegeEngine8", values: [true, false] },
+  AICTactics_PatrolOrders: { after: "AttUnitPatrolGroupsCount", values: ["Native", "AllGroups"] },
+  AICTactics_PatrolFormation: { after: "AttUnitPatrolGroupsCount", values: ["Native", "Wing", "Mirror", "Routes"] },
+  AICTactics_PatrolSpacing: { after: "AttUnitPatrolGroupsCount", min: 4, max: 40 },
+  AICTactics_PatrolExtraGroups: { after: "AttUnitPatrolGroupsCount", min: 0, max: 6 },
+  AICTactics_PatrolMinSize: { after: "AttUnitPatrolGroupsCount", min: 1, max: 50 },
+  AICTactics_PatrolRadius: { after: "AttUnitPatrolGroupsCount", min: 4, max: 100 },
+  AICTactics_SiegeScreen: { after: "AttUnitSiegeDefGroupsCount", values: ["Native", "EngineApproach"] },
+  AICTactics_SiegeScreenForward: { after: "AttUnitSiegeDefGroupsCount", min: 0, max: 10 },
+  AICTactics_SiegeScreenExtraGroups: { after: "AttUnitSiegeDefGroupsCount", min: 0, max: 6 },
+  AttackPreparation: { after: "AttMainGroupsCount", values: ["Native", "DuringAttack"] },
+  AttackTargetPolicy: { after: "TargetChoice", validate: validTargetPolicy },
+  AttackTargetCommitment: { after: "TargetChoice", values: ["Default", "PerAttack", "UntilDefeated"] },
+  AttackActivation: { after: "TargetChoice", values: ["Immediate", "AfterProvocation"] },
+  ProvocationRules: { after: "TargetChoice", validate: validProvocationRules },
+  AICTactics_LordHuntRetarget: { after: "TargetChoice", values: [true, false] },
+  AICTactics_LordHuntSiege: { after: "TargetChoice", values: ["HidingCastle", "HomeCastle"] },
+  AICTactics_LordHuntSwitchPercent: { after: "TargetChoice", min: 0, max: 100 },
+  AICTactics_LordHuntShare: { after: "TargetChoice", min: 0, max: 100 },
+  AICTactics_LordHuntSplitShare: { after: "TargetChoice", min: 0, max: 100 },
+  AICTactics_AllyRelief: { after: "TargetChoice", values: [true, false] },
+  AICTactics_AllyGoods: { after: "TargetChoice", values: [true, false] },
+  AICTactics_AllyGoldKeep: { after: "TargetChoice", min: 0, max: 100000 },
+  AICTactics_AllyRecruitGoldBuffer: { after: "TargetChoice", min: 0, max: 5000 },
+  AICTactics_AllyGoldSharePercent: { after: "TargetChoice", min: 0, max: 100 },
+  AICTactics_AllyMonthlyGivePercent: { after: "TargetChoice", min: 0, max: 100 },
+  AICTactics_AllyArmySharePercent: { after: "TargetChoice", min: 0, max: 100 },
+  AICTactics_AllyReliefGates: { after: "TargetChoice", values: [true, false] },
+  AICTactics_AllyReliefKeep: { after: "TargetChoice", values: [true, false] },
+  AICTactics_AllyReliefMinMonths: { after: "TargetChoice", min: 0, max: 12 },
+  AIOxTethers_DisableInitialOxTether: { after: "TargetChoice", values: [0, 1], labels: ["False", "True"] },
+  AIOxTethers_Logic: { after: "TargetChoice", values: [0, 1], labels: ["Native", "Dynamic"] },
+  AIOxTethers_MaxOxTethers: { after: "TargetChoice", min: 0, max: Number.MAX_SAFE_INTEGER },
+  AIOxTethers_DynamicMaxOxTethers: { after: "TargetChoice", min: 0, decimal: true },
+  AIOxTethers_MinimumOxTethersPerQuarry: { after: "TargetChoice", min: 0, max: Number.MAX_SAFE_INTEGER },
+  AIOxTethers_MaximumOxTethersPerQuarry: { after: "TargetChoice", min: 0, max: Number.MAX_SAFE_INTEGER },
+  AIOxTethers_ThresholdStoneLoad: { after: "TargetChoice", min: 0, decimal: true },
+  ...Object.fromEntries(["Macemen", "Spearmen", "Slingers", "Slaves"].map(unit => [
+    `RunningUnits_${unit}`, { after: "TargetChoice", values: [0, 1, 2], labels: ["Native", "Run", "Walk"] }
+  ])),
+  Tunneler: { after: "Engineer", min: 0, max: 2499 }
+};
+
+function isOptionalCharacterPath(path, key) {
+  if (key === "Tunneler") return /^startTroops\.(normal|crusader|deathmatch)\.Tunneler$/.test(path);
+  return path === `aic.${key}` && Object.hasOwn(optionalCharacterFields, key);
+}
+
+function placeOptionalCharacterFields(flat) {
+  return flat.flatMap(row => {
+    const prefix = row.path.slice(0, -row.key.length);
+    const fields = Object.entries(optionalCharacterFields)
+      .filter(([key, field]) => field.after === row.key && isOptionalCharacterPath(prefix + key, key))
+      .map(([key]) => ({ key, value: row.parent[key], parent: row.parent, path: prefix + key }));
+    return [row, ...fields];
+  });
+}
+
+function optionalCharacterValueValid(field, value) {
+  if (value === undefined) return true;
+  if (field.values) return field.values.includes(value);
+  if (field.validate) return field.validate(value);
+  if (field.decimal) return Number.isFinite(value) && value >= field.min;
+  return integerInRange(value, field.min, field.max);
+}
+
+function createOptionalCharacterInput(key, value, parent) {
+  const field = optionalCharacterFields[key];
+  const inherit = key === "Tunneler" ? "character:inherit_starting_troops" : "character:module_setting";
+  const input = document.createElement(field.values ? "select" : field.validate ? "textarea" : "input");
+  const markValidity = valid => {
+    if (valid) input.removeAttribute("aria-invalid");
+    else input.setAttribute("aria-invalid", "true");
+  };
+  const commit = next => {
+    const valid = optionalCharacterValueValid(field, next);
+    markValidity(valid);
+    if (!valid) return;
+    if (next === undefined) delete parent[key];
+    else parent[key] = next;
+    updateHeaderInfo();
+  };
+  input.dataset.optionalCharacterField = key;
+  input.setAttribute("aria-label", characterFieldLabel(key));
+  input.dataset.i18nAttrs = `aria-label=fields:${key}`;
+  markValidity(optionalCharacterValueValid(field, value));
+
+  if (field.values) {
+    const choices = [undefined, ...field.values];
+    if (!choices.includes(value)) choices.push(value);
+    for (const choice of choices) {
+      const index = field.values.indexOf(choice);
+      const label = field.labels?.[index] ?? (typeof choice === "boolean" ? (choice ? "True" : "False") : choice);
+      const i18n = choice === undefined ? inherit : `options:${label}`;
+      const known = choice === undefined || index !== -1;
+      const text = known ? trCharacter(i18n) : trCharacter("character:unsupported_value") + String(choice);
+      const option = new Option(text, choice === undefined ? "" : String(choice), false, Object.is(choice, value));
+      if (known) option.dataset.i18n = i18n;
+      input.appendChild(option);
+    }
+    input.onchange = () => commit(choices[input.selectedIndex]);
+    return input;
+  }
+
+  input.placeholder = trCharacter(inherit);
+  input.dataset.i18nAttrs += `;placeholder=${inherit}`;
+  if (field.validate) {
+    input.rows = 3;
+    input.dir = "ltr";
+    input.value = value === undefined ? "" : typeof value === "string" ? value : JSON.stringify(value, null, 2);
+    input.onchange = () => {
+      const text = input.value.trim();
+      if (text === "") return commit(undefined);
+      let next;
+      try { next = JSON.parse(text); } catch { next = text; }
+      commit(next);
+    };
+  } else {
+    input.type = "text";
+    input.inputMode = field.decimal ? "decimal" : "numeric";
+    input.title = field.max === undefined ? `≥ ${field.min}` : `${field.min}–${field.max}`;
+    input.value = value ?? "";
+    input.onchange = () => {
+      const text = input.value.trim();
+      commit(text === "" ? undefined : Number(text));
+    };
+  }
+  return input;
 }
 
 function omitInheritedTroopFields(output) {
@@ -969,11 +1154,11 @@ function updateHeaderInfo() {
 
 function calculateOxTethers(quarries, a) {
     if (!toggleOx.checked) return quarries;
-    if (Number(a.AIOxTethers_Logic) === 0) return Number(a.AIOxTethers_DisableInitialOxTether) === 1 ? 0 : quarries;
+    if (Number(a.AIOxTethers_Logic ?? 0) === 0) return Number(a.AIOxTethers_DisableInitialOxTether) === 1 ? 0 : quarries;
     return Math.min(
-        quarries * (Number(a.AIOxTethers_MaximumOxTethersPerQuarry) || 0),
-        quarries * (Number(a.AIOxTethers_DynamicMaxOxTethers) || 0),
-        Number(a.AIOxTethers_MaxOxTethers) || 0
+        quarries * Number(a.AIOxTethers_MaximumOxTethersPerQuarry ?? 3),
+        quarries * Number(a.AIOxTethers_DynamicMaxOxTethers ?? 3),
+        Number(a.AIOxTethers_MaxOxTethers ?? 100)
     );
 }
 

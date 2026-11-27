@@ -456,17 +456,13 @@ TargetChoice: |-
 
   玩家：优先攻击人类玩家；没有敌对人类玩家时改用“最近”。
 AIOxTethers_DisableInitialOxTether: “否”保持原版行为；“是”表示不再每次建造或重建采石场时自动建造牛车站。
-AIOxTethers_Logic: |-
-  设置采用的逻辑。
-  否 = 原版，是 = 动态。
+AIOxTethers_Logic: 动态模式同时使用两个总量上限及采石场关联规则。请在 AI Ox Tethers 中启用使用 AIC。重置 AIC 后，空字段采用模块的固定默认值。
 AIOxTethers_MaxOxTethers: 此 AI 的牛车站总数永不超过此值。
 AIOxTethers_DynamicMaxOxTethers: 此 AI 的牛车站总数永不超过此值乘以采石场数量。
 AIOxTethers_MinimumOxTethersPerQuarry: 从某座采石场运输石料的关联牛车站少于此值时，为该采石场增建一座牛车站。
 AIOxTethers_MaximumOxTethersPerQuarry: 某座采石场关联的牛车站数量高于此值时，不再为它增建牛车站。
 AIOxTethers_ThresholdStoneLoad: 某座采石场的“石料 / 关联牛车站”超过此值时，为它增建一座牛车站。
-RunningUnits_Macemen: |-
-  设为“是”时，链锤兵始终奔跑，即使与较慢单位编组。
-  设为“否”时，速度与组内最慢单位一致，与原版相同。
+RunningUnits_Macemen: 奔跑和步行会强制采用对应移动方式。原版和留空均遵循模块规则，模块也可强制所有 AI 奔跑或步行。
 RunningUnits_Spearmen: |-
   设为“是”时，长矛兵始终奔跑，即使与较慢单位编组。
   设为“否”时，速度与组内最慢单位一致，与原版相同。
@@ -664,3 +660,20 @@ AIVTroops_Movement_FireThrower: >-
 
   兵种专用设置优先于通用 AIC 字段。选择原版时，保存的角色不包含此字段，改用下一个适用的通用或菜单默认值。需要 aiv-troops-behaviour，并启用部队设置和 AIC 覆盖。修改后须重启 UCP
   并开始新游戏。
+BuildingRepairInterval: 两次修理检查之间的秒数。仅在 Smarter Buildings 启用 AI 修理时生效。
+BuildingRepairMinimumGold: 金库达到此金额后，AI 才会修理。
+RecruitPolicy: 采用职责权重时，每个强度等级的防守、袭扰、进攻和出击占比合计须为 100。
+RecruitConditions: 输入最多含八条规则的 JSON 数组。每条规则包含 When 和合计为 100 的四项权重。例如：[{"When":{"HomeUnderThreat":true},"Defense":70,"Raid":0,"Attack":20,"Sortie":10}]。需要启用职责权重。
+DefRecruitComposition: 采用职责权重时，保留防守位置可维持设定的防守兵种组合。
+RecruitInitialDefenseMonths: 采用职责权重时，0 表示跳过初期防御计时。留空时沿用游戏或 Legacy 的计时。
+RaidTargetPolicy: 如需设定小队数量、人数、优先级、风险或敌人范围，请选择非原版规则。
+RaidFocus: 可输入 Any、Food、Industry、HighValue 或类似 {"Food":60,"HighValue":20} 的 JSON 对象。权重合计最多为 100。NearestReachable 仅接受 Any。
+SafeSiegePlacement: 选择可到达的建造位置。资源付费、协同骚扰和扩大攻城部队均依赖安全部署。
+AttackTargetPolicy: 可输入 Inherit、InheritPerAttack、LowestPopulation、FewestTroops、LowestCombatPower、Random 或 LastAggressor。也可用 JSON 对象组合 Choice 与 UntilDefeated，或为 LastAggressor 加入 Provocation。
+ProvocationRules: 输入含 ThreatPower 与 LossPower（1–100000）、WindowTicks（32–9600，须为 32 的倍数）和 CombatTicks（1–WindowTicks）的 JSON 对象。需启用 AfterProvocation、LastAggressor 或 HomeUnderThreat 招募条件。
+AICTactics_LordHuntSwitchPercent: 进攻中，剩余兵力达到此比例才会改换目标城堡。
+AICTactics_LordHuntSplitShare: 主力部队中派往不进行全面围攻的城堡的比例。
+Tunneler: 需要在 AI Swapper 中将此角色选为初始部队来源。输入 0–2499。角色与启动器均未指定数量时，不会生成掘地兵。
+AICTactics_PatrolOrders: 所有巡逻队都能接到进攻命令，包括第一队以外的队伍。
+AICTactics_PatrolFormation: 侧翼跟随领头队伍，镜像从另一侧接近，独立路线则让各队分走不同路径。
+AICTactics_PatrolSpacing: 侧翼和镜像阵形中相邻巡逻队之间的距离。

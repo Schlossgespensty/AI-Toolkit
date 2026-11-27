@@ -62,3 +62,30 @@ defend: Defender
 dig: Cavar
 hold: Mantener posición
 patrol: Patrullar
+Native: Original
+AllGroups: Todos los grupos
+Wing: Ala
+Mirror: Espejo
+Routes: Rutas independientes
+EngineApproach: Por delante de las máquinas de asedio
+HidingCastle: Castillo refugio
+HomeCastle: Castillo propio
+WeightedRoles: Roles ponderados
+PreserveSlots: Conservar puestos defensivos
+NearestReachable: Objetivo accesible más cercano
+Opportunistic: Según la oportunidad
+RandomNearby: Objetivo cercano al azar
+Low: Baja
+Medium: Media
+High: Alta
+PrimeTarget: Objetivo principal
+AnyEnemy: Cualquier enemigo
+DuringAttack: Durante el ataque
+Default: Predeterminado
+PerAttack: Durante un ataque
+UntilDefeated: Hasta derrotarlo
+Immediate: Inmediato
+AfterProvocation: Tras una provocación
+Dynamic: Dinámico
+Run: Correr
+Walk: Caminar

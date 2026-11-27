@@ -227,6 +227,8 @@ save_png: 保存 PNG
 picture_size: "尺寸"
 full_resolution: "完整分辨率"
 floor_plan_100x100_1_px_per_tile: "平面图 100×100（每格 1 像素）"
+uniform_building_colours: "每座建筑一种颜色（平面图）"
+uniform_building_colours_hint: "每座建筑和前院使用接近原色的单一纯色，便于吸管和魔棒选择。同类建筑相差一个亮度级，颜色相同的类型相差 10 级。"
 merge_placements_by_item_type: 按元素类型合并放置项
 merge: 合并
 replace_selected_items: 替换所选元素

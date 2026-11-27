@@ -245,6 +245,8 @@ save_png: Guardar PNG
 picture_size: "Tamaño"
 full_resolution: "Resolución completa"
 floor_plan_100x100_1_px_per_tile: "Plano 100×100 (1 px por casilla)"
+uniform_building_colours: "Un color por edificio (plano)"
+uniform_building_colours_hint: "Un color uniforme por edificio y patio, cercano al original, para seleccionar con cuentagotas o varita mágica. Los edificios del mismo tipo difieren en un nivel de brillo; los tipos que comparten color, en 10."
 merge_placements_by_item_type: Combinar colocaciones por tipo
 replace_selected_items: Reemplazar elementos seleccionados
 choose_a_replacement_for_each_item_type_inside_the_box: Elige un reemplazo para cada tipo de elemento dentro del recuadro.

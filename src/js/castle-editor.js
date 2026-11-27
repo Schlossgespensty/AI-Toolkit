@@ -4234,6 +4234,10 @@
   els.showCompatibility.addEventListener('change', scheduleDraw);
   document.getElementById('castleBackgroundBtn').addEventListener('click', chooseBlueprint);
   const snapshotDialog = document.getElementById('castleSnapshotDialog');
+  const snapshotSize = document.getElementById('castleSnapshotSize'), snapshotUniform = document.getElementById('castleSnapshotUniform');
+  const syncSnapshotUniform = () => { snapshotUniform.disabled = snapshotSize.value !== 'plan'; };
+  snapshotSize.addEventListener('change', syncSnapshotUniform);
+  syncSnapshotUniform();
   document.getElementById('castleSavePictureBtn').addEventListener('click', () => snapshotDialog.showModal());
   document.getElementById('castleSnapshotCancel').addEventListener('click', () => snapshotDialog.close());
   document.getElementById('castleSnapshotForm').addEventListener('submit', async (event) => {
@@ -4241,7 +4245,7 @@
     const button = document.getElementById('castleSnapshotSave');
     button.disabled = true;
     try {
-      const png = renderCastlePicture({ floorPlan: document.getElementById('castleSnapshotSize').value === 'plan' });
+      const png = renderCastlePicture({ floorPlan: snapshotSize.value === 'plan', uniformColours: snapshotUniform.checked });
       const saved = await window.electronAPI.saveCastlePicture(png);
       if (!saved) return;
       if (document.getElementById('castleSnapshotBackground').checked) {
@@ -4281,7 +4285,55 @@
     return plan;
   }
 
-  function renderCastlePicture({ floorPlan = false } = {}) {
+  // A uniform floor plan paints each building in one flat colour: its own
+  // average sprite colour, with forecourts (keep courtyard and entrance,
+  // training grounds, oil smelter camp) as separate regions. castleFloorPlan
+  // spreads instances one brightness level around that colour and only moves
+  // kinds that would otherwise share colours. Single-tile pieces such as walls
+  // stay one colour per type.
+  function uniformFloorPlanPixels(picture, cell) {
+    const source = picture.getContext('2d'), plan = document.createElement('canvas');
+    plan.width = plan.height = GRID;
+    const planCtx = plan.getContext('2d'), pixels = planCtx.createImageData(GRID, GRID), floorPlan = window.castleFloorPlan;
+    const clip = rect => ({left: Math.max(0, rect.left), right: Math.min(GRID - 1, rect.right), bottom: Math.max(0, rect.bottom), top: Math.min(GRID - 1, rect.top)});
+    const regions = placementRefs().filter(p => p.kind !== 'unit').flatMap(p => {
+      const [w, h] = itemSize(p.type), flat = Number(p.type) !== geometry.KEEP_ITEM_TYPE && w * h <= 1;
+      return floorPlan.regions(p.type, footprintRects(p.type, p.off)).map(region => ({key: region.key, flat,
+        rects: region.rects.map(clip).filter(r => r.left <= r.right && r.bottom <= r.top)}));
+    });
+    const groups = new Map();
+    for (const {key, flat, rects} of regions) {
+      if (!groups.has(key)) groups.set(key, {key, sum: [0, 0, 0, 0], count: 0, area: 0, flat});
+      const group = groups.get(key);
+      group.count++;
+      for (const r of rects) {
+        group.area += (r.right - r.left + 1) * (r.top - r.bottom + 1);
+        const data = source.getImageData(r.left * cell, (GRID - 1 - r.top) * cell, (r.right - r.left + 1) * cell, (r.top - r.bottom + 1) * cell).data;
+        for (let i = 0; i < data.length; i += 4) {
+          const alpha = data[i + 3];
+          group.sum[0] += data[i] * alpha; group.sum[1] += data[i + 1] * alpha; group.sum[2] += data[i + 2] * alpha; group.sum[3] += alpha;
+        }
+      }
+    }
+    const colours = floorPlan.assignColours([...groups.values()].map(group => ({
+      key: group.key, count: group.flat ? 1 : group.count, area: group.area,
+      base: group.sum[3] ? group.sum.slice(0, 3).map(value => value / group.sum[3]) : [128, 128, 128]
+    })));
+    const seen = new Map();
+    for (const {key, flat, rects} of regions) {
+      const index = flat ? 0 : (seen.get(key) || 0);
+      seen.set(key, index + 1);
+      const colour = colours.get(key)(index);
+      for (const r of rects) for (let y = r.bottom; y <= r.top; y++) for (let x = r.left; x <= r.right; x++) {
+        const out = ((GRID - 1 - y) * GRID + x) * 4;
+        pixels.data[out] = colour[0]; pixels.data[out + 1] = colour[1]; pixels.data[out + 2] = colour[2]; pixels.data[out + 3] = 255;
+      }
+    }
+    planCtx.putImageData(pixels, 0, 0);
+    return plan;
+  }
+
+  function renderCastlePicture({ floorPlan = false, uniformColours = false } = {}) {
     // Render at native sprite resolution (at least 32 px/tile), not viewport zoom.
     let cell = 32;
     for (const placement of placementRefs()) {
@@ -4301,7 +4353,7 @@
       // troops or overlays, and the whole castle regardless of the build step.
       if (floorPlan) { state.selected = new Set(); els.showNames.checked = false; }
       rebuildStaticCache(picture, future);
-      if (floorPlan) return floorPlanPixels(picture, cell).toDataURL('image/png');
+      if (floorPlan) return (uniformColours ? uniformFloorPlanPixels : floorPlanPixels)(picture, cell).toDataURL('image/png');
       ctx = picture.getContext('2d');
       drawUnitMarkers();
       if (els.showCompatibility.checked) drawCompatibilityOriginMarker();

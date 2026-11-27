@@ -62,3 +62,30 @@ defend: defend
 dig: dig
 hold: hold
 patrol: patrol
+Native: Native
+AllGroups: All groups
+Wing: Wing
+Mirror: Mirror
+Routes: Independent routes
+EngineApproach: Ahead of siege engines
+HidingCastle: Shelter castle
+HomeCastle: Home castle
+WeightedRoles: Weighted roles
+PreserveSlots: Preserve defender slots
+NearestReachable: Nearest reachable
+Opportunistic: Opportunistic
+RandomNearby: Random nearby
+Low: Low
+Medium: Medium
+High: High
+PrimeTarget: Primary target
+AnyEnemy: Any enemy
+DuringAttack: During attack
+Default: Default
+PerAttack: For one attack
+UntilDefeated: Until defeated
+Immediate: Immediate
+AfterProvocation: After provocation
+Dynamic: Dynamic
+Run: Run
+Walk: Walk

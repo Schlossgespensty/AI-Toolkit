@@ -62,3 +62,30 @@ defend: Savun
 dig: Kaz
 hold: Mevziyi koru
 patrol: Devriye gez
+Native: Orijinal
+AllGroups: Tüm gruplar
+Wing: Kanat
+Mirror: Ayna
+Routes: Ayrı rotalar
+EngineApproach: Kuşatma araçlarının önü
+HidingCastle: Sığınılan kale
+HomeCastle: Kendi kalesi
+WeightedRoles: Ağırlıklı roller
+PreserveSlots: Savunma noktalarını koru
+NearestReachable: En yakın erişilebilir hedef
+Opportunistic: Fırsata göre
+RandomNearby: Rastgele yakın hedef
+Low: Düşük
+Medium: Orta
+High: Yüksek
+PrimeTarget: Ana hedef
+AnyEnemy: Herhangi bir düşman
+DuringAttack: Saldırı sırasında
+Default: Varsayılan
+PerAttack: Bir saldırı boyunca
+UntilDefeated: Yenilene kadar
+Immediate: Hemen
+AfterProvocation: Kışkırtmadan sonra
+Dynamic: Dinamik
+Run: Koş
+Walk: Yürü

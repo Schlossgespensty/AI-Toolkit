@@ -570,9 +570,7 @@ TargetChoice: |-
 AIOxTethers_DisableInitialOxTether: >-
   False: исходное поведение. True: не строить привязь вола при каждой постройке или восстановлении
   каменоломни.
-AIOxTethers_Logic: |-
-  Выбор логики.
-  False — исходная, True — динамическая.
+AIOxTethers_Logic: Динамический режим использует оба общих предела и правила привязи к каменоломне. Включите использование AIC в AI Ox Tethers. После сброса AIC пустое поле использует фиксированное значение модуля.
 AIOxTethers_MaxOxTethers: Общее число привязей волов этого ИИ никогда не превысит это значение.
 AIOxTethers_DynamicMaxOxTethers: Общее число привязей волов этого ИИ никогда не превысит это значение, умноженное на число каменоломен.
 AIOxTethers_MinimumOxTethersPerQuarry: >-
@@ -580,9 +578,7 @@ AIOxTethers_MinimumOxTethersPerQuarry: >-
   привязь.
 AIOxTethers_MaximumOxTethersPerQuarry: Если число привязей волов, связанных с каменоломней, выше заданного, новые привязи для нее не строятся.
 AIOxTethers_ThresholdStoneLoad: Если отношение «камень / связанные привязи волов» у каменоломни выше заданного, строится еще одна привязь.
-RunningUnits_Macemen: >-
-  Если True, дубинщики всегда бегут, даже в группе с более медленными бойцами. Если False, подстраиваются под
-  самого медленного бойца в группе, как в оригинале.
+RunningUnits_Macemen: Бег и ходьба задают движение принудительно. Игровой вариант и пустое поле следуют правилу модуля, которое может задать движение для всех ИИ.
 RunningUnits_Spearmen: >-
   Если True, копейщики всегда бегут, даже в группе с более медленными бойцами. Если False, подстраиваются под
   самого медленного бойца в группе, как в оригинале.
@@ -880,3 +876,20 @@ AIVTroops_Movement_FireThrower: >-
   поле при сохранении персонажа и использует следующее подходящее общее значение или настройку меню. Требуется
   aiv-troops-behaviour с включенными Troop settings и Use AIC overrides. После изменений перезапустите UCP и
   начните новый матч.
+BuildingRepairInterval: Секунды между проверками. Действует при включённом ремонте ИИ в Smarter Buildings.
+BuildingRepairMinimumGold: ИИ начинает ремонт, когда в казне накопится эта сумма.
+RecruitPolicy: Для ролей с весами сумма долей обороны, набега, атаки и вылазки при каждом уровне силы должна быть равна 100.
+RecruitConditions: 'Введите JSON-массив из восьми правил или меньше. В каждом правиле есть When и четыре веса с суммой 100. Пример: [{"When":{"HomeUnderThreat":true},"Defense":70,"Raid":0,"Attack":20,"Sortie":10}]. Нужны роли с весами.'
+DefRecruitComposition: При ролях с весами сохранение мест поддерживает заданный состав защитников.
+RecruitInitialDefenseMonths: При ролях с весами ноль пропускает начальную оборону. Пустое поле использует таймер игры или Legacy.
+RaidTargetPolicy: Выберите правило, отличное от игрового, чтобы настроить размер и число групп, приоритеты, риск и выбор врагов.
+RaidFocus: Введите Any, Food, Industry, HighValue или объект JSON, например {"Food":60,"HighValue":20}. Сумма весов до 100. Для NearestReachable нужно Any.
+SafeSiegePlacement: Выбирает доступные места постройки. Нужно для расходования ресурсов, согласованного обстрела и увеличенных осадных сил.
+AttackTargetPolicy: Введите Inherit, InheritPerAttack, LowestPopulation, FewestTroops, LowestCombatPower, Random или LastAggressor. В объекте JSON можно добавить к Choice ключ UntilDefeated либо Provocation для LastAggressor.
+ProvocationRules: Введите объект JSON с ThreatPower и LossPower (1–100000), WindowTicks (32–9600, кратно 32) и CombatTicks (1–WindowTicks). Требуется AfterProvocation, LastAggressor или условие HomeUnderThreat.
+AICTactics_LordHuntSwitchPercent: Во время атаки для смены замка должна остаться такая доля войска.
+AICTactics_LordHuntSplitShare: Доля главного войска для замка, который не подвергнется полной осаде.
+Tunneler: Нужен AI Swapper с этим персонажем в качестве источника начальных войск. Введите 0–2499. Без числа в персонаже или лаунчере подкопщики не появятся.
+AICTactics_PatrolOrders: Приказы об атаке могут получать все патрули, включая второй и последующие.
+AICTactics_PatrolFormation: Крыло держится рядом с головной группой, зеркало заходит с другой стороны, а разные маршруты разводят группы по подходам.
+AICTactics_PatrolSpacing: Расстояние между соседними патрулями в строю «Крыло» и «Зеркало».

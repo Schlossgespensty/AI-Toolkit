@@ -241,6 +241,8 @@ save_png: PNG kaydet
 picture_size: "Boyut"
 full_resolution: "Tam çözünürlük"
 floor_plan_100x100_1_px_per_tile: "Kat planı 100×100 (kare başına 1 px)"
+uniform_building_colours: "Bina başına tek renk (kat planı)"
+uniform_building_colours_hint: "Damlalık ve sihirli değnek seçimi için her bina ve avlu, özgün rengine yakın tek düz renk alır. Aynı türdeki binalar bir parlaklık düzeyi, aynı rengi paylaşan türler 10 düzey farklıdır."
 merge_placements_by_item_type: Yerleşimleri öğe türüne göre birleştir
 replace_selected_items: Seçili öğeleri değiştir
 choose_a_replacement_for_each_item_type_inside_the_box: Kutudaki her öğe türü için yeni bir öğe seçin.

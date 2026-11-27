@@ -465,7 +465,7 @@ TargetChoice: >-
 AIOxTethers_DisableInitialOxTether: >-
   False conserva el comportamiento original; True impide construir un amarre de bueyes cada vez que se
   construye o reconstruye una cantera.
-AIOxTethers_Logic: 'Lógica aplicada: False conserva la original; True usa la dinámica.'
+AIOxTethers_Logic: El modo dinámico aplica ambos límites totales y las reglas de vinculación con la cantera. Activa el uso de AIC en AI Ox Tethers. Tras restablecer el AIC, un campo vacío usa el valor fijo del módulo.
 AIOxTethers_MaxOxTethers: El número total de amarres de bueyes de esta IA nunca superará este valor.
 AIOxTethers_DynamicMaxOxTethers: El número total de amarres de bueyes nunca superará este valor multiplicado por el número de canteras.
 AIOxTethers_MinimumOxTethersPerQuarry: >-
@@ -475,9 +475,7 @@ AIOxTethers_MaximumOxTethersPerQuarry: Si el número de amarres vinculados a una
 AIOxTethers_ThresholdStoneLoad: >-
   Si la cantidad de piedra dividida entre los amarres vinculados a una cantera supera este valor, se construye
   otro amarre para ella.
-RunningUnits_Macemen: >-
-  Si se activa, los soldados con maza siempre corren, incluso en grupos con unidades más lentas. Si se
-  desactiva, igualan la velocidad de la unidad más lenta del grupo, como en el juego original.
+RunningUnits_Macemen: Correr y Caminar imponen el movimiento. La opción del juego y el campo vacío siguen la regla del módulo, que también puede imponer el movimiento a todas las IA.
 RunningUnits_Spearmen: >-
   Si se activa, los lanceros siempre corren, incluso en grupos con unidades más lentas. Si se desactiva,
   igualan la velocidad de la unidad más lenta del grupo, como en el juego original.
@@ -773,3 +771,20 @@ AIVTroops_Movement_FireThrower: >-
   guardar el personaje y usa el siguiente valor común o de menú aplicable. Requiere aiv-troops-behaviour con
   «Ajustes de tropas» y «Usar ajustes del AIC» activados. Reinicia UCP e inicia una partida nueva tras
   cambiarlo.
+BuildingRepairInterval: Segundos entre comprobaciones. Se aplica con la reparación de IA activada en Smarter Buildings.
+BuildingRepairMinimumGold: La IA espera a que el tesoro alcance esta cantidad para reparar.
+RecruitPolicy: Con roles ponderados, defensa, incursión, ataque y salida deben sumar 100 para cada nivel de fuerza.
+RecruitConditions: 'Introduce una matriz JSON de hasta ocho reglas. Cada regla lleva When y cuatro pesos que suman 100. Ejemplo: [{"When":{"HomeUnderThreat":true},"Defense":70,"Raid":0,"Attack":20,"Sortie":10}]. Requiere roles ponderados.'
+DefRecruitComposition: Con roles ponderados, conservar los puestos mantiene la combinación de defensores definida.
+RecruitInitialDefenseMonths: Con roles ponderados, cero omite la espera inicial. En blanco se usa el tiempo del juego o de Legacy.
+RaidTargetPolicy: Selecciona una regla distinta a la del juego para ajustar grupos, prioridades, riesgo o enemigos.
+RaidFocus: Usa Any, Food, Industry, HighValue o un objeto JSON como {"Food":60,"HighValue":20}. La suma máxima es 100. NearestReachable requiere Any.
+SafeSiegePlacement: Elige emplazamientos accesibles. Lo requieren el pago con recursos, el hostigamiento coordinado y las fuerzas ampliadas.
+AttackTargetPolicy: Introduce Inherit, InheritPerAttack, LowestPopulation, FewestTroops, LowestCombatPower, Random o LastAggressor. Un objeto JSON puede combinar Choice con UntilDefeated o con Provocation para LastAggressor.
+ProvocationRules: Introduce un objeto JSON con ThreatPower y LossPower (1–100000), WindowTicks (32–9600, múltiplo de 32) y CombatTicks (1–WindowTicks). Requiere AfterProvocation, LastAggressor o una condición HomeUnderThreat.
+AICTactics_LordHuntSwitchPercent: Durante el ataque debe quedar esta proporción del ejército para cambiar de castillo.
+AICTactics_LordHuntSplitShare: Proporción del ejército principal destinada al castillo que no sufre el asedio completo.
+Tunneler: Requiere AI Swapper con este personaje como fuente de tropas iniciales. Introduce 0–2499. Sin un número en el personaje o el lanzador, no aparecen zapadores.
+AICTactics_PatrolOrders: Todas las patrullas pueden recibir órdenes de ataque, incluidas las posteriores a la primera.
+AICTactics_PatrolFormation: El ala avanza junto al grupo de cabeza, el espejo llega desde el otro lado y las rutas independientes reparten a los grupos por distintos accesos.
+AICTactics_PatrolSpacing: Distancia entre patrullas vecinas en las formaciones de ala y espejo.

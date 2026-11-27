@@ -230,3 +230,55 @@ AIVTroops_InitialRole_ArabianSwordsman: 'Arabischer Schwertkämpfer: Startaufgab
 AIVTroops_Movement_ArabianSwordsman: 'Arabischer Schwertkämpfer: Bewegung'
 AIVTroops_InitialRole_FireThrower: 'Feuerwerfer: Startaufgabe'
 AIVTroops_Movement_FireThrower: 'Feuerwerfer: Bewegung'
+AICTactics_PatrolOrders: 'AIC Tactics: Befehle für Patrouillengruppen'
+AICTactics_PatrolFormation: 'AIC Tactics: Patrouillenformation'
+AICTactics_PatrolSpacing: 'AIC Tactics: Patrouillenabstand'
+BuildingRepairInterval: Gebäudereparaturintervall (s)
+BuildingRepairMinimumGold: Mindestgold für Gebäudereparaturen
+RecruitPolicy: Rekrutierungsregeln
+RecruitProbSortieDefault: Ausfallanteil, normale Stärke (%)
+RecruitProbSortieWeak: Ausfallanteil, schwach (%)
+RecruitProbSortieStrong: Ausfallanteil, stark (%)
+RecruitConditions: Bedingte Rekrutierungsanteile
+DefRecruitComposition: Zusammensetzung der Verteidigung
+RecruitInitialDefenseMonths: Anfängliche Verteidigung (Monate)
+RaidTargetPolicy: Zielwahl für Überfälle
+RaidGroupCount: Überfallgruppen
+RaidMinGroupSize: Mindestgröße der Überfallgruppe
+RaidFocus: Zielprioritäten für Überfälle
+RaidRiskTolerance: Risikobereitschaft bei Überfällen
+RaidEnemyScope: Gegner für Überfälle
+SafeSiegePlacement: Sichere Aufstellung der Belagerungsgeräte
+ActualSiegeResourcePayment: Rohstoffkosten für Belagerungsgeräte zahlen
+CoordinatedSiegeHarassment: Koordinierter Beschuss
+SiegeHarassMinEngines: Mindestzahl an Geräten für Beschuss
+LargerSiegeForces: Größere Belagerungstrupps
+SiegeForceMax: Höchstzahl an Belagerungsgeräten im Angriff
+AICTactics_SiegeTowerCrew: Besatzung des Belagerungsturms
+AICTactics_PatrolExtraGroups: Zusätzliche Angriffspatrouillen
+AICTactics_PatrolMinSize: Mindestgröße der Patrouille
+AICTactics_PatrolRadius: Patrouillenradius (Felder)
+AICTactics_SiegeScreen: Befehle für Belagerungseskorten
+AICTactics_SiegeScreenForward: Vorsprung der Belagerungseskorte (Felder)
+AICTactics_SiegeScreenExtraGroups: Zusätzliche Belagerungseskorten
+AttackPreparation: Angriffsvorbereitung
+AttackTargetPolicy: Zielwahl für Angriffe
+AttackTargetCommitment: Angriffsziel beibehalten
+AttackActivation: Angriffsauslöser
+ProvocationRules: Schwellen für Provokation
+AICTactics_LordHuntRetarget: Fliehenden Lord verfolgen
+AICTactics_LordHuntSiege: Belagerungsziel bei Verfolgung
+AICTactics_LordHuntSwitchPercent: Schwelle zum Wechsel des Verfolgungsziels (%)
+AICTactics_LordHuntShare: Truppen zur Verfolgung des Lords (%)
+AICTactics_LordHuntSplitShare: Anteil des Verfolgungstrupps (%)
+AICTactics_AllyRelief: Truppenhilfe für Verbündete
+AICTactics_AllyGoods: Verbündete mit Waren versorgen
+AICTactics_AllyGoldKeep: Goldreserve bei Bündnishilfe
+AICTactics_AllyRecruitGoldBuffer: Zusätzliches Gold für Rekrutierung erbitten
+AICTactics_AllyGoldSharePercent: Anteil des überschüssigen Golds für Verbündete (%)
+AICTactics_AllyMonthlyGivePercent: Monatliches Hilfsbudget (%)
+AICTactics_AllyArmySharePercent: Truppenanteil für Bündnishilfe (%)
+AICTactics_AllyReliefGates: Verbündete Tore für Entsatz öffnen
+AICTactics_AllyReliefKeep: Entsatz auf verbündeten Bergfrieden stationieren
+AICTactics_AllyReliefMinMonths: Mindestdauer der Truppenhilfe (Monate)
+Tunneler: Tunnelgräber
